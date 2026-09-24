@@ -1,0 +1,261 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1460 940" font-family="Segoe UI, Roboto, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C02020"/>
+    </marker>
+    <marker id="lead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E100E1"/>
+    </marker>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#9AA0A6" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1460" height="940" fill="#ffffff"/>
+  <text x="730" y="30" text-anchor="middle" font-size="21" font-weight="bold" fill="#1A1D21">SUMMIT PUSH — DRAWING 1 OF 6 - FIELD TOP VIEW (PLAN)</text>
+  <text x="730" y="50" text-anchor="middle" font-size="11.5" fill="#6E7378">Field 648 x 324 in (54 ft x 27 ft) - scale 1.8 px/in - Blue alliance at left</text>
+  <rect x="112.00" y="74.00" width="1166.40" height="583.20" fill="#F4F2EE" stroke="#1A1D21" stroke-width="2.40"/>
+  <rect x="112.00" y="69.00" width="1166.40" height="5.00" fill="#9AA4B2" stroke="#4A5462" stroke-width="0.80"/>
+  <rect x="112.00" y="657.20" width="1166.40" height="5.00" fill="#9AA4B2" stroke="#4A5462" stroke-width="0.80"/>
+  <rect x="103.00" y="74.00" width="9.00" height="583.20" fill="#1D63C8" stroke="#0E3F86" stroke-width="1.20" opacity="0.30"/>
+  <rect x="1278.40" y="74.00" width="9.00" height="583.20" fill="#CC3333" stroke="#8E2020" stroke-width="1.20" opacity="0.30"/>
+  <text x="94.00" y="365.60" font-size="10.0" fill="#0E3F86" text-anchor="middle" font-weight="bold" transform="rotate(-90.00 94.00 365.60)">BLUE ALLIANCE WALL</text>
+  <text x="1300.40" y="365.60" font-size="10.0" fill="#8E2020" text-anchor="middle" font-weight="bold" transform="rotate(90.00 1300.40 365.60)">RED ALLIANCE WALL</text>
+  <line x1="695.20" y1="74.00" x2="695.20" y2="182.00" stroke="#FFFFFF" stroke-width="3.00"/>
+  <line x1="695.20" y1="74.00" x2="695.20" y2="182.00" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="10 6"/>
+  <line x1="695.20" y1="268.40" x2="695.20" y2="462.80" stroke="#FFFFFF" stroke-width="3.00"/>
+  <line x1="695.20" y1="268.40" x2="695.20" y2="462.80" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="10 6"/>
+  <line x1="695.20" y1="549.20" x2="695.20" y2="657.20" stroke="#FFFFFF" stroke-width="3.00"/>
+  <line x1="695.20" y1="549.20" x2="695.20" y2="657.20" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="10 6"/>
+  <text x="701.20" y="90.00" font-size="8.5" fill="#6E7378">FIELD CENTERLINE X = 324 (2-in white tape)</text>
+  <rect x="112.00" y="236.00" width="86.40" height="259.20" fill="#1D63C8" stroke="#0E3F86" stroke-width="1.40" stroke-dasharray="6 4" opacity="0.10"/>
+  <line x1="198.40" y1="657.20" x2="198.40" y2="495.20" stroke="#0E3F86" stroke-width="1.40" stroke-dasharray="5 5"/>
+  <line x1="198.40" y1="236.00" x2="198.40" y2="74.00" stroke="#0E3F86" stroke-width="1.40" stroke-dasharray="5 5"/>
+  <text x="155.20" y="365.60" font-size="8.0" fill="#0E3F86" text-anchor="middle" font-weight="bold" transform="rotate(-90.00 155.20 365.60)">BASECAMP = HEADWALL ZONE</text>
+  <rect x="157.89" y="236.00" width="40.51" height="259.20" fill="#8A6D3B" stroke="#5C4823" stroke-width="1.60" opacity="0.85"/>
+  <line x1="157.89" y1="408.80" x2="198.40" y2="408.80" stroke="#5C4823" stroke-width="1.20"/>
+  <line x1="157.89" y1="322.40" x2="198.40" y2="322.40" stroke="#5C4823" stroke-width="1.20"/>
+  <text x="176.80" y="225.20" font-size="9.0" fill="#5C4823" text-anchor="middle" font-weight="bold">BLUE HEADWALL</text>
+  <text x="176.80" y="455.00" font-size="8.0" fill="#FFFFFF" text-anchor="middle" font-weight="bold">L1</text>
+  <text x="176.80" y="368.60" font-size="8.0" fill="#FFFFFF" text-anchor="middle" font-weight="bold">L2</text>
+  <text x="176.80" y="282.20" font-size="8.0" fill="#FFFFFF" text-anchor="middle" font-weight="bold">L3</text>
+  <rect x="112.00" y="570.80" width="86.40" height="64.80" fill="#E8A33D" stroke="#B57718" stroke-width="1.50" stroke-dasharray="6 4" opacity="0.28"/>
+  <rect x="112.00" y="576.20" width="6.00" height="54.00" fill="#E8A33D" stroke="#B57718" stroke-width="1.30"/>
+  <text x="155.20" y="606.20" font-size="7.5" fill="#7A4E0C" text-anchor="middle">OUTFITTER LANE 36 x 48</text>
+  <text x="155.20" y="616.20" font-size="7.0" fill="#7A4E0C" text-anchor="middle">chute (0, 30)</text>
+  <rect x="112.00" y="95.60" width="86.40" height="64.80" fill="#E8A33D" stroke="#B57718" stroke-width="1.50" stroke-dasharray="6 4" opacity="0.28"/>
+  <rect x="112.00" y="101.00" width="6.00" height="54.00" fill="#E8A33D" stroke="#B57718" stroke-width="1.30"/>
+  <text x="155.20" y="131.00" font-size="7.5" fill="#7A4E0C" text-anchor="middle">OUTFITTER LANE 36 x 48</text>
+  <text x="155.20" y="141.00" font-size="7.0" fill="#7A4E0C" text-anchor="middle">chute (0, 294)</text>
+  <line x1="362.20" y1="453.80" x2="380.20" y2="471.80" stroke="#0E3F86" stroke-width="1.60"/>
+  <line x1="362.20" y1="471.80" x2="380.20" y2="453.80" stroke="#0E3F86" stroke-width="1.60"/>
+  <text x="371.20" y="448.80" font-size="7.5" fill="#0E3F86" text-anchor="middle">2 CRATES</text>
+  <line x1="362.20" y1="356.60" x2="380.20" y2="374.60" stroke="#0E3F86" stroke-width="1.60"/>
+  <line x1="362.20" y1="374.60" x2="380.20" y2="356.60" stroke="#0E3F86" stroke-width="1.60"/>
+  <text x="371.20" y="351.60" font-size="7.5" fill="#0E3F86" text-anchor="middle">2 O2 CELLS</text>
+  <line x1="362.20" y1="259.40" x2="380.20" y2="277.40" stroke="#0E3F86" stroke-width="1.60"/>
+  <line x1="362.20" y1="277.40" x2="380.20" y2="259.40" stroke="#0E3F86" stroke-width="1.60"/>
+  <text x="371.20" y="254.40" font-size="7.5" fill="#0E3F86" text-anchor="middle">2 ROPE COILS</text>
+  <text x="371.20" y="192.80" font-size="8.5" fill="#0E3F86" text-anchor="middle" font-weight="bold">BLUE STAGING MARKS  X = 144</text>
+  <rect x="623.20" y="153.20" width="28.80" height="144.00" fill="#B8A888" stroke="#4A3B22" stroke-width="1.10" opacity="0.95"/>
+  <rect x="652.00" y="268.40" width="28.80" height="28.80" fill="#B8A888" stroke="#4A3B22" stroke-width="1.10" opacity="0.95"/>
+  <rect x="652.00" y="153.20" width="28.80" height="28.80" fill="#B8A888" stroke="#4A3B22" stroke-width="1.10" opacity="0.95"/>
+  <rect x="652.00" y="182.00" width="86.40" height="86.40" fill="#1D63C8" stroke="#0E3F86" stroke-width="2.20" opacity="0.70"/>
+  <rect x="677.20" y="207.20" width="36.00" height="36.00" fill="#FFFFFF" stroke="#0E3F86" stroke-width="1.20" opacity="0.90"/>
+  <text x="695.20" y="228.20" font-size="7.5" fill="#0E3F86" text-anchor="middle" font-weight="bold">SPIRE</text>
+  <circle cx="670.00" cy="282.80" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="670.00" cy="167.60" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="720.40" cy="282.80" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="720.40" cy="167.60" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="637.60" cy="225.20" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.40"/>
+  <line x1="738.40" y1="250.40" x2="751.13" y2="250.40" stroke="#555555" stroke-width="3.00" stroke-linecap="round"/>
+  <line x1="713.20" y1="237.80" x2="725.93" y2="237.80" stroke="#555555" stroke-width="3.00" stroke-dasharray="3 2" stroke-linecap="round"/>
+  <line x1="738.40" y1="200.00" x2="751.13" y2="200.00" stroke="#555555" stroke-width="3.00" stroke-linecap="round"/>
+  <line x1="713.20" y1="212.60" x2="725.93" y2="212.60" stroke="#555555" stroke-width="3.00" stroke-dasharray="3 2" stroke-linecap="round"/>
+  <rect x="587.20" y="146.00" width="216.00" height="158.40" fill="none" stroke="#0E3F86" stroke-width="1.80" rx="36.00" stroke-dasharray="8 5"/>
+  <text x="695.20" y="139.00" font-size="9.5" fill="#0E3F86" text-anchor="middle" font-weight="bold">BLUE CRAG (324, 240)</text>
+  <rect x="1192.00" y="236.00" width="86.40" height="259.20" fill="#CC3333" stroke="#8E2020" stroke-width="1.40" stroke-dasharray="6 4" opacity="0.10"/>
+  <line x1="1192.00" y1="74.00" x2="1192.00" y2="236.00" stroke="#8E2020" stroke-width="1.40" stroke-dasharray="5 5"/>
+  <line x1="1192.00" y1="495.20" x2="1192.00" y2="657.20" stroke="#8E2020" stroke-width="1.40" stroke-dasharray="5 5"/>
+  <text x="1235.20" y="365.60" font-size="8.0" fill="#8E2020" text-anchor="middle" font-weight="bold" transform="rotate(90.00 1235.20 365.60)">BASECAMP = HEADWALL ZONE</text>
+  <rect x="1192.00" y="236.00" width="40.51" height="259.20" fill="#8A6D3B" stroke="#5C4823" stroke-width="1.60" opacity="0.85"/>
+  <line x1="1232.51" y1="322.40" x2="1192.00" y2="322.40" stroke="#5C4823" stroke-width="1.20"/>
+  <line x1="1232.51" y1="408.80" x2="1192.00" y2="408.80" stroke="#5C4823" stroke-width="1.20"/>
+  <text x="1213.60" y="506.00" font-size="9.0" fill="#5C4823" text-anchor="middle" font-weight="bold">RED HEADWALL</text>
+  <text x="1213.60" y="282.20" font-size="8.0" fill="#FFFFFF" text-anchor="middle" font-weight="bold">L1</text>
+  <text x="1213.60" y="368.60" font-size="8.0" fill="#FFFFFF" text-anchor="middle" font-weight="bold">L2</text>
+  <text x="1213.60" y="455.00" font-size="8.0" fill="#FFFFFF" text-anchor="middle" font-weight="bold">L3</text>
+  <rect x="1192.00" y="95.60" width="86.40" height="64.80" fill="#E8A33D" stroke="#B57718" stroke-width="1.50" stroke-dasharray="6 4" opacity="0.28"/>
+  <rect x="1272.40" y="101.00" width="6.00" height="54.00" fill="#E8A33D" stroke="#B57718" stroke-width="1.30"/>
+  <text x="1235.20" y="131.00" font-size="7.5" fill="#7A4E0C" text-anchor="middle">OUTFITTER LANE 36 x 48</text>
+  <text x="1235.20" y="141.00" font-size="7.0" fill="#7A4E0C" text-anchor="middle">chute (648, 294)</text>
+  <rect x="1192.00" y="570.80" width="86.40" height="64.80" fill="#E8A33D" stroke="#B57718" stroke-width="1.50" stroke-dasharray="6 4" opacity="0.28"/>
+  <rect x="1272.40" y="576.20" width="6.00" height="54.00" fill="#E8A33D" stroke="#B57718" stroke-width="1.30"/>
+  <text x="1235.20" y="606.20" font-size="7.5" fill="#7A4E0C" text-anchor="middle">OUTFITTER LANE 36 x 48</text>
+  <text x="1235.20" y="616.20" font-size="7.0" fill="#7A4E0C" text-anchor="middle">chute (648, 30)</text>
+  <line x1="1010.20" y1="259.40" x2="1028.20" y2="277.40" stroke="#8E2020" stroke-width="1.60"/>
+  <line x1="1010.20" y1="277.40" x2="1028.20" y2="259.40" stroke="#8E2020" stroke-width="1.60"/>
+  <text x="1019.20" y="254.40" font-size="7.5" fill="#8E2020" text-anchor="middle">2 CRATES</text>
+  <line x1="1010.20" y1="356.60" x2="1028.20" y2="374.60" stroke="#8E2020" stroke-width="1.60"/>
+  <line x1="1010.20" y1="374.60" x2="1028.20" y2="356.60" stroke="#8E2020" stroke-width="1.60"/>
+  <text x="1019.20" y="351.60" font-size="7.5" fill="#8E2020" text-anchor="middle">2 O2 CELLS</text>
+  <line x1="1010.20" y1="453.80" x2="1028.20" y2="471.80" stroke="#8E2020" stroke-width="1.60"/>
+  <line x1="1010.20" y1="471.80" x2="1028.20" y2="453.80" stroke="#8E2020" stroke-width="1.60"/>
+  <text x="1019.20" y="448.80" font-size="7.5" fill="#8E2020" text-anchor="middle">2 ROPE COILS</text>
+  <text x="1019.20" y="538.40" font-size="8.5" fill="#8E2020" text-anchor="middle" font-weight="bold">RED STAGING MARKS  X = 504</text>
+  <rect x="738.40" y="434.00" width="28.80" height="144.00" fill="#B8A888" stroke="#4A3B22" stroke-width="1.10" opacity="0.95"/>
+  <rect x="709.60" y="549.20" width="28.80" height="28.80" fill="#B8A888" stroke="#4A3B22" stroke-width="1.10" opacity="0.95"/>
+  <rect x="709.60" y="434.00" width="28.80" height="28.80" fill="#B8A888" stroke="#4A3B22" stroke-width="1.10" opacity="0.95"/>
+  <rect x="652.00" y="462.80" width="86.40" height="86.40" fill="#CC3333" stroke="#8E2020" stroke-width="2.20" opacity="0.70"/>
+  <rect x="677.20" y="488.00" width="36.00" height="36.00" fill="#FFFFFF" stroke="#8E2020" stroke-width="1.20" opacity="0.90"/>
+  <text x="695.20" y="509.00" font-size="7.5" fill="#8E2020" text-anchor="middle" font-weight="bold">SPIRE</text>
+  <circle cx="720.40" cy="563.60" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="720.40" cy="448.40" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="670.00" cy="563.60" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="670.00" cy="448.40" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.10"/>
+  <circle cx="752.80" cy="506.00" r="6.01" fill="#EAF1FC" stroke="#0E3F86" stroke-width="1.40"/>
+  <line x1="652.00" y1="531.20" x2="639.27" y2="531.20" stroke="#555555" stroke-width="3.00" stroke-linecap="round"/>
+  <line x1="677.20" y1="518.60" x2="664.47" y2="518.60" stroke="#555555" stroke-width="3.00" stroke-dasharray="3 2" stroke-linecap="round"/>
+  <line x1="652.00" y1="480.80" x2="639.27" y2="480.80" stroke="#555555" stroke-width="3.00" stroke-linecap="round"/>
+  <line x1="677.20" y1="493.40" x2="664.47" y2="493.40" stroke="#555555" stroke-width="3.00" stroke-dasharray="3 2" stroke-linecap="round"/>
+  <rect x="587.20" y="426.80" width="216.00" height="158.40" fill="none" stroke="#8E2020" stroke-width="1.80" rx="36.00" stroke-dasharray="8 5"/>
+  <text x="695.20" y="419.80" font-size="9.5" fill="#8E2020" text-anchor="middle" font-weight="bold">RED CRAG (324, 84)</text>
+  <rect x="652.00" y="268.40" width="86.40" height="194.40" fill="#FFFFFF" stroke="#6E7378" stroke-width="1.30" stroke-dasharray="7 4" opacity="0.50"/>
+  <line x1="645.00" y1="315.40" x2="659.00" y2="329.40" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="645.00" y1="329.40" x2="659.00" y2="315.40" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="652.00" cy="322.40" r="7.00" fill="#7B3FA0" stroke="#333333" stroke-width="0.90"/>
+  <line x1="688.20" y1="315.40" x2="702.20" y2="329.40" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="688.20" y1="329.40" x2="702.20" y2="315.40" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="695.20" cy="322.40" r="7.00" fill="#2E8B57" stroke="#333333" stroke-width="0.90"/>
+  <line x1="731.40" y1="315.40" x2="745.40" y2="329.40" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="731.40" y1="329.40" x2="745.40" y2="315.40" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="738.40" cy="322.40" r="7.00" fill="#D9A441" stroke="#333333" stroke-width="0.90"/>
+  <line x1="645.00" y1="358.60" x2="659.00" y2="372.60" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="645.00" y1="372.60" x2="659.00" y2="358.60" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="652.00" cy="365.60" r="7.00" fill="#D9A441" stroke="#333333" stroke-width="0.90"/>
+  <line x1="688.20" y1="358.60" x2="702.20" y2="372.60" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="688.20" y1="372.60" x2="702.20" y2="358.60" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="695.20" cy="365.60" r="7.00" fill="#7B3FA0" stroke="#333333" stroke-width="0.90"/>
+  <line x1="731.40" y1="358.60" x2="745.40" y2="372.60" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="731.40" y1="372.60" x2="745.40" y2="358.60" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="738.40" cy="365.60" r="7.00" fill="#2E8B57" stroke="#333333" stroke-width="0.90"/>
+  <line x1="645.00" y1="401.80" x2="659.00" y2="415.80" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="645.00" y1="415.80" x2="659.00" y2="401.80" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="652.00" cy="408.80" r="7.00" fill="#2E8B57" stroke="#333333" stroke-width="0.90"/>
+  <line x1="688.20" y1="401.80" x2="702.20" y2="415.80" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="688.20" y1="415.80" x2="702.20" y2="401.80" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="695.20" cy="408.80" r="7.00" fill="#D9A441" stroke="#333333" stroke-width="0.90"/>
+  <line x1="731.40" y1="401.80" x2="745.40" y2="415.80" stroke="#6E7378" stroke-width="1.40"/>
+  <line x1="731.40" y1="415.80" x2="745.40" y2="401.80" stroke="#6E7378" stroke-width="1.40"/>
+  <circle cx="738.40" cy="408.80" r="7.00" fill="#7B3FA0" stroke="#333333" stroke-width="0.90"/>
+  <line x1="505.20" y1="361.60" x2="695.20" y2="365.60" stroke="#E100E1" stroke-width="1.2" marker-start="url(#lead)"/>
+  <text x="501.20" y="365.10" font-size="9.5" fill="#1A1D21" text-anchor="end">CENTER CACHE  X 300-348, Y 108-216</text>
+  <line x1="112.00" y1="709.20" x2="1278.40" y2="709.20" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="112.00" y1="665.20" x2="112.00" y2="717.20" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="1278.40" y1="665.20" x2="1278.40" y2="717.20" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="675.95" y="695.70" width="38.50" height="14.50" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="695.20" y="705.20" font-size="10.5" fill="#C02020" text-anchor="middle">648.0</text>
+  <line x1="58.00" y1="74.00" x2="58.00" y2="657.20" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="100.00" y1="74.00" x2="50.00" y2="74.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="100.00" y1="657.20" x2="50.00" y2="657.20" stroke="#C02020" stroke-width="0.70"/>
+  
+  <text x="54.00" y="365.60" font-size="10.5" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 54.00 365.60)">324.0</text>
+  <line x1="112.00" y1="206.00" x2="198.40" y2="206.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="112.00" y1="230.00" x2="112.00" y2="198.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="198.40" y1="230.00" x2="198.40" y2="198.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="140.90" y="194.00" width="28.60" height="13.00" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="155.20" y="202.00" font-size="9.0" fill="#C02020" text-anchor="middle">48.0</text>
+  <line x1="230.80" y1="236.00" x2="230.80" y2="495.20" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="216.40" y1="236.00" x2="238.80" y2="236.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="216.40" y1="495.20" x2="238.80" y2="495.20" stroke="#C02020" stroke-width="0.70"/>
+  
+  <text x="234.80" y="365.60" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(90.00 234.80 365.60)">144.0</text>
+  <line x1="587.20" y1="110.00" x2="803.20" y2="110.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="587.20" y1="113.20" x2="587.20" y2="102.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="803.20" y1="113.20" x2="803.20" y2="102.00" stroke="#C02020" stroke-width="0.70"/>
+  <text x="695.20" y="106.00" font-size="9.0" fill="#C02020" text-anchor="middle">120.0 apron span (36 + 48 + 36)</text>
+  <line x1="850.00" y1="182.00" x2="850.00" y2="268.40" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="810.40" y1="182.00" x2="858.00" y2="182.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="810.40" y1="268.40" x2="858.00" y2="268.40" stroke="#C02020" stroke-width="0.70"/>
+  
+  <text x="854.00" y="225.20" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(90.00 854.00 225.20)">48.0</text>
+  <line x1="900.40" y1="268.40" x2="900.40" y2="304.40" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="810.40" y1="268.40" x2="908.40" y2="268.40" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="810.40" y1="304.40" x2="908.40" y2="304.40" stroke="#C02020" stroke-width="0.70"/>
+  
+  <text x="904.40" y="286.40" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(90.00 904.40 286.40)">20.0</text>
+  <line x1="900.40" y1="426.80" x2="900.40" y2="462.80" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="810.40" y1="426.80" x2="908.40" y2="426.80" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="810.40" y1="462.80" x2="908.40" y2="462.80" stroke="#C02020" stroke-width="0.70"/>
+  
+  <text x="904.40" y="444.80" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(90.00 904.40 444.80)">20.0</text>
+  <line x1="950.80" y1="304.40" x2="950.80" y2="426.80" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="907.60" y1="304.40" x2="958.80" y2="304.40" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="907.60" y1="426.80" x2="958.80" y2="426.80" stroke="#C02020" stroke-width="0.70"/>
+  <text x="954.80" y="365.60" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(90.00 954.80 365.60)">68.0 open corridor</text>
+  <circle cx="112.00" cy="657.20" r="5.00" fill="none" stroke="#1A1D21" stroke-width="1.60"/>
+  <circle cx="112.00" cy="657.20" r="1.60" fill="#1A1D21" stroke="#1A1D21" stroke-width="0.60"/>
+  <line x1="112.0" y1="657.2" x2="168.0" y2="657.2" stroke="#1A1D21" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="112.0" y1="657.2" x2="112.0" y2="601.2" stroke="#1A1D21" stroke-width="1.6" marker-end="url(#arr)"/>
+  <text x="172.00" y="661.20" font-size="10.0" fill="#1A1D21" font-weight="bold">+X</text>
+  <text x="108.00" y="597.20" font-size="10.0" fill="#1A1D21" text-anchor="end" font-weight="bold">+Y</text>
+  <text x="122.00" y="675.20" font-size="8.5" fill="#6E7378">ORIGIN (0, 0), +Z up</text>
+  <rect x="1068.40" y="719.20" width="43.20" height="6.00" fill="#1A1D21" stroke="#1A1D21" stroke-width="0.60"/>
+  <rect x="1111.60" y="719.20" width="43.20" height="6.00" fill="#ffffff" stroke="#1A1D21" stroke-width="0.60"/>
+  <text x="1068.40" y="737.20" font-size="8.0" fill="#6E7378" text-anchor="middle">0</text>
+  <text x="1154.80" y="737.20" font-size="8.0" fill="#6E7378" text-anchor="middle">48 in</text>
+  <text x="1068.40" y="751.20" font-size="8.5" fill="#6E7378">Scale 1.8 px/in</text>
+  <rect x="112.00" y="746.00" width="470.00" height="138.00" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
+  <text x="120.00" y="762.00" font-size="9.5" fill="#1F4E79" font-weight="bold">TAPE KEY</text>
+  <line x1="122.00" y1="776.00" x2="152.00" y2="776.00" stroke="#1D63C8" stroke-width="1.80" stroke-dasharray="6 4"/>
+  <text x="158.00" y="779.00" font-size="8.5" fill="#1A1D21">BASECAMP / HEADWALL ZONE  X 0-48, Y 90-234</text>
+  <line x1="122.00" y1="791.00" x2="152.00" y2="791.00" stroke="#1D63C8" stroke-width="1.80" stroke-dasharray="5 5"/>
+  <text x="158.00" y="794.00" font-size="8.5" fill="#1A1D21">CLIMB LINE  X = 48 / 600, full width - G416 line call</text>
+  <line x1="122.00" y1="806.00" x2="152.00" y2="806.00" stroke="#1D63C8" stroke-width="1.80" stroke-dasharray="8 5"/>
+  <text x="158.00" y="809.00" font-size="8.5" fill="#1A1D21">CRAG APRON  36 shelf &amp; peg faces / 20 socket faces / R20</text>
+  <line x1="122.00" y1="821.00" x2="152.00" y2="821.00" stroke="#B57718" stroke-width="1.80" stroke-dasharray="6 4"/>
+  <text x="158.00" y="824.00" font-size="8.5" fill="#1A1D21">OUTFITTER LANE  36 x 48, centered on the chute</text>
+  <line x1="122.00" y1="836.00" x2="152.00" y2="836.00" stroke="#6E7378" stroke-width="1.80" stroke-dasharray="10 6"/>
+  <text x="158.00" y="839.00" font-size="8.5" fill="#1A1D21">FIELD CENTERLINE  2-in white at X = 324 - G402 / G502 line call</text>
+  <line x1="122.00" y1="851.00" x2="152.00" y2="851.00" stroke="#6E7378" stroke-width="1.80" stroke-dasharray="7 4"/>
+  <text x="158.00" y="854.00" font-size="8.5" fill="#1A1D21">CENTER CACHE band + nine white marks</text>
+  <rect x="560.00" y="746.00" width="420.00" height="108.00" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
+  <text x="568.00" y="762.00" font-size="9.5" fill="#1F4E79" font-weight="bold">CENTER CACHE - LATIN SQUARE STAGING</text>
+  <text x="568.00" y="780.00" font-size="8.5" fill="#1F4E79" font-weight="bold"></text>
+  <text x="656.00" y="780.00" font-size="8.5" fill="#1F4E79" font-weight="bold">X = 300</text>
+  <text x="762.00" y="780.00" font-size="8.5" fill="#1F4E79" font-weight="bold">X = 324</text>
+  <text x="868.00" y="780.00" font-size="8.5" fill="#1F4E79" font-weight="bold">X = 348</text>
+  <text x="568.00" y="796.00" font-size="8.5" fill="#1A1D21">Y = 186</text>
+  <text x="656.00" y="796.00" font-size="8.5" fill="#1A1D21">CRATE</text>
+  <text x="762.00" y="796.00" font-size="8.5" fill="#1A1D21">O2</text>
+  <text x="868.00" y="796.00" font-size="8.5" fill="#1A1D21">COIL</text>
+  <text x="568.00" y="810.00" font-size="8.5" fill="#1A1D21">Y = 162</text>
+  <text x="656.00" y="810.00" font-size="8.5" fill="#1A1D21">COIL</text>
+  <text x="762.00" y="810.00" font-size="8.5" fill="#1A1D21">CRATE</text>
+  <text x="868.00" y="810.00" font-size="8.5" fill="#1A1D21">O2</text>
+  <text x="568.00" y="824.00" font-size="8.5" fill="#1A1D21">Y = 138</text>
+  <text x="656.00" y="824.00" font-size="8.5" fill="#1A1D21">O2</text>
+  <text x="762.00" y="824.00" font-size="8.5" fill="#1A1D21">COIL</text>
+  <text x="868.00" y="824.00" font-size="8.5" fill="#1A1D21">CRATE</text>
+  <text x="568.00" y="842.00" font-size="8.0" fill="#6E7378">Each type appears once per row and once per column.</text>
+  <text x="568.00" y="854.00" font-size="8.0" fill="#6E7378">Aggregate haul distance is identical for both alliances (725.0 in each).</text>
+  <rect x="996.00" y="746.00" width="404.00" height="108.00" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
+  <text x="1004.00" y="762.00" font-size="9.5" fill="#1F4E79" font-weight="bold">PLAN NOTES</text>
+  <text x="1004.00" y="779.00" font-size="8.0" fill="#1A1D21">All tape 2.0 in wide; the line edge sits on the stated coordinate.</text>
+  <text x="1004.00" y="792.00" font-size="8.0" fill="#1A1D21">Alliance-colored tape for alliance zones; white for neutral marks.</text>
+  <text x="1004.00" y="805.00" font-size="8.0" fill="#6E7378">CRAG plan tint is a drafting convention; the CRAG itself is tan</text>
+  <text x="1004.00" y="818.00" font-size="8.0" fill="#6E7378">(see 03-field/MATERIALS-AND-COLORS.md).</text>
+  <text x="1004.00" y="831.00" font-size="8.0" fill="#6E7378">Model the Blue half once, then rotate-pattern 180 deg about (324, 162).</text>
+  <rect x="8.00" y="866.00" width="1444.00" height="66.00" fill="#FFFFFF" stroke="#8A9199" stroke-width="1.00"/>
+  <line x1="8.00" y1="886.00" x2="1452.00" y2="886.00" stroke="#C8CCD1" stroke-width="0.80"/>
+  <line x1="1202.00" y1="866.00" x2="1202.00" y2="932.00" stroke="#C8CCD1" stroke-width="0.80"/>
+  <text x="16.00" y="880.00" font-size="11.0" fill="#1F4E79" font-weight="bold">SUMMIT PUSH — FIELD DRAWING SET</text>
+  <text x="258.00" y="880.00" font-size="11.0" fill="#1A1D21" font-weight="bold">DRAWING 1 OF 6 - FIELD TOP VIEW (PLAN)</text>
+  <text x="16.00" y="899.00" font-size="8.5" fill="#6E7378">All dimensions in INCHES. Heights are to the robot-interaction surface (shelf top, socket rim center, peg root, rung top, tag center).</text>
+  <text x="16.00" y="910.00" font-size="8.5" fill="#6E7378">Boxed values are CRITICAL - hold exactly. Values suffixed (ref) may float +/-0.25 in. Every angle on the field is 15, 30 or 45 degrees.</text>
+  <text x="16.00" y="921.00" font-size="8.5" fill="#6E7378">Coordinate frame: always-blue-origin NWU. Origin at the right corner of the Blue alliance wall; +X toward Red, +Y left, +Z up. Blue half shown; Red = 180 deg rotation about (324, 162).</text>
+  <text x="1210.00" y="880.00" font-size="10.0" fill="#1A1D21" font-weight="bold">SHEET 1 OF 6</text>
+  <text x="1210.00" y="899.00" font-size="8.5" fill="#6E7378">Units: INCHES   |   Scale: as noted per view</text>
+  <text x="1210.00" y="910.00" font-size="8.5" fill="#6E7378">Geometry authority: 03-field/FIELD-CAD-PACKAGE.md</text>
+  <text x="1210.00" y="921.00" font-size="8.5" fill="#6E7378">Spec: 01-design/DESIGN-SPEC.md v2.2</text>
+  <text x="1444.00" y="880.00" font-size="10.0" fill="#1A1D21" text-anchor="end" font-weight="bold">REV 2.2</text>
+</svg>

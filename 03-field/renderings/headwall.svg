@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1720 1060" font-family="Segoe UI, Roboto, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C02020"/>
+    </marker>
+    <marker id="lead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E100E1"/>
+    </marker>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#9AA0A6" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1720" height="1060" fill="#ffffff"/>
+  <text x="860" y="30" text-anchor="middle" font-size="21" font-weight="bold" fill="#1A1D21">SUMMIT PUSH — DRAWING 3 OF 6 - HEADWALL (x2 PER FIELD)</text>
+  <text x="860" y="50" text-anchor="middle" font-size="11.5" fill="#6E7378">Blue HEADWALL shown - plane P crosses the carpet at X = 48 (Red mirrors at X = 600) - rung heights are VERTICAL, carpet to rung TOP</text>
+  <text x="334.80" y="92.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">FRONT ELEVATION</text>
+  <text x="334.80" y="105.00" font-size="9.0" fill="#6E7378" text-anchor="middle">3.4 px/in</text>
+  <text x="334.80" y="117.00" font-size="9.0" fill="#6E7378" text-anchor="middle">viewed from the FIELD, projected onto the vertical plane</text>
+  <line x1="50.00" y1="600.00" x2="639.60" y2="600.00" stroke="#1A1D21" stroke-width="2.00"/>
+  <text x="52.00" y="614.00" font-size="9.0" fill="#6E7378">carpet Z = 0</text>
+  <rect x="90.00" y="314.40" width="489.60" height="285.60" fill="#EFE7D8" stroke="#5C4823" stroke-width="2.40"/>
+  <line x1="253.20" y1="314.40" x2="253.20" y2="600.00" stroke="#5C4823" stroke-width="1.60" stroke-dasharray="8 5"/>
+  <line x1="416.40" y1="314.40" x2="416.40" y2="600.00" stroke="#5C4823" stroke-width="1.60" stroke-dasharray="8 5"/>
+  <text x="171.60" y="304.40" font-size="9.0" fill="#1A1D21" text-anchor="middle">LANE 1 (Y 90-138)</text>
+  <line x1="171.60" y1="314.40" x2="171.60" y2="586.40" stroke="#6E7378" stroke-width="0.90" stroke-dasharray="12 4 3 4"/>
+  <rect x="156.30" y="543.90" width="30.60" height="30.60" fill="#F5F5F5" stroke="#666666" stroke-width="1.00"/>
+  <rect x="160.55" y="548.15" width="22.10" height="22.10" fill="#111111" stroke="none" stroke-width="0.00"/>
+  <text x="334.80" y="304.40" font-size="9.0" fill="#1A1D21" text-anchor="middle">LANE 2 (Y 138-186)</text>
+  <line x1="334.80" y1="314.40" x2="334.80" y2="586.40" stroke="#6E7378" stroke-width="0.90" stroke-dasharray="12 4 3 4"/>
+  <rect x="319.50" y="543.90" width="30.60" height="30.60" fill="#F5F5F5" stroke="#666666" stroke-width="1.00"/>
+  <rect x="323.75" y="548.15" width="22.10" height="22.10" fill="#111111" stroke="none" stroke-width="0.00"/>
+  <text x="498.00" y="304.40" font-size="9.0" fill="#1A1D21" text-anchor="middle">LANE 3 (Y 186-234)</text>
+  <line x1="498.00" y1="314.40" x2="498.00" y2="586.40" stroke="#6E7378" stroke-width="0.90" stroke-dasharray="12 4 3 4"/>
+  <rect x="482.70" y="543.90" width="30.60" height="30.60" fill="#F5F5F5" stroke="#666666" stroke-width="1.00"/>
+  <rect x="486.95" y="548.15" width="22.10" height="22.10" fill="#111111" stroke="none" stroke-width="0.00"/>
+  <line x1="96.80" y1="500.55" x2="164.80" y2="500.55" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="178.40" y1="418.95" x2="246.40" y2="418.95" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="96.80" y1="337.35" x2="164.80" y2="337.35" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="260.00" y1="500.55" x2="328.00" y2="500.55" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="341.60" y1="418.95" x2="409.60" y2="418.95" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="260.00" y1="337.35" x2="328.00" y2="337.35" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="423.20" y1="500.55" x2="491.20" y2="500.55" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="504.80" y1="418.95" x2="572.80" y2="418.95" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <line x1="423.20" y1="337.35" x2="491.20" y2="337.35" stroke="#444444" stroke-width="5.10" stroke-linecap="round"/>
+  <text x="591.60" y="502.00" font-size="9.5" fill="#1A1D21">LEDGE RUNG - top 30.0</text>
+  <text x="591.60" y="420.40" font-size="9.5" fill="#1A1D21">CAMP RUNG - top 54.0</text>
+  <text x="591.60" y="338.80" font-size="9.5" fill="#1A1D21">SUMMIT RUNG - top 78.0</text>
+  <line x1="334.80" y1="532.00" x2="294.00" y2="532.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="334.80" y1="504.00" x2="334.80" y2="540.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="294.00" y1="504.00" x2="294.00" y2="540.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="300.10" y="520.00" width="28.60" height="13.00" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="314.40" y="528.00" font-size="9.0" fill="#C02020" text-anchor="middle">12.0</text>
+  <line x1="375.60" y1="450.40" x2="334.80" y2="450.40" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="375.60" y1="422.40" x2="375.60" y2="458.40" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="334.80" y1="422.40" x2="334.80" y2="458.40" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="340.90" y="438.40" width="28.60" height="13.00" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="355.20" y="446.40" font-size="9.0" fill="#C02020" text-anchor="middle">12.0</text>
+  <line x1="96.80" y1="366.80" x2="164.80" y2="366.80" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="96.80" y1="342.80" x2="96.80" y2="374.80" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="164.80" y1="342.80" x2="164.80" y2="374.80" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="84.10" y="354.80" width="93.40" height="13.00" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="130.80" y="362.80" font-size="9.0" fill="#C02020" text-anchor="middle">20.0 rung length</text>
+  <line x1="90.00" y1="646.00" x2="579.60" y2="646.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="90.00" y1="604.00" x2="90.00" y2="654.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="579.60" y1="604.00" x2="579.60" y2="654.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="246.25" y="632.50" width="177.10" height="14.50" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="334.80" y="642.00" font-size="10.5" fill="#C02020" text-anchor="middle">144.0 (three 48.0-in lanes)</text>
+  <line x1="90.00" y1="676.00" x2="253.20" y2="676.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="90.00" y1="604.00" x2="90.00" y2="684.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="253.20" y1="604.00" x2="253.20" y2="684.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="157.30" y="664.00" width="28.60" height="13.00" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="171.60" y="672.00" font-size="9.0" fill="#C02020" text-anchor="middle">48.0</text>
+  <line x1="84.00" y1="498.00" x2="72.00" y2="498.00" stroke="#C02020" stroke-width="0.70"/>
+  <text x="64.00" y="501.50" font-size="9.0" fill="#C02020" text-anchor="end">30.0</text>
+  <line x1="84.00" y1="416.40" x2="72.00" y2="416.40" stroke="#C02020" stroke-width="0.70"/>
+  <text x="64.00" y="419.90" font-size="9.0" fill="#C02020" text-anchor="end">54.0</text>
+  <line x1="84.00" y1="334.80" x2="72.00" y2="334.80" stroke="#C02020" stroke-width="0.70"/>
+  <text x="64.00" y="338.30" font-size="9.0" fill="#C02020" text-anchor="end">78.0</text>
+  <line x1="84.00" y1="314.40" x2="72.00" y2="314.40" stroke="#C02020" stroke-width="0.70"/>
+  <text x="591.60" y="318.40" font-size="9.0" fill="#C02020">84.0 truss top (ref)</text>
+  <line x1="76.0" y1="600.0" x2="76.0" y2="314.4" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <text x="334.80" y="704.00" font-size="9.0" fill="#1A1D21" text-anchor="middle">Stagger is the same in every lane: LEDGE -12.0, CAMP +12.0, SUMMIT -12.0 from the lane centerline,</text>
+  <text x="334.80" y="718.00" font-size="9.0" fill="#1A1D21" text-anchor="middle">in every lane - the sign alternates by rung, never by lane. Red = 180 deg rotation about (324, 162).</text>
+  <text x="334.80" y="734.00" font-size="9.0" fill="#C02020" text-anchor="middle">A 20.0-in rung at +/-12.0 leaves NO lateral position that engages two successive rungs: LEDGE spans -22 to -2, CAMP spans +2 to +22.</text>
+  <text x="830.00" y="92.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">SIDE PROFILE - PLANE P</text>
+  <text x="830.00" y="105.00" font-size="9.0" fill="#6E7378" text-anchor="middle">3.4 px/in</text>
+  <text x="830.00" y="117.00" font-size="9.0" fill="#6E7378" text-anchor="middle">field LEFT, alliance wall RIGHT</text>
+  <line x1="626.00" y1="600.00" x2="1013.60" y2="600.00" stroke="#1A1D21" stroke-width="2.00"/>
+  <rect x="1000.00" y="334.80" width="10.00" height="265.20" fill="#9AA4B2" stroke="#4A5462" stroke-width="1.60"/>
+  <text x="1022.00" y="464.00" font-size="9.0" fill="#4A5462" transform="rotate(-90.00 1022.00 464.00)">ALLIANCE WALL (78 ref)</text>
+  <line x1="836.80" y1="600.00" x2="913.33" y2="314.40" stroke="#0E3F86" stroke-width="2.40"/>
+  <text x="850.40" y="430.00" font-size="10.0" fill="#0E3F86" transform="rotate(-72.00 850.40 430.00)">PLANE P</text>
+  <line x1="836.80" y1="600.00" x2="836.80" y2="300.80" stroke="#6E7378" stroke-width="0.90" stroke-dasharray="12 4 3 4"/>
+  <path d="M 836.80 526.00 A 74.00 74.00 0 0 1 864.52 531.39" fill="none" stroke="#C02020" stroke-width="1.00"/>
+  <text x="726.80" y="552.40" font-size="10.0" fill="#C02020" text-anchor="middle">15 deg from vertical</text>
+  <line x1="768.80" y1="548.40" x2="846.80" y2="528.60" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="850.88" y1="600.00" x2="927.41" y2="314.40" stroke="#8A6D3B" stroke-width="5.00" stroke-linecap="round"/>
+  <text x="917.36" y="382.40" font-size="8.5" fill="#5C4823">truss structure, all &gt;= 4.0 behind P</text>
+  <circle cx="863.45" cy="500.55" r="5.50" fill="#444444" stroke="#222222" stroke-width="1.00"/>
+  <text x="851.45" y="504.55" font-size="9.0" fill="#1A1D21" text-anchor="end">LEDGE</text>
+  <circle cx="885.31" cy="418.95" r="5.50" fill="#444444" stroke="#222222" stroke-width="1.00"/>
+  <text x="873.31" y="422.95" font-size="9.0" fill="#1A1D21" text-anchor="end">CAMP</text>
+  <circle cx="907.18" cy="337.35" r="5.50" fill="#444444" stroke="#222222" stroke-width="1.00"/>
+  <text x="895.18" y="341.35" font-size="9.0" fill="#1A1D21" text-anchor="end">SUMMIT</text>
+  <rect x="864.40" y="543.90" width="6.00" height="30.60" fill="#111111" stroke="#666666" stroke-width="0.80"/>
+  <line x1="717.40" y1="515.20" x2="867.40" y2="559.20" stroke="#E100E1" stroke-width="1.2" marker-start="url(#lead)"/>
+  <text x="721.40" y="518.70" font-size="9.5" fill="#1A1D21">tag panel PLUMB, face plane X = 39.0, ctr Z = 12.0</text>
+  <text x="721.40" y="529.20" font-size="8.5" fill="#1A1D21">4.42 in behind P at the panel top edge</text>
+  <rect x="836.80" y="593.00" width="163.20" height="7.00" fill="#1D63C8" stroke="#0E3F86" stroke-width="0.80" opacity="0.55"/>
+  <text x="918.40" y="588.00" font-size="8.5" fill="#0E3F86" text-anchor="middle">BASECAMP / HEADWALL ZONE (X 0-48)</text>
+  <line x1="836.80" y1="646.00" x2="1000.00" y2="646.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="836.80" y1="604.00" x2="836.80" y2="654.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="1000.00" y1="604.00" x2="1000.00" y2="654.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="902.30" y="632.50" width="32.20" height="14.50" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="918.40" y="642.00" font-size="10.5" fill="#C02020" text-anchor="middle">48.0</text>
+  <line x1="1000.00" y1="457.20" x2="889.16" y2="457.20" stroke="#2E8B57" stroke-width="1.60" stroke-dasharray="6 4"/>
+  <text x="881.16" y="450.20" font-size="8.5" fill="#2E8B57" text-anchor="end">42-in STARTING CONFIGURATION fits up to X = 32.6</text>
+  <text x="1196.00" y="92.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">TOP VIEW (PLAN)</text>
+  <text x="1196.00" y="105.00" font-size="9.0" fill="#6E7378" text-anchor="middle">2.2 px/in</text>
+  <text x="1196.00" y="117.00" font-size="9.0" fill="#6E7378" text-anchor="middle">field LEFT, wall RIGHT</text>
+  <rect x="1256.00" y="150.00" width="6.00" height="316.80" fill="#9AA4B2" stroke="#4A5462" stroke-width="1.20"/>
+  <line x1="1156.40" y1="150.00" x2="1156.40" y2="466.80" stroke="#0E3F86" stroke-width="2.00"/>
+  <text x="1152.40" y="144.00" font-size="8.5" fill="#0E3F86" text-anchor="end">P carpet line X = 48</text>
+  <line x1="1130.00" y1="150.00" x2="1262.00" y2="150.00" stroke="#5C4823" stroke-width="1.20"/>
+  <line x1="1130.00" y1="255.60" x2="1262.00" y2="255.60" stroke="#5C4823" stroke-width="1.20" stroke-dasharray="6 4"/>
+  <line x1="1130.00" y1="361.20" x2="1262.00" y2="361.20" stroke="#5C4823" stroke-width="1.20" stroke-dasharray="6 4"/>
+  <line x1="1130.00" y1="466.80" x2="1262.00" y2="466.80" stroke="#5C4823" stroke-width="1.20"/>
+  <line x1="1173.64" y1="154.40" x2="1173.64" y2="198.40" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1187.79" y1="207.20" x2="1187.79" y2="251.20" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1201.94" y1="154.40" x2="1201.94" y2="198.40" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1173.64" y1="260.00" x2="1173.64" y2="304.00" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1187.79" y1="312.80" x2="1187.79" y2="356.80" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1201.94" y1="260.00" x2="1201.94" y2="304.00" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1173.64" y1="365.60" x2="1173.64" y2="409.60" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1187.79" y1="418.40" x2="1187.79" y2="462.40" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1201.94" y1="365.60" x2="1201.94" y2="409.60" stroke="#444444" stroke-width="3.40" stroke-linecap="round" opacity="0.90"/>
+  <line x1="1173.64" y1="470.80" x2="1173.64" y2="475.80" stroke="#6E7378" stroke-width="0.60"/>
+  <text x="1173.64" y="482.80" font-size="8.0" fill="#1A1D21" text-anchor="middle">LEDGE</text>
+  <line x1="1187.79" y1="470.80" x2="1187.79" y2="486.80" stroke="#6E7378" stroke-width="0.60"/>
+  <text x="1187.79" y="493.80" font-size="8.0" fill="#1A1D21" text-anchor="middle">CAMP</text>
+  <line x1="1201.94" y1="470.80" x2="1201.94" y2="497.80" stroke="#6E7378" stroke-width="0.60"/>
+  <text x="1201.94" y="504.80" font-size="8.0" fill="#1A1D21" text-anchor="middle">SUMMIT</text>
+  <line x1="1232.00" y1="150.00" x2="1232.00" y2="466.80" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="1254.00" y1="150.00" x2="1224.00" y2="150.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="1254.00" y1="466.80" x2="1224.00" y2="466.80" stroke="#C02020" stroke-width="0.70"/>
+  <text x="1236.00" y="308.40" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(90.00 1236.00 308.40)">144.0</text>
+  <text x="1196.00" y="528.80" font-size="8.5" fill="#6E7378" text-anchor="middle">rungs step toward the wall</text>
+  <text x="1196.00" y="540.80" font-size="8.5" fill="#6E7378" text-anchor="middle">with height (15 deg lean)</text>
+  <text x="1500.00" y="96.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">RUNG DETAIL</text>
+  <text x="1500.00" y="109.00" font-size="9.0" fill="#6E7378" text-anchor="middle">9.0 px/in</text>
+  <text x="1500.00" y="121.00" font-size="9.0" fill="#6E7378" text-anchor="middle">section normal to plane P</text>
+  <line x1="1460.00" y1="190.00" x2="1460.00" y2="380.00" stroke="#0E3F86" stroke-width="2.00" stroke-dasharray="10 4"/>
+  <text x="1450.00" y="285.00" font-size="9.0" fill="#0E3F86" text-anchor="middle" transform="rotate(-90.00 1450.00 285.00)">plane P</text>
+  <circle cx="1460.00" cy="280.00" r="6.75" fill="#444444" stroke="#222222" stroke-width="1.20"/>
+  <line x1="1453.25" y1="248.00" x2="1466.75" y2="248.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="1453.25" y1="270.00" x2="1453.25" y2="240.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="1466.75" y1="270.00" x2="1466.75" y2="240.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="1440.30" y="236.00" width="39.40" height="13.00" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="1460.00" y="244.00" font-size="9.0" fill="#C02020" text-anchor="middle">OD 1.5</text>
+  <rect x="1496.00" y="190.00" width="18.00" height="190.00" fill="#EFE7D8" stroke="#5C4823" stroke-width="1.60"/>
+  <text x="1504.00" y="184.00" font-size="8.5" fill="#1A1D21">truss chord 2 x 2 (ref)</text>
+  <line x1="1460.00" y1="342.00" x2="1496.00" y2="342.00" stroke="#C02020" stroke-width="1.1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="1460.00" y1="322.00" x2="1460.00" y2="350.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="1496.00" y1="322.00" x2="1496.00" y2="350.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="1466.40" y="330.00" width="23.20" height="13.00" fill="#ffffff" stroke="#C02020" stroke-width="0.8"/>
+  <text x="1478.00" y="338.00" font-size="9.0" fill="#C02020" text-anchor="middle">4.0</text>
+  <path d="M 1434.0 250.0 q 34 -2 34 28 q 0 24 -24 24" fill="none" stroke="#2E8B57" stroke-width="2.00" stroke-dasharray="5 3"/>
+  <text x="1430.00" y="242.00" font-size="8.5" fill="#2E8B57" text-anchor="end">climber hook wrap</text>
+  <text x="1500.00" y="378.00" font-size="8.5" fill="#1A1D21" text-anchor="middle">structure &gt;= 4.0 behind P except the end brackets - clear wrap over the middle 16.0 of 20.0</text>
+  <rect x="90.00" y="746.00" width="760.00" height="196.00" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
+  <text x="98.00" y="762.00" font-size="9.5" fill="#1F4E79" font-weight="bold">DERIVED (do NOT drive these - dimension plane P and the vertical heights; let CAD compute)</text>
+  <text x="98.00" y="782.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Rung</text>
+  <text x="174.00" y="782.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Top Z</text>
+  <text x="230.00" y="782.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Ctr Z</text>
+  <text x="286.00" y="782.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Ctr X</text>
+  <text x="358.00" y="782.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Lane-1 Y span</text>
+  <text x="490.00" y="782.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Lane-2 Y span</text>
+  <text x="622.00" y="782.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Lane-3 Y span</text>
+  <line x1="96.00" y1="787.00" x2="842.00" y2="787.00" stroke="#C8CCD1" stroke-width="0.80"/>
+  <text x="98.00" y="804.00" font-size="8.5" fill="#1A1D21">LEDGE</text>
+  <text x="174.00" y="804.00" font-size="8.5" fill="#1A1D21">30.0</text>
+  <text x="230.00" y="804.00" font-size="8.5" fill="#1A1D21">29.25</text>
+  <text x="286.00" y="804.00" font-size="8.5" fill="#1A1D21">40.16</text>
+  <text x="358.00" y="804.00" font-size="8.5" fill="#1A1D21">92 - 112</text>
+  <text x="490.00" y="804.00" font-size="8.5" fill="#1A1D21">140 - 160</text>
+  <text x="622.00" y="804.00" font-size="8.5" fill="#1A1D21">188 - 208</text>
+  <text x="98.00" y="819.00" font-size="8.5" fill="#1A1D21">CAMP</text>
+  <text x="174.00" y="819.00" font-size="8.5" fill="#1A1D21">54.0</text>
+  <text x="230.00" y="819.00" font-size="8.5" fill="#1A1D21">53.25</text>
+  <text x="286.00" y="819.00" font-size="8.5" fill="#1A1D21">33.73</text>
+  <text x="358.00" y="819.00" font-size="8.5" fill="#1A1D21">116 - 136</text>
+  <text x="490.00" y="819.00" font-size="8.5" fill="#1A1D21">164 - 184</text>
+  <text x="622.00" y="819.00" font-size="8.5" fill="#1A1D21">212 - 232</text>
+  <text x="98.00" y="834.00" font-size="8.5" fill="#1A1D21">SUMMIT</text>
+  <text x="174.00" y="834.00" font-size="8.5" fill="#1A1D21">78.0</text>
+  <text x="230.00" y="834.00" font-size="8.5" fill="#1A1D21">77.25</text>
+  <text x="286.00" y="834.00" font-size="8.5" fill="#1A1D21">27.30</text>
+  <text x="358.00" y="834.00" font-size="8.5" fill="#1A1D21">92 - 112</text>
+  <text x="490.00" y="834.00" font-size="8.5" fill="#1A1D21">140 - 160</text>
+  <text x="622.00" y="834.00" font-size="8.5" fill="#1A1D21">188 - 208</text>
+  <text x="98.00" y="866.00" font-size="8.5" fill="#6E7378">Rung ctr Z = top - 0.75. Blue rung ctr X = 48 - Z x tan 15. Setback between successive rungs = 24 x tan 15 = 6.43 in.</text>
+  <text x="98.00" y="879.00" font-size="8.5" fill="#6E7378">Every rung sits at least 2.0 in inside its lane boundary; adjacent lanes are 48.0 apart centre-to-centre, 28.0 end to end.</text>
+  <text x="98.00" y="898.00" font-size="9.0" fill="#1F4E79" font-weight="bold">BASECAMP CLEAR VOLUME:   H(X) = 3.7321 x (43.859 - X) inches</text>
+  <text x="98.00" y="914.00" font-size="8.5" fill="#1F4E79" font-weight="bold">X (in)</text>
+  <text x="98.00" y="927.00" font-size="8.5" fill="#1F4E79" font-weight="bold">H (in)</text>
+  <text x="168.00" y="914.00" font-size="8.5" fill="#1A1D21">0</text>
+  <text x="168.00" y="927.00" font-size="8.5" fill="#1A1D21">163.7</text>
+  <text x="242.00" y="914.00" font-size="8.5" fill="#1A1D21">12</text>
+  <text x="242.00" y="927.00" font-size="8.5" fill="#1A1D21">118.9</text>
+  <text x="316.00" y="914.00" font-size="8.5" fill="#1A1D21">24</text>
+  <text x="316.00" y="927.00" font-size="8.5" fill="#1A1D21">74.1</text>
+  <text x="390.00" y="914.00" font-size="8.5" fill="#1A1D21">32.6</text>
+  <text x="390.00" y="927.00" font-size="8.5" fill="#1A1D21" font-weight="bold">42.0</text>
+  <text x="464.00" y="914.00" font-size="8.5" fill="#1A1D21">36</text>
+  <text x="464.00" y="927.00" font-size="8.5" fill="#1A1D21">29.3</text>
+  <text x="538.00" y="914.00" font-size="8.5" fill="#1A1D21">40</text>
+  <text x="538.00" y="927.00" font-size="8.5" fill="#1A1D21">14.4</text>
+  <text x="612.00" y="914.00" font-size="8.5" fill="#1A1D21">43.86</text>
+  <text x="612.00" y="927.00" font-size="8.5" fill="#1A1D21">0.0</text>
+  <text x="98.00" y="943.00" font-size="8.5" fill="#6E7378">A 42-in STARTING CONFIGURATION fits anywhere up to X = 32.6, which is why G302 stages ROBOTS against the alliance wall.</text>
+  <rect x="890.00" y="746.00" width="760.00" height="196.00" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
+  <text x="898.00" y="762.00" font-size="9.5" fill="#1F4E79" font-weight="bold">CLIMB REACH (the arithmetic behind G416)</text>
+  <text x="898.00" y="781.00" font-size="8.5" fill="#1A1D21">G416: no rung contact while any BUMPER is on the wall side of the CLIMB LINE (X = 48 Blue / 600 Red),</text>
+  <text x="898.00" y="794.00" font-size="8.5" fill="#1A1D21">unless the ROBOT is then supported solely by rungs. The nearest bumper face is X = 48, so the FRAME</text>
+  <text x="898.00" y="807.00" font-size="8.5" fill="#1A1D21">PERIMETER is at X = 51 (R402: 0.75 backing + 2.25 foam) and an 18-in reach (R105) ends at X = 33.0.</text>
+  <text x="898.00" y="832.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Rung</text>
+  <text x="980.00" y="832.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Rung ctr X</text>
+  <text x="1080.00" y="832.00" font-size="8.5" fill="#1F4E79" font-weight="bold">To centerline</text>
+  <text x="1190.00" y="832.00" font-size="8.5" fill="#1F4E79" font-weight="bold">To wrap the rung</text>
+  <text x="1320.00" y="832.00" font-size="8.5" fill="#1F4E79" font-weight="bold">Within R105 (18 in)?</text>
+  <line x1="896.00" y1="837.00" x2="1642.00" y2="837.00" stroke="#C8CCD1" stroke-width="0.80"/>
+  <text x="898.00" y="854.00" font-size="8.5" fill="#1A1D21">LEDGE</text>
+  <text x="980.00" y="854.00" font-size="8.5" fill="#1A1D21">40.16</text>
+  <text x="1080.00" y="854.00" font-size="8.5" fill="#1A1D21">10.84 in</text>
+  <text x="1190.00" y="854.00" font-size="8.5" fill="#1A1D21">11.59 in</text>
+  <text x="1320.00" y="854.00" font-size="8.5" fill="#1A1D21">yes</text>
+  <text x="898.00" y="869.00" font-size="8.5" fill="#1A1D21">CAMP</text>
+  <text x="980.00" y="869.00" font-size="8.5" fill="#1A1D21">33.73</text>
+  <text x="1080.00" y="869.00" font-size="8.5" fill="#1A1D21">17.27 in</text>
+  <text x="1190.00" y="869.00" font-size="8.5" fill="#1A1D21">18.02 in</text>
+  <text x="1320.00" y="869.00" font-size="8.5" fill="#1A1D21">NO - from a hang only</text>
+  <text x="898.00" y="884.00" font-size="8.5" fill="#C02020" font-weight="bold">SUMMIT</text>
+  <text x="980.00" y="884.00" font-size="8.5" fill="#C02020" font-weight="bold">27.30</text>
+  <text x="1080.00" y="884.00" font-size="8.5" fill="#C02020" font-weight="bold">23.70 in</text>
+  <text x="1190.00" y="884.00" font-size="8.5" fill="#C02020" font-weight="bold">24.45 in</text>
+  <text x="1320.00" y="884.00" font-size="8.5" fill="#C02020" font-weight="bold">NO - from a hang only</text>
+  <text x="898.00" y="914.00" font-size="8.5" fill="#6E7378">From a hang on the LEDGE RUNG the CAMP RUNG is 6.43 in back, 24 in up, 24 in across (24.9 in plane P);</text>
+  <text x="898.00" y="926.00" font-size="8.5" fill="#6E7378">the same step again reaches SUMMIT. LEDGE and SUMMIT share -12.0, so a direct LEDGE-SUMMIT</text>
+  <text x="898.00" y="938.00" font-size="8.5" fill="#6E7378">reach (48 up, 12.86 back, 49.7 in plane P) is legal too - twice the reach, no traverse. Both count.</text>
+  <text x="898.00" y="955.00" font-size="8.5" fill="#1A1D21">PARK 3 / LEDGE RUNG 12 / CAMP RUNG 20 / SUMMIT RUNG 30. Protection runs from the start of ENDGAME through climb assessment.</text>
+  <rect x="8.00" y="986.00" width="1704.00" height="66.00" fill="#FFFFFF" stroke="#8A9199" stroke-width="1.00"/>
+  <line x1="8.00" y1="1006.00" x2="1712.00" y2="1006.00" stroke="#C8CCD1" stroke-width="0.80"/>
+  <line x1="1462.00" y1="986.00" x2="1462.00" y2="1052.00" stroke="#C8CCD1" stroke-width="0.80"/>
+  <text x="16.00" y="1000.00" font-size="11.0" fill="#1F4E79" font-weight="bold">SUMMIT PUSH — FIELD DRAWING SET</text>
+  <text x="258.00" y="1000.00" font-size="11.0" fill="#1A1D21" font-weight="bold">DRAWING 3 OF 6 - HEADWALL (x2 PER FIELD)</text>
+  <text x="16.00" y="1019.00" font-size="8.5" fill="#6E7378">All dimensions in INCHES. Heights are to the robot-interaction surface (shelf top, socket rim center, peg root, rung top, tag center).</text>
+  <text x="16.00" y="1030.00" font-size="8.5" fill="#6E7378">Boxed values are CRITICAL - hold exactly. Values suffixed (ref) may float +/-0.25 in. Every angle on the field is 15, 30 or 45 degrees.</text>
+  <text x="16.00" y="1041.00" font-size="8.5" fill="#6E7378">Coordinate frame: always-blue-origin NWU. Origin at the right corner of the Blue alliance wall; +X toward Red, +Y left, +Z up. Blue half shown; Red = 180 deg rotation about (324, 162).</text>
+  <text x="1470.00" y="1000.00" font-size="10.0" fill="#1A1D21" font-weight="bold">SHEET 3 OF 6</text>
+  <text x="1470.00" y="1019.00" font-size="8.5" fill="#6E7378">Units: INCHES   |   Scale: as noted per view</text>
+  <text x="1470.00" y="1030.00" font-size="8.5" fill="#6E7378">Geometry authority: 03-field/FIELD-CAD-PACKAGE.md</text>
+  <text x="1470.00" y="1041.00" font-size="8.5" fill="#6E7378">Spec: 01-design/DESIGN-SPEC.md v2.2</text>
+  <text x="1704.00" y="1000.00" font-size="10.0" fill="#1A1D21" text-anchor="end" font-weight="bold">REV 2.2</text>
+</svg>

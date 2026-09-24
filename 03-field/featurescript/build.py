@@ -96,6 +96,12 @@ def api_check(code, std):
             if p:
                 params.add(p.split()[0])
     errs = []
+    for nme in sorted(local):
+        if nme in names:
+            errs.append("name collides with a standard-library export: %s" % nme)
+    for nme in sorted(local_enums):
+        if nme in names or nme in enums:
+            errs.append("enum name collides with a standard-library export: %s" % nme)
     called = set(re.findall(r"(?<![\.\w])([A-Za-z_]\w*)\s*\(", src))
     for c in sorted(called):
         if c in FS_KEYWORDS or c in local or c in names or c in params:

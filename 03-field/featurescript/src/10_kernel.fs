@@ -84,6 +84,12 @@ function msg(parts is array) returns string
     return s;
 }
 
+// One-character strings of s ("AB" -> ["A", "B"]), for the pixel font.
+function chars(s is string) returns array
+{
+    return splitIntoCharacters(s);
+}
+
 // ---------- frames ---------------------------------------------------------------------
 
 function frameMake(o, x, z) returns CoordSystem

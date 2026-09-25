@@ -130,6 +130,10 @@ def nm(s, i):
     return s + str(i)
 
 
+def chars(s):
+    return list(s)
+
+
 def msg(parts):
     out = ""
     for p in parts:

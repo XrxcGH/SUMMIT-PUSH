@@ -791,8 +791,8 @@ def sheet_crag():
     ends = ((rimx - E * SOCK_ID / 2 * math.cos(ta), rimy + E * SOCK_ID / 2 * math.sin(ta)),
             (rimx + E * SOCK_ID / 2 * math.cos(ta), rimy - E * SOCK_ID / 2 * math.sin(ta)))
     s.dim_a(ends[0], ends[1], "ID 6.50 +/- 0.125", off=-70, critical=True, shift=92)
-    s.leader(rimx - E * 2.2 * math.cos(ta) + 20, rimy - 40, rimx + 90, rimy - 30,
-             "seated O2 CELL (dashed)", fill=GHOST_T)
+    s.leader(rimx - 6 + 22.5 * math.cos(ta) + 1, rimy + 10.4 + 22.5 * math.sin(ta), rimx + 80,
+             rimy + 34, "seated O2 CELL (dashed)", fill=GHOST_T)
     _notes(s, 60, DNY, [
         "Rim ctr Z = 30.0 (Low) / 54.0 (Mid). Standoff 8.0 normal to the face.",
         "Tube 7.0 along the axis, closed bottom, wall 0.09 (ref).",
@@ -955,6 +955,7 @@ def sheet_headwall():
     K = 3.4
     GY = 600.0
     L, N, H = s.LABEL, s.NOTE, s.HEAD
+    NB = max(N, s.pt(8.0))       # bold table heads and red emphasis: label floor
 
     def z(v):
         return GY - K * v
@@ -1023,7 +1024,7 @@ def sheet_headwall():
         size=N, fill=INK, anchor="middle")
     s.lines(cx_, yy, [
         "A 20.0-in rung at +/-12.0 leaves NO lateral position that engages two successive rungs:",
-        "LEDGE spans -22 to -2, CAMP spans +2 to +22."], size=N, fill=DIM, anchor="middle")
+        "LEDGE spans -22 to -2, CAMP spans +2 to +22."], size=NB, fill=DIM, anchor="middle")
 
     # ---------- SIDE PROFILE ----------
     px0 = 660.0
@@ -1156,7 +1157,7 @@ def sheet_headwall():
     s.text(bx + 8, y0, "DERIVED (do NOT drive these - dimension plane P and the vertical heights; let CAD compute)",
            size=H, fill=ACCENT, weight="bold")
     for cxx, cell in zip(colx, hdr):
-        s.text(cxx, rows_d, cell, size=N, fill=ACCENT, weight="bold")
+        s.text(cxx, rows_d, cell, size=NB, fill=ACCENT, weight="bold")
     s.line(bx + 6, rows_d + 0.45 * N, bx + pw - 8, rows_d + 0.45 * N, stroke=RULE, sw=0.8)
     for ri, (nm, topz) in enumerate((("LEDGE", 30.0), ("CAMP", 54.0), ("SUMMIT", 78.0))):
         zc = topz - RUNG_OD / 2
@@ -1169,12 +1170,13 @@ def sheet_headwall():
     s.lines(bx + 8, body + 0.4 * N + 1.25 * N, notes_d, size=N, fill=MUTED, pitch=1.25 * N)
     s.text(bx + 8, cv, "BASECAMP CLEAR VOLUME:  H(X) = 3.7321 x (41.788 - X) inches, "
            "except 10.8 under the lower crossbeam (X 34.2-38.6)", size=H, fill=ACCENT, weight="bold")
-    s.text(bx + 8, xrow, "X (in)", size=N, fill=ACCENT, weight="bold")
-    s.text(bx + 8, xrow + pitch, "H (in)", size=N, fill=ACCENT, weight="bold")
+    s.text(bx + 8, xrow, "X (in)", size=NB, fill=ACCENT, weight="bold")
+    s.text(bx + 8, xrow + pitch, "H (in)", size=NB, fill=ACCENT, weight="bold")
     for i, (xv, hv) in enumerate(cells):
         cx0 = bx + 72 + i * 82
         s.text(cx0, xrow, xv, size=N, fill=INK)
-        s.text(cx0, xrow + pitch, hv, size=N, fill=INK, weight="bold" if hv == "42.1" else None)
+        s.text(cx0, xrow + pitch, hv, size=NB if hv == "42.1" else N, fill=INK,
+               weight="bold" if hv == "42.1" else None)
     s.text(bx + 8, foot + 1.25 * N,
            "A 42-in STARTING CONFIGURATION fits anywhere up to X = 30.5, which is why G302 stages ROBOTS against the alliance wall.",
            size=N, fill=MUTED)
@@ -1192,7 +1194,7 @@ def sheet_headwall():
     hdr2 = ("Rung", "Rung ctr X", "To centerline", "To wrap the rung", "Within R105 (18 in)?")
     colx2 = [cx2 + 8, cx2 + 90, cx2 + 190, cx2 + 310, cx2 + 450]
     for cxx, cell in zip(colx2, hdr2):
-        s.text(cxx, hy, cell, size=N, fill=ACCENT, weight="bold")
+        s.text(cxx, hy, cell, size=NB, fill=ACCENT, weight="bold")
     s.line(cx2 + 6, hy + 0.45 * N, cx2 + pw2 - 8, hy + 0.45 * N, stroke=RULE, sw=0.8)
     for i, (nm, topz) in enumerate((("LEDGE", 30.0), ("CAMP", 54.0), ("SUMMIT", 78.0))):
         cxx_ = rung_center_x(topz)
@@ -1201,7 +1203,7 @@ def sheet_headwall():
         ok = "yes" if wrap <= 18.0 else "NO - from a hang only"
         for cX, cell in zip(colx2, (nm, "%.2f" % cxx_, "%.2f in" % ext,
                                     "%.2f in" % wrap, ok)):
-            s.text(cX, hy + (i + 1) * pitch, cell, size=N,
+            s.text(cX, hy + (i + 1) * pitch, cell, size=NB if ext > 18 else N,
                    fill=DIM if ext > 18 else INK, weight="bold" if ext > 18 else None)
     s.lines(cx2 + 8, cl3, [
         "From a hang on the LEDGE RUNG the CAMP RUNG is 6.43 in back, 24 in up, 24 in across (24.9 in plane P);",
@@ -1227,6 +1229,7 @@ def sheet_outfitter():
               "Chute centers: Blue (0, 30) and (0, 294) - Red (648, 294) and (648, 30) - model one, mirror/rotate three")
     K = 4.0
     GY = 560.0
+    L, N = s.LABEL, s.NOTE
 
     def z(v):
         return GY - K * v
@@ -1234,30 +1237,34 @@ def sheet_outfitter():
     ex = 300.0
     s.view_label(ex, 96, "FIELD-SIDE ELEVATION", "4.0 px/in", "60-in wall segment shown; wall continues both ways")
     s.line(60, GY, 540, GY, stroke=INK, sw=2.0)
-    s.text(62, GY + 14, "carpet Z = 0", size=9, fill=MUTED)
+    s.text(62, GY + 4 + 0.74 * s.SUB, "carpet Z = 0", size=s.SUB, fill=MUTED)
     s.rect(ex - K * 30, z(78), K * 60, K * 78, fill="#DFE3E8", stroke=WALL_D, sw=2.4)
     s.rect(ex - K * CHUTE_W / 2, z(CHUTE_SILL + CHUTE_H), K * CHUTE_W, K * CHUTE_H,
            fill="#8D97A3", stroke=INK, sw=2.0)
-    s.text(ex, z(CHUTE_SILL + CHUTE_H / 2) + 4, "OPENING", size=10, fill="#ffffff", anchor="middle")
+    s.text(ex, z(CHUTE_SILL + CHUTE_H / 2) + 0.36 * 10, "OPENING", size=10, fill=INK,
+           weight="bold", anchor="middle")
     s.rect(ex - K * TAG_PANEL / 2, z(TAG_Z_OUT + TAG_PANEL / 2), K * TAG_PANEL, K * TAG_PANEL,
            fill="#F5F5F5", stroke="#666666", sw=1.2)
     s.rect(ex - K * TAG_BODY / 2, z(TAG_Z_OUT + TAG_BODY / 2), K * TAG_BODY, K * TAG_BODY,
            fill="#111111", stroke="none", sw=0)
-    s.text(ex - K * TAG_PANEL / 2 - 10, z(TAG_Z_OUT) - 4, "tag panel 9.0 sq", size=8.5,
-           fill=INK, anchor="end")
-    s.text(ex - K * TAG_PANEL / 2 - 10, z(TAG_Z_OUT) + 9, "tag ctr Z = 52.0", size=8.5, fill=INK, anchor="end")
-    s.text(ex - K * TAG_PANEL / 2 - 10, z(TAG_Z_OUT) + 22, "IDs 1/2 (Blue), 14/15 (Red)", size=8.5, fill=INK, anchor="end")
-    s.dim_h(ex - K * CHUTE_W / 2, ex + K * CHUTE_W / 2, z(CHUTE_SILL + CHUTE_H) - 16,
-            "30.0", ext_from=z(CHUTE_SILL + CHUTE_H) - 2, critical=True)
+    # tag callout outside the wall face, on the open side
+    tlx, tly = ex + K * 30 + 22, z(TAG_Z_OUT + 10)
+    s.lines(tlx, tly, ["tag panel 9.0 sq", "tag ctr Z = 52.0", "IDs 1/2 (Blue), 14/15 (Red)"],
+            size=L, fill=INK, pitch=1.25 * L)
+    s.leader(ex + K * TAG_PANEL / 2, z(TAG_Z_OUT + 2), tlx - 3, tly - 0.34 * L, "")
+    # opening width below the sill, clear of the tag panel above the opening
+    s.dim_h(ex - K * CHUTE_W / 2, ex + K * CHUTE_W / 2, z(CHUTE_SILL) + 16,
+            "30.0", ext_from=z(CHUTE_SILL) + 3, critical=True, above=False, tick=5)
     s.dim_v(z(CHUTE_SILL + CHUTE_H), z(CHUTE_SILL), ex + K * CHUTE_W / 2 + 34, "16.0",
             ext_from=ex + K * CHUTE_W / 2 + 6, critical=True, side="right")
     s.dim_v(z(CHUTE_SILL), GY, ex - K * CHUTE_W / 2 - 36, "24.0 sill",
             ext_from=ex - K * CHUTE_W / 2 - 6, critical=True)
-    s.dim_v(z(TAG_Z_OUT), GY, ex - K * 30 - 34, "52.0 tag ctr", ext_from=ex - K * 30 - 6, size=9)
-    s.text(ex, GY + 46, "opening 30.0 x 16.0 and sill 24.0 are CRITICAL - they set intake-from-chute geometry",
-           size=9, fill=INK, anchor="middle")
-    s.text(ex, GY + 60, "sill edge R0.5 (ref) - the opening spans Z 24.0 to 40.0", size=8.5,
-           fill=MUTED, anchor="middle")
+    s.dim_v(z(TAG_Z_OUT), GY, ex - K * 30 - 34, "52.0 tag ctr",
+            ext_from=ex - K * TAG_PANEL / 2 - 3)
+    s.lines(ex, GY + 46, ["opening 30.0 x 16.0 and sill 24.0 are CRITICAL - they set intake-from-chute geometry"],
+            size=s.pt(9.0), fill=INK, anchor="middle")
+    s.lines(ex, GY + 46 + 1.4 * N, ["sill edge R0.5 (ref) - the opening spans Z 24.0 to 40.0"],
+            size=N, fill=MUTED, anchor="middle")
 
     sx0 = 780.0
     s.view_label(sx0 + 60, 96, "SECTION A-A (through the chute centerline)", "4.0 px/in",
@@ -1273,16 +1280,19 @@ def sheet_outfitter():
     s.line(rx1, ry1, rx2, ry2, stroke=TRUSS_D, sw=5, cap="round")
     s.line(rx2, ry2, rx2, GY, stroke=TRUSS, sw=3)
     s.line(rx1, ry1, rx1 + 90, ry1, stroke=MUTED, sw=0.9, dash="6 3")
-    s.angle(rx1, ry1, 62, 0, -30, "30 deg (ref)", lx=rx1 + 96, ly=ry1 - 24)
+    s.angle(rx1, ry1, 62, 0, -30, "30 deg (ref)", lx=rx1 + 68, ly=ry1 - 12, anchor="start")
     s.rect(sx0 - 8, z(TAG_Z_OUT + TAG_PANEL / 2), 8, K * TAG_PANEL, fill="#111111",
            stroke="#666666", sw=0.8)
-    s.text(sx0 - 16, z(TAG_Z_OUT) + 4, "tag panel (field side)", size=8.5, fill=INK, anchor="end")
-    s.dim_v(z(CHUTE_SILL), GY, sx0 - 44, "24.0", ext_from=sx0 - 8, size=9, critical=True)
-    s.dim_v(z(CHUTE_SILL + CHUTE_H), z(CHUTE_SILL), sx0 + K * 2 + 26, "16.0",
-            ext_from=sx0 + K * 2 + 6, size=9, critical=True, side="right")
-    s.text(sx0 + 40, GY + 46, "Wall thickness 2.0 (ref). Ramp run 40 in at 30 deg (ref), width 30,", size=8.5, fill=MUTED)
-    s.text(sx0 + 40, GY + 58, "side cheek funnels flaring to 36 in at the loading end (ref).", size=8.5, fill=MUTED)
-    s.text(sx0 + 40, GY + 70, "Behind-wall geometry is non-interactive; delivery is by gravity onto the sill.", size=8.5, fill=MUTED)
+    s.text(sx0 - 16, z(TAG_Z_OUT) + 0.36 * L, "tag panel (field side)", size=L, fill=INK, anchor="end")
+    # sill and opening chained on the field face, clear of the ramp
+    s.dim_v(z(CHUTE_SILL), GY, sx0 - 44, "24.0", ext_from=sx0 - 3, critical=True)
+    s.dim_v(z(CHUTE_SILL + CHUTE_H), z(CHUTE_SILL), sx0 - 44, "16.0", ext_from=sx0 - 3,
+            critical=True)
+    s.lines(sx0 + 40, GY + 46, [
+        "Wall thickness 2.0 (ref). Ramp run 40 in at 30 deg (ref), width 30,",
+        "side cheek funnels flaring to 36 in at the loading end (ref).",
+        "Behind-wall geometry is non-interactive; delivery is by gravity onto the sill."],
+        size=N, fill=MUTED)
 
     cx0, cy0 = 1180.0, 190.0
     C = 6.0
@@ -1291,35 +1301,41 @@ def sheet_outfitter():
     env = CRATE_S + 2 * CRATE_CROWN
     s.rect(cx0 + (C * CHUTE_W - C * env) / 2, cy0 + (C * CHUTE_H - C * env) / 2,
            C * env, C * env, fill=CRATE, stroke=CRATE_D, sw=2.0, rx=C * 1.0, op=0.85)
-    s.dim_h(cx0, cx0 + C * CHUTE_W, cy0 - 20, "30.0 opening", ext_from=cy0 - 4, size=9,
+    s.dim_h(cx0, cx0 + C * CHUTE_W, cy0 - 20, "30.0 opening", ext_from=cy0 - 4,
             critical=True)
     s.dim_v(cy0, cy0 + C * CHUTE_H, cx0 + C * CHUTE_W + 34, "16.0 opening",
-            ext_from=cx0 + C * CHUTE_W + 6, size=9, critical=True, side="right")
+            ext_from=cx0 + C * CHUTE_W + 6, critical=True, side="right")
     s.dim_v(cy0 + (C * CHUTE_H - C * env) / 2, cy0 + (C * CHUTE_H + C * env) / 2, cx0 - 30,
-            "13.0 crowned envelope", ext_from=cx0 - 6, size=9)
-    s.text(cx0 - 40, cy0 + C * CHUTE_H + 34, "Clearance 3.0 in on the crate's crowned envelope.", size=9, fill=INK)
-    s.text(cx0 - 40, cy0 + C * CHUTE_H + 48, "A cube's minimum width in any orientation is its edge,", size=8.5, fill=MUTED)
-    s.text(cx0 - 40, cy0 + C * CHUTE_H + 60, "so tilting does not help - the opening must exceed 13.0 in.", size=8.5, fill=MUTED)
-    s.text(cx0 - 40, cy0 + C * CHUTE_H + 78, "O2 CELL passes end-on (5.0 x 5.0) or lengthwise (14.0 x 5.0).", size=8.5, fill=INK)
-    s.text(cx0 - 40, cy0 + C * CHUTE_H + 90, "ROPE COIL passes flat (10.0 x 2.5) or on edge (10.0 tall).", size=8.5, fill=INK)
+            "13.0 crowned envelope", ext_from=cx0 + (C * CHUTE_W - C * env) / 2 - 3, tick=2)
+    yy = s.lines(cx0 - 40, cy0 + C * CHUTE_H + 34, ["Clearance 3.0 in on the crate's crowned envelope."],
+                 size=s.pt(9.0), fill=INK)
+    yy = s.lines(cx0 - 40, yy, ["A cube's minimum width in any orientation is its edge,",
+                                "so tilting does not help - the opening must exceed 13.0 in."],
+                 size=N, fill=MUTED)
+    s.lines(cx0 - 40, yy + 0.4 * N, ["O2 CELL passes end-on (5.0 x 5.0) or lengthwise (14.0 x 5.0).",
+                                     "ROPE COIL passes flat (10.0 x 2.5) or on edge (10.0 tall)."],
+            size=N, fill=INK)
 
     px0, py0 = 1150.0, 496.0
     P = 2.6
     s.view_label(px0 + 100, 432, "PLAN - OUTFITTER LANE (tape)", "2.6 px/in", "field below the wall line")
     s.rect(px0, py0, P * 120, P * 4, fill=WALL, stroke=WALL_D, sw=1.4)
     s.rect(px0 + P * 45, py0, P * CHUTE_W, P * 4, fill="#E8A33D", stroke="#B57718", sw=1.5)
-    s.text(px0 + P * 60, py0 - 10, "chute opening 30.0", size=8.5, fill="#7A4E0C", anchor="middle")
+    s.text(px0 + P * 60, py0 - 6, "chute opening 30.0", size=L, fill="#6B440A", anchor="middle")
     s.rect(px0 + P * 42, py0 + P * 4, P * LANE_TAPE[0], P * LANE_TAPE[1],
            fill="#E8A33D", stroke="#B57718", sw=1.8, dash="6 4", op=0.25)
-    s.text(px0 + P * 60, py0 + P * 26, "OUTFITTER LANE", size=9.5, fill="#7A4E0C", anchor="middle")
-    s.text(px0 + P * 60, py0 + P * 34, "no-defense zone", size=8, fill="#7A4E0C", anchor="middle")
+    s.text(px0 + P * 60, py0 + P * 26, "OUTFITTER LANE", size=L, fill="#6B440A", anchor="middle")
+    s.text(px0 + P * 60, py0 + P * 26 + 1.3 * N, "no-defense zone", size=N, fill="#6B440A",
+           anchor="middle")
     s.dim_h(px0 + P * 42, px0 + P * 78, py0 + P * 58, "36.0", ext_from=py0 + P * 54,
-            size=9, critical=True)
+            critical=True)
     s.dim_v(py0 + P * 4, py0 + P * 52, px0 + P * 88, "48.0", ext_from=px0 + P * 82,
-            size=9, critical=True, side="right")
-    s.text(px0, py0 + P * 74, "Tape 2.0 in wide, line edge on the stated coordinate.", size=8.5, fill=MUTED)
-    s.text(px0, py0 + P * 84, "Stock per alliance: 7 CACHE CRATES, 7 O2 CELLS, 7 ROPE COILS across", size=8.5, fill=INK)
-    s.text(px0, py0 + P * 94, "the two stations; robot preloads are drawn from this stock.", size=8.5, fill=INK)
+            critical=True, side="right")
+    yy = s.lines(px0, py0 + P * 58 + 2 * s.DIM + 8, ["Tape 2.0 in wide, line edge on the stated coordinate."],
+                 size=N, fill=MUTED)
+    s.lines(px0, yy + 0.3 * N, ["Stock per alliance: 7 CACHE CRATES, 7 O2 CELLS, 7 ROPE COILS across",
+                                "the two stations; robot preloads are drawn from this stock."],
+            size=N, fill=INK)
 
     s.titleblock(NOTES)
     return s
@@ -1329,7 +1345,7 @@ def sheet_outfitter():
 # SHEET 5 - GAME PIECES
 # =====================================================================
 def sheet_pieces():
-    s = Sheet(1560, 1000, "DRAWING 5 OF 6 - SUPPLIES (GAME PIECES)", 5, 6,
+    s = Sheet(1560, 1040, "DRAWING 5 OF 6 - SUPPLIES (GAME PIECES)", 5, 6,
               "21 of each per MATCH, 63 total - model rigid at nominal size - possession limit 2")
     E = 8.0
 
@@ -1342,7 +1358,8 @@ def sheet_pieces():
               -hs, cr * 2, -2 * hs, -cr * 2, -hs, -2 * hs),
            fill=CRATE, stroke=CRATE_D, sw=2.4)
     s.line(ax, ay - hs - 30, ax, ay + hs + 30, stroke=MUTED, sw=0.9, dash="12 4 3 4")
-    s.dim_h(ax - hs, ax + hs, ay + hs + 38, "12.0 (all three axes)", ext_from=ay + hs + 6,
+    s.dim_h(ax - hs, ax + hs, ay + hs + 22, "12.0 (all three axes)", ext_from=ay + hs + 6,
+            above=False, tick=3,
             critical=True)
     s.dim_v(ay - hs, ay + hs, ax - hs - 34, "12.0", ext_from=ax - hs - 6, critical=True)
     s.leader(ax + hs * 0.5, ay - hs - cr, ax + hs + 34, ay - hs + 8, "face crown 0.5 (ref)")
@@ -1360,11 +1377,12 @@ def sheet_pieces():
     s.path("M %.1f %.1f a %.1f %.1f 0 0 1 0 %.1f" % (bx + body / 2, by - D / 2, E * CELL_DOME, D / 2, D),
            fill=CELL_CAP, stroke="#1F5E3C", sw=1.8)
     s.line(bx - L / 2 - 26, by, bx + L / 2 + 26, by, stroke=MUTED, sw=0.9, dash="12 4 3 4")
-    s.dim_h(bx - L / 2, bx + L / 2, by + D / 2 + 44, "14.0 overall", ext_from=by + D / 2 + 6,
+    s.dim_h(bx - L / 2, bx + L / 2, by + D / 2 + 44, "14.0 overall", ext_from=by + 3,
             critical=True)
     s.dim_h(bx - body / 2, bx + body / 2, by - D / 2 - 24, "11.0 arc endpoints (ref)",
+            shift=body / 2 + s.tw("11.0 arc endpoints (ref)", s.DIM) / 2 + 6,
             ext_from=by - D / 2 - 6, size=9)
-    s.dim_v(by - D / 2, by + D / 2, bx + L / 2 + 40, "5.0 dia", ext_from=bx + L / 2 + 8,
+    s.dim_v(by - D / 2, by + D / 2, bx + L / 2 + 40, "5.0 dia", ext_from=bx + body / 2 + 3,
             critical=True, side="right")
     s.text(bx, by + D / 2 + 70, "domes 1.5 each (ref), R1.0 fillet at each cap/body junction (ref):",
            size=8.5, fill=MUTED, anchor="middle")
@@ -1381,7 +1399,8 @@ def sheet_pieces():
     s.circle(cx, cy, E * COIL_ID / 2, fill="#FFFFFF", stroke=COIL_D, sw=2.0)
     s.dim_h(cx - E * COIL_OD / 2, cx + E * COIL_OD / 2, cy + E * COIL_OD / 2 + 38, "10.0 OD",
             ext_from=cy + E * COIL_OD / 2 + 6, critical=True)
-    s.dim_h(cx - E * COIL_ID / 2, cx + E * COIL_ID / 2, cy - 8, "5.0 ID", critical=True, size=9)
+    s.dim_h(cx - E * COIL_ID / 2, cx + E * COIL_ID / 2, cy, "5.0 ID", critical=True,
+            shift=-(E * COIL_ID / 2 + E * COIL_TUBE + 8 + (s.tw("5.0 ID", s.DIM) + 0.9 * s.DIM) / 2))
     s.rect(cx + E * COIL_OD / 2 + 54, cy - E * COIL_TUBE / 2, E * COIL_TUBE, E * COIL_TUBE,
            fill=COIL, stroke=COIL_D, sw=1.6, rx=E * COIL_TUBE / 2)
     s.dim_v(cy - E * COIL_TUBE / 2, cy + E * COIL_TUBE / 2,
@@ -1392,16 +1411,16 @@ def sheet_pieces():
            size=8.5, fill=MUTED, anchor="middle")
 
     s.line(60, 386, 1500, 386, stroke=RULE, sw=1.0)
-    s.text(780, 412, "CLEARANCE STUDIES - the four fits every mechanism is designed against",
+    s.text(780, 405, "CLEARANCE STUDIES - the four fits every mechanism is designed against",
            size=12, fill=ACCENT, weight="bold", anchor="middle")
 
     def note_col(x, y, lines):
         for i, t in enumerate(lines):
-            s.text(x, y + i * 12, t, size=8.5, fill=INK if i < 2 else MUTED)
+            s.text(x, y + i * s.PITCH * s.NOTE, t, size=s.NOTE, fill=INK if i < 2 else MUTED)
 
     # 1 - crate in shelf slot
     x1, y1 = 220.0, 580.0
-    s.view_label(x1, 434, "1 - CRATE IN SHELF SLOT", "8.0 px/in")
+    s.view_label(x1, 428, "1 - CRATE IN SHELF SLOT", "8.0 px/in")
     s.rect(x1 - E * SLOT_W / 2, y1, E * SLOT_W, E * 0.75, fill=SHELF, stroke=CRAG_EDGE, sw=1.4)
     for sgn in (-1, 1):
         s.rect(x1 + sgn * E * SLOT_W / 2 - (E * FENCE_W if sgn > 0 else 0), y1 - E * FENCE_H,
@@ -1423,7 +1442,7 @@ def sheet_pieces():
     # 2 - crate through chute
     x2, y2 = 570.0, 580.0
     C = 6.0
-    s.view_label(x2, 434, "2 - CRATE THROUGH CHUTE", "6.0 px/in")
+    s.view_label(x2, 428, "2 - CRATE THROUGH CHUTE", "6.0 px/in")
     s.rect(x2 - C * CHUTE_W / 2, y2 - C * CHUTE_H, C * CHUTE_W, C * CHUTE_H,
            fill="#EDEFF2", stroke=INK, sw=2.0)
     env = CRATE_S + 2 * CRATE_CROWN
@@ -1440,7 +1459,7 @@ def sheet_pieces():
 
     # 3 - cell in socket
     x3, y3 = 930.0, 524.0
-    s.view_label(x3, 434, "3 - CELL IN SOCKET", "8.0 px/in")
+    s.view_label(x3, 428, "3 - CELL IN SOCKET", "8.0 px/in")
     s.line(x3 - 96, y3 - 20, x3 - 96, y3 + 190, stroke=CRAG_EDGE, sw=3)
     s.text(x3 - 104, y3 + 150, "face", size=8.5, fill=INK, anchor="end")
     rimx, rimy = x3 - 96 + E * SOCK_STANDOFF, y3 + 30
@@ -1454,7 +1473,8 @@ def sheet_pieces():
     s.add('</g>')
     s.ellipse(rimx, rimy, E * SOCK_OD / 2, E * SOCK_OD / 6, fill="none", stroke=BLUE_D,
               sw=2.2, rot=SOCK_TILT)
-    s.dim_h(x3 - 96, rimx, rimy - 74, "8.0 standoff", ext_from=rimy - 58, size=9, critical=True)
+    s.line(rimx, rimy + 14, rimx, rimy - 60, stroke=MUTED, sw=0.9, dash="12 4 3 4")
+    s.dim_h(x3 - 96, rimx, rimy - 74, "8.0 standoff", ext_from=rimy - 60, critical=True)
     note_col(x3 - 150, y3 + 210, [
         "ID 6.50 +/- 0.125 vs a 5.0 CELL: 0.75 in radial clearance",
         "per side (1.50 on diameter).",
@@ -1464,7 +1484,7 @@ def sheet_pieces():
 
     # 4 - coil on peg
     x4, y4 = 1290.0, 512.0
-    s.view_label(x4, 434, "4 - COIL ON PEG", "8.0 px/in")
+    s.view_label(x4, 428, "4 - COIL ON PEG", "8.0 px/in")
     root = (x4 - 60, y4 + 120)
     s.line(root[0] - 34, root[1] - 130, root[0] - 34, root[1] + 40, stroke=CRAG_EDGE, sw=3)
     s.text(root[0] - 40, root[1] + 32, "face", size=8.5, fill=INK, anchor="end")
@@ -1474,7 +1494,9 @@ def sheet_pieces():
     s.add('</g>')
     s.circle(root[0] + 10, root[1] - 8, E * COIL_OD / 2, fill="none", stroke=COIL_D, sw=2.2)
     s.circle(root[0] + 10, root[1] - 8, E * COIL_ID / 2, fill="none", stroke=COIL_D, sw=1.6)
-    s.angle(root[0], root[1], 46, 0, -45, "45 deg", lx=root[0] + 66, ly=root[1] - 22)
+    s.line(root[0], root[1], root[0] + 60, root[1], stroke=MUTED, sw=0.9, dash="6 3")
+    s.angle(root[0], root[1], 46, 0, -45, "45 deg", lx=root[0] + 52, ly=root[1] - 20,
+            anchor="start")
     note_col(x4 - 150, y4 + 210, [
         "5.0 hole over a 1.5 peg at 45 deg, 10.0 exposed.",
         "Max tilt from perpendicular-to-peg is about 48 deg;",
@@ -1482,14 +1504,20 @@ def sheet_pieces():
         "near-vertical and is captured, not balanced.",
         "Center rests about 1 in above the peg root."])
 
-    tx, ty = 90, 800
-    s.rect(tx, ty - 16, 1380, 112, fill="#FFFFFF", stroke=RULE, sw=0.9)
-    s.text(tx + 8, ty, "SUPPLY SUMMARY", size=10, fill=ACCENT, weight="bold")
+    N, H = s.NOTE, s.HEAD
+    tx, top = 90, 830
+    pitch = 1.45 * N
+    ty = top + 8 + 0.74 * H
+    ph = 0.5 * H + 5 * pitch + 0.4 * N + 0.9 * N + (ty - top)
+    assert top + ph <= s.tb_top - 6, "supply summary runs into the title block"
+    s.rect(tx, top, 1380, ph, fill="#FFFFFF", stroke=RULE, sw=0.9)
+    s.text(tx + 8, ty, "SUPPLY SUMMARY", size=H, fill=ACCENT, weight="bold")
     hdr = ("SUPPLY", "Shape", "Nominal size", "Max envelope", "Weight", "Color", "Scores on")
-    colx = [tx + 8, tx + 130, tx + 250, tx + 430, tx + 570, tx + 660, tx + 850]
+    colx = [tx + 8, tx + 130, tx + 270, tx + 450, tx + 590, tx + 680, tx + 880]
+    hy = ty + 0.5 * H + pitch
     for cxx, cell in zip(colx, hdr):
-        s.text(cxx, ty + 20, cell, size=8.5, fill=ACCENT, weight="bold")
-    s.line(tx + 6, ty + 25, tx + 1372, ty + 25, stroke=RULE, sw=0.8)
+        s.text(cxx, hy, cell, size=N, fill=ACCENT, weight="bold")
+    s.line(tx + 6, hy + 0.45 * N, tx + 1372, hy + 0.45 * N, stroke=RULE, sw=0.8)
     rows = [("CACHE CRATE", "cube, pillowed faces", "12.0 cube", "13.0 across the crown",
              "~2.0 lb", "#7B3FA0 violet", "Shelf 1, Shelf 2, BASE DEPOT"),
             ("O2 CELL", "domed cylinder, R1.0", "5.0 dia x 14.0", "5.0 x 14.0",
@@ -1497,11 +1525,12 @@ def sheet_pieces():
             ("ROPE COIL", "torus", "10.0 OD, 2.5 tube, 5.0 ID", "10.0 x 2.5",
              "~1.0 lb", "#D9A441 amber", "Low / Mid / High Peg, BASE DEPOT")]
     for i, r in enumerate(rows):
-        for cxx, cell in zip(colx, r):
-            s.text(cxx, ty + 44 + i * 16, cell, size=8.5, fill=INK)
-    s.text(tx + 8, ty + 98,
+        for j, (cxx, cell) in enumerate(zip(colx, r)):
+            assert j == 6 or cxx + s.tw(cell, N) < colx[j + 1] - 6, cell
+            s.text(cxx, hy + (i + 1) * pitch, cell, size=N, fill=INK)
+    s.text(tx + 8, hy + 4 * pitch + 0.4 * N,
            "No SUPPLY is colored in or near an alliance color, so none can be mistaken for an alliance element by a referee, a driver, or a vision pipeline.",
-           size=8.5, fill=MUTED)
+           size=N, fill=MUTED)
 
     s.titleblock(NOTES)
     return s

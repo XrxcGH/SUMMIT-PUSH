@@ -1,52 +1,54 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 900" font-family="Segoe UI, Roboto, Arial, sans-serif">
   <rect width="1500" height="900" fill="#ffffff"/>
-  <text x="750" y="29.0" text-anchor="middle" font-size="21.0" font-weight="bold" fill="#1A1D21">SUMMIT PUSH — DRAWING 4 OF 6 - OUTFITTER STATION (x4 PER FIELD)</text>
-  <text x="750" y="47.4" text-anchor="middle" font-size="11.5" fill="#6E7378">Chute centers: Blue (0, 30) and (0, 294) - Red (648, 294) and (648, 30) - model one, mirror/rotate three</text>
-  <text x="300.00" y="96.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">FIELD-SIDE ELEVATION</text>
-  <text x="300.00" y="108.05" font-size="9.0" fill="#6E7378" text-anchor="middle">4.0 px/in</text>
-  <text x="300.00" y="119.30" font-size="9.0" fill="#6E7378" text-anchor="middle">60-in wall segment shown; wall continues both ways</text>
+  <text x="750" y="29.0" text-anchor="middle" font-size="21.00" font-weight="bold" fill="#1A1D21">SUMMIT PUSH — DRAWING 4 OF 6 - OUTFITTER STATION (x4 PER FIELD)</text>
+  <text x="750" y="47.4" text-anchor="middle" font-size="11.50" fill="#6E7378">Chute centers: Blue (0, 30) and (0, 294) - Red (648, 294) and (648, 30) - model one, mirror/rotate three</text>
+  <text x="300.00" y="96.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">FIELD-SIDE ELEVATION</text>
+  <text x="300.00" y="108.05" font-size="9.00" fill="#6E7378" text-anchor="middle">4.0 px/in</text>
+  <text x="300.00" y="119.30" font-size="9.00" fill="#6E7378" text-anchor="middle">60-in wall segment shown; wall continues both ways</text>
   <line x1="60.00" y1="560.00" x2="540.00" y2="560.00" stroke="#1A1D21" stroke-width="2.00"/>
-  <text x="62.00" y="574.00" font-size="9.0" fill="#6E7378">carpet Z = 0</text>
+  <text x="62.00" y="570.66" font-size="9.00" fill="#6E7378">carpet Z = 0</text>
   <rect x="180.00" y="248.00" width="240.00" height="312.00" fill="#DFE3E8" stroke="#4A5462" stroke-width="2.40"/>
   <rect x="240.00" y="400.00" width="120.00" height="64.00" fill="#8D97A3" stroke="#1A1D21" stroke-width="2.00"/>
-  <text x="300.00" y="436.00" font-size="10.0" fill="#ffffff" text-anchor="middle">OPENING</text>
+  <text x="300.00" y="435.60" font-size="10.00" fill="#1A1D21" text-anchor="middle" font-weight="bold">OPENING</text>
   <rect x="282.00" y="334.00" width="36.00" height="36.00" fill="#F5F5F5" stroke="#666666" stroke-width="1.20"/>
   <rect x="287.00" y="339.00" width="26.00" height="26.00" fill="#111111" stroke="none" stroke-width="0.00"/>
-  <text x="272.00" y="348.00" font-size="8.5" fill="#1A1D21" text-anchor="end">tag panel 9.0 sq</text>
-  <text x="272.00" y="361.00" font-size="8.5" fill="#1A1D21" text-anchor="end">tag ctr Z = 52.0</text>
-  <text x="272.00" y="374.00" font-size="8.5" fill="#1A1D21" text-anchor="end">IDs 1/2 (Blue), 14/15 (Red)</text>
-  <line x1="243.27" y1="384.00" x2="356.73" y2="384.00" stroke="#C02020" stroke-width="1.10"/>
-  <path d="M 360.00 384.00 L 354.05 385.69 L 354.05 382.31 Z" fill="#C02020" stroke="none"/>
-  <path d="M 240.00 384.00 L 245.95 382.31 L 245.95 385.69 Z" fill="#C02020" stroke="none"/>
-  <line x1="240.00" y1="398.00" x2="240.00" y2="376.00" stroke="#C02020" stroke-width="0.70"/>
-  <line x1="360.00" y1="398.00" x2="360.00" y2="376.00" stroke="#C02020" stroke-width="0.70"/>
-  <rect x="285.06" y="368.54" width="29.88" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
-  <text x="300.00" y="378.94" font-size="10.5" fill="#C02020" text-anchor="middle">30.0</text>
+  <text x="442.00" y="312.00" font-size="9.00" fill="#1A1D21">tag panel 9.0 sq</text>
+  <text x="442.00" y="323.25" font-size="9.00" fill="#1A1D21">tag ctr Z = 52.0</text>
+  <text x="442.00" y="334.50" font-size="9.00" fill="#1A1D21">IDs 1/2 (Blue), 14/15 (Red)</text>
+  <line x1="439.00" y1="308.94" x2="321.67" y2="342.94" stroke="#E100E1" stroke-width="1.49"/>
+  <path d="M 318.00 344.00 L 324.09 340.07 L 325.25 344.07 Z" fill="#E100E1" stroke="none"/>
+  <line x1="243.27" y1="480.00" x2="356.73" y2="480.00" stroke="#C02020" stroke-width="1.10"/>
+  <path d="M 360.00 480.00 L 354.05 481.69 L 354.05 478.31 Z" fill="#C02020" stroke="none"/>
+  <path d="M 240.00 480.00 L 245.95 478.31 L 245.95 481.69 Z" fill="#C02020" stroke="none"/>
+  <line x1="240.00" y1="467.00" x2="240.00" y2="485.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="360.00" y1="467.00" x2="360.00" y2="485.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="285.06" y="481.60" width="29.88" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
+  <text x="300.00" y="492.00" font-size="10.50" fill="#C02020" text-anchor="middle">30.0</text>
   <line x1="394.00" y1="403.27" x2="394.00" y2="460.73" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 394.00 464.00 L 392.31 458.05 L 395.69 458.05 Z" fill="#C02020" stroke="none"/>
   <path d="M 394.00 400.00 L 395.69 405.95 L 392.31 405.95 Z" fill="#C02020" stroke="none"/>
   <line x1="366.00" y1="400.00" x2="402.00" y2="400.00" stroke="#C02020" stroke-width="0.70"/>
   <line x1="366.00" y1="464.00" x2="402.00" y2="464.00" stroke="#C02020" stroke-width="0.70"/>
   <rect x="379.06" y="433.60" width="29.88" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 394.00 432.00)"/>
-  <text x="394.00" y="444.00" font-size="10.5" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 394.00 432.00)">16.0</text>
+  <text x="394.00" y="444.00" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 394.00 432.00)">16.0</text>
   <line x1="204.00" y1="467.27" x2="204.00" y2="556.73" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 204.00 560.00 L 202.31 554.05 L 205.69 554.05 Z" fill="#C02020" stroke="none"/>
   <path d="M 204.00 464.00 L 205.69 469.95 L 202.31 469.95 Z" fill="#C02020" stroke="none"/>
   <line x1="234.00" y1="464.00" x2="196.00" y2="464.00" stroke="#C02020" stroke-width="0.70"/>
   <line x1="234.00" y1="560.00" x2="196.00" y2="560.00" stroke="#C02020" stroke-width="0.70"/>
   <rect x="181.48" y="496.54" width="45.05" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 204.00 512.00)"/>
-  <text x="204.00" y="506.94" font-size="10.5" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 204.00 512.00)">24.0 sill</text>
+  <text x="204.00" y="506.94" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 204.00 512.00)">24.0 sill</text>
   <line x1="146.00" y1="355.27" x2="146.00" y2="556.73" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 146.00 560.00 L 144.31 554.05 L 147.69 554.05 Z" fill="#C02020" stroke="none"/>
   <path d="M 146.00 352.00 L 147.69 357.95 L 144.31 357.95 Z" fill="#C02020" stroke="none"/>
-  <line x1="174.00" y1="352.00" x2="138.00" y2="352.00" stroke="#C02020" stroke-width="0.70"/>
-  <line x1="174.00" y1="560.00" x2="138.00" y2="560.00" stroke="#C02020" stroke-width="0.70"/>
-  <text x="146.00" y="452.24" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 146.00 456.00)">52.0 tag ctr</text>
-  <text x="300.00" y="606.00" font-size="9.0" fill="#1A1D21" text-anchor="middle">opening 30.0 x 16.0 and sill 24.0 are CRITICAL - they set intake-from-chute geometry</text>
-  <text x="300.00" y="620.00" font-size="8.5" fill="#6E7378" text-anchor="middle">sill edge R0.5 (ref) - the opening spans Z 24.0 to 40.0</text>
-  <text x="840.00" y="96.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">SECTION A-A (through the chute centerline)</text>
-  <text x="840.00" y="108.05" font-size="9.0" fill="#6E7378" text-anchor="middle">4.0 px/in</text>
-  <text x="840.00" y="119.30" font-size="9.0" fill="#6E7378" text-anchor="middle">field LEFT, human player RIGHT</text>
+  <line x1="279.00" y1="352.00" x2="138.00" y2="352.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="279.00" y1="560.00" x2="138.00" y2="560.00" stroke="#C02020" stroke-width="0.70"/>
+  <text x="146.00" y="451.88" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 146.00 456.00)">52.0 tag ctr</text>
+  <text x="300.00" y="606.00" font-size="8.93" fill="#1A1D21" text-anchor="middle">opening 30.0 x 16.0 and sill 24.0 are CRITICAL - they set intake-from-chute geometry</text>
+  <text x="300.00" y="617.90" font-size="8.50" fill="#6E7378" text-anchor="middle">sill edge R0.5 (ref) - the opening spans Z 24.0 to 40.0</text>
+  <text x="840.00" y="96.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">SECTION A-A (through the chute centerline)</text>
+  <text x="840.00" y="108.05" font-size="9.00" fill="#6E7378" text-anchor="middle">4.0 px/in</text>
+  <text x="840.00" y="119.30" font-size="9.00" fill="#6E7378" text-anchor="middle">field LEFT, human player RIGHT</text>
   <line x1="630.00" y1="560.00" x2="1080.00" y2="560.00" stroke="#1A1D21" stroke-width="2.00"/>
   <rect x="780.00" y="248.00" width="8.00" height="312.00" fill="#9AA4B2" stroke="#4A5462" stroke-width="1.60"/>
   <rect x="780.00" y="400.00" width="8.00" height="64.00" fill="#FFFFFF" stroke="#4A5462" stroke-width="1.00"/>
@@ -56,28 +58,28 @@
   <path d="M 849.91 460.73 A 62.00 62.00 0 0 0 843.25 435.88" fill="none" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 841.69 433.00 L 845.92 437.52 L 842.92 439.06 Z" fill="#C02020" stroke="none"/>
   <path d="M 850.00 464.00 L 848.03 458.14 L 851.40 457.97 Z" fill="#C02020" stroke="none"/>
-  <text x="884.00" y="440.00" font-size="9.0" fill="#C02020" text-anchor="middle">30 deg (ref)</text>
+  <text x="856.00" y="452.00" font-size="9.00" fill="#C02020">30 deg (ref)</text>
   <rect x="772.00" y="334.00" width="8.00" height="36.00" fill="#111111" stroke="#666666" stroke-width="0.80"/>
-  <text x="764.00" y="356.00" font-size="8.5" fill="#1A1D21" text-anchor="end">tag panel (field side)</text>
+  <text x="764.00" y="355.24" font-size="9.00" fill="#1A1D21" text-anchor="end">tag panel (field side)</text>
   <line x1="736.00" y1="467.27" x2="736.00" y2="556.73" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 736.00 560.00 L 734.31 554.05 L 737.69 554.05 Z" fill="#C02020" stroke="none"/>
   <path d="M 736.00 464.00 L 737.69 469.95 L 734.31 469.95 Z" fill="#C02020" stroke="none"/>
-  <line x1="772.00" y1="464.00" x2="728.00" y2="464.00" stroke="#C02020" stroke-width="0.70"/>
-  <line x1="772.00" y1="560.00" x2="728.00" y2="560.00" stroke="#C02020" stroke-width="0.70"/>
-  <rect x="723.19" y="498.52" width="25.61" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 736.00 512.00)"/>
-  <text x="736.00" y="507.43" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 736.00 512.00)">24.0</text>
-  <line x1="814.00" y1="403.27" x2="814.00" y2="460.73" stroke="#C02020" stroke-width="1.10"/>
-  <path d="M 814.00 464.00 L 812.31 458.05 L 815.69 458.05 Z" fill="#C02020" stroke="none"/>
-  <path d="M 814.00 400.00 L 815.69 405.95 L 812.31 405.95 Z" fill="#C02020" stroke="none"/>
-  <line x1="794.00" y1="400.00" x2="822.00" y2="400.00" stroke="#C02020" stroke-width="0.70"/>
-  <line x1="794.00" y1="464.00" x2="822.00" y2="464.00" stroke="#C02020" stroke-width="0.70"/>
-  <rect x="801.19" y="433.60" width="25.61" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 814.00 432.00)"/>
-  <text x="814.00" y="442.51" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 814.00 432.00)">16.0</text>
-  <text x="820.00" y="606.00" font-size="8.5" fill="#6E7378">Wall thickness 2.0 (ref). Ramp run 40 in at 30 deg (ref), width 30,</text>
-  <text x="820.00" y="618.00" font-size="8.5" fill="#6E7378">side cheek funnels flaring to 36 in at the loading end (ref).</text>
-  <text x="820.00" y="630.00" font-size="8.5" fill="#6E7378">Behind-wall geometry is non-interactive; delivery is by gravity onto the sill.</text>
-  <text x="1270.00" y="96.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">CLEARANCE - CRATE THROUGH CHUTE</text>
-  <text x="1270.00" y="108.05" font-size="9.0" fill="#6E7378" text-anchor="middle">6.0 px/in</text>
+  <line x1="777.00" y1="464.00" x2="728.00" y2="464.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="777.00" y1="560.00" x2="728.00" y2="560.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="721.06" y="496.54" width="29.88" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 736.00 512.00)"/>
+  <text x="736.00" y="506.94" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 736.00 512.00)">24.0</text>
+  <line x1="736.00" y1="403.27" x2="736.00" y2="460.73" stroke="#C02020" stroke-width="1.10"/>
+  <path d="M 736.00 464.00 L 734.31 458.05 L 737.69 458.05 Z" fill="#C02020" stroke="none"/>
+  <path d="M 736.00 400.00 L 737.69 405.95 L 734.31 405.95 Z" fill="#C02020" stroke="none"/>
+  <line x1="777.00" y1="400.00" x2="728.00" y2="400.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="777.00" y1="464.00" x2="728.00" y2="464.00" stroke="#C02020" stroke-width="0.70"/>
+  <rect x="721.06" y="416.54" width="29.88" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 736.00 432.00)"/>
+  <text x="736.00" y="426.94" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 736.00 432.00)">16.0</text>
+  <text x="820.00" y="606.00" font-size="8.50" fill="#6E7378">Wall thickness 2.0 (ref). Ramp run 40 in at 30 deg (ref), width 30,</text>
+  <text x="820.00" y="617.22" font-size="8.50" fill="#6E7378">side cheek funnels flaring to 36 in at the loading end (ref).</text>
+  <text x="820.00" y="628.44" font-size="8.50" fill="#6E7378">Behind-wall geometry is non-interactive; delivery is by gravity onto the sill.</text>
+  <text x="1270.00" y="96.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">CLEARANCE - CRATE THROUGH CHUTE</text>
+  <text x="1270.00" y="108.05" font-size="9.00" fill="#6E7378" text-anchor="middle">6.0 px/in</text>
   <rect x="1180.00" y="190.00" width="180.00" height="96.00" fill="#EDEFF2" stroke="#1A1D21" stroke-width="2.00"/>
   <rect x="1231.00" y="199.00" width="78.00" height="78.00" fill="#7B3FA0" stroke="#4A2263" stroke-width="2.00" rx="6.00" opacity="0.85"/>
   <line x1="1183.27" y1="170.00" x2="1356.73" y2="170.00" stroke="#C02020" stroke-width="1.10"/>
@@ -85,64 +87,64 @@
   <path d="M 1180.00 170.00 L 1185.95 168.31 L 1185.95 171.69 Z" fill="#C02020" stroke="none"/>
   <line x1="1180.00" y1="186.00" x2="1180.00" y2="162.00" stroke="#C02020" stroke-width="0.70"/>
   <line x1="1360.00" y1="186.00" x2="1360.00" y2="162.00" stroke="#C02020" stroke-width="0.70"/>
-  <rect x="1239.93" y="156.52" width="60.14" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
-  <text x="1270.00" y="165.43" font-size="9.0" fill="#C02020" text-anchor="middle">30.0 opening</text>
+  <rect x="1234.92" y="154.54" width="70.16" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
+  <text x="1270.00" y="164.94" font-size="10.50" fill="#C02020" text-anchor="middle">30.0 opening</text>
   <line x1="1394.00" y1="193.27" x2="1394.00" y2="282.73" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1394.00 286.00 L 1392.31 280.05 L 1395.69 280.05 Z" fill="#C02020" stroke="none"/>
   <path d="M 1394.00 190.00 L 1395.69 195.95 L 1392.31 195.95 Z" fill="#C02020" stroke="none"/>
   <line x1="1366.00" y1="190.00" x2="1402.00" y2="190.00" stroke="#C02020" stroke-width="0.70"/>
   <line x1="1366.00" y1="286.00" x2="1402.00" y2="286.00" stroke="#C02020" stroke-width="0.70"/>
-  <rect x="1363.93" y="239.60" width="60.14" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1394.00 238.00)"/>
-  <text x="1394.00" y="248.51" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1394.00 238.00)">16.0 opening</text>
+  <rect x="1358.92" y="239.60" width="70.16" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1394.00 238.00)"/>
+  <text x="1394.00" y="250.00" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1394.00 238.00)">16.0 opening</text>
   <line x1="1150.00" y1="202.27" x2="1150.00" y2="273.73" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1150.00 277.00 L 1148.31 271.05 L 1151.69 271.05 Z" fill="#C02020" stroke="none"/>
   <path d="M 1150.00 199.00 L 1151.69 204.95 L 1148.31 204.95 Z" fill="#C02020" stroke="none"/>
-  <line x1="1174.00" y1="199.00" x2="1142.00" y2="199.00" stroke="#C02020" stroke-width="0.70"/>
-  <line x1="1174.00" y1="277.00" x2="1142.00" y2="277.00" stroke="#C02020" stroke-width="0.70"/>
-  <line x1="1150.00" y1="199.00" x2="1150.00" y2="191.47" stroke="#C02020" stroke-width="1.10"/>
-  <text x="1150.00" y="232.55" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1150.00 238.00)">13.0 crowned envelope</text>
-  <text x="1140.00" y="320.00" font-size="9.0" fill="#1A1D21">Clearance 3.0 in on the crate's crowned envelope.</text>
-  <text x="1140.00" y="334.00" font-size="8.5" fill="#6E7378">A cube's minimum width in any orientation is its edge,</text>
-  <text x="1140.00" y="346.00" font-size="8.5" fill="#6E7378">so tilting does not help - the opening must exceed 13.0 in.</text>
-  <text x="1140.00" y="364.00" font-size="8.5" fill="#1A1D21">O2 CELL passes end-on (5.0 x 5.0) or lengthwise (14.0 x 5.0).</text>
-  <text x="1140.00" y="376.00" font-size="8.5" fill="#1A1D21">ROPE COIL passes flat (10.0 x 2.5) or on edge (10.0 tall).</text>
-  <text x="1250.00" y="432.00" font-size="13.0" fill="#1F4E79" text-anchor="middle" font-weight="bold">PLAN - OUTFITTER LANE (tape)</text>
-  <text x="1250.00" y="444.05" font-size="9.0" fill="#6E7378" text-anchor="middle">2.6 px/in</text>
-  <text x="1250.00" y="455.30" font-size="9.0" fill="#6E7378" text-anchor="middle">field below the wall line</text>
+  <line x1="1228.00" y1="199.00" x2="1148.00" y2="199.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="1228.00" y1="277.00" x2="1148.00" y2="277.00" stroke="#C02020" stroke-width="0.70"/>
+  <line x1="1150.00" y1="199.00" x2="1150.00" y2="183.72" stroke="#C02020" stroke-width="1.10"/>
+  <text x="1150.00" y="232.19" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1150.00 238.00)">13.0 crowned envelope</text>
+  <text x="1140.00" y="320.00" font-size="8.93" fill="#1A1D21">Clearance 3.0 in on the crate's crowned envelope.</text>
+  <text x="1140.00" y="331.79" font-size="8.50" fill="#6E7378">A cube's minimum width in any orientation is its edge,</text>
+  <text x="1140.00" y="343.01" font-size="8.50" fill="#6E7378">so tilting does not help - the opening must exceed 13.0 in.</text>
+  <text x="1140.00" y="357.63" font-size="8.50" fill="#1A1D21">O2 CELL passes end-on (5.0 x 5.0) or lengthwise (14.0 x 5.0).</text>
+  <text x="1140.00" y="368.85" font-size="8.50" fill="#1A1D21">ROPE COIL passes flat (10.0 x 2.5) or on edge (10.0 tall).</text>
+  <text x="1250.00" y="432.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">PLAN - OUTFITTER LANE (tape)</text>
+  <text x="1250.00" y="444.05" font-size="9.00" fill="#6E7378" text-anchor="middle">2.6 px/in</text>
+  <text x="1250.00" y="455.30" font-size="9.00" fill="#6E7378" text-anchor="middle">field below the wall line</text>
   <rect x="1150.00" y="496.00" width="312.00" height="10.40" fill="#9AA4B2" stroke="#4A5462" stroke-width="1.40"/>
   <rect x="1267.00" y="496.00" width="78.00" height="10.40" fill="#E8A33D" stroke="#B57718" stroke-width="1.50"/>
-  <text x="1306.00" y="486.00" font-size="8.5" fill="#7A4E0C" text-anchor="middle">chute opening 30.0</text>
+  <text x="1306.00" y="490.00" font-size="9.00" fill="#6B440A" text-anchor="middle">chute opening 30.0</text>
   <rect x="1259.20" y="506.40" width="93.60" height="124.80" fill="#E8A33D" stroke="#B57718" stroke-width="1.80" stroke-dasharray="6 4" opacity="0.25"/>
-  <text x="1306.00" y="563.60" font-size="9.5" fill="#7A4E0C" text-anchor="middle">OUTFITTER LANE</text>
-  <text x="1306.00" y="584.40" font-size="8.0" fill="#7A4E0C" text-anchor="middle">no-defense zone</text>
+  <text x="1306.00" y="563.60" font-size="9.00" fill="#6B440A" text-anchor="middle">OUTFITTER LANE</text>
+  <text x="1306.00" y="574.65" font-size="8.50" fill="#6B440A" text-anchor="middle">no-defense zone</text>
   <line x1="1262.47" y1="646.80" x2="1349.53" y2="646.80" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1352.80 646.80 L 1346.85 648.49 L 1346.85 645.11 Z" fill="#C02020" stroke="none"/>
   <path d="M 1259.20 646.80 L 1265.15 645.11 L 1265.15 648.49 Z" fill="#C02020" stroke="none"/>
   <line x1="1259.20" y1="636.40" x2="1259.20" y2="654.80" stroke="#C02020" stroke-width="0.70"/>
   <line x1="1352.80" y1="636.40" x2="1352.80" y2="654.80" stroke="#C02020" stroke-width="0.70"/>
-  <rect x="1293.19" y="633.32" width="25.61" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
-  <text x="1306.00" y="642.23" font-size="9.0" fill="#C02020" text-anchor="middle">36.0</text>
+  <rect x="1291.06" y="631.34" width="29.88" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
+  <text x="1306.00" y="641.73" font-size="10.50" fill="#C02020" text-anchor="middle">36.0</text>
   <line x1="1378.80" y1="509.67" x2="1378.80" y2="627.93" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1378.80 631.20 L 1377.11 625.25 L 1380.49 625.25 Z" fill="#C02020" stroke="none"/>
   <path d="M 1378.80 506.40 L 1380.49 512.35 L 1377.11 512.35 Z" fill="#C02020" stroke="none"/>
   <line x1="1363.20" y1="506.40" x2="1386.80" y2="506.40" stroke="#C02020" stroke-width="0.70"/>
   <line x1="1363.20" y1="631.20" x2="1386.80" y2="631.20" stroke="#C02020" stroke-width="0.70"/>
-  <rect x="1365.99" y="570.40" width="25.61" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1378.80 568.80)"/>
-  <text x="1378.80" y="579.31" font-size="9.0" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1378.80 568.80)">48.0</text>
-  <text x="1150.00" y="688.40" font-size="8.5" fill="#6E7378">Tape 2.0 in wide, line edge on the stated coordinate.</text>
-  <text x="1150.00" y="714.40" font-size="8.5" fill="#1A1D21">Stock per alliance: 7 CACHE CRATES, 7 O2 CELLS, 7 ROPE COILS across</text>
-  <text x="1150.00" y="740.40" font-size="8.5" fill="#1A1D21">the two stations; robot preloads are drawn from this stock.</text>
+  <rect x="1363.86" y="570.40" width="29.88" height="13.86" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1378.80 568.80)"/>
+  <text x="1378.80" y="580.79" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1378.80 568.80)">48.0</text>
+  <text x="1150.00" y="672.80" font-size="8.50" fill="#6E7378">Tape 2.0 in wide, line edge on the stated coordinate.</text>
+  <text x="1150.00" y="686.57" font-size="8.50" fill="#1A1D21">Stock per alliance: 7 CACHE CRATES, 7 O2 CELLS, 7 ROPE COILS across</text>
+  <text x="1150.00" y="697.79" font-size="8.50" fill="#1A1D21">the two stations; robot preloads are drawn from this stock.</text>
   <rect x="8.00" y="833.39" width="1484.00" height="58.61" fill="#FFFFFF" stroke="#8A9199" stroke-width="1.00"/>
   <line x1="8.00" y1="852.39" x2="1492.00" y2="852.39" stroke="#C8CCD1" stroke-width="0.80"/>
   <line x1="1242.00" y1="833.39" x2="1242.00" y2="892.00" stroke="#C8CCD1" stroke-width="0.80"/>
-  <text x="16.00" y="846.49" font-size="10.0" fill="#1F4E79" font-weight="bold">SUMMIT PUSH — FIELD DRAWING SET</text>
-  <text x="229.34" y="846.49" font-size="10.0" fill="#1A1D21" font-weight="bold">DRAWING 4 OF 6 - OUTFITTER STATION (x4 PER FIELD)</text>
-  <text x="16.00" y="861.06" font-size="8.5" fill="#6E7378">All dimensions in INCHES. Heights are to the robot-interaction surface (shelf top, socket rim center, peg root, rung top, tag center).</text>
-  <text x="16.00" y="872.28" font-size="8.5" fill="#6E7378">Boxed values are CRITICAL - hold exactly. Values suffixed (ref) may float +/-0.25 in. Every angle on the field is 15, 30 or 45 degrees.</text>
-  <text x="16.00" y="883.50" font-size="8.5" fill="#6E7378">Coordinate frame: always-blue-origin NWU. Origin at the right corner of the Blue alliance wall; +X toward Red, +Y left, +Z up. Blue half shown; Red = 180 deg rotation about (324, 162).</text>
-  <text x="1250.00" y="846.49" font-size="10.0" fill="#1A1D21" font-weight="bold">SHEET 4 OF 6</text>
-  <text x="1250.00" y="861.06" font-size="8.5" fill="#6E7378">Units: INCHES   |   Scale: as noted per view</text>
-  <text x="1250.00" y="872.28" font-size="8.5" fill="#6E7378">Geometry authority: 03-field/FIELD-CAD-PACKAGE.md</text>
-  <text x="1250.00" y="883.50" font-size="8.5" fill="#6E7378">Spec: 01-design/DESIGN-SPEC.md v2.2</text>
-  <text x="1484.00" y="846.49" font-size="10.0" fill="#1A1D21" text-anchor="end" font-weight="bold">REV 2.2</text>
+  <text x="16.00" y="846.49" font-size="10.00" fill="#1F4E79" font-weight="bold">SUMMIT PUSH — FIELD DRAWING SET</text>
+  <text x="229.34" y="846.49" font-size="10.00" fill="#1A1D21" font-weight="bold">DRAWING 4 OF 6 - OUTFITTER STATION (x4 PER FIELD)</text>
+  <text x="16.00" y="861.06" font-size="8.50" fill="#6E7378">All dimensions in INCHES. Heights are to the robot-interaction surface (shelf top, socket rim center, peg root, rung top, tag center).</text>
+  <text x="16.00" y="872.28" font-size="8.50" fill="#6E7378">Boxed values are CRITICAL - hold exactly. Values suffixed (ref) may float +/-0.25 in. Every angle on the field is 15, 30 or 45 degrees.</text>
+  <text x="16.00" y="883.50" font-size="8.50" fill="#6E7378">Coordinate frame: always-blue-origin NWU. Origin at the right corner of the Blue alliance wall; +X toward Red, +Y left, +Z up. Blue half shown; Red = 180 deg rotation about (324, 162).</text>
+  <text x="1250.00" y="846.49" font-size="10.00" fill="#1A1D21" font-weight="bold">SHEET 4 OF 6</text>
+  <text x="1250.00" y="861.06" font-size="8.50" fill="#6E7378">Units: INCHES   |   Scale: as noted per view</text>
+  <text x="1250.00" y="872.28" font-size="8.50" fill="#6E7378">Geometry authority: 03-field/FIELD-CAD-PACKAGE.md</text>
+  <text x="1250.00" y="883.50" font-size="8.50" fill="#6E7378">Spec: 01-design/DESIGN-SPEC.md v2.2</text>
+  <text x="1484.00" y="846.49" font-size="10.00" fill="#1A1D21" text-anchor="end" font-weight="bold">REV 2.2</text>
 </svg>

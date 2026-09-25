@@ -194,7 +194,7 @@ class Sheet(object):
         to sit on a line (a centerline, a tape edge) stays readable."""
         if not str(s).strip():
             return self
-        a = 'x="%.2f" y="%.2f" font-size="%.1f" fill="%s"' % (x, y, size, fill)
+        a = 'x="%.2f" y="%.2f" font-size="%.2f" fill="%s"' % (x, y, size, fill)
         if anchor != "start":
             a += ' text-anchor="%s"' % anchor
         if weight:
@@ -303,11 +303,20 @@ class Sheet(object):
             base = top + bh - 0.33 * size
         else:
             base = cy - gap - 0.24 * size if not below else cy + gap + 0.74 * size
-        a = 'x="%.2f" y="%.2f" font-size="%.1f" fill="%s" text-anchor="middle"' % (cx, base, size, DIM)
+        a = 'x="%.2f" y="%.2f" font-size="%.2f" fill="%s" text-anchor="middle"' % (cx, base, size, DIM)
         if halo and not critical:
             a += (' stroke="#FFFFFF" stroke-width="%.2f" stroke-linejoin="round" paint-order="stroke"'
                   % max(2.0, 0.3 * size))
         self.add("<text %s%s>%s</text>" % (a, tr, esc(label)))
+
+    def _overhangs(self, label, critical, size, span, shift):
+        """True when the value, centred on its dimension line, is wider than the
+        span between the extension lines (so it would sit on them)."""
+        if abs(shift) > 1e-9:
+            return False
+        sz = self._dsize(size, size is None)
+        bw = text_width(label, sz) + (0.9 * sz if critical else 0.0)
+        return bw / 2.0 > span / 2.0 - 1.0
 
     def _ext(self, x1, y1, x2, y2):
         self.line(x1, y1, x2, y2, stroke=DIM, sw=self.SW_EXT)
@@ -318,8 +327,12 @@ class Sheet(object):
         run from y = ext_from to just past the dimension line."""
         self._dimline(x1, y, x2, y)
         if ext_from is not None:
+            far_below = ext_from < y                      # ticks run away from the part
+            if self._overhangs(label, critical, size, abs(x2 - x1), shift):
+                above = not far_below                     # value on the tick side...
+                tick = min(tick, 2.0)                     # ...with short ticks
             for xx in (x1, x2):
-                self._ext(xx, ext_from, xx, y + (tick if ext_from < y else -tick))
+                self._ext(xx, ext_from, xx, y + (tick if far_below else -tick))
         self._dimlabel((x1 + x2) / 2.0, y, 0, label, critical, self._dsize(size, size is None),
                        below=not above, halo=halo, span=abs(x2 - x1),
                        shift=shift if x2 >= x1 else -shift)
@@ -330,8 +343,12 @@ class Sheet(object):
         bottom of the sheet and sits on the given side of the line."""
         self._dimline(x, y1, x, y2)
         if ext_from is not None:
+            far_right = ext_from < x
+            if self._overhangs(label, critical, size, abs(y2 - y1), shift):
+                side = "right" if far_right else "left"
+                tick = min(tick, 2.0)
             for yy in (y1, y2):
-                self._ext(ext_from, yy, x + (tick if ext_from < x else -tick), yy)
+                self._ext(ext_from, yy, x + (tick if far_right else -tick), yy)
         self._dimlabel(x, (y1 + y2) / 2.0, -90, label, critical, self._dsize(size, size is None),
                        below=(side != "left"), halo=halo, span=abs(y2 - y1), shift=shift)
 
@@ -469,11 +486,11 @@ class Sheet(object):
         bg = '  <rect width="%d" height="%d" fill="#ffffff"/>\n' % (self.w, self.h)
         ts = max(21.0, self.pt(16.0))
         ss = max(11.5, self.pt(9.5))
-        title = ('  <text x="%d" y="%.1f" text-anchor="middle" font-size="%.1f" font-weight="bold" fill="%s">%s</text>\n'
+        title = ('  <text x="%d" y="%.1f" text-anchor="middle" font-size="%.2f" font-weight="bold" fill="%s">%s</text>\n'
                  % (self.w // 2, 8 + ts, ts, INK, esc("SUMMIT PUSH — " + self.title)))
         sub = ""
         if self.subtitle:
-            sub = ('  <text x="%d" y="%.1f" text-anchor="middle" font-size="%.1f" fill="%s">%s</text>\n'
+            sub = ('  <text x="%d" y="%.1f" text-anchor="middle" font-size="%.2f" fill="%s">%s</text>\n'
                    % (self.w // 2, 8 + ts + 1.6 * ss, ss, MUTED, esc(self.subtitle)))
         body = "\n".join("  " + p for p in self.parts)
         return head + bg + title + sub + body + "\n</svg>\n"

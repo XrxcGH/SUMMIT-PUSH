@@ -13,6 +13,7 @@ const FIELD_CY = 162;
 const CARPET_T = 0.25;          // (ref) carpet thickness, below Z = 0
 const TAPE_W = 2;
 const TAPE_T = 0.01;
+const CLIMB_DASH = 6;           // (ref) CLIMB LINE dash and gap outside BASECAMP
 
 // ---- perimeter (§1.3) --------------------------------------------------------------------
 const GUARD_H = 20;
@@ -23,6 +24,7 @@ const GUARD_GLAZE_T = 0.25;
 const LED_Z = 19;               // FIELD LED lens centre
 const LED_W = 1;
 const LED_DEPTH = 0.25;         // (ref) let into the top rail
+const LED_BLOCKS = 3;           // lit blocks per alliance segment (manual §3.1.2)
 const WALL_H = 78;
 const WALL_T = 2;
 const WALL_SOLID_H = 39;
@@ -47,6 +49,7 @@ const RAMP_RUN = 40;            // (ref) measured along the ramp
 const RAMP_T = 0.5;
 const RAMP_FLARE_W = 36;        // (ref) cheek funnel width at the loading end
 const CHEEK_H = 8;              // (ref) cheek height above the ramp
+const THROAT_T = 0.25;          // (ref) chute throat liner, carries the opening through the 2.0-in wall
 const LANE_TAPE_W = 36;
 const LANE_TAPE_D = 48;
 
@@ -130,13 +133,12 @@ const TRUSS_CLR = 4;
 const TRUSS_TOP = 84;
 const TUBE_S = 2;
 const TUBE_WALL = 0.12;         // (ref) 11-gauge
-const UPRIGHT_N = [-8, -6];     // (ref) upright layer, normal offset from plane P
 const FRONT_N = [-6, -4];       // front layer: rung carriers, rails
 const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer — see README (spec finding)
 const UPRIGHT_INSET = 2.5;      // (ref) upright's inner face from the lane edge
 const BRACKET_T = 0.25;
 const BRACKET_FROM_END = 1;     // bracket plate 1.0-1.25 in from each rung end
-const BRACKET_FRONT = 1;        // plate reaches 1.0 in in front of plane P
+const BRACKET_FRONT = 0.5;      // saddle plate reaches 0.5 in in front of plane P, 0.25 behind the rung front
 const TAG_HW_X = 39;
 const TAG_Z_HW = 12;
 const BEAM_Z = 12;

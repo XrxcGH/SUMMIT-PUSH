@@ -13,6 +13,7 @@ starts with that Id.
 import math
 
 import numpy as np
+from OCP.Standard import Standard_Failure
 from OCP.BRep import BRep_Tool
 from OCP.BRepAlgoAPI import BRepAlgoAPI_Cut, BRepAlgoAPI_Fuse, BRepAlgoAPI_Common
 from OCP.BRepBndLib import BRepBndLib
@@ -146,7 +147,8 @@ class Frame:
         self.o = np.asarray(o, float)
         x = np.asarray(x, float)
         z = np.asarray(z, float)
-        if abs(np.dot(x, z)) > 1e-9 * np.linalg.norm(x) * np.linalg.norm(z):
+        # std coordSystem(): perpendicularVectors, dot^2 < |a|^2 |b|^2 1e-22
+        if np.dot(x, z) ** 2 >= 1e-22 * np.dot(x, x) * np.dot(z, z):
             raise KernelError("frameMake: axes not perpendicular")
         self.x = x / np.linalg.norm(x)
         self.z = z / np.linalg.norm(z)
@@ -184,7 +186,8 @@ class _Plane:
     def __init__(self, F, pl, offset):
         self.n = F.dir(pl[1])
         self.x = F.dir(pl[2])
-        if abs(np.dot(self.n, self.x)) > 1e-9:
+        # std plane(): abs(dot) < TOLERANCE.zeroAngle (1e-11) on the normalised vectors
+        if abs(np.dot(self.n, self.x)) >= 1e-11:
             raise KernelError("plane x not perpendicular to normal")
         self.y = np.cross(self.n, self.x)
         self.o = F.pt(pl[0]) + self.n * offset
@@ -476,6 +479,15 @@ def bDelete(context, id, bodies):
         del context.bodies[k]
 
 
+def removeSlivers(context, id, bodies, minVolume):
+    for k in context.keys_for(bodies):
+        keep = [x for x in context.bodies[k]["solids"] if _volume([x]) >= minVolume]
+        if keep:
+            context.bodies[k]["solids"] = keep
+        else:
+            del context.bodies[k]
+
+
 def shellHollow(context, id, bodies, t):
     """Hollow each solid inward by t with no faces removed (Onshape opShell, negative
     thickness): the solid minus its inward offset, leaving an internal void."""
@@ -515,7 +527,7 @@ def _edges_through(shape, points, tol=1e-5):
     return found
 
 
-def filletAt(context, id, bodies, F, pts, r):
+def filletAt(context, id, bodies, F, pts, r, strict=True):
     wp = [F.pt(p) for p in pts]
     keys = context.keys_for(bodies)
     # every requested point must lie on an edge of one of the bodies (as in FeatureScript,
@@ -535,7 +547,12 @@ def filletAt(context, id, bodies, F, pts, r):
             plan.append((k, si, edges))
     missing = [list(wp[i]) for i in range(len(wp)) if not found[i]]
     if missing:
-        raise KernelError("filletAt %s: no edge through %s" % (id, missing))
+        if strict:
+            raise KernelError("filletAt %s: no edge through %s" % (id, missing))
+        # FeatureScript: an unmatched point contributes nothing; the matched edges still round
+        context.warnings.append("roundover %s: no edge through %s" % (id, missing))
+    # one opFillet in FeatureScript: build every result first, commit only if all succeed
+    results = []
     for k, si, edges in plan:
         if not edges:
             continue
@@ -549,14 +566,18 @@ def filletAt(context, id, bodies, F, pts, r):
         out = _solids(mk.Shape())
         for x in out:
             _check(x, "filletAt " + str(id))
+        results.append((k, si, out))
+    for k, si, out in reversed(results):
         context.bodies[k]["solids"][si:si + 1] = out
 
 
 def softFilletAt(context, id, bodies, F, pts, r, label):
+    # as `try silent` around one opFillet: unmatched points are dropped, and a failed fillet
+    # leaves every body unchanged; only kernel/OCC failures become warnings
     try:
-        filletAt(context, id, bodies, F, pts, r)
-    except Exception as e:  # noqa: BLE001 — mirror of FeatureScript try silent
-        context.warnings.append("reference roundover skipped — %s (%s)" % (label, e))
+        filletAt(context, id, bodies, F, pts, r, strict=False)
+    except (KernelError, RuntimeError, Standard_Failure) as e:
+        context.warnings.append("reference roundover skipped - %s (%s)" % (label, e))
 
 
 def copyBody(context, id, src, F):
@@ -598,6 +619,39 @@ def nameBody(context, bodies, name):
         raise KernelError("nameBody %r: no bodies" % name)
     for k in keys:
         context.bodies[k]["name"] = name
+
+
+def numberSharedNames(context, bodies):
+    """Every part (solid) gets a unique name; parts sharing a name get " 1", " 2", ... in
+    creation order.  A record holding several solids keeps its base name and lists the
+    per-solid names in rec["solid_names"]."""
+    keys = context.keys_for(bodies)
+    total = {}
+    for k in keys:
+        rec = context.bodies[k]
+        total[rec["name"]] = total.get(rec["name"], 0) + len(rec["solids"])
+    seen = {}
+    for k in keys:
+        rec = context.bodies[k]
+        n = rec["name"]
+        if total[n] < 2:
+            continue
+        names = []
+        for _ in rec["solids"]:
+            seen[n] = seen.get(n, 0) + 1
+            names.append("%s %d" % (n, seen[n]))
+        if len(names) == 1:
+            rec["name"] = names[0]
+        else:
+            rec["solid_names"] = names
+
+
+def part_names(context):
+    """Name of every part (solid) the field would show in Onshape's parts list."""
+    out = []
+    for rec in context.bodies.values():
+        out += rec.get("solid_names") or [rec["name"]] * len(rec["solids"])
+    return out
 
 
 def styleFacesAt(context, bodies, F, pts, rgb, alpha):
@@ -660,6 +714,8 @@ def tagDecal(context, id, bodies, F, pl, black, cells, s, rgb):
 # measurement
 # ---------------------------------------------------------------------------------------
 def measureBox(context, bodies, F):
+    if not context.keys_for(bodies):
+        raise KernelError("measureBox: no bodies for %s" % ([str(b) for b in bodies],))
     sh = context.shape_for(bodies)
     # bounding box in frame F: transform the shape into F's coordinates first
     inv = F.trsf().Inverted()
@@ -691,6 +747,129 @@ def measureDistToPoint(context, bodies, F, p):
 
 def measureDist(context, a, b):
     return BRepExtrema_DistShapeShape(context.shape_for(a), context.shape_for(b)).Value()
+
+
+# ---------------------------------------------------------------------------------------
+# decoration and grouping (twins of chamferAt / softChamferAt / mkLoft / faceDecal /
+# compositePart in src/10_kernel.fs)
+# ---------------------------------------------------------------------------------------
+def kWarn(context, id, message):
+    context.warnings.append(message)
+
+
+def chamferAt(context, id, bodies, F, pts, d, strict=True):
+    from OCP.BRepFilletAPI import BRepFilletAPI_MakeChamfer
+    wp = [F.pt(p) for p in pts]
+    keys = context.keys_for(bodies)
+    found = [False] * len(wp)
+    plan = []
+    for k in keys:
+        for si, s in enumerate(context.bodies[k]["solids"]):
+            edges = []
+            for pi, p in enumerate(wp):
+                try:
+                    e = _edges_through(s, [p])
+                except KernelError:
+                    continue
+                found[pi] = True
+                edges += [x for x in e if not any(x.IsSame(y) for y in edges)]
+            plan.append((k, si, edges))
+    missing = [list(wp[i]) for i in range(len(wp)) if not found[i]]
+    if missing:
+        if strict:
+            raise KernelError("chamferAt %s: no edge through %s" % (id, missing))
+        context.warnings.append("chamfer %s: no edge through %s" % (id, missing))
+    results = []
+    for k, si, edges in plan:
+        if not edges:
+            continue
+        s = context.bodies[k]["solids"][si]
+        mk = BRepFilletAPI_MakeChamfer(s)
+        for e in edges:
+            mk.Add(float(d), e)
+        mk.Build()
+        if not mk.IsDone():
+            raise KernelError("chamfer failed " + str(id))
+        out = _solids(mk.Shape())
+        for x in out:
+            _check(x, "chamferAt " + str(id))
+        results.append((k, si, out))
+    for k, si, out in reversed(results):
+        context.bodies[k]["solids"][si:si + 1] = out
+
+
+def softChamferAt(context, id, bodies, F, pts, d, label):
+    try:
+        chamferAt(context, id, bodies, F, pts, d, strict=False)
+    except (KernelError, RuntimeError, Standard_Failure) as e:
+        context.warnings.append("decorative chamfer skipped - %s (%s)" % (label, e))
+
+
+def mkLoft(context, id, F, profiles):
+    from OCP.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+    if len(profiles) < 2:
+        raise KernelError("mkLoft needs two or more profiles at " + str(id))
+    ts = BRepOffsetAPI_ThruSections(True, False, 1e-6)
+    for pl, loop in profiles:
+        P = _Plane(F, pl, 0)
+        ts.AddWire(_wire(P, loop))
+    ts.CheckCompatibility(False)
+    ts.Build()
+    if not ts.IsDone():
+        raise KernelError("loft failed " + str(id))
+    shape = ts.Shape()
+    fix = ShapeFix_Shape(shape)
+    fix.Perform()
+    shape = fix.Shape()
+    _check(shape, "mkLoft " + str(id))
+    context.add(id + "lf", shape)
+
+
+def faceDecal(context, id, bodies, F, pl, rects, rgb):
+    """Records the painted rectangles; checks each lies on a planar face of the bodies in pl
+    (the off-line twin does not split faces — the split is exact and coplanar in Onshape)."""
+    P = _Plane(F, pl, 0)
+    keys = context.keys_for(bodies)
+    sh = context.shape_for(bodies)
+    for r in rects:
+        u0, v0, u1, v1 = r
+        if not (u1 > u0 and v1 > v0):
+            raise KernelError("faceDecal %s: degenerate rectangle %s" % (id, r))
+        for uv in ((u0, v0), (u1, v0), (u1, v1), (u0, v1), ((u0 + u1) / 2, (v0 + v1) / 2)):
+            p = P.p3(uv)
+            v = BRepBuilderAPI_MakeVertex(_gp(p)).Vertex()
+            if BRepExtrema_DistShapeShape(v, sh).Value() > 1e-6:
+                raise KernelError("faceDecal %s: rectangle %s leaves the face" % (id, r))
+            # and the point is on the surface, not inside: a point just outside along the
+            # normal must be off the body
+            q = p + P.n * 1e-3
+            for s in context.solids_for(bodies):
+                cl = BRepClass3d_SolidClassifier(s, _gp(q), 1e-7)
+                if cl.State() == TopAbs_IN:
+                    raise KernelError("faceDecal %s: plane is not an outer face" % (id,))
+    for i, a in enumerate(rects):
+        for b in rects[i + 1:]:
+            if a[0] < b[2] - 1e-9 and b[0] < a[2] - 1e-9 and a[1] < b[3] - 1e-9 and b[1] < a[3] - 1e-9:
+                raise KernelError("faceDecal %s: rectangles overlap %s %s" % (id, a, b))
+    for k in keys:
+        context.bodies[k].setdefault("decals", []).append(
+            {"origin": tuple(P.o), "normal": tuple(P.n), "x": tuple(P.x), "rects": [tuple(r) for r in rects], "rgb": tuple(rgb)})
+
+
+def groupParts(context, id, bodies, name):
+    keys = context.keys_for(bodies)
+    if not keys:
+        raise KernelError("groupParts %r: no bodies" % name)
+    comps = context.__dict__.setdefault("composites", {})
+    for c in comps.values():
+        overlap = set(c["members"]) & set(keys)
+        if overlap:
+            raise KernelError("groupParts %r: body already grouped in %r" % (name, c["name"]))
+    comps[tuple(id)] = {"name": name, "members": keys}
+
+
+def decalApplied(context, bodies):
+    return 1 if any(r.get("decal") for r in (context.bodies[k] for k in context.keys_for(bodies))) else 0
 
 
 def countBodies(context, bodies):

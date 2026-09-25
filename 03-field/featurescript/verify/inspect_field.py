@@ -53,7 +53,9 @@ class Field:
             rx = re.compile(name[3:])
             out = [r for r in self.ctx.bodies.values() if rx.search(r["name"] or "")]
         else:
-            out = [r for r in self.ctx.bodies.values() if r["name"] == name]
+            # a name shared by several parts is numbered " 1", " 2", ... by numberSharedNames
+            rx = re.compile(re.escape(name) + r"( \d+)?$")
+            out = [r for r in self.ctx.bodies.values() if rx.match(r["name"] or "")]
         if not out:
             raise KeyError("no body named %r" % name)
         return out

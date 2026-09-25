@@ -243,8 +243,10 @@ function mkPillowBox(context is Context, id is Id, F is CoordSystem, h is number
             sheets = append(sheets, qCreatedBy(sid, EntityType.BODY));
         }
     }
+    // as std enclose.fs: evaluate the sheets before the enclose, delete them after
+    const tools = qUnion(evaluateQuery(context, qUnion(sheets)));
     opEnclose(context, id + "ex", { "entities" : qUnion(sheets) });
-    opDeleteBodies(context, id + "dl", { "entities" : qUnion(sheets) });
+    opDeleteBodies(context, id + "dl", { "entities" : tools });
 }
 
 // ---------- booleans and body operations ------------------------------------------------
@@ -274,6 +276,20 @@ function bDelete(context is Context, id is Id, bodies is array)
     opDeleteBodies(context, id, { "entities" : kQ(bodies) });
 }
 
+// Delete every body of `bodies` smaller than minVolume (cubic inches) — the slivers a boolean
+// can leave, which would otherwise show up as separate parts.
+function removeSlivers(context is Context, id is Id, bodies is array, minVolume is number)
+{
+    var small = [];
+    for (var b in evaluateQuery(context, kQ(bodies)))
+    {
+        if (evVolume(context, { "entities" : b }) < minVolume * inch ^ 3)
+            small = append(small, b);
+    }
+    if (size(small) > 0)
+        opDeleteBodies(context, id, { "entities" : qUnion(small) });
+}
+
 // Hollow a closed solid inward by t (no faces removed).
 function shellHollow(context is Context, id is Id, bodies is array, t is number)
 {
@@ -301,7 +317,7 @@ function softFilletAt(context is Context, id is Id, bodies is array, F is CoordS
     }
     catch (e)
     {
-        reportFeatureWarning(context, id, "SUMMIT PUSH: reference roundover skipped - " ~ label);
+        kWarn(context, id, "reference roundover skipped - " ~ label);
     }
 }
 
@@ -334,6 +350,35 @@ function styleBody(context is Context, bodies is array, name is string, rgb is a
 function nameBody(context is Context, bodies is array, name is string)
 {
     setProperty(context, { "entities" : kQ(bodies), "propertyType" : PropertyType.NAME, "value" : name });
+}
+
+// Give every part of `bodies` a unique name: parts that share a name get " 1", " 2", ... in
+// creation order.  Call once, after every body has been named.
+function numberSharedNames(context is Context, bodies is array)
+{
+    const parts = evaluateQuery(context, kQ(bodies));
+    var names = [];
+    var total = {};
+    for (var p in parts)
+    {
+        const n = getProperty(context, { "entity" : p, "propertyType" : PropertyType.NAME });
+        names = append(names, n);
+        if (total[n] == undefined)
+            total[n] = 0;
+        total[n] += 1;
+    }
+    var seen = {};
+    for (var i = 0; i < size(parts); i += 1)
+    {
+        const n = names[i];
+        if (total[n] > 1)
+        {
+            if (seen[n] == undefined)
+                seen[n] = 0;
+            seen[n] += 1;
+            setProperty(context, { "entities" : parts[i], "propertyType" : PropertyType.NAME, "value" : n ~ " " ~ seen[n] });
+        }
+    }
 }
 
 // Faces of `bodies` that contain the local points `pts` get their own appearance.
@@ -397,11 +442,120 @@ function tagDecal(context is Context, id is Id, bodies is array, F is CoordSyste
         {
             opDeleteBodies(context, id + "dl2", { "entities" : qCreatedBy(skId, EntityType.BODY) });
         }
-        reportFeatureWarning(context, id, "SUMMIT PUSH: AprilTag decal could not be applied; the panel is built without it");
+        kWarn(context, id, "AprilTag decal could not be applied; the panel is built without it");
     }
 }
 
+// ---------- warnings that reach the feature -------------------------------------------------
+// Onshape shows only the top-level feature's status, so helpers append their warnings to it
+// (id[0] is the feature's own id); summitPushField merges them with the self-check result.
+function kWarn(context is Context, id is Id, message is string)
+{
+    const top = newId() + id[0];
+    const prev = getFeatureWarning(context, top);
+    var text = message;
+    if (prev is string)
+        text = prev ~ "; " ~ message;
+    reportFeatureWarning(context, top, text);
+}
+
+// Equal-offset chamfer on the edges of `bodies` through the local points `pts`.
+function chamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number)
+{
+    var qs = [];
+    for (var p in pts)
+    {
+        qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.EDGE), kPt(F, p)));
+    }
+    opChamfer(context, id, { "entities" : qUnion(qs), "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : d * inch, "tangentPropagation" : true });
+}
+
+function softChamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number, label is string)
+{
+    try silent
+    {
+        chamferAt(context, id, bodies, F, pts, d);
+    }
+    catch (e)
+    {
+        kWarn(context, id, "decorative chamfer skipped - " ~ label);
+    }
+}
+
+// Solid loft through planar profiles, in order.  Each profile is [pl, loop]: a local plane
+// and one closed loop of segments on it (see kSketchLoops).
+function mkLoft(context is Context, id is Id, F is CoordSystem, profiles is array)
+{
+    var regions = [];
+    var sketches = [];
+    for (var i = 0; i < size(profiles); i += 1)
+    {
+        const skId = id + ("sk" ~ i);
+        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : kPlane(F, profiles[i][0], 0) });
+        kSketchLoops(sk, [profiles[i][1]]);
+        skSolve(sk);
+        regions = append(regions, qSketchRegion(skId, true));
+        sketches = append(sketches, qCreatedBy(skId, EntityType.BODY));
+    }
+    opLoft(context, id + "lf", { "profileSubqueries" : regions, "bodyType" : ToolBodyType.SOLID });
+    opDeleteBodies(context, id + "dl", { "entities" : qUnion(sketches) });
+}
+
+// Paint rectangles [u0, v0, u1, v1] onto the face(s) of `bodies` lying in plane pl (numbers,
+// lettering, stripes).  The face is split, so the decal is exact and coplanar; rectangles
+// must not overlap.  A failure leaves the face plain and warns.
+function faceDecal(context is Context, id is Id, bodies is array, F is CoordSystem, pl is array, rects is array, rgb is array)
+{
+    const P = kPlane(F, pl, 0);
+    const skId = id + "sk";
+    try silent
+    {
+        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : P });
+        for (var i = 0; i < size(rects); i += 1)
+        {
+            const r = rects[i];
+            skRectangle(sk, "r" ~ i, { "firstCorner" : k2([r[0], r[1]]), "secondCorner" : k2([r[2], r[3]]) });
+        }
+        skSolve(sk);
+        opSplitFace(context, id + "sp", {
+                    "faceTargets" : qCoincidesWithPlane(qOwnedByBody(kQ(bodies), EntityType.FACE), P),
+                    "edgeTools" : qCreatedBy(skId, EntityType.EDGE)
+                });
+        opDeleteBodies(context, id + "dl", { "entities" : qCreatedBy(skId, EntityType.BODY) });
+        var qs = [];
+        for (var r in rects)
+        {
+            const c = [(r[0] + r[2]) / 2, (r[1] + r[3]) / 2];
+            qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin + (P.x * c[0] + cross(P.normal, P.x) * c[1]) * inch));
+        }
+        setProperty(context, { "entities" : qUnion(qs), "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, 1) });
+    }
+    catch (e)
+    {
+        try silent
+        {
+            opDeleteBodies(context, id + "dl2", { "entities" : qCreatedBy(skId, EntityType.BODY) });
+        }
+        kWarn(context, id, "decal skipped");
+    }
+}
+
+// Group bodies into one open composite part (the parts list shows one entry; the members
+// stay selectable).  Call last: members must not be modified afterwards.
+function groupParts(context is Context, id is Id, bodies is array, name is string)
+{
+    opCreateCompositePart(context, id, { "bodies" : kQ(bodies), "closed" : false });
+    setProperty(context, { "entities" : qCompositePartTypeFilter(qCreatedBy(id, EntityType.BODY), CompositePartType.OPEN),
+                "propertyType" : PropertyType.NAME, "value" : name });
+}
+
 // ---------- measurement (used by the dimension self-check) --------------------------------
+
+// 1 if the (AprilTag) decal split the panel's face, else 0.
+function decalApplied(context is Context, bodies is array) returns number
+{
+    return size(evaluateQuery(context, qOwnedByBody(kQ(bodies), EntityType.FACE))) > 6 ? 1 : 0;
+}
 
 // Tight bounding box of `bodies` in frame F: [xmin, ymin, zmin, xmax, ymax, zmax] (inches).
 function measureBox(context is Context, bodies is array, F is CoordSystem) returns array

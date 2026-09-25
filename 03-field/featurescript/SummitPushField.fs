@@ -264,8 +264,10 @@ function mkPillowBox(context is Context, id is Id, F is CoordSystem, h is number
             sheets = append(sheets, qCreatedBy(sid, EntityType.BODY));
         }
     }
+    // as std enclose.fs: evaluate the sheets before the enclose, delete them after
+    const tools = qUnion(evaluateQuery(context, qUnion(sheets)));
     opEnclose(context, id + "ex", { "entities" : qUnion(sheets) });
-    opDeleteBodies(context, id + "dl", { "entities" : qUnion(sheets) });
+    opDeleteBodies(context, id + "dl", { "entities" : tools });
 }
 
 // ---------- booleans and body operations ------------------------------------------------
@@ -295,6 +297,20 @@ function bDelete(context is Context, id is Id, bodies is array)
     opDeleteBodies(context, id, { "entities" : kQ(bodies) });
 }
 
+// Delete every body of `bodies` smaller than minVolume (cubic inches) — the slivers a boolean
+// can leave, which would otherwise show up as separate parts.
+function removeSlivers(context is Context, id is Id, bodies is array, minVolume is number)
+{
+    var small = [];
+    for (var b in evaluateQuery(context, kQ(bodies)))
+    {
+        if (evVolume(context, { "entities" : b }) < minVolume * inch ^ 3)
+            small = append(small, b);
+    }
+    if (size(small) > 0)
+        opDeleteBodies(context, id, { "entities" : qUnion(small) });
+}
+
 // Hollow a closed solid inward by t (no faces removed).
 function shellHollow(context is Context, id is Id, bodies is array, t is number)
 {
@@ -322,7 +338,7 @@ function softFilletAt(context is Context, id is Id, bodies is array, F is CoordS
     }
     catch (e)
     {
-        reportFeatureWarning(context, id, "SUMMIT PUSH: reference roundover skipped - " ~ label);
+        kWarn(context, id, "reference roundover skipped - " ~ label);
     }
 }
 
@@ -355,6 +371,35 @@ function styleBody(context is Context, bodies is array, name is string, rgb is a
 function nameBody(context is Context, bodies is array, name is string)
 {
     setProperty(context, { "entities" : kQ(bodies), "propertyType" : PropertyType.NAME, "value" : name });
+}
+
+// Give every part of `bodies` a unique name: parts that share a name get " 1", " 2", ... in
+// creation order.  Call once, after every body has been named.
+function numberSharedNames(context is Context, bodies is array)
+{
+    const parts = evaluateQuery(context, kQ(bodies));
+    var names = [];
+    var total = {};
+    for (var p in parts)
+    {
+        const n = getProperty(context, { "entity" : p, "propertyType" : PropertyType.NAME });
+        names = append(names, n);
+        if (total[n] == undefined)
+            total[n] = 0;
+        total[n] += 1;
+    }
+    var seen = {};
+    for (var i = 0; i < size(parts); i += 1)
+    {
+        const n = names[i];
+        if (total[n] > 1)
+        {
+            if (seen[n] == undefined)
+                seen[n] = 0;
+            seen[n] += 1;
+            setProperty(context, { "entities" : parts[i], "propertyType" : PropertyType.NAME, "value" : n ~ " " ~ seen[n] });
+        }
+    }
 }
 
 // Faces of `bodies` that contain the local points `pts` get their own appearance.
@@ -418,11 +463,120 @@ function tagDecal(context is Context, id is Id, bodies is array, F is CoordSyste
         {
             opDeleteBodies(context, id + "dl2", { "entities" : qCreatedBy(skId, EntityType.BODY) });
         }
-        reportFeatureWarning(context, id, "SUMMIT PUSH: AprilTag decal could not be applied; the panel is built without it");
+        kWarn(context, id, "AprilTag decal could not be applied; the panel is built without it");
     }
 }
 
+// ---------- warnings that reach the feature -------------------------------------------------
+// Onshape shows only the top-level feature's status, so helpers append their warnings to it
+// (id[0] is the feature's own id); summitPushField merges them with the self-check result.
+function kWarn(context is Context, id is Id, message is string)
+{
+    const top = newId() + id[0];
+    const prev = getFeatureWarning(context, top);
+    var text = message;
+    if (prev is string)
+        text = prev ~ "; " ~ message;
+    reportFeatureWarning(context, top, text);
+}
+
+// Equal-offset chamfer on the edges of `bodies` through the local points `pts`.
+function chamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number)
+{
+    var qs = [];
+    for (var p in pts)
+    {
+        qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.EDGE), kPt(F, p)));
+    }
+    opChamfer(context, id, { "entities" : qUnion(qs), "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : d * inch, "tangentPropagation" : true });
+}
+
+function softChamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number, label is string)
+{
+    try silent
+    {
+        chamferAt(context, id, bodies, F, pts, d);
+    }
+    catch (e)
+    {
+        kWarn(context, id, "decorative chamfer skipped - " ~ label);
+    }
+}
+
+// Solid loft through planar profiles, in order.  Each profile is [pl, loop]: a local plane
+// and one closed loop of segments on it (see kSketchLoops).
+function mkLoft(context is Context, id is Id, F is CoordSystem, profiles is array)
+{
+    var regions = [];
+    var sketches = [];
+    for (var i = 0; i < size(profiles); i += 1)
+    {
+        const skId = id + ("sk" ~ i);
+        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : kPlane(F, profiles[i][0], 0) });
+        kSketchLoops(sk, [profiles[i][1]]);
+        skSolve(sk);
+        regions = append(regions, qSketchRegion(skId, true));
+        sketches = append(sketches, qCreatedBy(skId, EntityType.BODY));
+    }
+    opLoft(context, id + "lf", { "profileSubqueries" : regions, "bodyType" : ToolBodyType.SOLID });
+    opDeleteBodies(context, id + "dl", { "entities" : qUnion(sketches) });
+}
+
+// Paint rectangles [u0, v0, u1, v1] onto the face(s) of `bodies` lying in plane pl (numbers,
+// lettering, stripes).  The face is split, so the decal is exact and coplanar; rectangles
+// must not overlap.  A failure leaves the face plain and warns.
+function faceDecal(context is Context, id is Id, bodies is array, F is CoordSystem, pl is array, rects is array, rgb is array)
+{
+    const P = kPlane(F, pl, 0);
+    const skId = id + "sk";
+    try silent
+    {
+        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : P });
+        for (var i = 0; i < size(rects); i += 1)
+        {
+            const r = rects[i];
+            skRectangle(sk, "r" ~ i, { "firstCorner" : k2([r[0], r[1]]), "secondCorner" : k2([r[2], r[3]]) });
+        }
+        skSolve(sk);
+        opSplitFace(context, id + "sp", {
+                    "faceTargets" : qCoincidesWithPlane(qOwnedByBody(kQ(bodies), EntityType.FACE), P),
+                    "edgeTools" : qCreatedBy(skId, EntityType.EDGE)
+                });
+        opDeleteBodies(context, id + "dl", { "entities" : qCreatedBy(skId, EntityType.BODY) });
+        var qs = [];
+        for (var r in rects)
+        {
+            const c = [(r[0] + r[2]) / 2, (r[1] + r[3]) / 2];
+            qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin + (P.x * c[0] + cross(P.normal, P.x) * c[1]) * inch));
+        }
+        setProperty(context, { "entities" : qUnion(qs), "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, 1) });
+    }
+    catch (e)
+    {
+        try silent
+        {
+            opDeleteBodies(context, id + "dl2", { "entities" : qCreatedBy(skId, EntityType.BODY) });
+        }
+        kWarn(context, id, "decal skipped");
+    }
+}
+
+// Group bodies into one open composite part (the parts list shows one entry; the members
+// stay selectable).  Call last: members must not be modified afterwards.
+function groupParts(context is Context, id is Id, bodies is array, name is string)
+{
+    opCreateCompositePart(context, id, { "bodies" : kQ(bodies), "closed" : false });
+    setProperty(context, { "entities" : qCompositePartTypeFilter(qCreatedBy(id, EntityType.BODY), CompositePartType.OPEN),
+                "propertyType" : PropertyType.NAME, "value" : name });
+}
+
 // ---------- measurement (used by the dimension self-check) --------------------------------
+
+// 1 if the (AprilTag) decal split the panel's face, else 0.
+function decalApplied(context is Context, bodies is array) returns number
+{
+    return size(evaluateQuery(context, qOwnedByBody(kQ(bodies), EntityType.FACE))) > 6 ? 1 : 0;
+}
 
 // Tight bounding box of `bodies` in frame F: [xmin, ymin, zmin, xmax, ymax, zmax] (inches).
 function measureBox(context is Context, bodies is array, F is CoordSystem) returns array
@@ -470,6 +624,7 @@ const FIELD_CY = 162;
 const CARPET_T = 0.25;          // (ref) carpet thickness, below Z = 0
 const TAPE_W = 2;
 const TAPE_T = 0.01;
+const CLIMB_DASH = 6;           // (ref) CLIMB LINE dash and gap outside BASECAMP
 
 // ---- perimeter (§1.3) --------------------------------------------------------------------
 const GUARD_H = 20;
@@ -480,6 +635,7 @@ const GUARD_GLAZE_T = 0.25;
 const LED_Z = 19;               // FIELD LED lens centre
 const LED_W = 1;
 const LED_DEPTH = 0.25;         // (ref) let into the top rail
+const LED_BLOCKS = 3;           // lit blocks per alliance segment (manual §3.1.2)
 const WALL_H = 78;
 const WALL_T = 2;
 const WALL_SOLID_H = 39;
@@ -504,6 +660,7 @@ const RAMP_RUN = 40;            // (ref) measured along the ramp
 const RAMP_T = 0.5;
 const RAMP_FLARE_W = 36;        // (ref) cheek funnel width at the loading end
 const CHEEK_H = 8;              // (ref) cheek height above the ramp
+const THROAT_T = 0.25;          // (ref) chute throat liner, carries the opening through the 2.0-in wall
 const LANE_TAPE_W = 36;
 const LANE_TAPE_D = 48;
 
@@ -587,13 +744,12 @@ const TRUSS_CLR = 4;
 const TRUSS_TOP = 84;
 const TUBE_S = 2;
 const TUBE_WALL = 0.12;         // (ref) 11-gauge
-const UPRIGHT_N = [-8, -6];     // (ref) upright layer, normal offset from plane P
 const FRONT_N = [-6, -4];       // front layer: rung carriers, rails
 const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer — see README (spec finding)
 const UPRIGHT_INSET = 2.5;      // (ref) upright's inner face from the lane edge
 const BRACKET_T = 0.25;
 const BRACKET_FROM_END = 1;     // bracket plate 1.0-1.25 in from each rung end
-const BRACKET_FRONT = 1;        // plate reaches 1.0 in in front of plane P
+const BRACKET_FRONT = 0.5;      // saddle plate reaches 0.5 in in front of plane P, 0.25 behind the rung front
 const TAG_HW_X = 39;
 const TAG_Z_HW = 12;
 const BEAM_Z = 12;
@@ -827,8 +983,51 @@ function buildCarpet(context is Context, id is Id)
     paint(context, [id + "carpet"], "Field carpet", "carpet", 1, "carpet");
 }
 
-// FIELD LED colour for a segment on the Blue (X < 324) or Red half.
-function fieldLedRGB(opts, isRedHalf)
+// FIELD LEDs (manual §3.1.2): each 324-in alliance segment is three 108-in blocks, counted from
+// its own alliance wall.  GREEN lights all three; FORECAST lights 1 / 2 / 3 white blocks for
+// WHITEOUT / ICEFALL / GALE in both alliances' segments; ROUTE lights 1 / 2 / 3 alliance-colour
+// blocks for that alliance's LOW / MID / HIGH ROUTE.  Unlit blocks are dark.
+function ledLitCount(opts, isRedHalf)
+{
+    const st = opts["fieldLed"];
+    if (st == "GREEN")
+    {
+        return 3;
+    }
+    if (st == "FORECAST")
+    {
+        const f = opts["forecast"];
+        if (f == "GALE")
+        {
+            return 3;
+        }
+        if (f == "ICEFALL")
+        {
+            return 2;
+        }
+        return 1;
+    }
+    if (st == "ROUTE")
+    {
+        var r = opts["routeBlue"];
+        if (isRedHalf)
+        {
+            r = opts["routeRed"];
+        }
+        if (r == "HIGH")
+        {
+            return 3;
+        }
+        if (r == "MID")
+        {
+            return 2;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+function ledOnRGB(opts, isRedHalf)
 {
     const st = opts["fieldLed"];
     if (st == "GREEN")
@@ -839,11 +1038,18 @@ function fieldLedRGB(opts, isRedHalf)
     {
         return PAL["neutral-white"];
     }
-    if (st == "ROUTE")
+    return allianceRGB(isRedHalf);
+}
+
+// X range of LED block k (0 = nearest its own alliance wall) in the Blue or Red half.
+function ledBlockX(isRedHalf, k)
+{
+    const b = FIELD_CX / LED_BLOCKS;
+    if (isRedHalf)
     {
-        return allianceRGB(isRedHalf);
+        return [FIELD_L - b * (k + 1), FIELD_L - b * k];
     }
-    return PAL["led-dark"];
+    return [b * k, b * (k + 1)];
 }
 
 // One long-side guardrail.  side 0 runs along Y = 0, side 1 along Y = 324.  Built in world
@@ -867,23 +1073,38 @@ function buildGuardrail(context is Context, id is Id, side, opts)
     const name = msg(["Guardrail (", label, ")"]);
     mkBox(context, id + "bot", W, [0, lo, 0], [FIELD_L, hi, GUARD_RAIL_H]);
     mkBox(context, id + "top", W, [0, lo, GUARD_H - GUARD_RAIL_H], [FIELD_L, hi, GUARD_H]);
-    // FIELD LED bands: two 324-in segments let into the inner face of the top rail
+    // FIELD LED blocks let into the inner face of the top rail
     const ledLo = min(yIn, yIn - gIn);
     const ledHi = max(yIn, yIn - gIn);
-    mkBox(context, id + "ledA", W, [0, ledLo, LED_Z - LED_W / 2], [FIELD_CX, ledHi, LED_Z + LED_W / 2]);
-    mkBox(context, id + "ledB", W, [FIELD_CX, ledLo, LED_Z - LED_W / 2], [FIELD_L, ledHi, LED_Z + LED_W / 2]);
-    bSubtract(context, id + "groove", [id + "top"], [id + "ledA", id + "ledB"], true);
-    paintRGB(context, [id + "ledA"], msg([name, " FIELD LED, Blue half"]), fieldLedRGB(opts, false), 1, "acrylic");
-    paintRGB(context, [id + "ledB"], msg([name, " FIELD LED, Red half"]), fieldLedRGB(opts, true), 1, "acrylic");
+    var leds = [];
+    for (var isRedHalf in [false, true])
+    {
+        const lit = ledLitCount(opts, isRedHalf);
+        for (var k = 0; k < LED_BLOCKS; k += 1)
+        {
+            const bx = ledBlockX(isRedHalf, k);
+            const lid = id + nm(nm("led", allianceName(isRedHalf)), k);
+            mkBox(context, lid, W, [bx[0], ledLo, LED_Z - LED_W / 2], [bx[1], ledHi, LED_Z + LED_W / 2]);
+            var rgb = PAL["led-dark"];
+            if (k < lit)
+            {
+                rgb = ledOnRGB(opts, isRedHalf);
+            }
+            paintRGB(context, [lid], msg([name, " FIELD LED, ", allianceName(isRedHalf), " segment block ", k + 1]), rgb, 1, "acrylic");
+            leds = append(leds, lid);
+        }
+    }
+    bSubtract(context, id + "groove", [id + "top"], leds, true);
     paint(context, [id + "bot"], msg([name, " bottom rail"]), "wall", 1, "al-tube-2x1");
     paint(context, [id + "top"], msg([name, " top rail"]), "wall", 1, "al-tube-2x1");
-    // posts and glazing bays
-    var posts = [[0, GUARD_RAIL_D]];
+    // posts (2 x 1 tube: 2 in along the rail) and glazing bays
+    const pw = GUARD_RAIL_H;
+    var posts = [[0, pw]];
     for (var k = 1; k < 8; k += 1)
     {
-        posts = append(posts, [k * GUARD_POST_PITCH - GUARD_RAIL_D / 2, k * GUARD_POST_PITCH + GUARD_RAIL_D / 2]);
+        posts = append(posts, [k * GUARD_POST_PITCH - pw / 2, k * GUARD_POST_PITCH + pw / 2]);
     }
-    posts = append(posts, [FIELD_L - GUARD_RAIL_D, FIELD_L]);
+    posts = append(posts, [FIELD_L - pw, FIELD_L]);
     const gMid = (yIn + yOut) / 2;
     for (var i = 0; i < size(posts); i += 1)
     {
@@ -968,14 +1189,17 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     paint(context, [id + "panel"], msg([wn, " lower panel"]), "wall", 1, "plywood");
     paint(context, [id + "glaze"], msg([wn, " glazing"]), "glazing", ALPHA_GLAZING, "polycarbonate");
 
-    // steel frame behind the panels (ref): rails and posts, 2.0 in overall wall thickness
+    // steel frame behind the panels (ref): rails and posts, 2.0 in overall wall thickness.  The
+    // members of the glazed band come forward to the glazing's back face so the glazing is held.
     const fx0 = -WALL_T;
     const fx1 = -WALL_PANEL_T;
+    const fg = -WALL_GLAZE_T;
     var fr = [];
     mkBox(context, id + "frBot", F, [fx0, 0, 0], [fx1, FIELD_W, WALL_RAIL]);
-    mkBox(context, id + "frTop", F, [fx0, 0, WALL_H - WALL_RAIL], [fx1, FIELD_W, WALL_H]);
+    mkBox(context, id + "frTop", F, [fx0, 0, WALL_H - WALL_RAIL], [fg, FIELD_W, WALL_H]);
     fr = [id + "frBot", id + "frTop"];
-    const midSpans = [[0, CHUTE_Y[0] - CHUTE_W / 2], [CHUTE_Y[0] + CHUTE_W / 2, CHUTE_Y[1] - CHUTE_W / 2], [CHUTE_Y[1] + CHUTE_W / 2, FIELD_W]];
+    const jw = CHUTE_W / 2 + THROAT_T;         // the mid rail stops at the chute throat liner
+    const midSpans = [[0, CHUTE_Y[0] - jw], [CHUTE_Y[0] + jw, CHUTE_Y[1] - jw], [CHUTE_Y[1] + jw, FIELD_W]];
     for (var i = 0; i < size(midSpans); i += 1)
     {
         mkBox(context, id + nm("frMid", i), F, [fx0, midSpans[i][0], WALL_SOLID_H - 1], [fx1, midSpans[i][1], WALL_SOLID_H + 1]);
@@ -985,20 +1209,22 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     for (var i = 0; i < size(postY); i += 1)
     {
         mkBox(context, id + nm("frPostLo", i), F, [fx0, postY[i], WALL_RAIL], [fx1, postY[i] + WALL_RAIL, WALL_SOLID_H - 1]);
-        mkBox(context, id + nm("frPostHi", i), F, [fx0, postY[i], WALL_SOLID_H + 1], [fx1, postY[i] + WALL_RAIL, WALL_H - WALL_RAIL]);
+        mkBox(context, id + nm("frPostHi", i), F, [fx0, postY[i], WALL_SOLID_H + 1], [fg, postY[i] + WALL_RAIL, WALL_H - WALL_RAIL]);
         fr = append(fr, id + nm("frPostLo", i));
         fr = append(fr, id + nm("frPostHi", i));
     }
     paint(context, fr, msg([wn, " frame"]), "wall", 1, "steel-frame");
+    bUnion(context, id + "frWeld", fr);
 
-    // driver stations: shelf (clear of the chutes) and E-STOP / A-STOP buttons
+    // driver stations: shelf (clear of the chutes, run back to the lower panel between the frame
+    // posts) and E-STOP / A-STOP buttons
     for (var i = 0; i < size(STATION_Y); i += 1)
     {
         const s = STATION_Y[i];
         const span = stationShelfSpan(s);
         const sid = id + nm("station", i + 1);
-        mkBox(context, sid + "shelf", F, [-WALL_T - STATION_SHELF_D, span[0], STATION_SHELF_TOP - STATION_SHELF_T],
-                [-WALL_T, span[1], STATION_SHELF_TOP]);
+        mkBox(context, sid + "shelf", F, [-WALL_PANEL_T - STATION_SHELF_D, span[0], STATION_SHELF_TOP - STATION_SHELF_T],
+                [-WALL_PANEL_T, span[1], STATION_SHELF_TOP]);
         paint(context, [sid + "shelf"], msg([A, " driver station ", i + 1, " shelf"]), "wall", 1, "plywood");
         var by = s + 30;
         if (span[1] < s + 40)
@@ -1016,43 +1242,73 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     }
 }
 
+// OUTFITTER chute behind the wall: a 2.0-in-deep throat liner that carries the opening through
+// the full wall, a 30-degree ramp from the back of the throat, plumb cheeks on the ramp edges,
+// 45-degree funnel wings opening to 36 in at the loading end, and a leg (all (ref), §5).
 function buildOutfitterRamp(context is Context, id is Id, F, c, name)
 {
     const s30 = sind(RAMP_ANGLE);
     const c30 = cosd(RAMP_ANGLE);
-    const x0 = -WALL_PANEL_T;                      // back face of the lower panel = sill line
-    const half0 = CHUTE_W / 2;
-    const half1 = RAMP_FLARE_W / 2;
-    // ramp: trapezoid in the 30-degree plane, top surface through the sill line
+    const t30 = tand(RAMP_ANGLE);
+    const hw = CHUTE_W / 2;
+    const x0 = -WALL_T;                            // back of the throat = start of the ramp
+    const xp = -WALL_PANEL_T;                      // back face of the lower panel
+    const zs = CHUTE_SILL;
+    const zh = CHUTE_SILL + CHUTE_H;
+    const tt = THROAT_T;
+    // throat liner: sill plate, two jambs and a head plate, flush with the opening
+    mkBox(context, id + "throatSill", F, [x0, c - hw - tt, zs - tt], [xp, c + hw + tt, zs]);
+    mkBox(context, id + "throatJambA", F, [x0, c - hw - tt, zs], [xp, c - hw, zh]);
+    mkBox(context, id + "throatJambB", F, [x0, c + hw, zs], [xp, c + hw + tt, zh]);
+    mkBox(context, id + "throatHead", F, [x0, c - hw - tt, zh], [-WALL_GLAZE_T, c + hw + tt, zh + tt]);
+    const th = [id + "throatSill", id + "throatJambA", id + "throatJambB", id + "throatHead"];
+    paint(context, th, msg([name, " chute throat"]), "wall", 1, "aluminum");
+    bUnion(context, id + "throatJoin", th);
+    // ramp: 30 wide, 30 degrees, top surface through the sill line at the back of the throat
     const upN = [s30, 0, c30];
     const slope = [-c30, 0, s30];
-    mkPrism(context, id + "ramp", F, [[x0, c, CHUTE_SILL], upN, slope],
-            [[0, -half0], [RAMP_RUN, -half1], [RAMP_RUN, half1], [0, half0]], -RAMP_T, 0);
+    mkPrism(context, id + "ramp", F, [[x0, c, zs], upN, slope], rectPts(0, -hw, RAMP_RUN, hw), -RAMP_T, 0);
     paint(context, [id + "ramp"], msg([name, " chute ramp"]), "wall", 1, "uhmw-ply");
     // leg under the loading end
     const xTop = x0 - RAMP_RUN * c30;              // top surface, loading end
+    const zTop = zs + RAMP_RUN * s30;
     const xb = xTop - RAMP_T * s30;                // underside corner, loading end
-    const zb = CHUTE_SILL + RAMP_RUN * s30 - RAMP_T * c30;
+    const zb = zTop - RAMP_T * c30;
     const xl1 = xb + RAMP_T;
-    const zl1 = zb - RAMP_T * tand(RAMP_ANGLE);
-    prismXZ(context, id + "leg", F, [[xb, 0], [xl1, 0], [xl1, zl1], [xb, zb]], c - half1 + 0.5, c + half1 - 0.5);
+    const zl1 = zb - RAMP_T * t30;
+    prismXZ(context, id + "leg", F, [[xb, 0], [xl1, 0], [xl1, zl1], [xb, zb]], c - hw + 0.5, c + hw - 0.5);
     paint(context, [id + "leg"], msg([name, " ramp leg"]), "wall", 1, "plywood");
-    // cheek funnels: vertical plates on the ramp's slanted edges, flaring 30 -> 36 in
-    const runX = RAMP_RUN * c30;
-    const flare = half1 - half0;
-    const L = sqrt(runX * runX + flare * flare);
-    const u0 = 0.25;
+    // cheeks: plumb plates on the ramp edges, from 1.0 below the ramp surface to CHEEK_H above
+    const xa = x0 - 0.25;
+    const za = zs + (x0 - xa) * t30;
+    var cheeks = [];
     for (var sg in [-1, 1])
     {
-        const t = [-runX / L, sg * flare / L, 0];
-        const n = [flare / L, sg * runX / L, 0];
-        const zAt0 = CHUTE_SILL + (u0 * runX / L) * tand(RAMP_ANGLE);
-        const zAt1 = CHUTE_SILL + RAMP_RUN * s30;
         const cid = id + nm("cheek", (sg + 1) / 2);
-        mkPrism(context, cid, F, [[x0, c + sg * half0, 0], n, t],
-                [[u0, sg * (zAt0 - 1)], [L, sg * (zAt1 - 1)], [L, sg * (zAt1 + CHEEK_H)], [u0, sg * (zAt0 + CHEEK_H)]], 0, RAMP_T);
-        paint(context, [cid], msg([name, " cheek funnel"]), "wall", 1, "plywood");
+        var y0 = c + hw;
+        if (sg < 0)
+        {
+            y0 = c - hw - RAMP_T;
+        }
+        prismXZ(context, cid, F, [[xa, za - 1], [xTop, zTop - 1], [xTop, zTop + CHEEK_H], [xa, za + CHEEK_H]], y0, y0 + RAMP_T);
+        cheeks = append(cheeks, cid);
     }
+    paint(context, cheeks, msg([name, " cheek"]), "wall", 1, "plywood");
+    // funnel wings: plumb plates at 45 degrees in plan, from the cheek ends out to +/-18 in
+    const flare = RAMP_FLARE_W / 2 - hw;
+    const wl = flare * sqrt(2) + RAMP_T;
+    var wings = [];
+    for (var sg in [-1, 1])
+    {
+        const wid = id + nm("wing", (sg + 1) / 2);
+        const t = [-cosd(45), sg * sind(45), 0];
+        const n = [cosd(45), sg * sind(45), 0];
+        mkPrism(context, wid, F, [[xTop, c + sg * hw, 0], n, t],
+                [[0, sg * (zTop - 1)], [wl, sg * (zTop - 1)], [wl, sg * (zTop + CHEEK_H)], [0, sg * (zTop + CHEEK_H)]], 0, RAMP_T);
+        bSubtract(context, wid + "trim", [wid], cheeks, true);
+        wings = append(wings, wid);
+    }
+    paint(context, wings, msg([name, " funnel wing"]), "wall", 1, "plywood");
 }
 
 // ---------------------------------------------------------------- src/41_crag.fs
@@ -1132,9 +1388,18 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     shellHollow(context, id + "lanternShell", [id + "lantern"], LANTERN_T);
 
     // ---- tier rings: 30 and 54 on the tower, 78 on the spire ------------------------
-    const r30 = buildRing(context, id + "ring30", F, h, PEG_LAT, RING_Z[0] - RING_W / 2, RING_Z[0] + RING_W / 2);
-    const r54 = buildRing(context, id + "ring54", F, h, PEG_LAT, RING_Z[1] - RING_W / 2, RING_Z[1] + RING_W / 2);
-    const r78 = buildRing(context, id + "ring78", F, sh, HPEG_LAT, RING78_TOP - RING_W, RING78_TOP);
+    // (on the suppressible "cosmetics" layer, FIELD-CAD-PACKAGE §2.7 / §8: with cosmetics off the
+    // faces stay flush and solid)
+    const cosm = opts["cosmetics"];
+    var r30 = [];
+    var r54 = [];
+    var r78 = [];
+    if (cosm)
+    {
+        r30 = buildRing(context, id + "ring30", F, h, PEG_LAT, RING_Z[0] - RING_W / 2, RING_Z[0] + RING_W / 2);
+        r54 = buildRing(context, id + "ring54", F, h, PEG_LAT, RING_Z[1] - RING_W / 2, RING_Z[1] + RING_W / 2);
+        r78 = buildRing(context, id + "ring78", F, sh, HPEG_LAT, RING78_TOP - RING_W, RING78_TOP);
+    }
 
     // ---- High Peg root bosses (steel, let into the spire and the lantern's lower edge)
     mkBox(context, id + "bossP", F, [-sh, HPEG_LAT - BOSS_W / 2, BOSS_Z[0]], [-sh + BOSS_T, HPEG_LAT + BOSS_W / 2, BOSS_Z[1]]);
@@ -1181,9 +1446,12 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     {
         ringRGB = allianceRGB(isRed);
     }
-    paintRGB(context, r30, msg([cn, " tier ring 30"]), ringRGB, 1, "acrylic");
-    paintRGB(context, r54, msg([cn, " tier ring 54"]), ringRGB, 1, "acrylic");
-    paintRGB(context, r78, msg([cn, " tier ring 78"]), ringRGB, 1, "acrylic");
+    if (cosm)
+    {
+        paintRGB(context, r30, msg([cn, " tier ring 30"]), ringRGB, 1, "acrylic");
+        paintRGB(context, r54, msg([cn, " tier ring 54"]), ringRGB, 1, "acrylic");
+        paintRGB(context, r78, msg([cn, " tier ring 78"]), ringRGB, 1, "acrylic");
+    }
     paint(context, [id + "bossP", id + "bossN"], msg([cn, " High Peg root boss"]), "crag-accent", 1, "steel");
 
     // ---- SHELF FACE: Shelf 1 / Shelf 2, slot fences, gussets ------------------------
@@ -1221,6 +1489,11 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     for (var sgn in [-1, 1])
     {
         const fk = (sgn + 1) / 2;
+        var side = "guardrail side";
+        if (sgn > 0)
+        {
+            side = "centre side";
+        }
         const socks = [[SOCK_LAT, LOW_SOCK_Z, "Low"], [-SOCK_LAT, MID_SOCK_Z, "Mid"]];
         for (var q in socks)
         {
@@ -1231,7 +1504,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             const yb = sgn * (h + SOCK_STANDOFF - SOCK_LEN * s30);
             const zbt = zr - SOCK_LEN * c30;
             buildSocketTube(context, tid, F, [lat, yb, zbt], a, [1, 0, 0]);
-            paint(context, [tid], msg([cn, " ", q[2], " Socket"]), "socket", 1, "aluminum");
+            paint(context, [tid], msg([cn, " ", q[2], " Socket (", side, ")"]), "socket", 1, "aluminum");
             // bracket plate in the wedge under the tube, top edge 1.0 in below the rim height
             const dy = yb - sgn * ro * c30;
             const dz = zbt + ro * s30;
@@ -1240,7 +1513,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             const az = dz + (sgn * (dy - sgn * h)) / c30 * s30;
             const bid = id + nm(nm("brk", q[2]), fk);
             prismYZ(context, bid, F, [[sgn * h, az], [dy, dz], [cy, ztop], [sgn * h, ztop]], lat - SOCK_BRACKET_T / 2, lat + SOCK_BRACKET_T / 2);
-            paint(context, [bid], msg([cn, " ", q[2], " Socket bracket"]), "crag-accent", 1, "aluminum");
+            paint(context, [bid], msg([cn, " ", q[2], " Socket bracket (", side, ")"]), "crag-accent", 1, "aluminum");
         }
     }
 
@@ -1272,8 +1545,12 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             pegs = append(pegs, pid);
         }
     }
-    paint(context, [pegs[0], pegs[1]], msg([cn, " Low Peg"]), "rung", 1, "steel");
-    paint(context, [pegs[2], pegs[3]], msg([cn, " Mid Peg"]), "rung", 1, "steel");
+    const pegSide = [" (guardrail side)", " (centre side)"];
+    for (var k = 0; k < 2; k += 1)
+    {
+        paint(context, [pegs[k]], msg([cn, " Low Peg", pegSide[k]]), "rung", 1, "steel");
+        paint(context, [pegs[k + 2]], msg([cn, " Mid Peg", pegSide[k]]), "rung", 1, "steel");
+    }
     var hpegs = [];
     for (var sgn in [-1, 1])
     {
@@ -1282,7 +1559,10 @@ function buildCrag(context is Context, id is Id, isRed, opts)
         buildPeg(context, pid, F, [-sh, y, HPEG_Z], u, [0, 1, 0], [-sh, y - 3, HPEG_Z - 4], [-sh + 4, y + 3, HPEG_Z + 4]);
         hpegs = append(hpegs, pid);
     }
-    paint(context, hpegs, msg([cn, " High Peg"]), "rung", 1, "steel");
+    for (var k = 0; k < 2; k += 1)
+    {
+        paint(context, [hpegs[k]], msg([cn, " High Peg", pegSide[k]]), "rung", 1, "steel");
+    }
 
     buildDepot(context, id + "depot", F, cn);
 }
@@ -1354,11 +1634,11 @@ function hwRect(n0, n1, w0, w1)
     return [hwXZ(w0, n0), hwXZ(w0, n1), hwXZ(w1, n1), hwXZ(w1, n0)];
 }
 
-// Hollow 2 x 2 tube running along y, cross-section n0..n1 x w0..w1.
-function hwTubeY(context is Context, id is Id, F, n0, n1, w0, w1, y0, y1)
+// 2 x 2 member running along y, cross-section n0..n1 x w0..w1 (solid bar; its material is the
+// effective density of a 2 x 2 x 0.120 tube, so mass is right and the lane frame welds cleanly).
+function hwBarY(context is Context, id is Id, F, n0, n1, w0, w1, y0, y1)
 {
-    const t = TUBE_WALL;
-    prismXZHoles(context, id, F, hwRect(n0, n1, w0, w1), [hwRect(n0 + t, n1 - t, w0 + t, w1 - t)], y0, y1);
+    prismXZ(context, id, F, hwRect(n0, n1, w0, w1), y0, y1);
 }
 
 function buildHeadwall(context is Context, id is Id, isRed)
@@ -1370,41 +1650,41 @@ function buildHeadwall(context is Context, id is Id, isRed)
     const c = cosd(HW_LEAN);
     const wdir = [-s, 0, c];
     const ndir = [c, 0, s];
-    const tw = TUBE_WALL;
 
-    var uprights = [];
-    var members = [];
+    var frames = [];
     var rungsAll = [];
     var brackets = [];
+    var uprightsAll = [];
+    const rungNames = ["LEDGE RUNG", "CAMP RUNG", "SUMMIT RUNG"];
     for (var li = 0; li < size(LANE_Y); li += 1)
     {
         const yc = LANE_Y[li];
         const ylo = yc - LANE_W / 2;
         const yhi = yc + LANE_W / 2;
         const lid = id + nm("lane", li + 1);
-        // two uprights in the back layer, running up plane P (trimmed to Z 0..84 below)
+        // one welded lane frame, all members in a single 2-in layer 4.0-6.0 in behind plane P:
+        // two uprights running up the plane (trimmed to Z 0..84 below), a bottom rail, a top rail
+        // and one carrier behind each rung
         const uy = [[ylo + UPRIGHT_INSET, ylo + UPRIGHT_INSET + TUBE_S], [yhi - UPRIGHT_INSET - TUBE_S, yhi - UPRIGHT_INSET]];
+        var members = [];
         for (var k = 0; k < 2; k += 1)
         {
             const uid = lid + nm("upright", k);
-            mkPrismHoles(context, uid, F, [[HW_X, 0, 0], wdir, ndir],
-                    rectPts(UPRIGHT_N[0], uy[k][0], UPRIGHT_N[1], uy[k][1]),
-                    [rectPts(UPRIGHT_N[0] + tw, uy[k][0] + tw, UPRIGHT_N[1] - tw, uy[k][1] - tw)], -3, hwW(TRUSS_TOP) + 6);
-            uprights = append(uprights, uid);
+            mkPrism(context, uid, F, [[HW_X, 0, 0], wdir, ndir], rectPts(FRONT_N[0], uy[k][0], FRONT_N[1], uy[k][1]), -3, hwW(TRUSS_TOP) + 6);
+            members = append(members, uid);
+            uprightsAll = append(uprightsAll, uid);
         }
-        // front-layer tubes: bottom rail, one rung carrier per rung, top rail
         const my0 = ylo + 0.5;
         const my1 = yhi - 0.5;
-        hwTubeY(context, lid + "railBot", F, FRONT_N[0], FRONT_N[1], 2, 2 + TUBE_S, my0, my1);
-        hwTubeY(context, lid + "railTop", F, FRONT_N[0], FRONT_N[1], 85, 85 + TUBE_S, my0, my1);
+        hwBarY(context, lid + "railBot", F, FRONT_N[0], FRONT_N[1], 2, 2 + TUBE_S, my0, my1);
+        hwBarY(context, lid + "railTop", F, FRONT_N[0], FRONT_N[1], 85, 85 + TUBE_S, my0, my1);
         members = concatenateArrays([members, [lid + "railBot", lid + "railTop"]]);
-        const rungNames = ["LEDGE RUNG", "CAMP RUNG", "SUMMIT RUNG"];
         for (var ri = 0; ri < size(RUNG_TOP); ri += 1)
         {
             const zc = RUNG_TOP[ri] - RUNG_OD / 2;
             const wc = hwW(zc);
             const cid = lid + nm("carrier", ri);
-            hwTubeY(context, cid, F, FRONT_N[0], FRONT_N[1], wc - TUBE_S / 2, wc + TUBE_S / 2, my0, my1);
+            hwBarY(context, cid, F, FRONT_N[0], FRONT_N[1], wc - TUBE_S / 2, wc + TUBE_S / 2, my0, my1);
             members = append(members, cid);
             // the rung: centreline in plane P, 20.0 long, staggered from the lane centre
             const ya = yc + RUNG_STAGGER[ri] - RUNG_L / 2;
@@ -1413,7 +1693,8 @@ function buildHeadwall(context is Context, id is Id, isRed)
             mkCyl(context, rid, F, plXZ(0), rc, RUNG_OD / 2, -(ya + RUNG_L), -ya);
             paint(context, [rid], msg([hn, " lane ", li + 1, " ", rungNames[ri]]), "rung", 1, "steel");
             rungsAll = append(rungsAll, rid);
-            // end brackets: plates within 2.0 in of each rung end, carrier face to 1.0 in past P
+            // end brackets: saddle plates within 2.0 in of each rung end, from the carrier face
+            // to 0.25 in short of the rung's front surface (nothing projects past the rung)
             const bys = [[ya + BRACKET_FROM_END, ya + BRACKET_FROM_END + BRACKET_T],
                     [ya + RUNG_L - BRACKET_FROM_END - BRACKET_T, ya + RUNG_L - BRACKET_FROM_END]];
             for (var bi = 0; bi < 2; bi += 1)
@@ -1424,19 +1705,40 @@ function buildHeadwall(context is Context, id is Id, isRed)
                 brackets = append(brackets, bid);
             }
         }
+        frames = append(frames, members);
     }
-    // trim the uprights to Z 0 .. 84 (truss chords end at 84 in vertical)
+    // trim the uprights to Z 0 .. 84 (truss chords end at 84 in vertical), then weld each lane
     mkBox(context, id + "trimLo", F, [-20, HW_Y0 - 10, -30], [80, HW_Y1 + 10, 0]);
     mkBox(context, id + "trimHi", F, [-20, HW_Y0 - 10, TRUSS_TOP], [80, HW_Y1 + 10, TRUSS_TOP + 40]);
-    bSubtract(context, id + "trim", uprights, [id + "trimLo", id + "trimHi"], false);
-    paint(context, uprights, msg([hn, " upright"]), "truss", 1, "steel");
-    paint(context, members, msg([hn, " rail"]), "truss", 1, "steel");
+    bSubtract(context, id + "trim", uprightsAll, [id + "trimLo", id + "trimHi"], false);
+    for (var li = 0; li < size(frames); li += 1)
+    {
+        paint(context, frames[li], msg([hn, " lane ", li + 1, " frame"]), "truss", 1, "steel-tube-2x2");
+        bUnion(context, id + nm("weld", li + 1), frames[li]);
+    }
     paint(context, brackets, msg([hn, " rung end bracket"]), "truss-dark", 1, "steel");
 
-    // lower crossbeam (behind the uprights) and the three 15-degree tag wedges
+    // lower crossbeam, 8.0-10.0 in behind P so the plumb tag panels sit in front of it, held off
+    // the lane frames by a 2 x 2 standoff at every upright; and the three 15-degree tag wedges
     const wcb = (BEAM_Z - (BEAM_N[0] + BEAM_N[1]) / 2 * s) / c;
-    hwTubeY(context, id + "crossbeam", F, BEAM_N[0], BEAM_N[1], wcb - TUBE_S / 2, wcb + TUBE_S / 2, HW_Y0, HW_Y1);
-    paint(context, [id + "crossbeam"], msg([hn, " lower crossbeam"]), "truss", 1, "steel");
+    var beam = [id + "crossbeam"];
+    hwBarY(context, id + "crossbeam", F, BEAM_N[0], BEAM_N[1], wcb - TUBE_S / 2, wcb + TUBE_S / 2, HW_Y0, HW_Y1);
+    for (var li = 0; li < size(LANE_Y); li += 1)
+    {
+        for (var k = 0; k < 2; k += 1)
+        {
+            var y0 = LANE_Y[li] - LANE_W / 2 + UPRIGHT_INSET;
+            if (k == 1)
+            {
+                y0 = LANE_Y[li] + LANE_W / 2 - UPRIGHT_INSET - TUBE_S;
+            }
+            const sid = id + nm(nm("standoff", li), k);
+            hwBarY(context, sid, F, BEAM_N[1], FRONT_N[0], wcb - TUBE_S / 2, wcb + TUBE_S / 2, y0, y0 + TUBE_S);
+            beam = append(beam, sid);
+        }
+    }
+    paint(context, beam, msg([hn, " lower crossbeam"]), "truss", 1, "steel-tube-2x2");
+    bUnion(context, id + "beamWeld", beam);
     const pb = hwXZ(wcb - TUBE_S / 2, BEAM_N[1]);
     const pt = hwXZ(wcb + TUBE_S / 2, BEAM_N[1]);
     const xBack = TAG_HW_X - TAG_PANEL_T;
@@ -1502,15 +1804,16 @@ function buildAllianceTape(context is Context, id is Id, isRed)
     tapeBox(context, id + "bcLo", F, 0, HW_Y0, HW_X - w, HW_Y0 + w);
     tapeBox(context, id + "bcHi", F, 0, HW_Y1 - w, HW_X - w, HW_Y1);
     paintRGB(context, [id + "bcX", id + "bcLo", id + "bcHi"], msg([A, " BASECAMP tape"]), rgb, 1, "tape");
+    bUnion(context, id + "bcJoin", [id + "bcX", id + "bcLo", id + "bcHi"]);
     // CLIMB LINE: the X = 48 line carried across the full width, dashed outside BASECAMP
-    const dashes = [[0, 6], [54, 60], [66, 72], [78, 84], [240, 246], [252, 258], [264, 270], [318, 324]];
+    const dashes = climbDashes();
     var cl = [];
     for (var i = 0; i < size(dashes); i += 1)
     {
         tapeBox(context, id + nm("climb", i), F, HW_X - w, dashes[i][0], HW_X, dashes[i][1]);
         cl = append(cl, id + nm("climb", i));
     }
-    paintRGB(context, cl, msg([A, " CLIMB LINE tape (dashed)"]), rgb, 1, "tape");
+    paintRGB(context, cl, msg([A, " CLIMB LINE dash"]), rgb, 1, "tape");
     // OUTFITTER LANES: 36 wide x 48 deep, centred on each chute
     for (var i = 0; i < size(CHUTE_Y); i += 1)
     {
@@ -1519,7 +1822,8 @@ function buildAllianceTape(context is Context, id is Id, isRed)
         tapeBox(context, lid + "end", F, LANE_TAPE_D - w, c - LANE_TAPE_W / 2, LANE_TAPE_D, c + LANE_TAPE_W / 2);
         tapeBox(context, lid + "lo", F, 0, c - LANE_TAPE_W / 2, LANE_TAPE_D - w, c - LANE_TAPE_W / 2 + w);
         tapeBox(context, lid + "hi", F, 0, c + LANE_TAPE_W / 2 - w, LANE_TAPE_D - w, c + LANE_TAPE_W / 2);
-        paintRGB(context, [lid], msg([A, " OUTFITTER LANE tape ", i + 1]), rgb, 1, "tape");
+        paintRGB(context, [lid], msg([A, " OUTFITTER LANE ", i + 1, " tape"]), rgb, 1, "tape");
+        bUnion(context, lid + "join", [lid + "end", lid + "lo", lid + "hi"]);
     }
     // CRAG APRON: 36 in off the SHELF and PEG FACES, 20 in off the SOCKET FACES, R20 corners
     const CF = cragFrame(isRed);
@@ -1527,24 +1831,86 @@ function buildAllianceTape(context is Context, id is Id, isRed)
     const ay = CRAG_S / 2 + 20;
     mkPrismProfile(context, id + "apron", CF, plXY(0), [roundRectLoop(ax, ay, 20), roundRectLoop(ax - w, ay - w, 20 - w)], 0, TAPE_T);
     paintRGB(context, [id + "apron"], msg([A, " CRAG APRON tape"]), rgb, 1, "tape");
-    // alliance staging marks: white 12-in X with a 0.5-in alliance-colour border
+    return [id + "apron"];
+}
+
+// CLIMB LINE dashes (6 on / 6 off) on the X = 48 line outside BASECAMP, derived from the ledger:
+// the free spans run between the field edges, the two OUTFITTER LANE end lines (which lie on the
+// same strip and serve as the CLIMB LINE there) and BASECAMP.  A dash starts at a field edge or
+// one gap after a neighbouring line, and stops one gap before the next.
+function climbDashes()
+{
+    const half = LANE_TAPE_W / 2;
+    const spans = [[0, CHUTE_Y[0] - half, true, false], [CHUTE_Y[0] + half, HW_Y0, false, false],
+            [HW_Y1, CHUTE_Y[1] - half, false, false], [CHUTE_Y[1] + half, FIELD_W, false, true]];
+    var out = [];
+    for (var sp in spans)
+    {
+        var y = sp[0] + CLIMB_DASH;
+        if (sp[2])
+        {
+            y = sp[0];
+        }
+        var stop = sp[1] - CLIMB_DASH;
+        if (sp[3])
+        {
+            stop = sp[1];
+        }
+        for (var k = 0; k < 20; k += 1)
+        {
+            if (y + CLIMB_DASH <= stop + 0.000001)
+            {
+                out = append(out, [y, y + CLIMB_DASH]);
+            }
+            y = y + 2 * CLIMB_DASH;
+        }
+    }
+    return out;
+}
+
+// Staging marks (FIELD-CAD-PACKAGE §6): the 9 CENTER CACHE X marks and each alliance's three
+// staging marks.  Built with the staged SUPPLIES, as a separate "staging" set that can be
+// switched off with them.
+function buildStagingMarks(context is Context, id is Id)
+{
+    const W = worldFrame();
     var marks = [];
-    var borders = [];
+    for (var i = 0; i < 3; i += 1)
+    {
+        for (var j = 0; j < 3; j += 1)
+        {
+            const mid = id + nm(nm("cache", i), j);
+            prismXY(context, mid, W, xMarkPts(CACHE_X[i], CACHE_Y[j], 6, 1), 0, TAPE_T);
+            paint(context, [mid], msg(["CENTER CACHE mark (", CACHE_X[i], ", ", CACHE_Y[j], ")"]), "neutral-white", 1, "tape");
+            marks = append(marks, mid);
+        }
+    }
+    for (var isRed in [false, true])
+    {
+        buildAllianceStagingMarks(context, id + nm("stage", allianceName(isRed)), isRed);
+    }
+    return marks;
+}
+
+function buildAllianceStagingMarks(context is Context, id is Id, isRed)
+{
+    const F = allianceFrame(isRed);
+    const A = allianceName(isRed);
+    const rgb = allianceRGB(isRed);
+    // white 12-in X with a 0.5-in alliance-colour border
+    const kinds = ["CACHE CRATES", "O2 CELLS", "ROPE COILS"];
     for (var i = 0; i < size(STAGE_Y); i += 1)
     {
         const mid = id + nm("stage", i);
         prismXY(context, mid + "white", F, xMarkPts(STAGE_X, STAGE_Y[i], 6, 1), 0, TAPE_T);
         prismXY(context, mid + "border", F, xMarkPts(STAGE_X, STAGE_Y[i], 6.5, 1.5), 0, TAPE_T);
         bSubtract(context, mid + "cut", [mid + "border"], [mid + "white"], true);
-        marks = append(marks, mid + "white");
-        borders = append(borders, mid + "border");
+        paint(context, [mid + "white"], msg([A, " staging mark - ", kinds[i]]), "neutral-white", 1, "tape");
+        paintRGB(context, [mid + "border"], msg([A, " staging mark border - ", kinds[i]]), rgb, 1, "tape");
     }
-    paint(context, marks, msg([A, " staging mark"]), "neutral-white", 1, "tape");
-    paintRGB(context, borders, msg([A, " staging mark border"]), rgb, 1, "tape");
-    return [id + "apron"];
 }
 
-function buildTape(context is Context, id is Id)
+function buildTape(context is Context, id is Id, marks)
 {
     const W = worldFrame();
     const w = TAPE_W;
@@ -1567,17 +1933,6 @@ function buildTape(context is Context, id is Id)
     tapeBox(context, id + "bandB", W, bx0 + w, by0, bx1 - w, by0 + w);
     tapeBox(context, id + "bandT", W, bx0 + w, by1 - w, bx1 - w, by1);
     const band = [id + "bandL", id + "bandR", id + "bandB", id + "bandT"];
-    // CENTER CACHE marks: 3 x 3 grid of 12-in X marks
-    var marks = [];
-    for (var i = 0; i < 3; i += 1)
-    {
-        for (var j = 0; j < 3; j += 1)
-        {
-            const mid = id + nm(nm("cache", i), j);
-            prismXY(context, mid, W, xMarkPts(CACHE_X[i], CACHE_Y[j], 6, 1), 0, TAPE_T);
-            marks = append(marks, mid);
-        }
-    }
     // overlap pass: the band stops at the BASE DEPOT trays; everything yields to the APRONS
     const dh = CRAG_S / 2 + 20;         // out to the SOCKET FACE APRON line, so no sliver survives
     const dx0 = CRAG_S / 2 - DEPOT_WRAP - DEPOT_LIP_T - DEPOT_CHAMFER;
@@ -1587,9 +1942,11 @@ function buildTape(context is Context, id is Id)
     bSubtract(context, id + "bandDepot", band, [id + "depotB", id + "depotR"], false);
     bSubtract(context, id + "bandOver", band, concatenateArrays([cl, marks, aprons]), true);
     bSubtract(context, id + "centerOver", cl, concatenateArrays([marks, aprons]), true);
+    // drop only degenerate boolean slivers; the 0.34-sq-in triangles of band tape between an X
+    // mark's arms are real tape and stay
+    removeSlivers(context, id + "slivers", concatenateArrays([cl, band]), 0.01 * TAPE_T);
     paint(context, cl, "FIELD centerline tape", "neutral-white", 1, "tape");
     paint(context, band, "CENTER CACHE band tape", "neutral-white", 1, "tape");
-    paint(context, marks, "CENTER CACHE mark", "neutral-white", 1, "tape");
 }
 
 // ---------------------------------------------------------------- src/44_tags.fs
@@ -1872,7 +2229,14 @@ function supplyPoses(opts)
             const offs = pairOffsets(k, opts);
             for (var n = 0; n < 2; n += 1)
             {
-                var p = [STAGE_X + offs[n][0], STAGE_Y[j] + offs[n][1], TAPE_T + offs[n][2]];
+                // a piece rests on the mark's tape only if its lowest point is over the X; the
+                // side-by-side CACHE CRATES' crown apexes land 3.45 in clear of it, on the carpet
+                var zs = TAPE_T;
+                if (k == "crate" && opts["pairs"] != "STACKED")
+                {
+                    zs = 0;
+                }
+                var p = [STAGE_X + offs[n][0], STAGE_Y[j] + offs[n][1], zs + offs[n][2]];
                 if (isRed)
                 {
                     p = rot180(p);
@@ -1918,7 +2282,7 @@ function buildSupplies(context is Context, id is Id, opts)
     var i = 0;
     for (var p in supplyPoses(opts))
     {
-        const isStock = p[3] == 0;
+        const isStock = abs(p[1] - FIELD_CX) > FIELD_CX;      // behind an alliance wall
         if ((isStock && opts["stock"]) || (!isStock && opts["staged"]))
         {
             i += 1;
@@ -1967,9 +2331,14 @@ function buildField(context is Context, id is Id, opts)
         buildHeadwall(context, id + "hwBlue", false);
         buildHeadwall(context, id + "hwRed", true);
     }
+    var marks = [];
+    if (opts["staged"])
+    {
+        marks = buildStagingMarks(context, id + "staging");
+    }
     if (opts["tape"])
     {
-        buildTape(context, id + "tape");
+        buildTape(context, id + "tape", marks);
     }
     if (opts["tags"])
     {
@@ -1978,6 +2347,47 @@ function buildField(context is Context, id is Id, opts)
     if (opts["staged"] || opts["stock"])
     {
         buildSupplies(context, id + "supplies", opts);
+    }
+    numberSharedNames(context, [id]);
+}
+
+// Group each field element's bodies into one named open composite part, so the parts list reads
+// as the field's element list (the members stay selectable and keep their own properties).
+// Runs last, after the self-check.  SUPPLIES are left as individual parts.
+function groupField(context is Context, id is Id, opts)
+{
+    var groups = [];
+    if (opts["perimeter"])
+    {
+        groups = concatenateArrays([groups, [[id + "rail0", "Guardrail Y = 0"], [id + "rail1", "Guardrail Y = 324"]]]);
+    }
+    if (opts["walls"])
+    {
+        groups = concatenateArrays([groups, [[id + "wallBlue", "BLUE alliance wall, driver stations and OUTFITTERS"], [id + "wallRed", "RED alliance wall, driver stations and OUTFITTERS"]]]);
+    }
+    if (opts["crags"])
+    {
+        groups = concatenateArrays([groups, [[id + "cragBlue", "BLUE CRAG and BASE DEPOT"], [id + "cragRed", "RED CRAG and BASE DEPOT"]]]);
+    }
+    if (opts["headwalls"])
+    {
+        groups = concatenateArrays([groups, [[id + "hwBlue", "BLUE HEADWALL"], [id + "hwRed", "RED HEADWALL"]]]);
+    }
+    if (opts["tape"])
+    {
+        groups = append(groups, [id + "tape", "Tape"]);
+    }
+    if (opts["staged"])
+    {
+        groups = append(groups, [id + "staging", "Staging marks"]);
+    }
+    if (opts["tags"])
+    {
+        groups = append(groups, [id + "tags", "AprilTag panels"]);
+    }
+    for (var i = 0; i < size(groups); i += 1)
+    {
+        groupParts(context, id + nm("group", i), [groups[i][0]], groups[i][1]);
     }
 }
 
@@ -2036,8 +2446,9 @@ function selfCheck(context is Context, id is Id, opts)
         for (var r in ["rail0", "rail1"])
         {
             ch = ck(ch, msg([r, " top rail height"]), measureBox(context, [id + r + "top"], W)[5], GUARD_H, 0.001);
-            const led = measureBox(context, [id + r + "ledA"], W);
+            const led = measureBox(context, [id + r + "ledBLUE0", id + r + "ledBLUE1", id + r + "ledBLUE2", id + r + "ledRED0", id + r + "ledRED1", id + r + "ledRED2"], W);
             ch = ck(ch, msg([r, " FIELD LED lens centre"]), (led[2] + led[5]) / 2, LED_Z, 0.001);
+            ch = ck(ch, msg([r, " FIELD LED blocks span the rail"]), led[3] - led[0], FIELD_L, 0.001);
         }
     }
     if (opts["walls"])
@@ -2046,8 +2457,28 @@ function selfCheck(context is Context, id is Id, opts)
         {
             const wid = id + nm("wall", sideTag(isRed));
             const F = allianceFrame(isRed);
+            const AW = msg([allianceName(isRed), " alliance wall"]);
             const wb = measureBox(context, [wid + "panel", wid + "glaze", wid + "frBot"], F);
-            ch = ckBox(ch, msg([allianceName(isRed), " alliance wall"]), wb, [-WALL_T, 0, 0, 0, FIELD_W, WALL_H], 0.001);
+            ch = ckBox(ch, AW, wb, [-WALL_T, 0, 0, 0, FIELD_W, WALL_H], 0.001);
+            ch = ckBox(ch, msg([AW, " lower panel (solid to 39)"]), measureBox(context, [wid + "panel"], F), [-WALL_PANEL_T, 0, 0, 0, FIELD_W, WALL_SOLID_H], 0.001);
+            ch = ckBox(ch, msg([AW, " glazing (39 to 78)"]), measureBox(context, [wid + "glaze"], F), [-WALL_GLAZE_T, 0, WALL_SOLID_H, 0, FIELD_W, WALL_H], 0.001);
+            ch = ck(ch, msg([AW, " glazing held by the frame"]), measureDist(context, [wid + "glaze"], [wid + "frBot"]), 0, 0.001);
+            for (var i = 0; i < size(STATION_Y); i += 1)
+            {
+                const sid = wid + nm("station", i + 1);
+                const lab = msg([allianceName(isRed), " driver station ", i + 1]);
+                const s = STATION_Y[i];
+                const sb = measureBox(context, [sid + "shelf"], F);
+                ch = ckBox(ch, msg([lab, " shelf"]), sb, [undefined, undefined, STATION_SHELF_TOP - STATION_SHELF_T, -WALL_PANEL_T, undefined, STATION_SHELF_TOP], 0.001);
+                ch = ck(ch, msg([lab, " shelf inside its 96-in band (margin >= 0)"]), min(min(sb[1] - (s - STATION_W / 2), s + STATION_W / 2 - sb[4]), 0), 0, 0.001);
+                ch = ck(ch, msg([lab, " shelf seated on the lower panel"]), measureDist(context, [sid + "shelf"], [wid + "panel"]), 0, 0.001);
+                for (var b in ["estop", "astop"])
+                {
+                    const hb = measureBox(context, [sid + b + "head"], F);
+                    ch = ck(ch, msg([lab, " ", b, " head diameter"]), hb[3] - hb[0], BUTTON_HEAD_D, 0.001);
+                    ch = ck(ch, msg([lab, " ", b, " stands on the shelf"]), measureBox(context, [sid + b + "base"], F)[2], STATION_SHELF_TOP, 0.001);
+                }
+            }
             for (var c in CHUTE_Y)
             {
                 const lab = msg([allianceName(isRed), " OUTFITTER chute at Y ", c]);
@@ -2106,6 +2537,14 @@ function selfCheck(context is Context, id is Id, opts)
                 ch = ckSocket(context, ch, msg([A, " Low Socket y", sgn]), F, [cid + nm("sockLow", fk)], [SOCK_LAT, sgn * (h + SOCK_STANDOFF), LOW_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
                 ch = ckSocket(context, ch, msg([A, " Mid Socket y", sgn]), F, [cid + nm("sockMid", fk)], [-SOCK_LAT, sgn * (h + SOCK_STANDOFF), MID_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
                 ch = ck(ch, msg([A, " Low Socket y", sgn, " lowest point"]), measureBox(context, [cid + nm("sockLow", fk)], F)[2], 22.268, 0.001);
+                for (var q in [["Low", LOW_SOCK_Z], ["Mid", MID_SOCK_Z]])
+                {
+                    const bid = cid + nm(nm("brk", q[0]), fk);
+                    const lab = msg([A, " ", q[0], " Socket y", sgn, " bracket"]);
+                    ch = ck(ch, msg([lab, " top 1.0 below the rim"]), measureBox(context, [bid], F)[5], q[1] - 1, 0.001);
+                    ch = ck(ch, msg([lab, " bears on the tube"]), measureDist(context, [bid], [cid + nm(nm("sock", q[0]), fk)]), 0, 0.001);
+                    ch = ck(ch, msg([lab, " bears on the SOCKET FACE"]), measureDist(context, [bid], [cid + "tower"]), 0, 0.001);
+                }
             }
             ch = ckSocket(context, ch, msg([A, " Summit Socket"]), F, [cid + "sockSummit"], [h + SOCK_STANDOFF, 0, SUM_SOCK_Z], [sind(SUM_TILT), 0, cosd(SUM_TILT)], [0, 1, 0]);
             const mb = measureBox(context, [cid + "mastArm", cid + "mastPost"], F);
@@ -2127,9 +2566,12 @@ function selfCheck(context is Context, id is Id, opts)
                 const P = frameIn(F, [-SPIRE_S / 2, sgn * HPEG_LAT, HPEG_Z], [0, 1, 0], u);
                 ch = ckBox(ch, msg([A, " High Peg y", sgn * HPEG_LAT]), measureBox(context, [cid + nm("pegHigh", (sgn + 1) / 2)], P), [-pr, -pr, -pr, pr, pr, PEG_EXP], 0.002);
             }
-            ch = ckBox(ch, msg([A, " tier ring 30"]), measureBox(context, [cid + "ring30"], F), [-h, -h, RING_Z[0] - RING_W / 2, h, h, RING_Z[0] + RING_W / 2], 0.001);
-            ch = ckBox(ch, msg([A, " tier ring 54"]), measureBox(context, [cid + "ring54"], F), [-h, -h, RING_Z[1] - RING_W / 2, h, h, RING_Z[1] + RING_W / 2], 0.001);
-            ch = ckBox(ch, msg([A, " tier ring 78"]), measureBox(context, [cid + "ring78"], F), [-SPIRE_S / 2, -SPIRE_S / 2, RING78_TOP - RING_W, SPIRE_S / 2, SPIRE_S / 2, RING78_TOP], 0.001);
+            if (opts["cosmetics"])
+            {
+                ch = ckBox(ch, msg([A, " tier ring 30"]), measureBox(context, [cid + "ring30"], F), [-h, -h, RING_Z[0] - RING_W / 2, h, h, RING_Z[0] + RING_W / 2], 0.001);
+                ch = ckBox(ch, msg([A, " tier ring 54"]), measureBox(context, [cid + "ring54"], F), [-h, -h, RING_Z[1] - RING_W / 2, h, h, RING_Z[1] + RING_W / 2], 0.001);
+                ch = ckBox(ch, msg([A, " tier ring 78"]), measureBox(context, [cid + "ring78"], F), [-SPIRE_S / 2, -SPIRE_S / 2, RING78_TOP - RING_W, SPIRE_S / 2, SPIRE_S / 2, RING78_TOP], 0.001);
+            }
             const d = cid + "depot";
             const lipOut = h + DEPOT_CH + DEPOT_LIP_T;
             ch = ckBox(ch, msg([A, " BASE DEPOT floor"]), measureBox(context, [d + "floor"], F), [h - DEPOT_WRAP, -h - DEPOT_CH, 0, h + DEPOT_CH, h + DEPOT_CH, DEPOT_FLOOR_T], 0.001);
@@ -2156,16 +2598,36 @@ function selfCheck(context is Context, id is Id, opts)
                     const y0 = LANE_Y[li] + RUNG_STAGGER[ri] - RUNG_L / 2;
                     ch = ckBox(ch, msg([A, " lane ", li + 1, " rung ", ri]), measureBox(context, [lid + nm("rung", ri)], F),
                             [xc - RUNG_OD / 2, y0, zc - RUNG_OD / 2, xc + RUNG_OD / 2, y0 + RUNG_L, RUNG_TOP[ri]], 0.001);
+                    for (var bi = 0; bi < 2; bi += 1)
+                    {
+                        const bb = measureBox(context, [lid + nm(nm("bracket", ri), bi)], F);
+                        const bp = measureBox(context, [lid + nm(nm("bracket", ri), bi)], PF);
+                        ch = ck(ch, msg([A, " lane ", li + 1, " rung ", ri, " bracket ", bi, " no part past the rung front (margin)"]), min(RUNG_OD / 2 - bp[3], 0), 0, 0.0001);
+                        ch = ck(ch, msg([A, " lane ", li + 1, " rung ", ri, " bracket ", bi, " inside a 2.0-in end zone (margin)"]),
+                                min(max(bb[4] - (y0 + 2), 0), max((y0 + RUNG_L - 2) - bb[1], 0)), 0, 0.0001);
+                    }
                 }
-                var truss = [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"];
-                const tb = measureBox(context, truss, PF);
-                ch = ck(ch, msg([A, " lane ", li + 1, " truss >= 4.0 behind plane P (margin)"]), min(-TRUSS_CLR - tb[3], 0), 0, 0.0001);
-                const ub = measureBox(context, [lid + "upright0", lid + "upright1"], F);
-                ch = ck(ch, msg([A, " lane ", li + 1, " uprights end at Z 84"]), ub[5], TRUSS_TOP, 0.001);
-                ch = ck(ch, msg([A, " lane ", li + 1, " uprights stand on the carpet"]), ub[2], 0, 0.001);
+                const tb = measureBox(context, [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"], PF);
+                ch = ck(ch, msg([A, " lane ", li + 1, " frame >= 4.0 behind plane P (margin)"]), min(-TRUSS_CLR - tb[3], 0), 0, 0.0001);
+                const ub = measureBox(context, [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"], F);
+                ch = ck(ch, msg([A, " lane ", li + 1, " frame tops out at Z 84"]), ub[5], TRUSS_TOP, 0.001);
+                ch = ck(ch, msg([A, " lane ", li + 1, " frame stands on the carpet"]), ub[2], 0, 0.001);
+                ch = ck(ch, msg([A, " lane ", li + 1, " frame inside its lane"]), min(ub[1] - (LANE_Y[li] - LANE_W / 2), 0) + min(LANE_Y[li] + LANE_W / 2 - ub[4], 0), 0, 0.0001);
+                // BASECAMP clear volume: a 42-in ROBOT stages up to X = 43.859 - 2 / cos15 - 42 / 3.7321 (= 30.53)
+                const xStage = HW_X - (TRUSS_CLR + TUBE_S) / cosd(HW_LEAN) - 42 * tand(HW_LEAN);
+                mkBox(context, lid + "probe42", F, [0, LANE_Y[li] - 20, 0], [xStage - 0.01, LANE_Y[li] + 20, 42]);
+                ch = ck(ch, msg([A, " lane ", li + 1, " 42-in staging envelope clear of the lane (X to the frame's front at 42 in)"]),
+                        min(measureDist(context, [lid + "probe42"], [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"]), 0.001), 0.001, 0.0001);
+                bDelete(context, lid + "probe42del", [lid + "probe42"]);
             }
             const cb = measureBox(context, [hid + "crossbeam"], PF);
             ch = ck(ch, msg([A, " lower crossbeam >= 4.0 behind plane P (margin)"]), min(-TRUSS_CLR - cb[3], 0), 0, 0.0001);
+            for (var li = 0; li < size(LANE_Y); li += 1)
+            {
+                const wid = hid + nm("wedge", li + 1);
+                ch = ck(ch, msg([A, " tag wedge ", li + 1, " >= 4.0 behind plane P (margin)"]), min(-TRUSS_CLR - measureBox(context, [wid], PF)[3], 0), 0, 0.0001);
+                ch = ck(ch, msg([A, " tag wedge ", li + 1, " seated on the crossbeam"]), measureDist(context, [wid], [hid + "crossbeam"]), 0, 0.0001);
+            }
         }
     }
     if (opts["tags"])
@@ -2174,6 +2636,16 @@ function selfCheck(context is Context, id is Id, opts)
         for (var t in tagTable())
         {
             ch = ckBox(ch, msg(["AprilTag ", t[0], " panel"]), measureBox(context, [id + "tags" + nm("tag", t[0])], tagFrame(t)), [-TAG_PANEL_T, -hp, -hp, 0, hp, hp], 0.001);
+            if (opts["decals"])
+            {
+                ch = ck(ch, msg(["AprilTag ", t[0], " decal applied"]), decalApplied(context, [id + "tags" + nm("tag", t[0])]), 1, 0);
+            }
+            if ((t[0] >= 3 && t[0] <= 5) || (t[0] >= 16 && t[0] <= 18))
+            {
+                const PF = frameIn(allianceFrame(t[0] > 13), [HW_X, 0, 0], [cosd(HW_LEAN), 0, sind(HW_LEAN)], [-sind(HW_LEAN), 0, cosd(HW_LEAN)]);
+                ch = ck(ch, msg(["AprilTag ", t[0], " panel >= 4.4 behind plane P (margin)"]),
+                        min(-4.4 - measureBox(context, [id + "tags" + nm("tag", t[0])], PF)[3], 0), 0, 0.0001);
+            }
         }
     }
     if (opts["tape"])
@@ -2182,7 +2654,30 @@ function selfCheck(context is Context, id is Id, opts)
         {
             const ab = measureBox(context, [id + "tape" + msgId(isRed) + "apron"], cragFrame(isRed));
             ch = ckBox(ch, msg([allianceName(isRed), " CRAG APRON tape"]), ab, [-CRAG_S / 2 - 36, -CRAG_S / 2 - 20, 0, CRAG_S / 2 + 36, CRAG_S / 2 + 20, TAPE_T], 0.001);
+            // ring area = outer rounded rectangle - inner: 4ab - (4 - PI) r^2 for each
+            const ao = CRAG_S / 2 + 36;
+            const bo = CRAG_S / 2 + 20;
+            const ringA = 4 * ao * bo - (4 - 3.141592653589793) * 400 - (4 * (ao - TAPE_W) * (bo - TAPE_W) - (4 - 3.141592653589793) * 324);
+            ch = ck(ch, msg([allianceName(isRed), " CRAG APRON ring area (R20 / R18 corners)"]), measureVolume(context, [id + "tape" + msgId(isRed) + "apron"]) / TAPE_T, ringA, 0.01);
+            const F = allianceFrame(isRed);
+            const bc = measureBox(context, [id + "tape" + msgId(isRed) + "bcX", id + "tape" + msgId(isRed) + "bcLo", id + "tape" + msgId(isRed) + "bcHi"], F);
+            ch = ckBox(ch, msg([allianceName(isRed), " BASECAMP tape"]), bc, [0, HW_Y0, 0, HW_X, HW_Y1, TAPE_T], 0.001);
+            for (var i = 0; i < size(CHUTE_Y); i += 1)
+            {
+                const lb = measureBox(context, [id + "tape" + msgId(isRed) + nm("lane", i + 1)], F);
+                ch = ckBox(ch, msg([allianceName(isRed), " OUTFITTER LANE tape ", i + 1]), lb, [0, CHUTE_Y[i] - LANE_TAPE_W / 2, 0, LANE_TAPE_D, CHUTE_Y[i] + LANE_TAPE_W / 2, TAPE_T], 0.001);
+            }
+            var dashIds = [];
+            for (var i = 0; i < size(climbDashes()); i += 1)
+            {
+                dashIds = append(dashIds, id + "tape" + msgId(isRed) + nm("climb", i));
+            }
+            ch = ck(ch, msg([allianceName(isRed), " CLIMB LINE dash count"]), countBodies(context, dashIds), size(climbDashes()), 0);
+            const cl = measureBox(context, dashIds, F);
+            ch = ckBox(ch, msg([allianceName(isRed), " CLIMB LINE dashes"]), cl, [HW_X - TAPE_W, 0, 0, HW_X, FIELD_W, TAPE_T], 0.001);
         }
+        const cb = measureBox(context, [id + "tape" + "center0", id + "tape" + "center1", id + "tape" + "center2"], W);
+        ch = ckBox(ch, "FIELD centerline tape", cb, [FIELD_CX - TAPE_W / 2, 0, 0, FIELD_CX + TAPE_W / 2, FIELD_W, TAPE_T], 0.001);
     }
     if (opts["staged"] && opts["stock"])
     {
@@ -2242,6 +2737,26 @@ export enum SpFieldLed
     ROUTE
 }
 
+export enum SpForecast
+{
+    annotation { "Name" : "WHITEOUT (CACHE CRATES)" }
+    WHITEOUT,
+    annotation { "Name" : "ICEFALL (O2 CELLS)" }
+    ICEFALL,
+    annotation { "Name" : "GALE (ROPE COILS)" }
+    GALE
+}
+
+export enum SpRoute
+{
+    annotation { "Name" : "LOW ROUTE" }
+    LOW,
+    annotation { "Name" : "MID ROUTE" }
+    MID,
+    annotation { "Name" : "HIGH ROUTE" }
+    HIGH
+}
+
 export enum SpStagingPairs
 {
     annotation { "Name" : "Side by side" }
@@ -2279,13 +2794,39 @@ function spOptions(definition is map) returns map
             "decals" : definition.tags && definition.decals,
             "staged" : definition.staged,
             "stock" : definition.stock,
+            "cosmetics" : definition.cosmetics,
             "lit" : definition.lighting == SpCragLighting.LIT,
             "fieldLed" : led,
+            "forecast" : definition.forecast == SpForecast.GALE ? "GALE" : (definition.forecast == SpForecast.ICEFALL ? "ICEFALL" : "WHITEOUT"),
+            "routeBlue" : definition.routeBlue == SpRoute.HIGH ? "HIGH" : (definition.routeBlue == SpRoute.MID ? "MID" : "LOW"),
+            "routeRed" : definition.routeRed == SpRoute.HIGH ? "HIGH" : (definition.routeRed == SpRoute.MID ? "MID" : "LOW"),
             "pairs" : definition.pairs == SpStagingPairs.STACKED ? "STACKED" : "SIDE"
         };
 }
 
-annotation { "Feature Type Name" : "SUMMIT PUSH Field",
+// Final status of a SUMMIT PUSH feature: warnings the kernel appended (skipped decoration or
+// decals) are kept, and the self-check result is added to them.
+function spReport(context is Context, id is Id, checks is array)
+{
+    const fails = failures(checks);
+    const prior = getFeatureWarning(context, id);
+    var notes = "";
+    if (prior is string)
+        notes = " | " ~ prior;
+    if (size(fails) > 0)
+    {
+        for (var f in fails)
+            println("SUMMIT PUSH self-check FAILED: " ~ f);
+        reportFeatureWarning(context, id, "SUMMIT PUSH self-check: " ~ size(fails) ~ " of " ~ size(checks) ~
+                    " dimension checks failed (details in the FeatureScript console)" ~ notes);
+    }
+    else if (prior is string)
+        reportFeatureWarning(context, id, "SUMMIT PUSH self-check: all " ~ size(checks) ~ " dimension checks pass" ~ notes);
+    else if (size(checks) > 0)
+        reportFeatureInfo(context, id, "SUMMIT PUSH self-check: all " ~ size(checks) ~ " dimension checks pass");
+}
+
+annotation { "Feature Type Name" : "SUMMIT PUSH Field", "Feature Name Template" : "SUMMIT PUSH Field",
         "Feature Type Description" : "Builds the complete SUMMIT PUSH field (always-blue-origin NWU, inches) with names, colours, materials and densities." }
 export const summitPushField = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
@@ -2306,7 +2847,7 @@ export const summitPushField = defineFeature(function(context is Context, id is 
             definition.tags is boolean;
             annotation { "Name" : "36h11 decals on the AprilTag panels", "Default" : true }
             definition.decals is boolean;
-            annotation { "Name" : "Staged SUPPLIES (CENTER CACHE and staging marks)", "Default" : true }
+            annotation { "Name" : "Staging: CENTER CACHE and staging marks with their SUPPLIES", "Default" : true }
             definition.staged is boolean;
             annotation { "Name" : "OUTFITTER stock (behind the alliance walls)", "Default" : true }
             definition.stock is boolean;
@@ -2315,35 +2856,39 @@ export const summitPushField = defineFeature(function(context is Context, id is 
         {
             annotation { "Name" : "CRAG tier rings and SUMMIT BEACON", "Default" : SpCragLighting.UNLIT }
             definition.lighting is SpCragLighting;
+            annotation { "Name" : "Cosmetics layer (tier rings)", "Default" : true }
+            definition.cosmetics is boolean;
             annotation { "Name" : "FIELD LED state", "Default" : SpFieldLed.DARK }
             definition.fieldLed is SpFieldLed;
+            if (definition.fieldLed == SpFieldLed.FORECAST)
+            {
+                annotation { "Name" : "FORECAST", "Default" : SpForecast.WHITEOUT }
+                definition.forecast is SpForecast;
+            }
+            if (definition.fieldLed == SpFieldLed.ROUTE)
+            {
+                annotation { "Name" : "BLUE declared ROUTE", "Default" : SpRoute.LOW }
+                definition.routeBlue is SpRoute;
+                annotation { "Name" : "RED declared ROUTE", "Default" : SpRoute.LOW }
+                definition.routeRed is SpRoute;
+            }
             annotation { "Name" : "Pieces on each alliance staging mark", "Default" : SpStagingPairs.SIDE_BY_SIDE }
             definition.pairs is SpStagingPairs;
         }
+        annotation { "Name" : "Group each element into a composite part", "Default" : true }
+        definition.group is boolean;
         annotation { "Name" : "Run dimension self-check", "Default" : true }
         definition.selfCheck is boolean;
     }
     {
         const opts = spOptions(definition);
         buildField(context, id, opts);
+        var checks = [];
         if (definition.selfCheck)
-        {
-            const checks = selfCheck(context, id, opts);
-            const fails = failures(checks);
-            if (size(fails) == 0)
-            {
-                reportFeatureInfo(context, id, "SUMMIT PUSH self-check: all " ~ size(checks) ~ " dimension checks pass");
-            }
-            else
-            {
-                for (var f in fails)
-                {
-                    println("SUMMIT PUSH self-check FAILED: " ~ f);
-                }
-                reportFeatureWarning(context, id, "SUMMIT PUSH self-check: " ~ size(fails) ~ " of " ~ size(checks) ~
-                            " dimension checks failed (details in the FeatureScript console)");
-            }
-        }
+            checks = selfCheck(context, id, opts);
+        if (definition.group)
+            groupField(context, id, opts);
+        spReport(context, id, checks);
     }, {
             "perimeter" : true,
             "walls" : true,
@@ -2354,13 +2899,18 @@ export const summitPushField = defineFeature(function(context is Context, id is 
             "decals" : true,
             "staged" : true,
             "stock" : true,
+            "cosmetics" : true,
             "lighting" : SpCragLighting.UNLIT,
             "fieldLed" : SpFieldLed.DARK,
+            "forecast" : SpForecast.WHITEOUT,
+            "routeBlue" : SpRoute.LOW,
+            "routeRed" : SpRoute.LOW,
             "pairs" : SpStagingPairs.SIDE_BY_SIDE,
+            "group" : true,
             "selfCheck" : true
         });
 
-annotation { "Feature Type Name" : "SUMMIT PUSH Game Piece",
+annotation { "Feature Type Name" : "SUMMIT PUSH Game Piece", "Feature Name Template" : "SUMMIT PUSH #kind",
         "Feature Type Description" : "One SUMMIT PUSH SUPPLY at the origin, with its official colour and weight." }
 export const summitPushGamePiece = defineFeature(function(context is Context, id is Id, definition is map)
     precondition

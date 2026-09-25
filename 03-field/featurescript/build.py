@@ -22,6 +22,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "verify"))
 import fs2py  # noqa: E402
+import scope_lint  # noqa: E402
 
 OUT = os.path.join(HERE, "SummitPushField.fs")
 PART_RE = re.compile(r"^[2-4]\d_.*\.fs$")
@@ -51,12 +52,27 @@ def assemble(files):
     return "".join(parts)
 
 
-def lint_parts(files):
+def lint_parts(files, std=None):
     errs = []
+    parts = []
+    kernel = ""
     for f in files:
+        with open(f, encoding="utf-8") as fh:
+            text = fh.read()
         if PART_RE.match(os.path.basename(f)):
-            with open(f, encoding="utf-8") as fh:
-                errs += fs2py.lint(fh.read(), os.path.relpath(f, HERE))
+            errs += fs2py.lint(text, os.path.relpath(f, HERE))
+            parts.append((os.path.relpath(f, HERE), text))
+        elif os.path.basename(f) == "10_kernel.fs":
+            kernel = text
+    # block scope, const, loop and value semantics that FeatureScript and the twin must share
+    std_names = None
+    if std:
+        names, enums = std_index(std)
+        std_names = set(names) | set(enums)
+    issues = scope_lint.analyze(parts, kernel, std_names)[0]
+    for kind, found in sorted(issues.items()):
+        for where in found:
+            errs.append("scope (%s): %s" % (kind, where))
     return errs
 
 
@@ -123,7 +139,7 @@ def main():
     ap.add_argument("--std", help="path to a FeatureScript standard-library checkout")
     a = ap.parse_args()
     files = sources()
-    errs = lint_parts(files)
+    errs = lint_parts(files, a.std)
     code = assemble(files)
     with open(OUT, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(code)

@@ -11,8 +11,51 @@ function buildCarpet(context is Context, id is Id)
     paint(context, [id + "carpet"], "Field carpet", "carpet", 1, "carpet");
 }
 
-// FIELD LED colour for a segment on the Blue (X < 324) or Red half.
-function fieldLedRGB(opts, isRedHalf)
+// FIELD LEDs (manual §3.1.2): each 324-in alliance segment is three 108-in blocks, counted from
+// its own alliance wall.  GREEN lights all three; FORECAST lights 1 / 2 / 3 white blocks for
+// WHITEOUT / ICEFALL / GALE in both alliances' segments; ROUTE lights 1 / 2 / 3 alliance-colour
+// blocks for that alliance's LOW / MID / HIGH ROUTE.  Unlit blocks are dark.
+function ledLitCount(opts, isRedHalf)
+{
+    const st = opts["fieldLed"];
+    if (st == "GREEN")
+    {
+        return 3;
+    }
+    if (st == "FORECAST")
+    {
+        const f = opts["forecast"];
+        if (f == "GALE")
+        {
+            return 3;
+        }
+        if (f == "ICEFALL")
+        {
+            return 2;
+        }
+        return 1;
+    }
+    if (st == "ROUTE")
+    {
+        var r = opts["routeBlue"];
+        if (isRedHalf)
+        {
+            r = opts["routeRed"];
+        }
+        if (r == "HIGH")
+        {
+            return 3;
+        }
+        if (r == "MID")
+        {
+            return 2;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+function ledOnRGB(opts, isRedHalf)
 {
     const st = opts["fieldLed"];
     if (st == "GREEN")
@@ -23,11 +66,18 @@ function fieldLedRGB(opts, isRedHalf)
     {
         return PAL["neutral-white"];
     }
-    if (st == "ROUTE")
+    return allianceRGB(isRedHalf);
+}
+
+// X range of LED block k (0 = nearest its own alliance wall) in the Blue or Red half.
+function ledBlockX(isRedHalf, k)
+{
+    const b = FIELD_CX / LED_BLOCKS;
+    if (isRedHalf)
     {
-        return allianceRGB(isRedHalf);
+        return [FIELD_L - b * (k + 1), FIELD_L - b * k];
     }
-    return PAL["led-dark"];
+    return [b * k, b * (k + 1)];
 }
 
 // One long-side guardrail.  side 0 runs along Y = 0, side 1 along Y = 324.  Built in world
@@ -51,23 +101,38 @@ function buildGuardrail(context is Context, id is Id, side, opts)
     const name = msg(["Guardrail (", label, ")"]);
     mkBox(context, id + "bot", W, [0, lo, 0], [FIELD_L, hi, GUARD_RAIL_H]);
     mkBox(context, id + "top", W, [0, lo, GUARD_H - GUARD_RAIL_H], [FIELD_L, hi, GUARD_H]);
-    // FIELD LED bands: two 324-in segments let into the inner face of the top rail
+    // FIELD LED blocks let into the inner face of the top rail
     const ledLo = min(yIn, yIn - gIn);
     const ledHi = max(yIn, yIn - gIn);
-    mkBox(context, id + "ledA", W, [0, ledLo, LED_Z - LED_W / 2], [FIELD_CX, ledHi, LED_Z + LED_W / 2]);
-    mkBox(context, id + "ledB", W, [FIELD_CX, ledLo, LED_Z - LED_W / 2], [FIELD_L, ledHi, LED_Z + LED_W / 2]);
-    bSubtract(context, id + "groove", [id + "top"], [id + "ledA", id + "ledB"], true);
-    paintRGB(context, [id + "ledA"], msg([name, " FIELD LED, Blue half"]), fieldLedRGB(opts, false), 1, "acrylic");
-    paintRGB(context, [id + "ledB"], msg([name, " FIELD LED, Red half"]), fieldLedRGB(opts, true), 1, "acrylic");
+    var leds = [];
+    for (var isRedHalf in [false, true])
+    {
+        const lit = ledLitCount(opts, isRedHalf);
+        for (var k = 0; k < LED_BLOCKS; k += 1)
+        {
+            const bx = ledBlockX(isRedHalf, k);
+            const lid = id + nm(nm("led", allianceName(isRedHalf)), k);
+            mkBox(context, lid, W, [bx[0], ledLo, LED_Z - LED_W / 2], [bx[1], ledHi, LED_Z + LED_W / 2]);
+            var rgb = PAL["led-dark"];
+            if (k < lit)
+            {
+                rgb = ledOnRGB(opts, isRedHalf);
+            }
+            paintRGB(context, [lid], msg([name, " FIELD LED, ", allianceName(isRedHalf), " segment block ", k + 1]), rgb, 1, "acrylic");
+            leds = append(leds, lid);
+        }
+    }
+    bSubtract(context, id + "groove", [id + "top"], leds, true);
     paint(context, [id + "bot"], msg([name, " bottom rail"]), "wall", 1, "al-tube-2x1");
     paint(context, [id + "top"], msg([name, " top rail"]), "wall", 1, "al-tube-2x1");
-    // posts and glazing bays
-    var posts = [[0, GUARD_RAIL_D]];
+    // posts (2 x 1 tube: 2 in along the rail) and glazing bays
+    const pw = GUARD_RAIL_H;
+    var posts = [[0, pw]];
     for (var k = 1; k < 8; k += 1)
     {
-        posts = append(posts, [k * GUARD_POST_PITCH - GUARD_RAIL_D / 2, k * GUARD_POST_PITCH + GUARD_RAIL_D / 2]);
+        posts = append(posts, [k * GUARD_POST_PITCH - pw / 2, k * GUARD_POST_PITCH + pw / 2]);
     }
-    posts = append(posts, [FIELD_L - GUARD_RAIL_D, FIELD_L]);
+    posts = append(posts, [FIELD_L - pw, FIELD_L]);
     const gMid = (yIn + yOut) / 2;
     for (var i = 0; i < size(posts); i += 1)
     {
@@ -152,14 +217,17 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     paint(context, [id + "panel"], msg([wn, " lower panel"]), "wall", 1, "plywood");
     paint(context, [id + "glaze"], msg([wn, " glazing"]), "glazing", ALPHA_GLAZING, "polycarbonate");
 
-    // steel frame behind the panels (ref): rails and posts, 2.0 in overall wall thickness
+    // steel frame behind the panels (ref): rails and posts, 2.0 in overall wall thickness.  The
+    // members of the glazed band come forward to the glazing's back face so the glazing is held.
     const fx0 = -WALL_T;
     const fx1 = -WALL_PANEL_T;
+    const fg = -WALL_GLAZE_T;
     var fr = [];
     mkBox(context, id + "frBot", F, [fx0, 0, 0], [fx1, FIELD_W, WALL_RAIL]);
-    mkBox(context, id + "frTop", F, [fx0, 0, WALL_H - WALL_RAIL], [fx1, FIELD_W, WALL_H]);
+    mkBox(context, id + "frTop", F, [fx0, 0, WALL_H - WALL_RAIL], [fg, FIELD_W, WALL_H]);
     fr = [id + "frBot", id + "frTop"];
-    const midSpans = [[0, CHUTE_Y[0] - CHUTE_W / 2], [CHUTE_Y[0] + CHUTE_W / 2, CHUTE_Y[1] - CHUTE_W / 2], [CHUTE_Y[1] + CHUTE_W / 2, FIELD_W]];
+    const jw = CHUTE_W / 2 + THROAT_T;         // the mid rail stops at the chute throat liner
+    const midSpans = [[0, CHUTE_Y[0] - jw], [CHUTE_Y[0] + jw, CHUTE_Y[1] - jw], [CHUTE_Y[1] + jw, FIELD_W]];
     for (var i = 0; i < size(midSpans); i += 1)
     {
         mkBox(context, id + nm("frMid", i), F, [fx0, midSpans[i][0], WALL_SOLID_H - 1], [fx1, midSpans[i][1], WALL_SOLID_H + 1]);
@@ -169,20 +237,22 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     for (var i = 0; i < size(postY); i += 1)
     {
         mkBox(context, id + nm("frPostLo", i), F, [fx0, postY[i], WALL_RAIL], [fx1, postY[i] + WALL_RAIL, WALL_SOLID_H - 1]);
-        mkBox(context, id + nm("frPostHi", i), F, [fx0, postY[i], WALL_SOLID_H + 1], [fx1, postY[i] + WALL_RAIL, WALL_H - WALL_RAIL]);
+        mkBox(context, id + nm("frPostHi", i), F, [fx0, postY[i], WALL_SOLID_H + 1], [fg, postY[i] + WALL_RAIL, WALL_H - WALL_RAIL]);
         fr = append(fr, id + nm("frPostLo", i));
         fr = append(fr, id + nm("frPostHi", i));
     }
     paint(context, fr, msg([wn, " frame"]), "wall", 1, "steel-frame");
+    bUnion(context, id + "frWeld", fr);
 
-    // driver stations: shelf (clear of the chutes) and E-STOP / A-STOP buttons
+    // driver stations: shelf (clear of the chutes, run back to the lower panel between the frame
+    // posts) and E-STOP / A-STOP buttons
     for (var i = 0; i < size(STATION_Y); i += 1)
     {
         const s = STATION_Y[i];
         const span = stationShelfSpan(s);
         const sid = id + nm("station", i + 1);
-        mkBox(context, sid + "shelf", F, [-WALL_T - STATION_SHELF_D, span[0], STATION_SHELF_TOP - STATION_SHELF_T],
-                [-WALL_T, span[1], STATION_SHELF_TOP]);
+        mkBox(context, sid + "shelf", F, [-WALL_PANEL_T - STATION_SHELF_D, span[0], STATION_SHELF_TOP - STATION_SHELF_T],
+                [-WALL_PANEL_T, span[1], STATION_SHELF_TOP]);
         paint(context, [sid + "shelf"], msg([A, " driver station ", i + 1, " shelf"]), "wall", 1, "plywood");
         var by = s + 30;
         if (span[1] < s + 40)
@@ -200,41 +270,71 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     }
 }
 
+// OUTFITTER chute behind the wall: a 2.0-in-deep throat liner that carries the opening through
+// the full wall, a 30-degree ramp from the back of the throat, plumb cheeks on the ramp edges,
+// 45-degree funnel wings opening to 36 in at the loading end, and a leg (all (ref), §5).
 function buildOutfitterRamp(context is Context, id is Id, F, c, name)
 {
     const s30 = sind(RAMP_ANGLE);
     const c30 = cosd(RAMP_ANGLE);
-    const x0 = -WALL_PANEL_T;                      // back face of the lower panel = sill line
-    const half0 = CHUTE_W / 2;
-    const half1 = RAMP_FLARE_W / 2;
-    // ramp: trapezoid in the 30-degree plane, top surface through the sill line
+    const t30 = tand(RAMP_ANGLE);
+    const hw = CHUTE_W / 2;
+    const x0 = -WALL_T;                            // back of the throat = start of the ramp
+    const xp = -WALL_PANEL_T;                      // back face of the lower panel
+    const zs = CHUTE_SILL;
+    const zh = CHUTE_SILL + CHUTE_H;
+    const tt = THROAT_T;
+    // throat liner: sill plate, two jambs and a head plate, flush with the opening
+    mkBox(context, id + "throatSill", F, [x0, c - hw - tt, zs - tt], [xp, c + hw + tt, zs]);
+    mkBox(context, id + "throatJambA", F, [x0, c - hw - tt, zs], [xp, c - hw, zh]);
+    mkBox(context, id + "throatJambB", F, [x0, c + hw, zs], [xp, c + hw + tt, zh]);
+    mkBox(context, id + "throatHead", F, [x0, c - hw - tt, zh], [-WALL_GLAZE_T, c + hw + tt, zh + tt]);
+    const th = [id + "throatSill", id + "throatJambA", id + "throatJambB", id + "throatHead"];
+    paint(context, th, msg([name, " chute throat"]), "wall", 1, "aluminum");
+    bUnion(context, id + "throatJoin", th);
+    // ramp: 30 wide, 30 degrees, top surface through the sill line at the back of the throat
     const upN = [s30, 0, c30];
     const slope = [-c30, 0, s30];
-    mkPrism(context, id + "ramp", F, [[x0, c, CHUTE_SILL], upN, slope],
-            [[0, -half0], [RAMP_RUN, -half1], [RAMP_RUN, half1], [0, half0]], -RAMP_T, 0);
+    mkPrism(context, id + "ramp", F, [[x0, c, zs], upN, slope], rectPts(0, -hw, RAMP_RUN, hw), -RAMP_T, 0);
     paint(context, [id + "ramp"], msg([name, " chute ramp"]), "wall", 1, "uhmw-ply");
     // leg under the loading end
     const xTop = x0 - RAMP_RUN * c30;              // top surface, loading end
+    const zTop = zs + RAMP_RUN * s30;
     const xb = xTop - RAMP_T * s30;                // underside corner, loading end
-    const zb = CHUTE_SILL + RAMP_RUN * s30 - RAMP_T * c30;
+    const zb = zTop - RAMP_T * c30;
     const xl1 = xb + RAMP_T;
-    const zl1 = zb - RAMP_T * tand(RAMP_ANGLE);
-    prismXZ(context, id + "leg", F, [[xb, 0], [xl1, 0], [xl1, zl1], [xb, zb]], c - half1 + 0.5, c + half1 - 0.5);
+    const zl1 = zb - RAMP_T * t30;
+    prismXZ(context, id + "leg", F, [[xb, 0], [xl1, 0], [xl1, zl1], [xb, zb]], c - hw + 0.5, c + hw - 0.5);
     paint(context, [id + "leg"], msg([name, " ramp leg"]), "wall", 1, "plywood");
-    // cheek funnels: vertical plates on the ramp's slanted edges, flaring 30 -> 36 in
-    const runX = RAMP_RUN * c30;
-    const flare = half1 - half0;
-    const L = sqrt(runX * runX + flare * flare);
-    const u0 = 0.25;
+    // cheeks: plumb plates on the ramp edges, from 1.0 below the ramp surface to CHEEK_H above
+    const xa = x0 - 0.25;
+    const za = zs + (x0 - xa) * t30;
+    var cheeks = [];
     for (var sg in [-1, 1])
     {
-        const t = [-runX / L, sg * flare / L, 0];
-        const n = [flare / L, sg * runX / L, 0];
-        const zAt0 = CHUTE_SILL + (u0 * runX / L) * tand(RAMP_ANGLE);
-        const zAt1 = CHUTE_SILL + RAMP_RUN * s30;
         const cid = id + nm("cheek", (sg + 1) / 2);
-        mkPrism(context, cid, F, [[x0, c + sg * half0, 0], n, t],
-                [[u0, sg * (zAt0 - 1)], [L, sg * (zAt1 - 1)], [L, sg * (zAt1 + CHEEK_H)], [u0, sg * (zAt0 + CHEEK_H)]], 0, RAMP_T);
-        paint(context, [cid], msg([name, " cheek funnel"]), "wall", 1, "plywood");
+        var y0 = c + hw;
+        if (sg < 0)
+        {
+            y0 = c - hw - RAMP_T;
+        }
+        prismXZ(context, cid, F, [[xa, za - 1], [xTop, zTop - 1], [xTop, zTop + CHEEK_H], [xa, za + CHEEK_H]], y0, y0 + RAMP_T);
+        cheeks = append(cheeks, cid);
     }
+    paint(context, cheeks, msg([name, " cheek"]), "wall", 1, "plywood");
+    // funnel wings: plumb plates at 45 degrees in plan, from the cheek ends out to +/-18 in
+    const flare = RAMP_FLARE_W / 2 - hw;
+    const wl = flare * sqrt(2) + RAMP_T;
+    var wings = [];
+    for (var sg in [-1, 1])
+    {
+        const wid = id + nm("wing", (sg + 1) / 2);
+        const t = [-cosd(45), sg * sind(45), 0];
+        const n = [cosd(45), sg * sind(45), 0];
+        mkPrism(context, wid, F, [[xTop, c + sg * hw, 0], n, t],
+                [[0, sg * (zTop - 1)], [wl, sg * (zTop - 1)], [wl, sg * (zTop + CHEEK_H)], [0, sg * (zTop + CHEEK_H)]], 0, RAMP_T);
+        bSubtract(context, wid + "trim", [wid], cheeks, true);
+        wings = append(wings, wid);
+    }
+    paint(context, wings, msg([name, " funnel wing"]), "wall", 1, "plywood");
 }

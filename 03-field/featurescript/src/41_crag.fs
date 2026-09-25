@@ -73,9 +73,18 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     shellHollow(context, id + "lanternShell", [id + "lantern"], LANTERN_T);
 
     // ---- tier rings: 30 and 54 on the tower, 78 on the spire ------------------------
-    const r30 = buildRing(context, id + "ring30", F, h, PEG_LAT, RING_Z[0] - RING_W / 2, RING_Z[0] + RING_W / 2);
-    const r54 = buildRing(context, id + "ring54", F, h, PEG_LAT, RING_Z[1] - RING_W / 2, RING_Z[1] + RING_W / 2);
-    const r78 = buildRing(context, id + "ring78", F, sh, HPEG_LAT, RING78_TOP - RING_W, RING78_TOP);
+    // (on the suppressible "cosmetics" layer, FIELD-CAD-PACKAGE §2.7 / §8: with cosmetics off the
+    // faces stay flush and solid)
+    const cosm = opts["cosmetics"];
+    var r30 = [];
+    var r54 = [];
+    var r78 = [];
+    if (cosm)
+    {
+        r30 = buildRing(context, id + "ring30", F, h, PEG_LAT, RING_Z[0] - RING_W / 2, RING_Z[0] + RING_W / 2);
+        r54 = buildRing(context, id + "ring54", F, h, PEG_LAT, RING_Z[1] - RING_W / 2, RING_Z[1] + RING_W / 2);
+        r78 = buildRing(context, id + "ring78", F, sh, HPEG_LAT, RING78_TOP - RING_W, RING78_TOP);
+    }
 
     // ---- High Peg root bosses (steel, let into the spire and the lantern's lower edge)
     mkBox(context, id + "bossP", F, [-sh, HPEG_LAT - BOSS_W / 2, BOSS_Z[0]], [-sh + BOSS_T, HPEG_LAT + BOSS_W / 2, BOSS_Z[1]]);
@@ -122,9 +131,12 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     {
         ringRGB = allianceRGB(isRed);
     }
-    paintRGB(context, r30, msg([cn, " tier ring 30"]), ringRGB, 1, "acrylic");
-    paintRGB(context, r54, msg([cn, " tier ring 54"]), ringRGB, 1, "acrylic");
-    paintRGB(context, r78, msg([cn, " tier ring 78"]), ringRGB, 1, "acrylic");
+    if (cosm)
+    {
+        paintRGB(context, r30, msg([cn, " tier ring 30"]), ringRGB, 1, "acrylic");
+        paintRGB(context, r54, msg([cn, " tier ring 54"]), ringRGB, 1, "acrylic");
+        paintRGB(context, r78, msg([cn, " tier ring 78"]), ringRGB, 1, "acrylic");
+    }
     paint(context, [id + "bossP", id + "bossN"], msg([cn, " High Peg root boss"]), "crag-accent", 1, "steel");
 
     // ---- SHELF FACE: Shelf 1 / Shelf 2, slot fences, gussets ------------------------
@@ -162,6 +174,11 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     for (var sgn in [-1, 1])
     {
         const fk = (sgn + 1) / 2;
+        var side = "guardrail side";
+        if (sgn > 0)
+        {
+            side = "centre side";
+        }
         const socks = [[SOCK_LAT, LOW_SOCK_Z, "Low"], [-SOCK_LAT, MID_SOCK_Z, "Mid"]];
         for (var q in socks)
         {
@@ -172,7 +189,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             const yb = sgn * (h + SOCK_STANDOFF - SOCK_LEN * s30);
             const zbt = zr - SOCK_LEN * c30;
             buildSocketTube(context, tid, F, [lat, yb, zbt], a, [1, 0, 0]);
-            paint(context, [tid], msg([cn, " ", q[2], " Socket"]), "socket", 1, "aluminum");
+            paint(context, [tid], msg([cn, " ", q[2], " Socket (", side, ")"]), "socket", 1, "aluminum");
             // bracket plate in the wedge under the tube, top edge 1.0 in below the rim height
             const dy = yb - sgn * ro * c30;
             const dz = zbt + ro * s30;
@@ -181,7 +198,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             const az = dz + (sgn * (dy - sgn * h)) / c30 * s30;
             const bid = id + nm(nm("brk", q[2]), fk);
             prismYZ(context, bid, F, [[sgn * h, az], [dy, dz], [cy, ztop], [sgn * h, ztop]], lat - SOCK_BRACKET_T / 2, lat + SOCK_BRACKET_T / 2);
-            paint(context, [bid], msg([cn, " ", q[2], " Socket bracket"]), "crag-accent", 1, "aluminum");
+            paint(context, [bid], msg([cn, " ", q[2], " Socket bracket (", side, ")"]), "crag-accent", 1, "aluminum");
         }
     }
 
@@ -213,8 +230,12 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             pegs = append(pegs, pid);
         }
     }
-    paint(context, [pegs[0], pegs[1]], msg([cn, " Low Peg"]), "rung", 1, "steel");
-    paint(context, [pegs[2], pegs[3]], msg([cn, " Mid Peg"]), "rung", 1, "steel");
+    const pegSide = [" (guardrail side)", " (centre side)"];
+    for (var k = 0; k < 2; k += 1)
+    {
+        paint(context, [pegs[k]], msg([cn, " Low Peg", pegSide[k]]), "rung", 1, "steel");
+        paint(context, [pegs[k + 2]], msg([cn, " Mid Peg", pegSide[k]]), "rung", 1, "steel");
+    }
     var hpegs = [];
     for (var sgn in [-1, 1])
     {
@@ -223,7 +244,10 @@ function buildCrag(context is Context, id is Id, isRed, opts)
         buildPeg(context, pid, F, [-sh, y, HPEG_Z], u, [0, 1, 0], [-sh, y - 3, HPEG_Z - 4], [-sh + 4, y + 3, HPEG_Z + 4]);
         hpegs = append(hpegs, pid);
     }
-    paint(context, hpegs, msg([cn, " High Peg"]), "rung", 1, "steel");
+    for (var k = 0; k < 2; k += 1)
+    {
+        paint(context, [hpegs[k]], msg([cn, " High Peg", pegSide[k]]), "rung", 1, "steel");
+    }
 
     buildDepot(context, id + "depot", F, cn);
 }

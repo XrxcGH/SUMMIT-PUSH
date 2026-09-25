@@ -67,7 +67,7 @@ Appearance and properties
 - `styleFacesAt(ctx, bodies, F, pts, rgb, alpha)` — colour individual faces.
 - `faceDecal(ctx, id, bodies, F, pl, rects, rgb)` — paint rectangles `[u0, v0, u1, v1]` onto the planar face in `pl` (numbers, lettering, stripes) by splitting the face; the geometry stays coplanar.
 - `massBody(ctx, bodies, materialName, massLb)` — density set so the body weighs exactly `massLb`.
-- `compositePart(ctx, id, bodies, name)` — group finished bodies into one open composite part (call last).
+- `groupParts(ctx, id, bodies, name)` — group finished bodies into one open composite part (call last).
 
 Measurement (used by self-checks): `measureBox(ctx, bodies, F)`, `measureVolume`, `measureDistToPoint`, `measureDist`, `countBodies`.
 

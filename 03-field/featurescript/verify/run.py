@@ -39,7 +39,8 @@ import kernel_occ as K  # noqa: E402
 
 DEFAULT_OPTS = {"perimeter": True, "walls": True, "crags": True, "headwalls": True, "tape": True,
                 "tags": True, "decals": True, "staged": True, "stock": True, "lit": False,
-                "fieldLed": "DARK", "pairs": "SIDE"}
+                "fieldLed": "DARK", "pairs": "SIDE", "cosmetics": True, "forecast": "WHITEOUT",
+                "routeBlue": "LOW", "routeRed": "LOW"}
 
 
 def load_part_code():
@@ -222,6 +223,12 @@ def check_bodies(ctx):
         for s in rec["solids"]:
             if not K.BRepCheck_Analyzer(s).IsValid():
                 errs.append("invalid solid in %s" % (rec["name"] or key,))
+    count = {}
+    for n in K.part_names(ctx):
+        count[n] = count.get(n, 0) + 1
+    for n, c in sorted(count.items()):
+        if c > 1:
+            errs.append("%d parts share the name %r" % (c, n))
     return errs
 
 
@@ -264,7 +271,7 @@ def main():
     report["sections"]["build"] = {"ok": True, "bodies": len(ctx.bodies), "solids": nsol, "warnings": ctx.warnings}
 
     errs = check_bodies(ctx)
-    print("bodies: %s" % ("OK — every body valid, named, coloured and given a material" if not errs else "%d problem(s)" % len(errs)))
+    print("bodies: %s" % ("OK — every body valid, uniquely named, coloured and given a material" if not errs else "%d problem(s)" % len(errs)))
     for e in errs[:40]:
         print("  FAIL", e)
     fails += len(errs)
@@ -278,6 +285,24 @@ def main():
     fails += len(bad)
     report["sections"]["selfcheck"] = {"total": len(checks), "failures": bad,
                                        "checks": [[c[0], c[1], c[2], c[3]] for c in checks]}
+
+    # composite grouping, as the feature does last: every element body in exactly one group
+    ns["groupField"](ctx, fid, opts)
+    comps = getattr(ctx, "composites", {})
+    member = {}
+    for c in comps.values():
+        for k in c["members"]:
+            member.setdefault(k, []).append(c["name"])
+    gerr = []
+    for k, rec in ctx.bodies.items():
+        solo = k[:2] in (("F", "carpet"), ("F", "supplies"))
+        if not solo and len(member.get(k, [])) != 1:
+            gerr.append("%s is in %d composite parts" % (rec["name"], len(member.get(k, []))))
+    print("grouping: %d composite parts%s" % (len(comps), "; every element body in exactly one" if not gerr else "; %d problem(s)" % len(gerr)))
+    for e in gerr[:20]:
+        print("  FAIL", e)
+    fails += len(gerr)
+    report["sections"]["grouping"] = {"composites": sorted(c["name"] for c in comps.values()), "errors": gerr}
 
     perr, ntok = check_palette(ns)
     print("palette: %d spec tokens, %s" % (ntok, "all match" if not perr else "%d mismatch(es)" % len(perr)))
@@ -317,7 +342,7 @@ def main():
     for rec in ctx.bodies.values():
         v = K._volume(rec["solids"])
         m = rec["mat"]["density"] * v * K.IN3 / K.LB if rec["mat"] else 0
-        grp = (rec["name"] or "?").split(" - ")[0]
+        grp = re.sub(r" \d+$", "", (rec["name"] or "?").split(" - ")[0])
         mass[grp] = mass.get(grp, 0) + m
     report["sections"]["mass_lb_by_name"] = {k: round(v, 3) for k, v in sorted(mass.items())}
     report["failures"] = fails

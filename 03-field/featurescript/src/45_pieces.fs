@@ -148,7 +148,14 @@ function supplyPoses(opts)
             const offs = pairOffsets(k, opts);
             for (var n = 0; n < 2; n += 1)
             {
-                var p = [STAGE_X + offs[n][0], STAGE_Y[j] + offs[n][1], TAPE_T + offs[n][2]];
+                // a piece rests on the mark's tape only if its lowest point is over the X; the
+                // side-by-side CACHE CRATES' crown apexes land 3.45 in clear of it, on the carpet
+                var zs = TAPE_T;
+                if (k == "crate" && opts["pairs"] != "STACKED")
+                {
+                    zs = 0;
+                }
+                var p = [STAGE_X + offs[n][0], STAGE_Y[j] + offs[n][1], zs + offs[n][2]];
                 if (isRed)
                 {
                     p = rot180(p);
@@ -194,7 +201,7 @@ function buildSupplies(context is Context, id is Id, opts)
     var i = 0;
     for (var p in supplyPoses(opts))
     {
-        const isStock = p[3] == 0;
+        const isStock = abs(p[1] - FIELD_CX) > FIELD_CX;      // behind an alliance wall
         if ((isStock && opts["stock"]) || (!isStock && opts["staged"]))
         {
             i += 1;

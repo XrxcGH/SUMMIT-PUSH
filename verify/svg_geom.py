@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Decode generated SVG geometry back to field inches and check it against the
-locked ledger.  Catches the two defect classes the re-audit found: mirrored
-rectangles anchored at the wrong edge, and socket tubes rotated the wrong way."""
+"""Decode the generated SVG geometry back to field inches and check it against the
+locked ledger.
+
+Checks that plan rectangles stay on the carpet, that the BASECAMPS and OUTFITTER lanes
+sit where the specification puts them, that the CRAG elevations draw the socket tubes
+leaning outward, and that the HEADWALL sheet draws the uniform rung stagger. The first
+checks target two defects found in v2.0 (REVISION-LOG K3 and K4): mirrored rectangles
+anchored at the wrong edge, and socket tubes rotated the wrong way."""
 import io, math, os, re, sys
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 R = '03-field/renderings/'

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Cross-document consistency checks for the SUMMIT PUSH package."""
+"""Numeric checks for the SUMMIT PUSH package.
+
+Recomputes published figures (tag poses, clearances, reaches, rung layout, scoring
+ceilings, RP thresholds, piece counts) and compares them with the documents. Most inputs
+are written into this script; the tag poses and the two rung tables are parsed from the
+documents."""
 import io, os, re, json, math, sys
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 sys.stdout.reconfigure(encoding='utf-8')
@@ -123,7 +128,7 @@ for _h, _D in ((15, 3), (16, 6), (18, 10), (20, 15), (24, 25), (30, 39), (36, 53
         "clears %d, fails %d" % (_D, _D + 2))
 chk("a camera below the target bottom never clears it", not _clears(13.0, 1.0))
 chk("Shelf 1 underside (23.25) above panel", 23.25 > panel_hi, "%.2f" % panel_hi)
-chk("Low socket tube lowest (22.27) above target", 22.27 > tgt_hi, "%.2f" % tgt_hi)
+chk("Low socket tube lowest (22.19) above target", 22.19 > tgt_hi, "%.2f" % tgt_hi)
 
 print("== shelf gusset floors clear what passes beneath them ==")
 _CRATE_APEX, _SHELF1_UNDER = 13.0, 23.25          # crowned crate standing; Shelf 1 underside
@@ -167,14 +172,14 @@ frame = 16.0 + 0.75 + 3.0
 chk("frame perimeter 19.75 in from shelf face", abs(frame - 19.75) < 1e-9)
 chk("shelf slot reach 12.75 <= 18", abs((frame - 7.0) - 12.75) < 1e-9 and frame - 7.0 <= 18)
 chk("summit socket reach 11.75 <= 18", abs((frame - 8.0) - 11.75) < 1e-9 and frame - 8.0 <= 18)
-# Low Socket sits above the DEPOT corner wrap -> a different standoff than the Mid Socket
+# The Low Socket sits above the DEPOT corner arm, so its standoff differs from the Mid Socket's
 wrap_face = 16.0 + 0.75            # channel depth + lip thickness, from the crag face
 low_fp = wrap_face + 3.0           # frame perimeter behind the bumper on the lip
 chk("Low Socket lies above the DEPOT corner arm", 14.0 < 16.0, "lateral 14.0 in a 16.0 arm")
 chk("Low Socket reach 11.75 <= 18", abs((low_fp - 8.0) - 11.75) < 1e-9, "%.2f" % (low_fp - 8.0))
 chk("Mid Socket reach 5.0 <= 18", abs((8.0 - 3.0) - 5.0) < 1e-9 and (8.0 - 3.0) <= 18.0,
     "%.2f" % (8.0 - 3.0))
-chk("Low/Mid socket standoffs genuinely differ", (low_fp - 8.0) - 5.0 > 6.0,
+chk("Low/Mid socket standoffs differ by more than 6 in", (low_fp - 8.0) - 5.0 > 6.0,
     "%.2f in apart" % ((low_fp - 8.0) - 5.0))
 chk("high peg root reach 17.0 <= 18",
     abs((14.0 + 3.0) - 17.0) < 1e-9 and (14.0 + 3.0) <= 18.0, "%.2f" % (14.0 + 3.0))
@@ -183,12 +188,13 @@ print("== socket tube clearances ==")
 # Tube 7.0 in along the axis (NOT the superseded 8.0), standoff 8.0, OD 6.68 -> r 3.34,
 # CELL 14.0 long. Assert the published figures exactly, not loose inequalities: a
 # regression back to an 8.0-in tube passed every one of the old > 0 / > 2.0 tests.
-SOCK_STANDOFF, SOCK_TUBE, SOCK_R, CELL_L = 8.0, 7.0, 3.34, 14.0
-for tilt, lbl, want_in, want_apex in ((30, "Low", 1.61, 4.39),
-                                      (30, "Mid", 1.61, 4.39),
-                                      (15, "Summit", 2.96, 5.90)):
+# The 7.0 runs from the rim to the floor the CELL seats on; the 0.09 closed bottom lies beyond it.
+SOCK_STANDOFF, SOCK_TUBE, SOCK_BOTTOM, SOCK_R, CELL_L = 8.0, 7.0, 0.09, 3.34, 14.0
+for tilt, lbl, want_in, want_apex in ((30, "Low", 1.56, 4.39),
+                                      (30, "Mid", 1.56, 4.39),
+                                      (15, "Summit", 2.94, 5.90)):
     s, c = math.sin(math.radians(tilt)), math.cos(math.radians(tilt))
-    bot_out = SOCK_STANDOFF - SOCK_TUBE * s
+    bot_out = SOCK_STANDOFF - (SOCK_TUBE + SOCK_BOTTOM) * s
     inboard = bot_out - SOCK_R * c
     chk("%-6s socket tube inboard edge %.2f in outboard of the face" % (lbl, want_in),
         abs(inboard - want_in) < 0.005, "%.3f" % inboard)

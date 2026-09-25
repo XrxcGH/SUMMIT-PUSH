@@ -3,7 +3,7 @@
 
 consist.py asks whether a superseded value survives anywhere. This asks the other
 question: does a value that MUST appear in several documents actually appear in all
-of them? A fix can be applied correctly in one place and simply never written in
+of them? A fix can be applied correctly in one place and never written in
 another, and no stale-text scan can see that -- the absence looks like clean text.
 
 Each row names a value, the documents that must carry it, and the wording that must

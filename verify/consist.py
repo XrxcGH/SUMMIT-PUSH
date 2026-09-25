@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Doc-consistency audit: rule refs, section refs, glossary coverage, stale numbers."""
+"""Document consistency: rule and section cross-references, glossary coverage,
+restated-rule qualifiers, and superseded values.
+
+Scans every .md and .svg file and generate_drawings.py, except REVISION-LOG.md and the
+00-concepts/ and 00-research/ archives. Writes its report to verify/consist.txt."""
 import io, os, re, collections
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 BS = chr(92)
@@ -10,6 +14,7 @@ MD = []
 # The drawing sheets and the generator carry prose too, and a stale number there reaches
 # a CAD modeller before the Markdown does. Scan them alongside the documents.
 for root, dirs, files in os.walk('.'):
+    # 00-concepts/ and 00-research/ are archive material written before the specification.
     dirs[:] = [d for d in dirs if d not in ('.git', '00-concepts', '00-research')]
     for f in files:
         # REVISION-LOG.md quotes superseded text by design; scanning it for stale
@@ -43,10 +48,10 @@ bad = sorted(s for s in sec_refs if s not in heads)
 p("section headings: %d ; DANGLING section refs: %s" % (len(heads), bad or "none"))
 
 # ---- 3. glossary coverage -----------------------------------------------
-# Anchor on the GLOSSARY heading, not on an entry: the glossary is alphabetised
+# Anchor on the Glossary heading, not on an entry: the glossary is alphabetised
 # ignoring punctuation, so A-STOP sits after ALLIANCE and anchoring there silently
 # dropped the first five headwords from the coverage set.
-anchor = '# 9 GLOSSARY'
+anchor = '# 9 Glossary'
 gl = MAN[MAN.index(anchor):] if anchor in MAN else ''
 # Capture every bolded headword, including rows that qualify it -- "**APRON** (CRAG
 # APRON)", "**BASE DEPOT** (short form: **DEPOT**)", "**RANKING POINT (RP)**". Also
@@ -130,7 +135,7 @@ for rid, needs in sorted(RESTATED.items()):
         t = io.open(f, encoding='utf-8').read()
         for m in re.finditer(r'[^.\n]*\*\*%s\*\*[^.\n]*\.' % rid, t):
             sent = m.group(0)
-            # Only sentences that actually STATE the test need its qualifiers.
+            # Only sentences that STATE the test need its qualifiers.
             # Rationale ("G416 exists because..."), cross-references and the
             # term's own glossary row are not restatements.
             low = sent.lower()

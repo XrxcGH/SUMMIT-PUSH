@@ -1,62 +1,79 @@
 # Verification suite
 
-Four checks that hold the package together. Run them after any edit; run them
-before publishing anything.
+The verification suite is five scripts that check the SUMMIT PUSH documents, drawing sheets and AprilTag layout against each other and against the design specification. They need bash and Python 3 (standard library only). Run the suite after any edit and before publishing anything:
 
 ```bash
 bash verify/run-all.sh
 ```
 
-That rebuilds the compiled manual and all six drawing sheets first, then runs
-all five checks. To run one on its own, invoke it from anywhere — each script
-locates the package relative to its own path:
+`run-all.sh` first rebuilds `02-manual/GAME-MANUAL.md` (with `02-manual/build.sh`) and the six drawing sheets (with `03-field/renderings/generate_drawings.py`), then runs `verify.py`, `consist.py`, `crossdoc.py`, `svg_collide.py` and `svg_geom.py`, in that order. Each script can also be run on its own, from any directory, because it locates the package relative to its own path:
 
 ```bash
 python verify/verify.py
 ```
 
-| Script | What it proves |
+A script run on its own checks the files as they are. It does not rebuild the manual or the drawings, so run the build first if you changed a manual section or the generator.
+
+The FeatureScript field generator in `03-field/featurescript/` has its own build and checks (see its `README.md` and `AUTHORING.md`). `run-all.sh` does not run them.
+
+## Reading the results
+
+The scripts report failures in their output, not in their exit status: each one exits 0 whether its checks pass or fail, and exits non-zero only if it stops with an error. The last line of `run-all.sh` ("all checks ran ..." or "a check exited non-zero ...") therefore says only whether every script ran to completion. Read each script's summary:
+
+| Script | Clean result | What a failure looks like |
+|---|---|---|
+| `verify.py` | `RESULT: 0 failure(s)` | A `FAIL` line with the computed value. Failed checks are listed again after the `RESULT` line. |
+| `consist.py` | `DANGLING rule refs: none`, `DANGLING section refs: none`, no band marked `<-- GAP/DUP`, `... with no glossary entry: 0`, every restated rule `ok`, and every `STALE` line `CLEAN` | The count, followed by the offending items with file and line. |
+| `crossdoc.py` | `RESULT: 0 failure(s)` | A `FAIL` line naming the documents that lack the value or still carry the stale wording. |
+| `svg_collide.py` | `TOTAL layout issues: 0` | `OFF-SHEET` or `OVERLAP` lines under the sheet's summary line. |
+| `svg_geom.py` | `RESULT: 0 failure(s)` | A `FAIL` line with the decoded values. |
+
+`consist.py` also writes its report to `verify/consist.txt`.
+
+## What each script checks
+
+| Script | Checks |
 |---|---|
-| `verify.py` | The **numbers**. All 26 AprilTag poses against the manual's table, 180° rotational symmetry, every tag-to-target transform in the vision guide, HEADWALL rung positions and tag-panel clearance behind plane P, the CRAG tag occlusion budget, DEPOT channel fit, every published robot standoff and reach, socket tube clearances and CELL protrusion, the rung stagger's no-common-band property and inter-lane gaps, scoring ceilings by piece type, RP threshold reachability, the Championship EXPEDITION requirement sets, piece accounting, and CENTER CACHE haul balance between ALLIANCES. |
-| `consist.py` | The **cross-references**. Every `Gxxx`/`Rxxx` cited in the manual is defined, every rule band is numbered without gaps or duplicates, every `Section N.M` reference resolves to a real heading, every ALL-CAPS term used in the body has a glossary entry, no superseded value from an earlier revision survives anywhere in the package **including the drawing set and the generator**, and every sentence that restates a load-bearing rule outside its own definition still carries the qualifier that makes the rule mean what it means. |
-| `crossdoc.py` | **Cross-document agreement.** `consist.py` asks whether a superseded value survives; this asks whether a value that must appear in several documents actually appears in all of them. A fix can be applied correctly in one place and simply never written in another, and no stale-text scan can see that — the absence looks like clean text. |
-| `svg_collide.py` | The **drawing layout**. Estimates a bounding box for every unrotated `<text>` element in all six sheets and reports overlapping pairs and text escaping the sheet. A dimension that lands on top of a label is a dimension somebody guesses. |
-| `svg_geom.py` | The **drawing geometry**. Decodes SVG pixels back through each view's px/in scale to field inches and compares against the ledger: plan rectangles stay on the carpet, both BASECAMPS and all four OUTFITTER lanes land where the spec puts them, and the socket tubes in the CRAG elevations lean the right way (bottoms at 4.50 in and 6.19 in outboard of their faces). |
+| `verify.py` | **Numbers.** All 26 AprilTag positions in the JSON against the manual's tag table; 180° rotational symmetry of the layout; pure-yaw, unit-norm quaternions; the vertical tag-to-target offsets used in the vision guide; HEADWALL rung positions and tag-panel clearance behind plane P; the CRAG tag occlusion budget, including the camera-height table for an upright O2 CELL; shelf gusset floors; CACHE CRATE clearance in the shelf slots; DEPOT channel fit and every published ROBOT standoff and reach; socket tube clearances and CELL protrusion; the rung stagger (no lateral position engages two successive rungs; spacing between lanes) and the rung tables in the manual and the CAD package; climb reach from the CLIMB LINE; scoring ceilings by piece type; RP threshold reachability; the Championship EXPEDITION requirement sets; the ROPE COIL profile; piece accounting; and CENTER CACHE haul balance between ALLIANCES. |
+| `consist.py` | **Cross-references and superseded values.** Every G or R rule cited in the compiled manual is defined; each rule band is numbered without gaps or duplicates; every `Section N.M` reference resolves to a heading; every ALL-CAPS term used three or more times in the manual body has a glossary entry; restated rules keep their qualifiers (see below); and no superseded value from an earlier revision survives in the scanned files. |
+| `crossdoc.py` | **Cross-document agreement.** `consist.py` looks for superseded values that survive. `crossdoc.py` checks the opposite case: that a value required in several documents appears in each of them. A fix applied in one document and never written in another leaves no stale text for `consist.py` to find. Each row of its table names a value, the documents that must carry it, and any stale wording that must be gone from them. A second list checks the drawing sheets for notes that contradict the documents. |
+| `svg_collide.py` | **Drawing layout.** Estimates a bounding box for every `<text>` element on the six sheets and reports overlapping pairs and text that runs off the sheet. |
+| `svg_geom.py` | **Drawing geometry.** Decodes SVG coordinates back to field inches through each view's scale and compares them with the ledger: plan rectangles stay on the carpet; both BASECAMPS and all four OUTFITTER lanes are where the specification puts them; the socket tubes in the CRAG elevations lean outward, with bottoms 4.50 in (side sockets) and 6.19 in (Summit Socket) outboard of their faces; and the HEADWALL sheet draws nine 20.0-in rungs with the same stagger in every lane, 48 in between adjacent lanes, and a 6.43-in setback per rung. |
+
+Most `verify.py` checks recompute a published figure from inputs written into the script, so a change to one of those figures means updating the script as well as the documents. The tag positions and the two rung tables are parsed from the documents themselves.
+
+`consist.py` scans every Markdown file, every SVG sheet, and `generate_drawings.py`, except `REVISION-LOG.md` and the `00-concepts/` and `00-research/` archives. The glossary check counts singular, plural and possessive forms, and a short allow-list in the script covers acronyms and names that are not defined terms.
 
 ## The restatement check
 
-Three of the worst defects this package ever had were one shape: a rule or a
-dimension corrected where it is *defined*, and left stale in one of the places
-that *restates* it. G416 was stated three different ways across three documents;
-the rung stagger four ways. Nothing structural caught either, because every
-document was internally coherent — the contradiction only existed between them.
+A rule or dimension corrected where it is defined can stay stale where another document restates it. Each document is then consistent on its own and the contradiction exists only between documents, so no structural check can see it. G416 and the HEADWALL rung stagger both went wrong this way (`REVISION-LOG.md` M2, M21 and M37).
 
-`consist.py` now keeps a small table of load-bearing rules and the phrases their
-restatements must carry (G416: `CLIMB LINE` and `not driven`; G415: `borne by`;
-G501: `MAJOR FOUL`). Any sentence elsewhere in the package that cites the rule
-*and states its test* — "may not", "unless", "must not" — must contain them.
-Rationale, cross-references and the term's own glossary row are excluded.
+`consist.py` keeps a table (`RESTATED`) of load-bearing rules and the phrases their restatements must contain:
 
-Add a rule to that table whenever a fix has to land in more than one document.
+| Rule | Required phrases |
+|---|---|
+| G416 | `CLIMB LINE`, `took hold of` |
+| G415 | `borne by` |
+| G501 | `MAJOR FOUL` |
 
-## Why these five
+A sentence counts as a restatement when it cites the rule number in bold Markdown, states a test ("may not", "unless" or "must not"), and is at least 120 characters long. Such a sentence must contain every phrase listed for the rule. Shorter sentences, and sentences that cite the rule without stating a test (rationale and cross-references), are not checked, and a glossary row does not have to repeat its own headword. The compiled `GAME-MANUAL.md` is skipped; its source sections are scanned like any other file. This README is scanned too, so it describes the pattern instead of quoting it.
 
-Each catches a class of defect the others structurally cannot. `verify.py`
-checks arithmetic but every individual number can be right while a *rule* is
-wrong — hence the set-theoretic EXPEDITION model it now carries. `consist.py`
-catches text that stopped agreeing with the spec. The two SVG checks exist
-because the drawing sheets are what entrants model from, and a sheet can be
-internally beautiful and still say the wrong thing: both classes it tests for
-(a mirrored rectangle anchored at the wrong edge, a tube rotated the wrong way)
-shipped in v2.0 and were invisible to every text-level check.
+Add a rule to the table whenever a fix has to land in more than one document.
 
-A check that reports noise gets ignored, so each is tuned to be quiet when the
-package is correct: `consist.py` skips `REVISION-LOG.md` when scanning for
-stale values, because the log quotes superseded text on purpose, and
-`svg_collide.py` skips rotated text rather than mismodelling its transform.
+## Why five checks
+
+Each script catches a class of defect the others cannot. `verify.py` checks arithmetic, but every number can be right while a rule is wrong; that is why it also models the Championship EXPEDITION requirement as sets of CRAG positions. `consist.py` finds text that has stopped agreeing with the specification, and `crossdoc.py` finds a required value that never reached a document. The two SVG checks exist because entrants model from the drawing sheets, and a sheet can be internally consistent and still wrong: a mirrored rectangle anchored at the wrong edge, or a socket tube rotated the wrong way, passes every text-level check.
+
+## Keeping the checks quiet
+
+A check that reports noise gets ignored, so each is tuned to report nothing when the package is correct:
+
+- `consist.py` does not scan `REVISION-LOG.md`, because the log quotes superseded text on purpose, or the `00-concepts/` and `00-research/` archives, which were written before the specification.
+- `svg_collide.py` skips text inside a rotated or otherwise transformed group rather than model the transform, and reports how many it skipped. It counts an overlap only when two text boxes overlap by more than 2 units in both directions.
 
 ## Adding a check
 
-Put it here, make it print `PASS`/`FAIL` lines and a `RESULT: n failure(s)`
-tail, and add it to the loop in `run-all.sh`. The bar for adding one: a defect
-got through, and no existing check could have caught it.
+- A value has been superseded: add a pattern to `STALE` in `consist.py`.
+- A value must appear in several documents: add a row to `ROWS` in `crossdoc.py`.
+- A rule is restated in several documents: add it to `RESTATED` in `consist.py`.
+- A new class of defect: add a script to this directory that prints `PASS`/`FAIL` lines and ends with a `RESULT: n failure(s)` line, and add it to the loop in `run-all.sh`. Add a script only when a defect got through that no existing check could have caught.

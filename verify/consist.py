@@ -178,6 +178,6 @@ for pat, why in STALE:
     for h in hits[:8]:
         p("     " + h)
 
-io.open("_verify/consist.txt",
+io.open("verify/consist.txt",
         'w', encoding='utf-8').write("\n".join(out))
 print("\n".join(out))

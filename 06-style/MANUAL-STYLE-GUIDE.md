@@ -1,7 +1,7 @@
 # SUMMIT PUSH — Manual Typesetting Style Guide
 
 **Document:** `06-style/MANUAL-STYLE-GUIDE.md` · **Applies to:** the PDF edition compiled from `02-manual/sections/*.md`
-**Background:** `06-style/_research-notes.md` holds the full research pass this guide was distilled from, including the reference values that were examined and deliberately *not* adopted.
+**Background:** `06-style/research-notes.md` holds the full research pass this guide was distilled from, including the reference values that were examined and deliberately *not* adopted.
 
 ---
 

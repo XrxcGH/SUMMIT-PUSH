@@ -28,7 +28,7 @@ The forecast window is closing. In SUMMIT PUSH, two three-robot expedition ALLIA
 |---|---|
 | `README.md` | This file — the package front door and organizer's guide. |
 | `REVISION-LOG.md` | Every change from v1.0 through v2.2, with the reasoning and the arithmetic behind it. Sections A–I are the v1.0 → v2.0 pass, J a self-review of v2.0, K and L the adversarial re-audit that produced v2.1, and M a third pass that audited those fixes and produced v2.2. |
-| `_verify/` | The verification suite — five checks over the numbers, the cross-references, cross-document agreement, and the drawing sheets. `bash _verify/run-all.sh` rebuilds everything and runs them all. |
+| `verify/` | The verification suite — five checks over the numbers, the cross-references, cross-document agreement, and the drawing sheets. `bash verify/run-all.sh` rebuilds everything and runs them all. |
 | `00-research/` | The design-research foundation: decades of community sentiment around competitive robotics games, distilled into the game-quality rubric the package was judged against. |
 | `00-concepts/` | The five-concept slate from the design phase (internal archive): the approved concept that became SUMMIT PUSH plus four runners-up and three judging reports. Working documents; not part of the published release. |
 | `01-design/DESIGN-SPEC.md` | The **locked design specification** — the single source of truth. Every number, name, and rule in the package traces here. Where any document disagrees with the spec, the spec wins. |
@@ -41,11 +41,10 @@ The forecast window is closing. In SUMMIT PUSH, two three-robot expedition ALLIA
 | `03-field/renderings/*.svg` | 6 dimensioned multi-view drawing sheets: field top view, CRAG, HEADWALL, OUTFITTER, game pieces with clearance studies, and the AprilTag map. |
 | `03-field/renderings/generate_drawings.py` | Generates all six sheets from the master dimension ledger. Re-run after any geometry change; do not hand-edit the SVGs. |
 | `03-field/renderings/_drawlib.py` | The drawing helper library the generator imports — sheet framing, dimensions, leaders, title blocks, palette. |
-| `_PROGRESS.md` | Working status tracker: workstreams, build and verification commands, and how to send changes. |
 | `04-vision/VISION-GUIDE.md` | The 26-tag AprilTag layout (36h11), mounting geometry, tag-to-target transforms, and simulation guidance. |
 | `04-vision/apriltag-field-layout.json` | WPILib-schema tag layout (meters, always-blue-origin NWU) — drops straight into vision simulation. |
 | `05-cadathon/CADATHON-BRIEF.md` | The design challenge itself: structure, timeline, deliverables, and the judging rubric. |
-| `06-style/MANUAL-STYLE-GUIDE.md` | The typesetting standard for producing a print-quality PDF edition of the manual from these Markdown sources (`_research-notes.md` alongside it holds the underlying research). |
+| `06-style/MANUAL-STYLE-GUIDE.md` | The typesetting standard for producing a print-quality PDF edition of the manual from these Markdown sources (`research-notes.md` alongside it holds the underlying research). |
 
 ---
 

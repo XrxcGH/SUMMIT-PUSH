@@ -201,7 +201,7 @@ The AUTO settle window (T = 15.0 to 18.0) is entirely inside TELEOP under driver
 | # | File | Contents |
 |---|---|---|
 | H1 | `03-field/MATERIALS-AND-COLORS.md` | Material, color (with hex), finish, and section for every ARENA element and game piece; six appearance rules; a render checklist. Game pieces now have official colors — expedition violet, off-white with green caps, and amber — chosen to sit far from both alliance colors in hue so no SUPPLY can be mistaken for an alliance element. Previously the drawing set filled the CACHE CRATE in a lightened alliance blue. |
-| H2 | `06-style/MANUAL-STYLE-GUIDE.md` | Page setup, palette, typography, rule anatomy, table and figure conventions, front and back matter, and a production recipe for typesetting a print-quality PDF from the Markdown sources. `06-style/_research-notes.md` holds the underlying research. |
+| H2 | `06-style/MANUAL-STYLE-GUIDE.md` | Page setup, palette, typography, rule anatomy, table and figure conventions, front and back matter, and a production recipe for typesetting a print-quality PDF from the Markdown sources. `06-style/research-notes.md` holds the underlying research. |
 | H3 | `02-manual/build.sh` and `02-manual/manual-header.md` | The compiled manual is now reproducible from its sections with one command. |
 | H4 | `REVISION-LOG.md` | This file. |
 | H5 | `_PROGRESS.md` | Working status tracker for the revision pass. |
@@ -387,7 +387,7 @@ and both are worth stating plainly because they are what a revision pass is
    not a fix.** Five separate defects were the same L1 change failing to reach a
    table, a caption or a note that also published the geometry.
 2. **A verification suite can report zero failures while asserting nothing.**
-   Four checks in `_verify/` were tautologies, one was computed on a superseded
+   Four checks in `verify/` were tautologies, one was computed on a superseded
    dimension, and the scanner skipped the drawing set entirely.
 
 ### Blockers

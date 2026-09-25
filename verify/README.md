@@ -4,7 +4,7 @@ Four checks that hold the package together. Run them after any edit; run them
 before publishing anything.
 
 ```bash
-bash _verify/run-all.sh
+bash verify/run-all.sh
 ```
 
 That rebuilds the compiled manual and all six drawing sheets first, then runs
@@ -12,7 +12,7 @@ all five checks. To run one on its own, invoke it from anywhere — each script
 locates the package relative to its own path:
 
 ```bash
-python _verify/verify.py
+python verify/verify.py
 ```
 
 | Script | What it proves |

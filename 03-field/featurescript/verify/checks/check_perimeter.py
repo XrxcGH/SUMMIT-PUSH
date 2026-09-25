@@ -18,7 +18,16 @@ Expected values come from the package documents, never from src/20_ledger.fs:
   Manual §3.1.2          bands on the long-side guardrails at Y = 0 and Y = 324, lens facing
                          inward, lens centre 19.0; each ALLIANCE has two segments, one on each
                          side; states Green (FIELD safe), White (FORECAST, 1/2/3 lit blocks),
-                         ALLIANCE colour (ROUTE, 1/2/3 lit blocks), Dark.
+                         ALLIANCE colour (ROUTE, 1/2/3 lit blocks), Dark.  So each segment
+                         carries three blocks.
+  Manual §4.3.1          FORECAST W / I / G -> 1 / 2 / 3 lit blocks (both alliances' segments).
+  Manual R207            the FIELD LED indication is "a horizontal row of one, two, or three equal,
+                         discrete, separated lit blocks"; a continuous strip is not a countable
+                         block pattern.  -> three equal 108-in blocks per 324-in segment.
+  (ref, generator)       which blocks light is free in the package: the generator counts them from
+                         each alliance's own wall (block 1 nearest the wall); unlit blocks are dark.
+                         Guardrail posts turn the 2-in side of the 2 x 1 tube along the rail.
+                         Shared names (posts, glazing bays) carry a creation-order " n" suffix.
   MATERIALS-AND-COLORS   carpet `carpet` #6E6A63; guardrail frame aluminium extrusion `wall`
                          #9AA4B2, 2 x 1 in tube; guardrail glazing polycarbonate `glazing`
                          #DCE8FA at 25 %, 0.25 in; FIELD LED band frosted acrylic lens,
@@ -45,6 +54,8 @@ GUARD_H = 20.0                           # §0, §1.3
 LED_W = 1.0                              # §1.3, manual §3.1.2, M&C §2
 LED_Z = 19.0                             # §1.3 lens centre
 SEG_L = 324.0                            # §1.3 two 324-in alliance segments
+LED_BLOCKS = 3                           # manual §3.1.2: one, two or three lit blocks per segment
+BLOCK_L = SEG_L / LED_BLOCKS             # R207: "equal, discrete" blocks -> 108 in
 FRAME_SEC = (1.0, 2.0)                   # §1.3 / M&C §2 "2 x 1 in tube"
 GLAZE_T = 0.25                           # M&C §2 guardrail glazing
 EPS = 1e-6
@@ -286,6 +297,14 @@ def run(f):
                 badpost.append("X %.2f-%.2f: %g x %g" % (b[0], b[3], sec[1], sec[0]))
         add("%s posts: 2 x 1 in tube section (M&C §2 guardrail frame)" % tag, not badpost,
             "%d of %d posts are not 2 x 1: %s" % (len(badpost), len(posts), "; ".join(badpost[:3])))
+        # orientation is free in the package (§1.3 '(ref)'): the generator turns the 2-in side along the rail
+        badori = []
+        for r in posts:
+            b = f.bbox([r])
+            if not (_close(b[3] - b[0], FRAME_SEC[1], 1e-6) and _close(b[4] - b[1], FRAME_SEC[0], 1e-6)):
+                badori.append("%s: X %.4f x Y %.4f" % (r["name"], b[3] - b[0], b[4] - b[1]))
+        add("%s posts (ref): 2 in along the rail (X), 1 in deep (Y) - same depth as the rails" % tag, not badori,
+            "; ".join(badori[:3]) or "%d posts" % len(posts))
         if bot:
             b = f.bbox(bot)
             add("%s: frame is low - bottom rail sits on the carpet plane" % tag, _close(b[2], 0, 1e-6),
@@ -349,15 +368,45 @@ def run(f):
             "glazed fraction %.3f" % frac)
 
         # ---- FIELD LED band on this rail ---------------------------------------------------
-        add("%s: exactly two LED segments" % tag, len(leds) == 2, "%d" % len(leds))
-        leds_sorted = sorted(leds, key=lambda r: f.bbox([r])[0])
-        for i, r in enumerate(leds_sorted):
+        # manual §3.1.2: the band is divided at X 324 into two 324-in ALLIANCE segments; a segment
+        # shows one, two or three lit blocks, so it carries three blocks, and R207 describes the
+        # indication as "equal, discrete" blocks -> three 108-in blocks tiling each segment.
+        halves = {"BLUE": [], "RED": [], "straddles X 324": []}
+        for r in leds:
             b = f.bbox([r])
-            half = "Blue half (X 0-324)" if i == 0 else "Red half (X 324-648)"
-            want_x = (0.0, CX) if i == 0 else (CX, FIELD_L)
-            st = "%s LED %s" % (tag, half)
-            add("%s: X %g-%g (324-in segment, split at X 324)" % (st, want_x[0], want_x[1]),
-                _close(b[0], want_x[0], 1e-6) and _close(b[3], want_x[1], 1e-6), "X %.4f..%.4f" % (b[0], b[3]))
+            k = "BLUE" if b[3] <= CX + 1e-6 else ("RED" if b[0] >= CX - 1e-6 else "straddles X 324")
+            halves[k].append(r)
+        add("%s: LED band = two alliance segments split at X 324, each of %d blocks (manual §3.1.2)" % (tag, LED_BLOCKS),
+            len(halves["BLUE"]) == LED_BLOCKS and len(halves["RED"]) == LED_BLOCKS and not halves["straddles X 324"],
+            "%d LED bodies: Blue half %d, Red half %d, straddling %s" % (
+                len(leds), len(halves["BLUE"]), len(halves["RED"]), [r["name"] for r in halves["straddles X 324"]]))
+        leds_sorted = []
+        for al, seg in (("BLUE", (0.0, CX)), ("RED", (CX, FIELD_L))):
+            blks = sorted(halves[al], key=lambda r: f.bbox([r])[0])
+            xs = [(f.bbox([r])[0], f.bbox([r])[3]) for r in blks]
+            joins = all(_close(xs[i][1], xs[i + 1][0], 1e-6) for i in range(len(xs) - 1))
+            add("%s LED %s segment: X %g-%g, one continuous band of abutting blocks (324-in segment, §1.3 / §3.1.2)"
+                % (tag, al, seg[0], seg[1]),
+                bool(xs) and _close(xs[0][0], seg[0], 1e-6) and _close(xs[-1][1], seg[1], 1e-6) and joins,
+                "blocks X %s" % ", ".join("%.4f..%.4f" % q for q in xs))
+            add("%s LED %s segment: blocks of equal length %.0f in (324 / 3; R207 'equal' blocks)" % (tag, al, BLOCK_L),
+                bool(xs) and all(_close(b - a, BLOCK_L, 1e-6) for a, b in xs),
+                "lengths %s" % ["%.4f" % (b - a) for a, b in xs])
+            for r in blks:
+                leds_sorted.append((al, r))
+        for al, r in leds_sorted:
+            b = f.bbox([r])
+            st = "%s LED %s" % (tag, r["name"].split(" FIELD LED, ", 1)[-1])
+            # block numbering (ref): the package leaves the lit order free; blocks count from the
+            # alliance's own wall (Blue wall X 0, Red wall X 648)
+            mm = re.search(r"\b(BLUE|RED) segment block (\d+)$", r["name"])
+            if mm and mm.group(1) == al:
+                k = int(mm.group(2))
+                want_x = ((k - 1) * BLOCK_L, k * BLOCK_L) if al == "BLUE" else (FIELD_L - k * BLOCK_L, FIELD_L - (k - 1) * BLOCK_L)
+                add("%s (ref): block %d counted from the %s wall at X %g-%g" % (st, k, al, want_x[0], want_x[1]),
+                    _close(b[0], want_x[0], 1e-6) and _close(b[3], want_x[1], 1e-6), "X %.4f..%.4f" % (b[0], b[3]))
+            add("%s: body name names the %s alliance segment it occupies" % (st, al), bool(mm) and mm.group(1) == al,
+                r["name"])
             add("%s: band width 1.0" % st, _close(b[5] - b[2], LED_W, 1e-6), "Z %.4f..%.4f" % (b[2], b[5]))
             add("%s: lens centre 19.0 above the carpet" % st, _close((b[2] + b[5]) / 2, LED_Z, 1e-6),
                 "centre %.4f" % ((b[2] + b[5]) / 2))
@@ -385,9 +434,6 @@ def run(f):
             add("%s: lens is the surface seen from the field at Z 19" % st,
                 _close(f.dist_point([r], p_in), 0.01, 1e-6) and f.inside([r], p_out),
                 "dist from field side %.4f; lens behind face %s" % (f.dist_point([r], p_in), f.inside([r], p_out)))
-            # name agrees with the half it occupies
-            want_nm = "Blue" if i == 0 else "Red"
-            add("%s: body name names the %s half" % (st, want_nm), want_nm.lower() in r["name"].lower(), r["name"])
             mt = r["mat"]
             add("%s: frosted acrylic lens material" % st,
                 "acrylic" in mt["name"].lower() and 1150 <= mt["density"] <= 1220,
@@ -439,80 +485,130 @@ def run(f):
         if rot:
             bb = _rot_bb(bb)
         nmx = r["name"].split(") ", 1)[-1]
-        if rot:
-            nmx = nmx.replace("Blue half", "#").replace("Red half", "Blue half").replace("#", "Red half")
+        if "FIELD LED" in nmx:
+            # blocks count from their own alliance wall, so the rotation maps BLUE block k onto
+            # RED block k: swap the alliance names
+            if rot:
+                nmx = nmx.replace("BLUE", "#").replace("RED", "BLUE").replace("#", "RED")
+        else:
+            # " 1", " 2", ... is the creation-order suffix numberSharedNames gives shared names
+            # (posts, glazing bays); it carries no position, so the rotation ignores it
+            nmx = re.sub(r" \d+$", "", nmx)
         return (nmx, tuple(round(v, 4) for v in bb), round(f.volume([r]), 3))
 
     sa = sorted(sig(r, True) for r in a)
     sb = sorted(sig(r, False) for r in b)
     miss = [x for x in sa if x not in sb] + [x for x in sb if x not in sa]
-    add("guardrail Y = 324 is the 180-degree rotation of guardrail Y = 0 (incl. LED alliance halves)",
-        not miss, "; ".join(str(m) for m in miss[:4]))
+    add("guardrail Y = 324 is the 180-degree rotation of guardrail Y = 0 (incl. LED alliance segments)",
+        not miss and len(sa) == len(sb), "; ".join(str(m) for m in miss[:4]) or "%d parts each" % len(sa))
 
-    # four segments in total: each alliance has one on each side of the field
+    # four segments in total: each alliance has one on each side of the field, three blocks each
     segs = f.find("re:FIELD LED")
-    per = {"Blue": [], "Red": []}
+
+    def seg_key(g, r):
+        bb = g.bbox([r])
+        return ("BLUE" if bb[3] <= CX + 1e-6 else "RED", "Y0" if bb[4] <= 0 + 1e-6 else "Y324")
+
+    per = {}
     for r in segs:
-        bb = f.bbox([r])
-        per["Blue" if bb[3] <= CX + 1e-6 else "Red"].append("Y0" if bb[4] <= 0 + 1e-6 else "Y324")
-    add("FIELD LEDs: 4 segments, each alliance one on each long side",
-        len(segs) == 4 and sorted(per["Blue"]) == ["Y0", "Y324"] and sorted(per["Red"]) == ["Y0", "Y324"],
-        "Blue %s Red %s" % (per["Blue"], per["Red"]))
+        per.setdefault(seg_key(f, r), []).append(r)
+    want_keys = [("BLUE", "Y0"), ("BLUE", "Y324"), ("RED", "Y0"), ("RED", "Y324")]
+    add("FIELD LEDs: 4 alliance segments of %d blocks, each alliance one on each long side (manual §3.1.2)" % LED_BLOCKS,
+        sorted(per) == want_keys and all(len(v) == LED_BLOCKS for v in per.values()),
+        "; ".join("%s/%s: %d blocks" % (k[0], k[1], len(v)) for k, v in sorted(per.items())))
     total = sum(f.bbox([r])[3] - f.bbox([r])[0] for r in segs)
     add("FIELD LEDs: each band runs the full 648 in (2 x 648 in total)", _close(total, 2 * FIELD_L, 1e-6),
         "total %.4f" % total)
 
     # =========================================================================================
-    # FIELD LED states (manual §3.1.2) -- rebuild the perimeter with each option
+    # FIELD LED states (manual §3.1.2, §4.3.1; R207) -- rebuild the perimeter with each option
     # =========================================================================================
     base = dict(walls=False, crags=False, headwalls=False, tape=False, tags=False, decals=False,
                 staged=False, stock=False)
     dark_rgb = f.color(segs)[0]
     lum = 0.2126 * dark_rgb[0] + 0.7152 * dark_rgb[1] + 0.0722 * dark_rgb[2]
     lit_cols = [pal[k][0] for k in ("led-green", "neutral-white", "alliance-blue", "alliance-red") if k in pal]
-    add("LED state DARK (default): all four segments dark and not a lit-state colour",
-        len(set(tuple(r["rgb"]) for r in segs)) == 1 and lum < 64 and tuple(dark_rgb) not in lit_cols,
+    add("LED state DARK (default): all %d blocks dark and not a lit-state colour" % len(segs),
+        len(set(tuple(r["rgb"]) for r in segs)) == 1 and lum < 64 and tuple(dark_rgb) not in lit_cols
+        and all(r["alpha"] == 1.0 for r in segs),
         "rgb %s (luminance %.0f/255)" % (dark_rgb, lum))
 
+    def wall_dist(al, bb):
+        """distance of a block's near end from its own alliance wall"""
+        return bb[0] if al == "BLUE" else FIELD_L - bb[3]
+
     from inspect_field import Field
-    want_state = {
-        "GREEN": lambda half: pal["led-green"][0],
-        "FORECAST": lambda half: pal["neutral-white"][0],
-        "ROUTE": lambda half: pal["alliance-blue"][0] if half == "Blue" else pal["alliance-red"][0],
-    }
-    for state, fn in want_state.items():
+    # manual §3.1.2 / §4.3.1: FORECAST W / I / G -> 1 / 2 / 3 white blocks in BOTH alliances' segments;
+    # ROUTE LOW / MID / HIGH -> 1 / 2 / 3 blocks in that alliance's colour; GREEN -> the segment lit green
+    cnt = {"WHITEOUT": 1, "ICEFALL": 2, "GALE": 3, "LOW": 1, "MID": 2, "HIGH": 3}
+    cases = [("GREEN", {}, lambda al: (pal["led-green"][0], LED_BLOCKS), "#3FBF4F, all %d blocks" % LED_BLOCKS)]
+    for fc in ("WHITEOUT", "ICEFALL", "GALE"):
+        cases.append(("FORECAST", {"forecast": fc},
+                      (lambda n: lambda al: (pal["neutral-white"][0], n))(cnt[fc]),
+                      "%s: %d white #F5F5F5 block(s) per segment" % (fc, cnt[fc])))
+    for rb, rr in (("LOW", "HIGH"), ("MID", "LOW"), ("HIGH", "MID")):
+        cases.append(("ROUTE", {"routeBlue": rb, "routeRed": rr},
+                      (lambda nb, nr: lambda al: (pal["alliance-blue"][0], nb) if al == "BLUE"
+                       else (pal["alliance-red"][0], nr))(cnt[rb], cnt[rr]),
+                      "BLUE %s: %d blue block(s), RED %s: %d red block(s)" % (rb, cnt[rb], rr, cnt[rr])))
+    pattern = {}
+    for state, extra, fn, what in cases:
+        opt = dict(base)
+        opt.update(extra)
         try:
-            g = Field(fieldLed=state, **base)
+            g = Field(fieldLed=state, **opt)
         except Exception as e:  # noqa: BLE001
-            add("LED state %s: builds" % state, False, "%s: %s" % (type(e).__name__, e))
+            add("LED state %s %s: builds" % (state, what), False, "%s: %s" % (type(e).__name__, e))
             continue
-        bad = []
         ss = g.find("re:FIELD LED")
+        bysg = {}
         for r in ss:
-            bb = g.bbox([r])
-            half = "Blue" if bb[3] <= CX + 1e-6 else "Red"
-            w = fn(half)
-            if tuple(r["rgb"]) != tuple(w) or r["alpha"] != 1.0:
-                bad.append("%s: %s a %s, want %s" % (r["name"], r["rgb"], r["alpha"], w))
-        add("LED state %s: every segment in the document colour (%s)" % (
-            state, "alliance colour by half" if state == "ROUTE" else ("#3FBF4F" if state == "GREEN" else "#F5F5F5")),
-            len(ss) == 4 and not bad, "; ".join(bad[:4]) or "%d segments" % len(ss))
+            bysg.setdefault(seg_key(g, r), []).append(r)
+        bad = []
+        for key in want_keys:
+            al = key[0]
+            on_rgb, n = fn(al)
+            blks = sorted(bysg.get(key, []), key=lambda r: wall_dist(al, g.bbox([r])))
+            if len(blks) != LED_BLOCKS:
+                bad.append("%s/%s: %d blocks" % (key[0], key[1], len(blks)))
+                continue
+            for i, r in enumerate(blks):
+                want = on_rgb if i < n else dark_rgb
+                if tuple(r["rgb"]) != tuple(want) or r["alpha"] != 1.0:
+                    bad.append("%s: %s a %s, want %s (%s)" % (r["name"], r["rgb"], r["alpha"], want,
+                                                             "lit" if i < n else "dark"))
+            # lit / dark runs along the segment, measured from the geometry (abutting lit blocks
+            # read as one bar)
+            runs = []
+            for r in blks:
+                bb = g.bbox([r])
+                lit = tuple(r["rgb"]) != tuple(dark_rgb)
+                lo_, hi_ = wall_dist(al, bb), wall_dist(al, bb) + (bb[3] - bb[0])
+                if lit and runs and _close(runs[-1][1], lo_, 1e-6):
+                    runs[-1][1] = hi_
+                elif lit:
+                    runs.append([lo_, hi_])
+            short = extra.get("forecast") or extra.get("routeBlue" if al == "BLUE" else "routeRed") or state
+            pattern.setdefault(state, []).append((short, key, n, runs))
+        add("LED state %s (%s): every block in the document colour, lit blocks counted from the own wall (ref)"
+            % (state, what), not bad, "; ".join(bad[:4]) or "%d blocks" % len(ss))
         # other guardrail parts keep their appearance
         gr = [r for r in g.find(r"re:^Guardrail \(") if "FIELD LED" not in r["name"]]
         chg = [r["name"] for r in gr if tuple(r["rgb"]) not in (pal["wall"][0], pal["glazing"][0])]
-        add("LED state %s: only the LED lenses change colour" % state, not chg, "; ".join(chg[:4]))
-        if state in ("FORECAST", "ROUTE"):
-            # manual §3.1.2 / §4.3.1: FORECAST and ROUTE are 1, 2 or 3 discrete lit blocks per segment
-            # (R207 distinguishes that block pattern from a continuous strip).  Count lit, separated
-            # blocks per segment and whether the option can show more than one count.
-            blocks = {}
-            for r in ss:
-                bb = g.bbox([r])
-                key = ("Blue" if bb[3] <= CX + 1e-6 else "Red", "Y0" if bb[4] <= 0 + 1e-6 else "Y324")
-                blocks.setdefault(key, []).append(bb[3] - bb[0])
-            desc = ", ".join("%s/%s: %d lit block(s) %s in" % (k[0], k[1], len(v), "/".join("%.0f" % x for x in v))
-                             for k, v in sorted(blocks.items()))
-            ok = all(1 <= len(v) <= 3 and max(v) < SEG_L - 1e-6 for v in blocks.values())
-            add("LED state %s: segment shows a countable 1/2/3-block pattern, not a continuous bar" % state, ok,
-                desc + "; no FORECAST (W/I/G) or ROUTE (LOW/MID/HIGH) selector in the option")
+        add("LED state %s (%s): only the LED lenses change colour" % (state, what), not chg, "; ".join(chg[:4]))
+
+    # manual §3.1.2 / §4.3.1 and R207: FORECAST and ROUTE are shown as a countable row of one, two
+    # or three "equal, discrete, separated lit blocks"; R207 contrasts that with a continuous strip.
+    # Count the separated lit runs per segment (abutting lit blocks merge into one bar).
+    for state in ("FORECAST", "ROUTE"):
+        rows = pattern.get(state, [])
+        bad = []
+        for what, key, n, runs in rows:
+            lens = [b - a for a, b in runs]
+            if len(runs) != n or (lens and max(lens) - min(lens) > 1e-6):
+                bad.append("%s %s/%s: %d lit block(s) wanted, %d separated lit run(s) %s in" % (
+                    what, key[0], key[1], n, len(runs), "/".join("%.0f" % x for x in lens)))
+        add("LED state %s: each segment shows a countable 1/2/3 pattern of equal, separated lit blocks "
+            "(R207 / manual §3.1.2), not a continuous bar" % state, rows and not bad,
+            "; ".join(bad[:6]) or "%d segment patterns" % len(rows))
     return out

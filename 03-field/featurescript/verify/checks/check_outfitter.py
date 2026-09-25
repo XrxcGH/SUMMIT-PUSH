@@ -14,6 +14,15 @@ Every expected value below is taken from the package documents, never from src/:
                         lower wall plywood 0.75, glazing 0.25 @ 25 %, tape 2 x 0.01, tag panel)
   04-vision/apriltag-field-layout.json (tag poses)
 
+Construction reading (the generator's documented design; §5 marks all behind-wall geometry (ref)):
+  * a throat liner "<A> OUTFITTER n chute throat" (sill, two jambs, head; one body) lines the
+    30 x 16 opening through the 2.0-in wall depth, so the wall is 2.0 thick at the chute;
+  * the 30-deg ramp "<A> OUTFITTER n chute ramp" starts at the back of the throat (x = -2.0) and is
+    40 in along the slope; plumb cheeks "... cheek 1/2" run on its side edges; 45-deg funnel wings
+    "... funnel wing 1/2" open the funnel from the 30-in ramp to 36 in at the loading end; a leg
+    "... ramp leg" carries the loading end;
+  * each OUTFITTER LANE is one welded U-shaped tape body "<A> OUTFITTER LANE n tape".
+
 The chute path is checked with a 2-D envelope sweep (all obstacles are taken as the worst case
 over the piece's lateral extent, measured on the built model by ray casting) plus 3-D spot checks
 of the worst poses with the real piece bodies.
@@ -262,15 +271,29 @@ def run(f):
     nonpiece = [r for r in recs if not (r["name"] or "").startswith(PIECE_PREFIX)]
     wbox = {id(r): fast_bbox(r["solids"]) for r in recs}      # loose boxes, for candidate filtering only
 
+    def fx(rx):
+        try:
+            return f.find("re:" + rx)
+        except KeyError:
+            return []
+
+    # chute part names (§5 construction reading above)
+    RX = {"ramp": r"^%s OUTFITTER \d+ chute ramp$", "throat": r"^%s OUTFITTER \d+ chute throat$",
+          "cheek": r"^%s OUTFITTER \d+ cheek \d+$", "wing": r"^%s OUTFITTER \d+ funnel wing \d+$",
+          "leg": r"^%s OUTFITTER \d+ ramp leg$", "lane": r"^%s OUTFITTER LANE \d+ tape$"}
+
+    def near_y(rs, Y, tol):
+        return [r for r in rs if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Y) < tol]
+
     # ---- counts ---------------------------------------------------------------------------
     for side in ("BLUE", "RED"):
-        ramps = f.find(r"re:^%s OUTFITTER \d+ chute ramp$" % side)
-        cheeks = f.find(r"re:^%s OUTFITTER \d+ cheek funnel$" % side)
-        lanes = f.find(r"re:^%s OUTFITTER LANE tape \d+$" % side)
-        chk("%s: 2 chute ramps, 4 cheek funnel plates, 2 OUTFITTER LANES (§5 x4 stations)" % side,
-            len(ramps) == 2 and sum(len(r["solids"]) for r in cheeks) == 4 and len({r["name"] for r in lanes}) == 2,
-            "ramps %d, cheek solids %d, lanes %d" % (len(ramps), sum(len(r["solids"]) for r in cheeks),
-                                                   len({r["name"] for r in lanes})))
+        got = {k: fx(v % side) for k, v in RX.items()}
+        n = {k: len(v) for k, v in got.items()}
+        ns = {k: sum(len(r["solids"]) for r in v) for k, v in got.items()}
+        chk("%s: 2 chute throats, 2 ramps, 4 cheek plates, 4 funnel wings, 2 legs, 2 OUTFITTER LANES (§5 x4 stations), "
+            "one solid each" % side,
+            n == {"ramp": 2, "throat": 2, "cheek": 4, "wing": 4, "leg": 2, "lane": 2} and ns == n,
+            "bodies %s, solids %s" % (n, ns))
 
     ceil_rows = []
     wall_depths = []
@@ -297,6 +320,8 @@ def run(f):
         frame = f.find("%s alliance wall frame" % side)
         wall = panel + glaze
         rw = Rays(f.solids(wall))
+        throat = near_y(fx(RX["throat"] % side), Y, 5)
+        rwt = Rays(f.solids(wall + throat))
 
         # ---- A. opening (CRITICAL) ----------------------------------------------------------
         for dy in (0.0, -14.0, 14.0):
@@ -328,15 +353,46 @@ def run(f):
         bad = [p for p in probes_in if not f.inside(wall, P(*p))] + [p for p in probes_out if f.inside(wall, P(*p))]
         chk("%s: opening is exactly 30 x 16 (wall present 0.05 outside each edge, absent 0.05 inside)" % tag,
             not bad, "bad probes %s" % bad)
-        # the window through the wall panel is clear of every body
-        wf = K.Frame(P(-PANEL_T, c - OPEN_W / 2 + 0.01, SILL + 0.01), D(1, 0, 0), D(0, 0, 1))
-        box = BRepPrimAPI_MakeBox(PANEL_T, OPEN_W - 0.02, OPEN_H - 0.02).Shape()
+        # ... and stays exactly 30 x 16 through the 2.0-in wall depth: behind the panel the
+        # throat liner bounds it (probes at x = -1.0 / -1.4 / -1.9)
+        bad = []
+        for xd in (-1.0, -1.4, -1.9):
+            pin = [(xd, c, SILL - 0.05), (xd, c, HEAD + 0.05), (xd, c - 15.05, 32.0), (xd, c + 15.05, 32.0),
+                   (xd, c - 15.05, 39.5), (xd, c + 15.05, 39.5)]
+            pout = [(xd, c, SILL + 0.05), (xd, c, HEAD - 0.05), (xd, c - 14.95, 32.0), (xd, c + 14.95, 32.0),
+                    (xd, c - 14.95, SILL + 0.05), (xd, c + 14.95, HEAD - 0.05)]
+            bad += [p for p in pin if not f.inside(wall + throat, P(*p))] + [p for p in pout if f.inside(wall + throat, P(*p))]
+        chk("%s: opening is exactly 30 x 16 through the 2.0-in wall depth (throat liner flush with the opening)" % tag,
+            len(throat) == 1 and not bad, "throat bodies %d; bad probes %s" % (len(throat), bad[:6]))
+        for xd in (-1.0, -1.9):
+            h = rwt.first(P(xd, c, 35.0), D(0, 0, -1))
+            near("%s: sill Z at x %g (throat sill, flush with the panel sill)" % (tag, xd), None if h is None else 35.0 - h, SILL, 0.001)
+            h = rwt.first(P(xd, c, 30.0), D(0, 0, 1))
+            near("%s: opening head Z at x %g (throat head)" % (tag, xd), None if h is None else 30.0 + h, HEAD, 0.001)
+            a_ = rwt.first(P(xd, c, 32.0), D(0, -1, 0))
+            b_ = rwt.first(P(xd, c, 32.0), D(0, 1, 0))
+            near("%s: opening width at x %g (throat jambs)" % (tag, xd), None if a_ is None or b_ is None else a_ + b_, OPEN_W, 0.001)
+        # the window through the full 2.0-in wall depth is clear of every body
+        wf = K.Frame(P(-WALL_T, c - OPEN_W / 2 + 0.01, SILL + 0.01), D(1, 0, 0), D(0, 0, 1))
+        box = BRepPrimAPI_MakeBox(WALL_T, OPEN_W - 0.02, OPEN_H - 0.02).Shape()
         win = K.BRepBuilderAPI_Transform(box, wf.trsf(), True).Shape()
         wbb = f.bbox([rec(win)])
         cands = [r for r in recs if bb_overlap(wbox[id(r)], wbb)]
         cv = f.common_volume([rec(win)], cands) if cands else 0.0
-        chk("%s: 30 x 16 window through the panel thickness is empty" % tag, cv < 1e-6,
+        chk("%s: 30 x 16 window through the full 2.0-in wall depth is empty" % tag, cv < 1e-6,
             "common volume %.6f in^3 with %s" % (cv, sorted({r["name"] for r in cands})))
+        # throat liner: one aluminium-lined body inside the wall depth, joined to panel and glazing
+        if throat:
+            tbb = f.bbox(throat, F)
+            cvt = f.common_volume(throat, wall + frame)
+            dtp, dtg = f.dist(throat, panel), f.dist(throat, glaze)
+            chk("%s: chute throat liner within the 2.0-in wall (x -2.0..-0.25, behind the 0.25 glazing), touches panel "
+                "and glazing, no overlap with panel/glazing/frame" % tag,
+                abs(tbb[0] + WALL_T) < 1e-3 and abs(tbb[3] + GLAZE_T) < 1e-3 and cvt < 1e-6 and dtp < 1e-6 and dtg < 1e-6,
+                "local x %.4f..%.4f; common %.6f; gap to panel %.4f, glazing %.4f" % (tbb[0], tbb[3], cvt, dtp, dtg))
+            chk("%s: chute throat liner styled as wall structure (`wall`, opaque)" % tag,
+                throat[0]["rgb"] == rgb("wall") and throat[0]["alpha"] == 1,
+                "rgb %s alpha %s mat %s" % (throat[0]["rgb"], throat[0]["alpha"], throat[0]["mat"]["name"]))
         # sill roundover radius (ref 0.5): fit z(x) of the field-side edge
         xs_f = np.linspace(-0.45, -0.02, 12)
         zs_f = []
@@ -352,22 +408,29 @@ def run(f):
             if best is None or err < best[1]:
                 best = (R, err)
         near("%s: sill field-side edge radius (ref)" % tag, best[0], SILL_R, REF, " (fit residual %.4f)" % best[1])
-        # wall depth at the chute: sill (below the opening) and head (above it)
+        # wall depth at the chute: the material bounding the opening 0.1 in outside the sill,
+        # the head and both jambs (Z 32), walked from the field face through every solid layer
+        # contiguous with it (panel / glazing / frame / throat liner).  Measured from the
+        # field-side plane x = 0; the sill entry lies on the R0.5 roundover, which is allowed.
         hs = []
-        for z in (SILL - 1.0, HEAD + 1.0):
-            rwf = Rays(f.solids(wall + frame))
-            e = rwf.first(P(0.5, c, z), D(-1, 0, 0))
+        wtf = wall + frame + throat
+        rwf = Rays(f.solids(wtf))
+        for (yy, z) in ((c, SILL - 0.1), (c, HEAD + 0.1), (c - OPEN_W / 2 - 0.1, 32.0), (c + OPEN_W / 2 + 0.1, 32.0)):
+            e = rwf.first(P(0.5, yy, z), D(-1, 0, 0))
+            if e is None or 0.5 - e < -SILL_R - 1e-3:
+                hs.append(float("nan"))
+                continue
             x_in = 0.5 - e
             # walk through every solid layer that is contiguous with the field face
             x = x_in
             while True:
-                ex = rwf.first(P(x - 1e-4, c, z), D(-1, 0, 0))
+                ex = rwf.first(P(x - 1e-4, yy, z), D(-1, 0, 0))
                 if ex is None:
                     break
                 x = x - 1e-4 - ex
-                if not f.inside(wall + frame, P(x - 1e-3, c, z)):
+                if not f.inside(wtf, P(x - 1e-3, yy, z)):
                     break
-            hs.append(x_in - x)
+            hs.append(0.0 - x)
         wall_depths.append((tag, hs))
         env = f.bbox(wall + frame, F)
         near("%s: alliance wall envelope depth (ref 2.0) and height 78" % tag, env[3] - env[0], WALL_T, REF,
@@ -417,15 +480,19 @@ def run(f):
             "model %s json %s yaw %.3f" % (np.round(fc, 4), np.round(jv, 4), yaw))
 
         # ---- C. ramp ------------------------------------------------------------------------
-        ramp = [r for r in f.find(r"re:^%s OUTFITTER \d+ chute ramp$" % side) if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Y) < 5]
-        cheeks = [r for r in f.find(r"re:^%s OUTFITTER \d+ cheek funnel$" % side) if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Y) < 25]
-        legs = [r for r in f.find(r"re:^%s OUTFITTER \d+ ramp leg$" % side) if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Y) < 25]
-        chk("%s: one ramp, two cheek plates, one leg found" % tag, len(ramp) == 1 and sum(len(r["solids"]) for r in cheeks) == 2 and len(legs) == 1,
-            "ramp %d cheeks %d legs %d" % (len(ramp), sum(len(r["solids"]) for r in cheeks), len(legs)))
+        ramp = near_y(fx(RX["ramp"] % side), Y, 5)
+        cheeks = near_y(fx(RX["cheek"] % side), Y, 25)
+        wings = near_y(fx(RX["wing"] % side), Y, 25)
+        legs = near_y(fx(RX["leg"] % side), Y, 25)
+        chk("%s: one ramp, two cheek plates, two funnel wings, one leg, one throat found" % tag,
+            len(ramp) == 1 and sum(len(r["solids"]) for r in cheeks) == 2 and sum(len(r["solids"]) for r in wings) == 2
+            and len(legs) == 1 and len(throat) == 1,
+            "ramp %d cheeks %d wings %d legs %d throat %d" % (len(ramp), sum(len(r["solids"]) for r in cheeks),
+                                                              sum(len(r["solids"]) for r in wings), len(legs), len(throat)))
         rr = Rays(f.solids(ramp))
         rb = f.bbox(ramp, F)
-        sb_all = f.bbox(ramp + cheeks + legs, F)
-        chk("%s: ramp, cheeks and leg are entirely behind the field-side wall plane" % tag, sb_all[3] <= 1e-6,
+        sb_all = f.bbox(ramp + cheeks + wings + legs + throat, F)
+        chk("%s: throat, ramp, cheeks, funnel wings and leg are entirely behind the field-side wall plane" % tag, sb_all[3] <= 1e-6,
             "local x max %.4f" % sb_all[3])
         pts = []
         for x in np.linspace(rb[0] + 1.0, rb[3] - 0.05, 9):
@@ -446,10 +513,19 @@ def run(f):
         x_lo = rb[3]
         z_lo = coef[0] * x_lo + coef[2]
         near("%s: ramp top meets the sill at Z 24 (no step)" % tag, z_lo, SILL, 0.01, " at local x %.4f" % x_lo)
-        hb = rw.first(P(-5.0, c, SILL - 0.5), D(1, 0, 0))
-        x_back = -5.0 + hb
-        chk("%s: ramp lower edge abuts the sill (no gap between the panel back face and the ramp top)" % tag,
-            abs(x_lo - x_back) < 0.01, "ramp lower edge at local x %.4f, panel back face at %.4f" % (x_lo, x_back))
+        # the sill runs level through the wall: panel sill, then the throat's sill plate (both
+        # top at Z 24, checked above), then the ramp from the back of the 2.0-in wall
+        hb = rwt.first(P(-5.0, c, SILL - 0.1), D(1, 0, 0))
+        x_back = None if hb is None else -5.0 + hb
+        chk("%s: ramp lower edge abuts the back of the sill through the wall (throat sill back face, no gap)" % tag,
+            x_back is not None and abs(x_lo - x_back) < 0.01,
+            "ramp lower edge at local x %.4f, back of the sill at %s" % (x_lo, "None" if x_back is None else "%.4f" % x_back))
+        near("%s: sill depth through the wall = wall thickness at the chute (2.0, ref)" % tag,
+             None if x_back is None else -x_back, WALL_T, REF)
+        dts = f.dist(ramp, throat) if throat else float("inf")
+        chk("%s: ramp touches the throat sill (gap <= 0.01)" % tag, dts <= 0.01, "ramp-throat distance %.4f" % dts)
+        if x_back is None:
+            x_back = x_lo
         # extents: width at the sill end, run, rise, thickness
         def ramp_width(x):
             zt = coef[0] * x + coef[2]
@@ -486,88 +562,137 @@ def run(f):
             ramp[0]["rgb"] == rgb("wall") and ramp[0]["alpha"] == 1 and "UHMW" in ramp[0]["mat"]["name"],
             "rgb %s alpha %s mat %s" % (ramp[0]["rgb"], ramp[0]["alpha"], ramp[0]["mat"]["name"]))
 
-        # ---- D. cheek funnels -----------------------------------------------------------------
-        rc = Rays(f.solids(cheeks))
+        # ---- D. cheeks and funnel wings ------------------------------------------------------
+        # §5 "side cheek funnels flaring to 36 in at the loading end" (ref): plumb cheek plates on
+        # the ramp's side edges (30 inner, the ramp width) and two 45-deg funnel wings behind the
+        # ramp's loading end that open the funnel to 36 at its mouth.
+        fun = cheeks + wings
+        rc = Rays(f.solids(fun))
         cb = f.bbox(cheeks, F)
 
+        def zr(x, zoff):
+            """zoff above the ramp top (held at the loading-end height beyond the ramp)."""
+            return coef[0] * max(x, xt) + coef[2] + zoff
+
         def inner(x, zoff=3.0):
-            zt = coef[0] * x + coef[2] + zoff
+            zt = zr(x, zoff)
             a = rc.first(P(x, c, zt), D(0, -1, 0))
             b = rc.first(P(x, c, zt), D(0, 1, 0))
             return None if a is None or b is None else (c - a, c + b)
-        x_end = xt + 0.02
+
+        def ythick(x, y_in, sgn, zoff=3.0):
+            """y-thickness of the plate whose inner face is at y_in (sgn = side)."""
+            zt = zr(x, zoff)
+            h = rc.first(P(x, y_in + sgn * 1e-4, zt), D(0, sgn, 0))
+            return None if h is None else h + 1e-4
+
+        # cheeks: plumb, parallel, 30 inner along the ramp run, from the throat to the loading end
         x_beg = cb[3] - 0.5
-        ie = inner(x_end)
-        ib = inner(x_beg)
-        ib2 = inner(x_beg - 5.0)
-        near("%s: cheek funnel inner width at the loading end (36, ref)" % tag, None if ie is None else ie[1] - ie[0], FLARE_W, REF)
-        # inner faces extrapolated to the panel back face (where the chute leaves the wall)
-        w_b = None
-        if ib and ib2:
-            w1, w2 = ib[1] - ib[0], ib2[1] - ib2[0]
-            w_b = w1 + (w1 - w2) / 5.0 * (x_back - x_beg)
-        near("%s: cheek funnel inner width at the sill end (= 30 opening, ref)" % tag, w_b, RAMP_W, REF,
-             " (inner faces extrapolated to the panel back face x %.3f)" % x_back)
-        chk("%s: cheeks symmetric about the chute centre" % tag, ie is not None and abs((ie[0] + ie[1]) / 2 - c) < 1e-3,
-            "loading-end mid %.4f vs %.4f" % (((ie[0] + ie[1]) / 2) if ie else float("nan"), c))
-        ie_hi = inner(x_end, 7.0)
+        x_end = xt + 0.02
+        ib, ie = inner(x_beg), inner(x_end)
+        near("%s: cheek inner width at the sill end (= 30 opening and ramp width, ref)" % tag,
+             None if ib is None else ib[1] - ib[0], RAMP_W, REF)
+        near("%s: cheek inner width at the ramp's loading end (cheeks run on the ramp edges, ref 30)" % tag,
+             None if ie is None else ie[1] - ie[0], RAMP_W, REF)
+        chk("%s: cheeks symmetric about the chute centre" % tag,
+            ib is not None and ie is not None and abs((ib[0] + ib[1]) / 2 - c) < 1e-3 and abs((ie[0] + ie[1]) / 2 - c) < 1e-3,
+            "mid %s / %s vs %.4f" % (None if ib is None else round((ib[0] + ib[1]) / 2, 4),
+                                     None if ie is None else round((ie[0] + ie[1]) / 2, 4), c))
+        im_lo, im_hi = inner(x_m, 3.0), inner(x_m, 7.0)
         chk("%s: cheek plates plumb (same inner width 3 in and 7 in above the ramp)" % tag,
-            ie is not None and ie_hi is not None and abs((ie[1] - ie[0]) - (ie_hi[1] - ie_hi[0])) < 1e-3,
-            "%s vs %s" % (ie, ie_hi))
-        # thickness
-        zt = coef[0] * x_m + coef[2] + 3.0
-        a = rc.first(P(x_m, c, zt), D(0, 1, 0))
-        yin = c + a
-        # plan direction of the + cheek (from two inner points)
-        i1 = inner(x_beg - 1.0)
-        i2 = inner(x_end + 1.0)
-        dxp = (x_beg - 1.0) - (x_end + 1.0)
-        dyp = i1[1] - i2[1]
-        # true plate thickness = y-thickness * cos(flare)
-        yy = yin + 0.001
-        steps = 0
-        while f.inside(cheeks, P(x_m, yy, zt)) and steps < 2000:
-            yy += 0.001
-            steps += 1
-        ythk = (yy - yin)
-        flare_deg = math.degrees(math.atan2(abs(dyp), abs(dxp)))
-        near("%s: cheek plate thickness (MATERIALS 0.5)" % tag, ythk * math.cos(math.radians(flare_deg)), CHEEK_T, 0.005)
-        # cheek top edge slope in its own plane
-        tops = []
+            im_lo is not None and im_hi is not None and abs((im_lo[1] - im_lo[0]) - (im_hi[1] - im_hi[0])) < 1e-3,
+            "%s vs %s" % (im_lo, im_hi))
+        cheek_deg = None
+        if ib and ie:
+            cheek_deg = math.degrees(math.atan2(abs(ib[1] - ie[1]), abs(x_beg - x_end)))
+        tk_c = None if im_lo is None else ythick(x_m, im_lo[1], 1)
+        near("%s: cheek plate thickness (MATERIALS 0.5)" % tag,
+             None if tk_c is None or cheek_deg is None else tk_c * math.cos(math.radians(cheek_deg)), CHEEK_T, 0.005)
+        # funnel wings: scan back from the ramp's loading end along the chute axis
+        scan = []
+        for x in np.arange(xt - 0.01, xt - 20.0, -0.01):
+            iw = inner(x)
+            if iw is None:
+                break
+            scan.append((x, iw[0], iw[1], ythick(x, iw[0], -1), ythick(x, iw[1], 1)))
+        mouth = None
+        tip_w = None
+        if scan:
+            tip_w = scan[-1][2] - scan[-1][1]
+            full = [max(s[3], s[4]) for s in scan if s[3] and s[4]]
+            tfull = max(full) if full else None
+            ok_rows = [s for s in scan if tfull and s[3] and s[4] and s[3] >= tfull - 2e-3 and s[4] >= tfull - 2e-3]
+            if ok_rows:
+                mouth = ok_rows[-1]          # rearmost section where both wing plates are full thickness
+        near("%s: funnel inner width at the loading end (mouth of the funnel wings, 36 ref)" % tag,
+             None if mouth is None else mouth[2] - mouth[1], FLARE_W, REF,
+             "" if mouth is None else " at local x %.2f (%.2f behind the ramp's loading end); the square-cut wing tips reach "
+             "%.2f" % (mouth[0], xt - mouth[0], tip_w))
+        chk("%s: funnel wings symmetric about the chute centre" % tag,
+            mouth is not None and abs((mouth[1] + mouth[2]) / 2 - c) < 1e-3,
+            "mouth mid %s vs %.4f" % (None if mouth is None else round((mouth[1] + mouth[2]) / 2, 4), c))
+        wing_deg, tk_w, wedge = None, None, None
+        if mouth is not None and len(scan) > 60:
+            s1 = scan[20]
+            wing_deg = math.degrees(math.atan2(abs(mouth[2] - s1[2]), abs(mouth[0] - s1[0])))
+            sm = scan[len([s for s in scan if s[0] >= (s1[0] + mouth[0]) / 2]) - 1]
+            tk_w = sm[4] * math.cos(math.radians(wing_deg))
+            im7 = inner(sm[0], 7.0)
+            chk("%s: funnel wings plumb (same inner width 3 in and 7 in above the loading-end ramp top)" % tag,
+                im7 is not None and abs((im7[1] - im7[0]) - (sm[2] - sm[1])) < 1e-3, "%s vs %s" % ((sm[1], sm[2]), im7))
+        near("%s: funnel wing plate thickness normal to the plate (MATERIALS cheek funnel 0.5)" % tag, tk_w, CHEEK_T, 0.005)
+        # top-edge slopes in each plate's own plane (by-products, within the manual's +/-1 deg)
+        tops_c = []
         for x in (x_beg - 1.0, x_end + 1.0):
             iy = inner(x)
-            h = rc.first(P(x, iy[1] + 0.25, 90.0), D(0, 0, -1))
-            tops.append((x, iy[1], 90.0 - h))
-        run_e = math.hypot(tops[0][0] - tops[1][0], tops[0][1] - tops[1][1])
-        edge_slope = math.degrees(math.atan2(abs(tops[1][2] - tops[0][2]), run_e))
-        flare_rows.append((tag, flare_deg, edge_slope))
-        # the plan flare is the designed angle; the top-edge slope is only its by-product (within the
-        # manual's +/-1 deg on non-critical geometry), so it is reported, not judged
-        chk("%s: cheek funnel flare angle obeys the 15/30/45 rule (§0)" % tag, angle_ok(flare_deg) and angle_ok(edge_slope, 1.0),
-            "plan flare %.3f deg (30 -> 36 over the run), cheek top edge slope %.3f deg" % (flare_deg, edge_slope))
-        # cheek covers the ramp edge (no gap a piece could drop through), and starts at the sill
+            h = None if iy is None else rc.first(P(x, iy[1] + 0.25, 90.0), D(0, 0, -1))
+            tops_c.append(None if h is None else (x, iy[1], 90.0 - h))
+        edge_c = None
+        if all(tops_c):
+            run_e = math.hypot(tops_c[0][0] - tops_c[1][0], tops_c[0][1] - tops_c[1][1])
+            edge_c = math.degrees(math.atan2(abs(tops_c[1][2] - tops_c[0][2]), run_e))
+        edge_w = None
+        if mouth is not None and len(scan) > 60:
+            pts_w = []
+            for s in (scan[20], [s for s in scan if s[0] >= mouth[0] + 0.3][-1]):
+                h = rc.first(P(s[0], s[2] + 0.25, 90.0), D(0, 0, -1))
+                pts_w.append(None if h is None else (s[0], s[2], 90.0 - h))
+            if all(pts_w):
+                run_w = math.hypot(pts_w[0][0] - pts_w[1][0], pts_w[0][1] - pts_w[1][1])
+                edge_w = math.degrees(math.atan2(abs(pts_w[1][2] - pts_w[0][2]), run_w))
+        flare_rows.append((tag, wing_deg, edge_w))
+        chk("%s: cheek and funnel-wing plan angles and top edges obey the 15/30/45 rule (§0)" % tag,
+            None not in (cheek_deg, wing_deg, edge_c, edge_w) and angle_ok(cheek_deg) and angle_ok(wing_deg)
+            and angle_ok(edge_c, 1.0) and angle_ok(edge_w, 1.0),
+            "cheek plan %s deg, wing plan %s deg, cheek top edge %s deg, wing top edge %s deg" %
+            tuple("None" if v is None else "%.3f" % v for v in (cheek_deg, wing_deg, edge_c, edge_w)))
+        # the funnel is closed: cheeks on the ramp edges, wings on the cheek ends, cheeks from the
+        # back of the throat to the loading end
         dcr = f.dist(ramp, cheeks)
         chk("%s: cheeks close on the ramp side edges (gap <= 0.01)" % tag, dcr <= 0.01, "ramp-cheek distance %.4f" % dcr)
-        chk("%s: cheeks run from the wall (within 0.5 of the panel back face) to the loading end" % tag,
-            cb[3] >= -PANEL_T - 0.5 and cb[0] <= xt + 0.5, "cheek local x %.3f..%.3f, ramp top %.3f..%.3f" % (cb[0], cb[3], xt, x_lo))
-        mins = [(ch["rgb"], ch["alpha"], ch["mat"]["name"]) for ch in cheeks]
-        chk("%s: cheek appearance wall #9AA4B2, painted plywood" % tag,
-            all(m[0] == rgb("wall") and m[1] == 1 and "lywood" in m[2] for m in mins), "%s" % mins)
+        dwc = f.dist(wings, cheeks) if wings else float("inf")
+        chk("%s: funnel wings close on the cheek ends (gap <= 0.01)" % tag, dwc <= 0.01, "wing-cheek distance %.4f" % dwc)
+        chk("%s: cheeks run from the back of the throat (within 0.5 of x %.2f) to the loading end" % (tag, x_back),
+            cb[3] >= x_back - 0.5 and cb[0] <= xt + 0.5, "cheek local x %.3f..%.3f, ramp top %.3f..%.3f" % (cb[0], cb[3], xt, x_lo))
+        mins = [(ch["rgb"], ch["alpha"], ch["mat"]["name"]) for ch in fun]
+        chk("%s: cheek and funnel-wing appearance wall #9AA4B2, painted plywood" % tag,
+            len(mins) == 4 and all(m[0] == rgb("wall") and m[1] == 1 and "lywood" in m[2] for m in mins), "%s" % mins)
         chk("%s: ramp leg (not in MATERIALS table) styled as wall structure" % tag,
             legs and legs[0]["rgb"] == rgb("wall"), "%s" % ([(l["rgb"], l["mat"]["name"]) for l in legs]))
 
         # ---- E. interference of the chute bodies with anything else --------------------------
-        mine = ramp + cheeks + legs + trs
-        mine_ids = {id(r) for r in mine}
+        mine = throat + ramp + cheeks + wings + legs + trs
         hits = []
-        for r in mine:
+        for k, r in enumerate(mine):
             for o in recs:
-                if id(o) in mine_ids or not bb_overlap(wbox[id(r)], wbox[id(o)], 1e-3):
+                # every other body, the chute's own parts included (each pair tested once)
+                if o is r or (any(o is m for m in mine[:k])) or not bb_overlap(wbox[id(r)], wbox[id(o)], 1e-3):
                     continue
                 v = f.common_volume([r], [o])
                 if v > 1e-6:
                     hits.append("%s x %s: %.4f" % (r["name"], o["name"], v))
-        chk("%s: ramp, cheeks, leg and tag panel interfere with nothing" % tag, not hits, "; ".join(hits) or "none")
+        chk("%s: throat, ramp, cheeks, funnel wings, leg and tag panel interfere with nothing (each other included)" % tag,
+            not hits, "; ".join(hits) or "none")
         # driver-station shelf / anything above the ramp corridor
         shelves = [r for r in f.find(r"re:^%s driver station \d shelf$" % side)]
         over = []
@@ -578,7 +703,10 @@ def run(f):
         chk("%s: no driver-station shelf overhangs the ramp/cheek corridor" % tag, not over, "; ".join(over) or "clear")
 
         # ---- F. OUTFITTER LANE tape -----------------------------------------------------------
-        lanes = [r for r in f.find(r"re:^%s OUTFITTER LANE tape \d+$" % side) if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Y) < 25]
+        lanes = near_y(fx(RX["lane"] % side), Y, 25)
+        chk("%s: OUTFITTER LANE tape is one welded body, one connected solid" % tag,
+            len(lanes) == 1 and sum(len(l["solids"]) for l in lanes) == 1,
+            "%d bodies, %d solids" % (len(lanes), sum(len(l["solids"]) for l in lanes)))
         lb = f.bbox(lanes, F)
         chk("%s: lane tape outer edges X 0-48 from the wall, Y c +/- 18 (36 x 48), Z 0-0.01" % tag,
             np.allclose(lb, [0, c - LANE_W / 2, 0, LANE_D, c + LANE_W / 2, TAPE_T], atol=1e-4),
@@ -612,7 +740,12 @@ def run(f):
             "common %.6f with %s" % (cvt, sorted({r["name"] for r in other_tape})))
 
         # ---- G. piece-pass at the opening (doc §5), doc-derived solids ----------------------
-        aperture = panel + glaze + frame + trs
+        aperture = panel + glaze + frame + throat + trs
+        # the part of the throat liner at and above the head line Z 40 (its head plate): the head
+        # of the opening is the glazing edge plus this plate; the sill plate is not "overhead"
+        cut = BRepPrimAPI_MakeBox(gp_Pnt(-1e4, -1e4, HEAD), gp_Pnt(1e4, 1e4, 1e3)).Shape()
+        thead = [{"solids": K._solids(K.BRepAlgoAPI_Common(s_, cut).Shape())} for s_ in f.solids(throat)]
+        head = glaze + thead
         jamb_lo, jamb_hi = c - (jl or 0), c + (jh or 0)
         for label, shape, height, width in (
                 ("CACHE CRATE 13.0 envelope", BRepPrimAPI_MakeBox(gp_Pnt(-6.5, -6.5, 0), CRATE_ENV, CRATE_ENV, CRATE_ENV).Shape(), 13.0, 13.0),
@@ -623,8 +756,8 @@ def run(f):
             pfr = K.Frame(P(-0.125, c, SILL + 0.005), D(1, 0, 0), D(0, 0, 1))
             sh = K.BRepBuilderAPI_Transform(shape, pfr.trsf(), True).Shape()
             cvx = f.common_volume([rec(sh)], aperture)
-            dhead = f.dist([rec(sh)], glaze)
-            djamb = f.dist([rec(sh)], panel)
+            dhead = f.dist([rec(sh)], head)
+            djamb = f.dist([rec(sh)], panel + throat)
             pbl = f.bbox([rec(sh)], F)
             lat = min(pbl[1] - jamb_lo, jamb_hi - pbl[4])
             ok = cvx < 1e-6 and abs(dhead - (OPEN_H - height - 0.005)) < 0.01 and djamb > 1e-4 and abs(lat - (OPEN_W - width) / 2) < 0.01
@@ -637,7 +770,7 @@ def run(f):
         T0.SetTranslation(gp_Vec(*map(float, -crate_ctr)))
         pfr = K.Frame(P(-0.125, c, SILL + 6.5 + 0.005), D(1, 0, 0), D(0, 0, 1))
         sh = K.BRepBuilderAPI_Transform(crate_real, pfr.trsf().Multiplied(T0), True).Shape()
-        dh = f.dist([rec(sh)], glaze)
+        dh = f.dist([rec(sh)], head)
         cvx = f.common_volume([rec(sh)], aperture)
         chk("%s: modelled CACHE CRATE level on the sill clears the head by 3.0 (doc)" % tag,
             cvx < 1e-6 and abs(dh - (OPEN_H - CRATE_ENV - 0.005)) < 0.02, "overlap %.6f head clearance %.4f" % (cvx, dh))
@@ -681,7 +814,7 @@ def run(f):
             return ceiw[np.clip(np.round((X - xs[0]) / dx).astype(int), 0, len(xs) - 1)]
         x_load = xt
         # overhead obstruction directly above the ramp run (anything lower than 20 in over the ramp)
-        m = (xs > x_load + 0.1) & (xs < -PANEL_T - 0.1)
+        m = (xs > x_load + 0.1) & (xs < x_lo - 0.1)       # over the ramp (it starts at the back of the throat)
         head_room = np.min(cei[m] - sup[m])
         ceil_rows.append((tag, head_room))
         chk("%s: nothing overhead along the ramp run (free height above the ramp >= 20 in)" % tag,
@@ -756,7 +889,7 @@ def run(f):
             s, co = math.sin(math.radians(phi)), math.cos(math.radians(phi))
             fr = K.Frame(P(xc, c, zc), D(co, 0, -s), D(s, 0, co))
             return K.BRepBuilderAPI_Transform(crate_real, fr.trsf().Multiplied(T0), True).Shape()
-        overhead = glaze + trs + frame
+        overhead = glaze + trs + frame + throat
         spots = [("slide worst", wA[1], wA[2] + 0.02, slope)]
         X, Zr = worst3d[tag][4](wB[1], slope)
         zc0 = np.max(S(X) - Zr) + 0.005
@@ -772,14 +905,15 @@ def run(f):
             loc = [r for r in near_bodies if bb_overlap(wbox[id(r)], sbb, 1.0)]
             d_all = shape_dist(sh, f.solids(loc))
             d_over = shape_dist(sh, f.solids(overhead))
-            d_side = shape_dist(sh, f.solids(cheeks + panel)) if lab != "tip worst" else float("nan")
+            d_side = shape_dist(sh, f.solids(cheeks + wings + panel + throat)) if lab != "tip worst" else float("nan")
             chk("%s: 3-D modelled CACHE CRATE at the %s pose touches nothing" % (tag, lab), d_all > 1e-4,
                 "min distance %.4f to any body; overhead (glazing/tag/frame) %.3f; cheeks/jambs %.3f" % (d_all, d_over, d_side))
 
     # ---- aggregated (ref) findings across the four chutes ----------------------------------
-    chk("all chutes: alliance wall thickness at the chute 2.0 (ref +/-0.25) — solid depth under the sill / over the head",
+    chk("all chutes: alliance wall thickness at the chute 2.0 (ref +/-0.25) — solid depth bounding the sill, the head "
+        "and both jambs",
         all(abs(d - WALL_T) <= REF for _, hs in wall_depths for d in hs),
-        "; ".join("%s sill %.2f head %.2f" % (t, hs[0], hs[1]) for t, hs in wall_depths))
+        "; ".join("%s sill %.2f head %.2f jambs %.2f / %.2f" % ((t,) + tuple(hs)) for t, hs in wall_depths))
 
     # ---- OUTFITTER stock (§6 c) ----------------------------------------------------------------
     for side in ("BLUE", "RED"):
@@ -790,30 +924,30 @@ def run(f):
         sb = f.bbox(stock, F)
         chk("%s: OUTFITTER stock behind the wall, on the floor" % side, sb[3] <= -WALL_T + 1e-6 and abs(sb[2]) < 0.02,
             "stock local bbox %s" % np.round(sb, 3))
-        struct = f.find(r"re:^%s OUTFITTER \d+ (chute ramp|cheek funnel|ramp leg)$" % side)
+        struct = fx(r"^%s OUTFITTER \d+ (chute ramp|chute throat|cheek \d+|funnel wing \d+|ramp leg)$" % side)
         d = f.dist(stock, struct)
-        chk("%s: OUTFITTER stock clear of the ramps, cheeks and legs" % side, d > 0.0, "min distance %.3f" % d)
+        chk("%s: OUTFITTER stock clear of the throats, ramps, cheeks, funnel wings and legs" % side, d > 0.0, "min distance %.3f" % d)
 
     # ---- Red = Blue rotated 180 deg about (324, 162) ------------------------------------------
     def rot_bb(b):
         return [FIELD_L - b[3], FIELD_W - b[4], b[2], FIELD_L - b[0], FIELD_W - b[1], b[5]]
     pairs = []
-    for kind in ("chute ramp", "cheek funnel", "ramp leg"):
+    for kind in ("throat", "ramp", "cheek", "wing", "leg", "lane"):
         for Yb, Yr in ((30.0, 294.0), (294.0, 30.0)):
-            bl = [r for r in f.find(r"re:^BLUE OUTFITTER \d+ %s$" % kind) if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Yb) < 25]
-            rd = [r for r in f.find(r"re:^RED OUTFITTER \d+ %s$" % kind) if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Yr) < 25]
+            bl = near_y(fx(RX[kind] % "BLUE"), Yb, 25)
+            rd = near_y(fx(RX[kind] % "RED"), Yr, 25)
             pairs.append(("%s Y%g" % (kind, Yb), bl, rd))
-    for Yb, Yr in ((30.0, 294.0), (294.0, 30.0)):
-        bl = [r for r in f.find(r"re:^BLUE OUTFITTER LANE tape \d+$") if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Yb) < 25]
-        rd = [r for r in f.find(r"re:^RED OUTFITTER LANE tape \d+$") if abs((wbox[id(r)][1] + wbox[id(r)][4]) / 2 - Yr) < 25]
-        pairs.append(("lane Y%g" % Yb, bl, rd))
     pairs.append(("tag 1 -> 14", f.find(r"re:^AprilTag 1 - "), f.find(r"re:^AprilTag 14 - ")))
     pairs.append(("tag 2 -> 15", f.find(r"re:^AprilTag 2 - "), f.find(r"re:^AprilTag 15 - ")))
     badr = []
     for lab, bl, rd in pairs:
+        if not bl or not rd or len(bl) != len(rd):
+            badr.append("%s: %d blue / %d red bodies" % (lab, len(bl), len(rd)))
+            continue
         if not np.allclose(rot_bb(f.bbox(bl)), f.bbox(rd), atol=1e-4) or abs(f.volume(bl) - f.volume(rd)) > 1e-4:
             badr.append("%s: blue->%s red %s" % (lab, np.round(rot_bb(f.bbox(bl)), 3), np.round(f.bbox(rd), 3)))
-    chk("Red OUTFITTER ramps, cheeks, legs, lanes and tags are the Blue ones rotated 180 deg about (324, 162)", not badr,
+    chk("Red OUTFITTER throats, ramps, cheeks, funnel wings, legs, lanes and tags are the Blue ones rotated 180 deg "
+        "about (324, 162)", not badr,
         "; ".join(badr) or "%d pairs match" % len(pairs))
 
     # ---- informational summaries (always pass) ------------------------------------------------

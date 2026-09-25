@@ -14,11 +14,19 @@ Expected values come only from the documents:
                         0.01 in"; "Neutral marks | Gaffer tape | neutral-white | 2 in wide")
 Nothing is imported from src/ and no number is taken from src/20_ledger.fs.
 
+Body names (generator naming, used only to classify bodies; every property is measured):
+  "<A> BASECAMP tape" (one welded body), "<A> CLIMB LINE dash n", "<A> OUTFITTER LANE n tape"
+  (one welded U per lane, numbered after the OUTFITTER it serves), "<A> CRAG APRON tape",
+  "<A> staging mark - <SUPPLY>" / "<A> staging mark border - <SUPPLY>", "CENTER CACHE mark (x, y)",
+  "FIELD centerline tape" / "CENTER CACHE band tape" (pieces).  A name shared by several parts
+  carries a creation-order " n" suffix (numberSharedNames); f.find() accepts it.
+
 Frames are built here from the documents: the Blue CRAG frame has its origin at (324, 240)
 and +x along the Blue SHELF FACE normal (-X world); Red at (324, 84), +x = +X world.
 """
 import math
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -158,15 +166,18 @@ def run(f):
     # ---------------- inventory ---------------------------------------------------------
     groups = {}
     for s in SIDES:
+        # names (ref, generator naming): "<A> BASECAMP tape", "<A> CLIMB LINE dash n",
+        # "<A> OUTFITTER LANE n tape", "<A> staging mark - <SUPPLY>", "<A> staging mark border - <SUPPLY>";
+        # f.find(name) also accepts the " n" suffix numberSharedNames gives a shared name
         groups[s + " BASECAMP"] = safe_find(f, s + " BASECAMP tape")
-        groups[s + " CLIMB"] = safe_find(f, "re:^%s CLIMB LINE" % s)
-        groups[s + " LANE"] = safe_find(f, "re:^%s OUTFITTER LANE tape" % s)
+        groups[s + " CLIMB"] = safe_find(f, "re:^%s CLIMB LINE dash \\d+$" % s)
+        groups[s + " LANE"] = safe_find(f, "re:^%s OUTFITTER LANE \\d+ tape$" % s)
         groups[s + " APRON"] = safe_find(f, s + " CRAG APRON tape")
-        groups[s + " STAGE"] = safe_find(f, s + " staging mark")
-        groups[s + " STAGE BORDER"] = safe_find(f, s + " staging mark border")
+        groups[s + " STAGE"] = safe_find(f, "re:^%s staging mark - (CACHE CRATES|O2 CELLS|ROPE COILS)$" % s)
+        groups[s + " STAGE BORDER"] = safe_find(f, "re:^%s staging mark border - (CACHE CRATES|O2 CELLS|ROPE COILS)$" % s)
     groups["CENTERLINE"] = safe_find(f, "FIELD centerline tape")
     groups["BAND"] = safe_find(f, "CENTER CACHE band tape")
-    groups["CACHE MARK"] = safe_find(f, "CENTER CACHE mark")
+    groups["CACHE MARK"] = safe_find(f, "re:^CENTER CACHE mark \\(\\d+, \\d+\\)$")
     for g, rs in groups.items():
         add("inventory: %s tape present" % g, len(rs) > 0, "%d bodies" % len(rs))
 
@@ -224,6 +235,13 @@ def run(f):
         got = f.bbox(rs)
         add("%s BASECAMP: tape bbox = zone X %g-%g, Y %g-%g (outer tape edges on the zone boundary)" % (s, want[0], want[3], want[1], want[4]),
             all(approx(a, b, 1e-6) for a, b in zip(got, want)), "got %s want %s" % (fmt_box(got), fmt_box(want)))
+        # three 2-in lines (X = 48 over Y 90-234; Y = 90 and Y = 234 over X 0-46 up to it), welded
+        # into one body (ref: the generator's "<A> BASECAMP tape")
+        bc_area = TW * (y1 - y0) + 2 * TW * (x1 - x0 - TW)
+        n_sol = len(f.solids(rs))
+        add("%s BASECAMP (ref): one welded U-shaped tape body of the three 2-in lines (area %.0f in^2)" % (s, bc_area),
+            len(rs) == 1 and n_sol == 1 and approx(f.volume(rs), bc_area * TT, bc_area * TT * 1e-6),
+            "%d bodies, %d solids, area %.4f in^2" % (len(rs), n_sol, f.volume(rs) / TT))
         # X = 48 line: 2 in wide, inside the zone (X 46-48), edge on X = 48
         miss_in, hit_out, hit_in2 = [], [], []
         for y in frange(y0 + 0.1, y1 - 0.1, 0.5):
@@ -317,7 +335,8 @@ def run(f):
         rs = groups[s + " LANE"]
         add("%s OUTFITTER LANE: 2 lanes" % s, len({r["name"] for r in rs}) == 2, "names %s" % sorted({r["name"] for r in rs}))
         tags = safe_find(f, "re:^AprilTag \\d+ - %s OUTFITTER chute" % s)
-        ramps = safe_find(f, "re:^%s OUTFITTER \\d chute ramp" % s)
+        ramps = safe_find(f, "re:^%s OUTFITTER \\d chute ramp$" % s)
+        throats = safe_find(f, "re:^%s OUTFITTER \\d chute throat$" % s)
         for cyb in CHUTE_Y_B:
             cy = side_pt(s, 0, cyb)[1]
             lane = [r for r in rs if f.bbox([r])[1] - 1 <= cy <= f.bbox([r])[4] + 1]
@@ -332,15 +351,29 @@ def run(f):
             want = [min(a[0], b[0]), min(a[1], b[1]), 0, max(a[0], b[0]), max(a[1], b[1]), TT]
             add("%s OUTFITTER LANE at chute Y %g: 36 wide x 48 deep, centred on the chute (bbox)" % (s, cy),
                 all(approx(u, v, 1e-6) for u, v in zip(got, want)), "got %s want %s" % (fmt_box(got), fmt_box(want)))
-            # centred on the as-built chute: tag panel centred above the chute, and the ramp
+            # the three 2-in lines (end line at X 46-48 across the 36-in width, side lines X 0-46 up to
+            # it; open at the wall) welded into one U-shaped body per lane (ref: "<A> OUTFITTER LANE n tape")
+            u_area = TW * LANE_W + 2 * TW * (LANE_D - TW)
+            n_sol = len(f.solids(lane))
+            add("%s OUTFITTER LANE at chute Y %g (ref): one welded U-shaped tape body (area %.0f in^2)" % (s, cy, u_area),
+                len(lane) == 1 and n_sol == 1 and approx(f.volume(lane), u_area * TT, u_area * TT * 1e-6),
+                "%s: %d bodies, %d solids, area %.4f in^2" % (lane_names, len(lane), n_sol, f.volume(lane) / TT))
+            # the lane is numbered after the OUTFITTER whose chute it serves (ref naming)
+            thr = [r for r in throats if abs((f.bbox([r])[1] + f.bbox([r])[4]) / 2 - cy) < 10]
+            ln = [re.search(r"OUTFITTER LANE (\d+) tape", n) for n in lane_names]
+            tn = [re.search(r"OUTFITTER (\d+) chute throat", r["name"]) for r in thr]
+            add("%s OUTFITTER LANE at chute Y %g (ref): numbered after the OUTFITTER it serves" % (s, cy),
+                len(ln) == 1 and len(tn) == 1 and ln[0] and tn[0] and ln[0].group(1) == tn[0].group(1),
+                "lane %s, chute %s" % (lane_names, [r["name"] for r in thr]))
+            # centred on the as-built chute: tag panel centred above the chute, the throat liner and the ramp
             refs = []
-            for grp in (tags, ramps):
+            for grp in (tags, throats, ramps):
                 for r in grp:
                     bb = f.bbox([r])
                     if abs((bb[1] + bb[4]) / 2 - cy) < 10:
                         refs.append((r["name"], (bb[1] + bb[4]) / 2))
             lc = (got[1] + got[4]) / 2
-            add("%s OUTFITTER LANE at chute Y %g: centred on the as-built chute (tag panel / ramp)" % (s, cy),
+            add("%s OUTFITTER LANE at chute Y %g: centred on the as-built chute (tag panel / throat liner / ramp)" % (s, cy),
                 refs and all(approx(lc, v, 0.01) for _, v in refs), "lane centre %.3f; refs %s" % (lc, [(n, round(v, 3)) for n, v in refs]))
             miss, outside, inner = [], [], []
             yl, yh = cyb - LANE_W / 2, cyb + LANE_W / 2
@@ -614,6 +647,16 @@ def run(f):
         pitch_ok = all(approx(CACHE_X[i + 1] - CACHE_X[i], 24, 1e-9) and approx(CACHE_Y[i + 1] - CACHE_Y[i], 24, 1e-9) for i in range(2))
         add("CENTER CACHE marks: 24-in pitch centred on (324, 162)", pitch_ok and approx(sum(CACHE_X) / 3, CX, 1e-9) and approx(sum(CACHE_Y) / 3, CY, 1e-9),
             "grid from §6")
+        # each mark is its own body named after its grid point (ref naming "CENTER CACHE mark (x, y)")
+        badn = []
+        for r in cm:
+            mm = re.search(r"\((\d+), (\d+)\)$", r["name"])
+            b = f.bbox([r])
+            c = ((b[0] + b[3]) / 2, (b[1] + b[4]) / 2)
+            if len(r["solids"]) != 1 or not mm or not (approx(c[0], float(mm.group(1)), 0.01) and approx(c[1], float(mm.group(2)), 0.01)):
+                badn.append("%s: %d solid(s), centre (%.3f, %.3f)" % (r["name"], len(r["solids"]), c[0], c[1]))
+        add("CENTER CACHE marks (ref): one body per mark, named after the grid point it sits on", len(cm) == 9 and not badn,
+            "; ".join(badn[:4]) or "%d marks" % len(cm))
         Pm = Plan(cm)
         errs, halves = [], []
         for g in grid:
@@ -677,6 +720,20 @@ def run(f):
                 "overlap %.2e; border missing at %s; border beyond the white tip %.3f in" % (ov, miss[:4], bw - whalf))
             nb = sum(len(r["solids"]) for r in border)
             add("%s staging marks: one border per mark" % s, nb == 3, "%d border solids" % nb)
+            # §6 FIELD SETUP CHART (b): each mark is named after the SUPPLY type charted for it, and each
+            # border after the mark it surrounds (ref naming "<A> staging mark [border] - <SUPPLY>")
+            chart_nm = {"BLUE": {108.0: "CACHE CRATES", 162.0: "O2 CELLS", 216.0: "ROPE COILS"},
+                        "RED": {108.0: "ROPE COILS", 162.0: "O2 CELLS", 216.0: "CACHE CRATES"}}[s]
+            badn = []
+            for grp, pre in ((white, "%s staging mark - " % s), (border, "%s staging mark border - " % s)):
+                for r in grp:
+                    b = f.bbox([r])
+                    c = ((b[0] + b[3]) / 2, (b[1] + b[4]) / 2)
+                    w = [y for y in STAGE_Y if abs(c[0] - STAGE_X[s]) < 0.01 and abs(c[1] - y) < 0.01]
+                    if len(r["solids"]) != 1 or len(w) != 1 or r["name"] != pre + chart_nm[w[0]]:
+                        badn.append("%s at (%.3f, %.3f), %d solid(s)" % (r["name"], c[0], c[1], len(r["solids"])))
+            add("%s staging marks (ref): mark and border bodies named after the SUPPLY charted there (§6 chart b)" % s,
+                len(white) == 3 and len(border) == 3 and not badn, "; ".join(badn[:4]) or "3 marks, 3 borders")
         # §6 FIELD SETUP CHART (b): 2 pieces of ONE type per mark, staged on the mark
         chart = {"BLUE": {108.0: "CACHE CRATE", 162.0: "O2 CELL", 216.0: "ROPE COIL"},
                  "RED": {108.0: "ROPE COIL", 162.0: "O2 CELL", 216.0: "CACHE CRATE"}}[s]
@@ -751,6 +808,8 @@ def run(f):
                 if a < 1.0:
                     b = box6(sld)
                     frag.append((g, round(a, 3), (round((b[0] + b[3]) / 2, 2), round((b[1] + b[4]) / 2, 2))))
-    add("info: sliver tape bodies (< 1 in^2) left by the overlap booleans (reported, not failed)", True,
+    # the 0.34-in^2 band triangles between an X mark's arms (where the band line runs through a
+    # CENTER CACHE mark) are real tape and are kept by design
+    add("info: small tape pieces (< 1 in^2) left by the overlap booleans, e.g. band triangles between an X mark's arms (reported, not failed)", True,
         "%d slivers: %s" % (len(frag), frag) if frag else "none")
     return out

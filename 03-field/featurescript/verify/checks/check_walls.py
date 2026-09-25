@@ -25,6 +25,16 @@ Expected values come from the package documents only (never from src/20_ledger.f
   Manual §3.1            each driver station provides a shelf, a clear polycarbonate window, E-STOP and
                          A-STOP; R707 the OPERATOR CONSOLE "must fit within the driver-station shelf".
 
+Construction readings (the generator's documented design; the package leaves them free):
+  * the steel frame is ONE welded body "<A> alliance wall frame"; its lower members stay behind the
+    0.75 lower panel (x -2..-0.75), its top rail and upper posts come forward to the glazing's back
+    face (x = -0.25) so the 0.25 glazing is backed; nothing of it enters the panel / glazing layer;
+  * at each chute a throat liner "<A> OUTFITTER n chute throat" fills the 2.0-in wall depth around
+    the 30 x 16 opening, so the wall is 2.0 thick at the chute (§5) through the whole opening;
+  * driver-station shelves run from the lower panel's back face (x = -0.75) 12 in back (ref: the
+    package gives no shelf depth), at Z 35.25-36, and the corner stations' shelves are cut back
+    at the OUTFITTER funnel, whose plan outline §5 fixes at c +/- (36/2 + 0.5 cheek plate).
+
 Local alliance frame used throughout (built here from §0, not taken from the generator):
   Blue: origin (0, 0, 0),    x = +X (into the field), z = +Z
   Red : origin (648, 324, 0), x = -X,                  z = +Z      (the 180-deg rotation)
@@ -50,6 +60,7 @@ STATION_PITCH = 108.0
 STATION_W = 96.0
 SHELF_TOP = 36.0
 SHELF_T = 0.75
+SHELF_D = 12.0          # (ref) the package gives no shelf depth; generator reading
 BUTTON_D = 2.0
 CHUTE_Y = (30.0, 294.0)
 CHUTE_W = 30.0
@@ -57,6 +68,8 @@ CHUTE_SILL = 24.0
 CHUTE_H = 16.0
 SILL_R = 0.5            # (ref)
 RAMP_ANG = 30.0         # (ref)
+FLARE_W = 36.0          # §5 cheek funnels flare to 36 at the loading end (ref)
+CHEEK_T = 0.5           # MATERIALS §2 OUTFITTER cheek funnel 0.5
 CRATE = 12.0
 CROWN = 0.5
 REF = 0.25              # (ref) float
@@ -153,12 +166,19 @@ def run(f):
             r["estopb%d" % i] = _find(f, "%s driver station %d E-STOP base" % (A, i))
             r["astopb%d" % i] = _find(f, "%s driver station %d A-STOP base" % (A, i))
         rec[A] = r
+    # OUTFITTER chute bodies behind each wall (throat liner, ramp, cheeks, funnel wings, leg);
+    # kept apart from rec so the interference sweep below still tests the wall against them
+    chute = {}
+    for A in ("BLUE", "RED"):
+        for o in (1, 2):
+            chute[(A, o)] = {k: _find(f, "%s OUTFITTER %d %s" % (A, o, k))
+                             for k in ("chute throat", "chute ramp", "cheek", "funnel wing", "ramp leg")}
 
     # ---- 0. presence and counts ---------------------------------------------------------
     for A in ("BLUE", "RED"):
         r = rec[A]
-        chk("%s wall: one lower panel, one glazing body, a frame" % A,
-            len(r["panel"]) == 1 and len(r["glaze"]) == 1 and len(r["frame"]) >= 1,
+        chk("%s wall: one lower panel, one glazing body, one welded frame body" % A,
+            len(r["panel"]) == 1 and len(r["glaze"]) == 1 and len(r["frame"]) == 1,
             "panel %d, glazing %d, frame %d bodies" % (len(r["panel"]), len(r["glaze"]), len(r["frame"])))
         try:
             shelves = f.find(r"re:^%s driver station \d+ shelf$" % A)
@@ -182,6 +202,8 @@ def run(f):
         np_, ng_ = len(f.solids(rec[A]["panel"])), len(f.solids(rec[A]["glaze"]))
         chk("%s lower panel and glazing each stay one connected solid after the chute/tag cuts" % A,
             np_ == 1 and ng_ == 1, "panel %d solid(s), glazing %d solid(s)" % (np_, ng_))
+        nf_ = len(f.solids(rec[A]["frame"]))
+        chk("%s steel wall frame is welded into one connected solid" % A, nf_ == 1, "frame %d solid(s)" % nf_)
 
     # ---- 1. wall envelope, both alliances --------------------------------------------------
     for A in ("BLUE", "RED"):
@@ -213,10 +235,18 @@ def run(f):
             and _near(bg[2], SOLID_TOP) and _near(bg[5], WALL_H),
             "local bbox %s want [-0.25, 0, 39, 0, 324, 78]" % _box_str(bg))
         bf = f.bbox(r["frame"], F)
-        chk("%s wall frame stays inside the 2.0-in envelope behind the panel" % A,
-            bf[0] >= -WALL_T - EPS and bf[3] <= -PANEL_T + EPS and bf[2] >= -EPS and bf[5] <= WALL_H + EPS
+        chk("%s wall frame stays inside the 2.0-in envelope behind the panel/glazing (x -2..-0.25)" % A,
+            bf[0] >= -WALL_T - EPS and bf[3] <= -GLAZE_T + EPS and bf[2] >= -EPS and bf[5] <= WALL_H + EPS
             and bf[1] >= -EPS and bf[4] <= FIELD_W + EPS,
             "local bbox %s" % _box_str(bf))
+        # the lower members stay behind the 0.75 lower panel: no frame steel in front of the
+        # panel's back plane (x > -0.75) anywhere in the solid band Z 0..39 (chute openings included)
+        lo_band = _rec(_box_solid(F, (-PANEL_T, -1.0, -1.0), (1.0, FIELD_W + 1.0, SOLID_TOP)))
+        cvl = f.common_volume(r["frame"], lo_band)
+        cvpg = f.common_volume(r["frame"], r["panel"] + r["glaze"])
+        chk("%s wall frame: lower members behind the 0.75 panel (x <= -0.75 below Z 39), no overlap with panel/glazing" % A,
+            cvl < 1e-4 and cvpg < 1e-4,
+            "frame steel in front of the panel back plane below Z 39: %.5f in^3; frame x panel/glazing %.5f in^3" % (cvl, cvpg))
 
         # nothing of the wall or the driver stations reaches into the field (x > 0)
         allw = list(wall)
@@ -266,15 +296,16 @@ def run(f):
         chk("%s wall glazed from Z 39 to 78 across the full width (tag panels excepted)" % A,
             not bad, "non-glazed points %s" % bad[:6])
 
-        # the OUTFITTER chutes penetrate the whole wall (panel, glazing and frame)
+        # the OUTFITTER chutes penetrate the whole wall (panel, glazing, frame and throat liner)
+        throats = chute[(A, 1)]["chute throat"] + chute[(A, 2)]["chute throat"]
         blocked = []
         for c in CHUTE_Y:
             for x in (-0.05, -0.4, -1.0, -1.6, -1.95):
                 for y in (c - CHUTE_W / 2 + 0.05, c, c + CHUTE_W / 2 - 0.05):
                     for z in (CHUTE_SILL + 0.05, CHUTE_SILL + CHUTE_H / 2, CHUTE_SILL + CHUTE_H - 0.05):
-                        if f.inside(wall, (x, y, z), F):
+                        if f.inside(wall + throats, (x, y, z), F):
                             blocked.append((x, y, z))
-        chk("%s chute openings Y c+/-15, Z 24..40 pierce the full 2.0-in wall" % A, not blocked,
+        chk("%s chute openings Y c+/-15, Z 24..40 pierce the full 2.0-in wall (throat liners included)" % A, not blocked,
             "wall material inside the openings at %s" % blocked[:4])
         edges = []
         for c in CHUTE_Y:
@@ -292,18 +323,60 @@ def run(f):
             all(abs(d - want) < 0.02 for d in ds),
             "sharp-corner-to-panel distance %s, want %.4f (R0.5 round)" % (["%.4f" % d for d in ds], want))
 
-        # §5: "Alliance wall thickness at the chute 2.0 in (ref)": wall material must frame
-        # the opening through the full 2.0 depth (probe at x = -1.5, i.e. behind the panel)
+        # §5: "Alliance wall thickness at the chute 2.0 in (ref)": wall material (panel / glazing /
+        # frame / throat liner) must bound the opening through the full 2.0 depth.  Probes 0.1 in
+        # outside each edge of the 30 x 16 opening, at depths x = -0.1 .. -1.9 behind the field face
+        # (1.75 = 2.0 - (ref) 0.25 is the least acceptable depth), along the sill and head at three
+        # stations and along both jambs at Z 25 / 32 / 38.5 (the solid band).
+        wt = wall + throats
+        depths = (-0.1, -0.5, -0.9, -1.3, -1.7, -1.9)
         missing = []
         for c in CHUTE_Y:
-            for (p, what) in (((-1.5, c - CHUTE_W / 2 - 0.5, 32.0), "jamb -"), ((-1.5, c + CHUTE_W / 2 + 0.5, 32.0), "jamb +"),
-                              ((-1.5, c, CHUTE_SILL - 0.5), "sill"), ((-1.5, c, CHUTE_SILL + CHUTE_H + 0.5), "head")):
-                if not f.inside(wall, p, F):
-                    missing.append("%s@Y%g" % (what, c))
-        depth_panel = PANEL_T
-        chk("%s wall is 2.0 in thick at the chute (§5, ref +/-0.25)" % A, not missing,
-            "no wall material 1.5 in behind the field face at %s: the chute is framed only by the "
-            "%.2f-in panel (sill/jambs) and the %.2f-in glazing (head)" % (missing, depth_panel, GLAZE_T))
+            pts = []
+            for yy in (c - 12.0, c, c + 12.0):
+                pts.append(((yy, CHUTE_SILL - 0.1), "sill"))
+                pts.append(((yy, CHUTE_SILL + CHUTE_H + 0.1), "head"))
+            for zz in (25.0, 32.0, 38.5):
+                pts.append(((c - CHUTE_W / 2 - 0.1, zz), "jamb -"))
+                pts.append(((c + CHUTE_W / 2 + 0.1, zz), "jamb +"))
+            for (yz, what) in pts:
+                for x in depths:
+                    zp = yz[1]
+                    if what == "sill" and x > -SILL_R:
+                        zp = CHUTE_SILL - SILL_R - 0.1      # below the R0.5 field-side sill roundover
+                    if not f.inside(wt, (x, yz[0], zp), F):
+                        missing.append("%s@Y%g z%.1f x%.1f" % (what, c, yz[1], x))
+        chk("%s wall is 2.0 in thick at the chute: sill, head and jambs bounded to x = -1.9 (§5, ref +/-0.25)" % A,
+            not missing, "no wall/throat material 0.1 in outside the opening at %s" % missing[:6])
+        # the same through the 1-in strip of the jambs that lies in the glazed band (Z 39..40): the
+        # 0.25 glazing is the only field-side layer there, so the throat liner must reach it
+        missing = []
+        for c in CHUTE_Y:
+            for yy in (c - CHUTE_W / 2 - 0.1, c + CHUTE_W / 2 + 0.1):
+                for zz in (39.25, 39.75):
+                    for x in depths:
+                        if not f.inside(wt, (x, yy, zz), F):
+                            missing.append("Y%g z%.2f x%.1f" % (yy, zz, x))
+        chk("%s chute jambs lined through the full 2.0 depth where they pass the glazed band (Z 39..40, §5)" % A,
+            not missing, "open (no wall/glazing/throat material) 0.1 in outside the jamb at %s — the jamb liner stops at "
+            "the panel's back plane x = -0.75 while the glazing above Z 39 is only 0.25 deep" % missing[:6])
+
+        # throat liner: one body per chute, flush with the opening, joined to the panel and glazing
+        for o, c in enumerate(CHUTE_Y, start=1):
+            th = chute[(A, o)]["chute throat"]
+            if not th:
+                chk("%s OUTFITTER %d chute throat liner present" % (A, o), False, "no body '%s OUTFITTER %d chute throat'" % (A, o))
+                continue
+            tb = f.bbox(th, F)
+            ns = len(f.solids(th))
+            cvw = f.common_volume(th, wall)
+            dw = f.dist(th, r["panel"])
+            chk("%s OUTFITTER %d chute throat: one solid in the 2.0-in wall depth (x -2..0), around Y c+/-15 Z 24..40, "
+                "touching the panel, no overlap with panel/glazing/frame" % (A, o),
+                len(th) == 1 and ns == 1 and tb[0] >= -WALL_T - EPS and tb[3] <= EPS
+                and tb[1] < c - CHUTE_W / 2 and tb[4] > c + CHUTE_W / 2 and tb[2] < CHUTE_SILL and tb[5] > CHUTE_SILL + CHUTE_H
+                and cvw < 1e-4 and dw < EPS,
+                "bodies %d solids %d local bbox %s; common with wall %.5f; gap to panel %.4f" % (len(th), ns, _box_str(tb), cvw, dw))
 
         # appearance / material
         rgb, al = f.color(r["panel"])
@@ -332,11 +405,15 @@ def run(f):
         F = FR[A]
         r = rec[A]
         wall = r["panel"] + r["glaze"] + r["frame"]
-        cheeks, ramps = [], []
+        chute_bodies = []
         for o in (1, 2):
-            cheeks += _find(f, "%s OUTFITTER %d cheek funnel" % (A, o))
-            ramps += _find(f, "%s OUTFITTER %d chute ramp" % (A, o))
-        chute_bodies = cheeks + ramps
+            for v in chute[(A, o)].values():
+                chute_bodies += v
+        chk("%s OUTFITTER chute bodies found behind the wall (throat, ramp, 2 cheeks, 2 funnel wings, leg per chute)" % A,
+            all(len(chute[(A, o)]["chute throat"]) == 1 and len(chute[(A, o)]["chute ramp"]) == 1
+                and len(chute[(A, o)]["cheek"]) == 2 and len(chute[(A, o)]["funnel wing"]) == 2
+                and len(chute[(A, o)]["ramp leg"]) == 1 for o in (1, 2)),
+            "; ".join("chute %d: %s" % (o, {k: len(v) for k, v in chute[(A, o)].items()}) for o in (1, 2)))
         prev_hi = None
         for i, s in enumerate(STATION_Y, start=1):
             sh = r["shelf%d" % i]
@@ -346,8 +423,11 @@ def run(f):
             lo, hi = s - STATION_W / 2, s + STATION_W / 2
             chk("%s station %d shelf top at Z 36, 0.75 thick" % (A, i),
                 _near(b[5], SHELF_TOP) and _near(b[5] - b[2], SHELF_T), "z %.3f..%.3f" % (b[2], b[5]))
-            chk("%s station %d shelf behind the wall (driver side, x <= -2)" % (A, i),
-                b[3] <= -WALL_T + EPS, "shelf local x %.3f..%.3f" % (b[0], b[3]))
+            chk("%s station %d shelf on the driver side: from the lower panel's back face x = -0.75 back 12 in (ref)" % (A, i),
+                _near(b[3], -PANEL_T) and _near(b[0], -PANEL_T - SHELF_D), "shelf local x %.3f..%.3f want -12.750..-0.750" % (b[0], b[3]))
+            cvs = f.common_volume(sh, wall)
+            chk("%s station %d shelf shares no volume with the wall panel, glazing or frame" % (A, i), cvs < 1e-4,
+                "common %.5f in^3" % cvs)
             chk("%s station %d shelf lies inside its 96-in station band (Y %g..%g)" % (A, i, lo, hi),
                 b[1] >= lo - EPS and b[4] <= hi + EPS, "shelf y %.3f..%.3f" % (b[1], b[4]))
             # world position: Blue at Y = s, Red at the rotation Y = 324 - s
@@ -366,16 +446,19 @@ def run(f):
             else:
                 c = chute_here[0]
                 fb = f.bbox([x for x in chute_bodies if abs(0.5 * (f.bbox([x], F)[1] + f.bbox([x], F)[4]) - c) < 30], F)
+                # funnel plan outline: the measured chute bodies, but never wider than §5 allows
+                # (36-in flare at the loading end + the 0.5 cheek plate each side)
+                half = FLARE_W / 2 + CHEEK_T
                 if c < s:
-                    need = (max(lo, fb[4] + 3.0), hi)
+                    need = (max(lo, min(fb[4], c + half) + 3.0), hi)
                 else:
-                    need = (lo, min(hi, fb[1] - 3.0))
+                    need = (lo, min(hi, max(fb[1], c - half) - 3.0))
                 chk("%s station %d shelf covers its band except the OUTFITTER funnel (Y %.1f..%.1f needed)" % (A, i, need[0], need[1]),
                     b[1] <= need[0] + EPS and b[4] >= need[1] - EPS,
                     "shelf y %.3f..%.3f (%.1f in wide of the 96-in station; funnel occupies y %.2f..%.2f)"
                     % (b[1], b[4], b[4] - b[1], fb[1], fb[4]))
                 d = f.dist(sh, chute_bodies)
-                chk("%s station %d shelf clear of the OUTFITTER ramp/cheek funnel, not over-cut (0 < gap <= 3)" % (A, i),
+                chk("%s station %d shelf clear of the OUTFITTER throat/ramp/cheeks/funnel wings, not over-cut (0 < gap <= 3)" % (A, i),
                     0.0 < d <= 3.0, "gap %.3f in" % d)
                 # necessity: a full 96-in shelf at the same depth and height would hit the chute
                 virt = _box_solid(F, (b[0], lo, b[2]), (b[3], hi, b[5]))
@@ -399,13 +482,12 @@ def run(f):
                 "gap to panel/frame %.3f in: no bracket or frame member at Z 35.25-36 in the station span" % d)
             # window in the glazed band: glazing at the station centre, no frame post in front
             bad = [z for z in np.arange(39.5, WALL_H, 2.0) if not f.inside(r["glaze"], (-GLAZE_T / 2, s, z), F)]
-            posts = []
-            for fr in r["frame"]:
-                fb = f.bbox([fr], F)
-                if fb[5] > SOLID_TOP + 1 and fb[2] < WALL_H - 3 and fb[4] > lo + EPS and fb[1] < hi - EPS:
-                    posts.append(_box_str(fb))
+            # the welded frame is one body: look for frame steel in the station's window
+            # (Y lo..hi, Z 40..75, the whole wall depth) instead of per-member bounding boxes
+            win = _rec(_box_solid(F, (-WALL_T - 1.0, lo + EPS, SOLID_TOP + 1), (0.0, hi - EPS, WALL_H - 3)))
+            cvp = f.common_volume(r["frame"], win)
             chk("%s station %d window: glazed band 39-78 at the station, no frame post inside the station band" % (A, i),
-                not bad and not posts, "unglazed z %s; posts %s" % (bad[:3], posts[:2]))
+                not bad and cvp < 1e-4, "unglazed z %s; frame steel in the window %.4f in^3" % (bad[:3], cvp))
 
             # buttons
             for key, rgb_w, label in (("estop", RGB_ESTOP, "E-STOP"), ("astop", RGB_ASTOP, "A-STOP")):

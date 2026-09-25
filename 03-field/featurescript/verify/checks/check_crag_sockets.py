@@ -24,9 +24,25 @@ Every expected value below is taken from the package documents, never from src/:
   DESIGN-SPEC        §1.5 socket ID 6.50 +/- 0.125;  §3 SOCKET FACES
   MATERIALS-AND-COLORS §1.2 `socket` #9DB8D6, `crag-accent` #4A3B22; §2 socket tube = rolled
                           aluminium, 0.09 wall; socket bracket = aluminium plate 0.125 in
-  VISION-GUIDE       §1.3 (tube 1.61-10.89 outboard, "clear at every outboard station"),
+  VISION-GUIDE       §1.3 (tube 1.56-10.89 outboard, clear from a 10-20 in camera; a 24-36 in camera
+                     can see the Low Socket tube in front of part of tags 8/10/21/23),
                      §5.2 camera bands (primary 10-20 in, optional second camera 24-36 in),
                      §6.6 (Low above tag 8/10/21/23, Mid above 9/11/22/24)
+
+Socket depth (the documents disagree by the bottom-plate thickness; DESIGN-SPEC governs):
+  DESIGN-SPEC §3 gives "tube length 7.0 in along the axis, closed bottom" and "a seated 14.0-in O2
+  CELL therefore stands 7.0 in proud of the rim", and FIELD-CAD-PACKAGE §2.3 says the 7.0 length
+  "sets the 7.0-in protrusion"; §9.2 calls it the "7.0-in socket tube depth".  Both DESIGN-SPEC
+  numbers hold only if the 7.0 runs from the rim plane to the floor the CELL seats on, so the 0.09
+  closed bottom (§2.3 wall, ref) lies beyond it and the tube is 7.09 overall.  The §2.3 / §7 /
+  VISION-GUIDE §1.3 clearance figures put the 7.0 at the OUTER bottom instead (4.50 is right for the
+  floor centre, but the inboard edge 1.61 and the lowest point Z 22.27 ignore the plate): measured
+  to the outer bottom they are 1.56 and 22.19, and every conclusion drawn from them still holds
+  (22.19 clears the 21.56 target top by 0.63).  This module tests the DESIGN-SPEC reading.
+
+Construction reading (naming only): each tube and bracket is its own part, "<A> CRAG <Low|Mid>
+Socket (guardrail side)" / "(centre side)" and "... Socket bracket (...)", the guardrail side being
+the one farther from the field's long centreline Y = 162.
 """
 import json
 import math
@@ -53,17 +69,21 @@ LAT = 14.0                                                   # §2.3
 STANDOFF = 8.0                                               # §2.3
 TILT = 30.0                                                  # §2.3
 ID_NOM, ID_TOL = 6.50, 0.125                                 # §2.3, DESIGN-SPEC §1.5
-LEN = 7.0                                                    # §2.3
+LEN = 7.0                                                    # DESIGN-SPEC §3 / §2.3: rim plane to the seat
 WALL = 0.09                                                  # §2.3 (ref), MATERIALS §2
+OVERALL = LEN + WALL                                         # rim plane to the outer bottom face
 RO = ID_NOM / 2 + WALL                                       # 3.34 — the package's own "3.34"
 RI = ID_NOM / 2
 S30, C30 = math.sin(math.radians(TILT)), math.cos(math.radians(TILT))
 
-# §2.3 clearance paragraph (and VISION-GUIDE §1.3), written as the package derives them
-BOTTOM_OUT = STANDOFF - LEN * S30                            # 4.50
-INBOARD_EDGE = BOTTOM_OUT - RO * C30                         # 1.61
+# §2.3 clearance paragraph (and VISION-GUIDE §1.3), derived as the package derives them but with
+# the closed bottom beyond the 7.0 seat (see the docstring)
+BOTTOM_OUT = STANDOFF - LEN * S30                            # 4.50, the floor (seat) centre
+BOTTOM_FACE_OUT = STANDOFF - OVERALL * S30                   # 4.455, the outer bottom face centre
+INBOARD_EDGE = BOTTOM_FACE_OUT - RO * C30                    # 1.5625 (§2.3 prints 1.61 at the seat)
 OUTBOARD_EDGE = STANDOFF + RO * C30                          # 10.89 (VISION-GUIDE §1.3)
-LOWEST_BELOW_RIM = LEN * C30 + RO * S30                      # 30 - 22.27
+LOWEST_BELOW_RIM = OVERALL * C30 + RO * S30                  # 30 - 22.19 (§2.3 prints 22.27 at the seat)
+DOC_INBOARD_EDGE, DOC_LOWEST_LOW = 1.61, 22.27               # the printed figures, for the detail strings
 UPHILL_LIP = RO * S30                                        # 1.67
 DOC_PROTRUSION = 7.0                                         # §2.3 / DESIGN-SPEC §3
 DOC_APEX_ABOVE_RIM = 6.06                                    # §2.3 (7.0 cos 30)
@@ -80,7 +100,7 @@ ARM, LIP_T = 16.0, 0.75                                      # §3
 FRAME_BEHIND_BUMPER, REACH_LIMIT = 3.0, 18.0                 # §2.3 robot standoff paragraph
 LOW_REACH, MID_REACH = 11.75, 5.0                            # §2.3
 CRATE_TOP_IN_TRAY = 13.25                                    # §7
-ARM_CLEAR_COLUMNS = [1.61, 2.66, 5.11, 6.66]                 # §3 open-to-sky
+ARM_CLEAR_COLUMNS = sorted([INBOARD_EDGE, 2.66, 5.11, 6.66])  # §3 open-to-sky (prints 1.61 for the first)
 
 # §7 / VISION-GUIDE §3: tag under each socket (Low above the alliance-wall-side tag)
 TAGS = {("BLUE", +1): {"Low": 8, "Mid": 9}, ("BLUE", -1): {"Low": 10, "Mid": 11},
@@ -141,6 +161,22 @@ def _translate(shape, d):
 
 def _fmt(v):
     return "[" + ", ".join("%.4f" % x for x in v) + "]"
+
+
+def _sided(f, base):
+    """Both parts named base + " (guardrail side)" / " (centre side)" ([] if neither exists)."""
+    out = []
+    for suf in (" (guardrail side)", " (centre side)"):
+        try:
+            out += f.find(base + suf)
+        except KeyError:
+            pass
+    return out
+
+
+def _side_suffix(face_y):
+    """Name suffix for a SOCKET FACE at world Y face_y: guardrail side = farther from Y 162."""
+    return " (guardrail side)" if abs(face_y - 162.0) > 162.0 - 84.0 else " (centre side)"
 
 
 _CACHE = {}
@@ -264,8 +300,8 @@ def run(f):
     recs = {}
     for side in ("BLUE", "RED"):
         for kind in ("Low", "Mid"):
-            tubes = f.find("%s CRAG %s Socket" % (side, kind))
-            brks = f.find("%s CRAG %s Socket bracket" % (side, kind))
+            tubes = _sided(f, "%s CRAG %s Socket" % (side, kind))
+            brks = _sided(f, "%s CRAG %s Socket bracket" % (side, kind))
             add("%s CRAG: 2 %s Socket tubes (one per SOCKET FACE), one solid each" % (side, kind),
                 len(tubes) == 2 and all(len(r["solids"]) == 1 for r in tubes),
                 "%d bodies, solids %s" % (len(tubes), [len(r["solids"]) for r in tubes]))
@@ -274,7 +310,7 @@ def run(f):
                 "%d bodies, solids %s" % (len(brks), [len(r["solids"]) for r in brks]))
             recs[(side, kind, "tube")] = tubes
             recs[(side, kind, "brk")] = brks
-    allsock = f.find(r"re:^(BLUE|RED) CRAG (Low|Mid) Socket$")
+    allsock = f.find(r"re:^(BLUE|RED) CRAG (Low|Mid) Socket \((guardrail|centre) side\)$")
     add("8 side-face socket tubes on the FIELD (4 per CRAG)", len(allsock) == 8, "%d" % len(allsock))
 
     towers = {s: f.find("%s CRAG tower" % s) for s in ("BLUE", "RED")}
@@ -291,7 +327,7 @@ def run(f):
     except KeyError:
         pass
 
-    tube_vol_doc = math.pi * (RO * RO * LEN - RI * RI * (LEN - WALL))
+    tube_vol_doc = math.pi * (RO * RO * OVERALL - RI * RI * LEN)
     per_socket = {}
 
     for S in sockets:
@@ -302,6 +338,8 @@ def run(f):
         tube = min(tubes, key=lambda r: np.linalg.norm(np.array(f.bbox([r])).reshape(2, 3).mean(0) - want_c))
         solid = tube["solids"][0]
         F = f.frame(S.rim, S.e1, S.a)          # rim frame: z = axis, y = outboard-down, x lateral
+        want_name = "%s CRAG %s Socket%s" % (S.side, S.kind, _side_suffix(S.face_y))
+        add(L + ": named '%s'" % want_name, tube["name"] == want_name, "matched body %r" % tube["name"])
 
         # ---- appearance / material -------------------------------------------------------
         rgb, alpha = f.color([tube])
@@ -341,18 +379,22 @@ def run(f):
         near(L + ": axis tilt from vertical (deg)", tilt, TILT, 0.01)
         add(L + ": tilts OUTWARD, in the vertical plane containing the face normal",
             ax @ S.n > 0.49 and abs(ax[0]) < 1e-9, "axis %s, face normal %s" % (_fmt(ax), _fmt(S.n)))
-        near(L + ": tube length along axis (rim plane to closed bottom)", (rim_c - bot_c) @ ax, LEN, TOL)
         floor_depth = (rim_c - flo_c) @ ax
+        near(L + ": bore depth along the axis, rim plane to the floor a CELL seats on (DESIGN-SPEC §3 7.0)",
+             floor_depth, LEN, TOL, " — DESIGN-SPEC's 7.0 tube length and 7.0 protrusion both hold only with the "
+             "7.0 measured to the seat")
+        near(L + ": overall length rim plane to outer bottom = 7.0 bore + 0.09 closed bottom",
+             (rim_c - bot_c) @ ax, OVERALL, TOL)
         add(L + ": closed bottom (floor face present, floor thickness > 0)",
-            abs(floor_[2] - math.pi * ri * ri) < 1e-3 and LEN - floor_depth > 0.05,
-            "floor at %.4f below the rim, bottom plate %.4f thick" % (floor_depth, LEN - floor_depth))
+            abs(floor_[2] - math.pi * ri * ri) < 1e-3 and (rim_c - bot_c) @ ax - floor_depth > 0.05,
+            "floor at %.4f below the rim, bottom plate %.4f thick" % (floor_depth, (rim_c - bot_c) @ ax - floor_depth))
         add(L + ": closed bottom — point on the axis inside the bottom plate is solid",
-            f.inside([tube], (0, 0, -(LEN - WALL / 2)), F), "rim-frame point (0, 0, %.3f)" % (-(LEN - WALL / 2)))
+            f.inside([tube], (0, 0, -(LEN + WALL / 2)), F), "rim-frame point (0, 0, %.3f)" % (-(LEN + WALL / 2)))
 
         # ---- tight box in the expected rim frame (position + orientation in one test) -----
         bb = f.bbox([tube], F)
-        want = [-RO, -RO, -LEN, RO, RO, 0.0]
-        add(L + ": tight box in the document rim frame = [-3.34, -3.34, -7.0, 3.34, 3.34, 0]",
+        want = [-RO, -RO, -OVERALL, RO, RO, 0.0]
+        add(L + ": tight box in the document rim frame = [-3.34, -3.34, -7.09, 3.34, 3.34, 0]",
             max(abs(a - b) for a, b in zip(bb, want)) <= TOL, "got %s" % _fmt(bb))
 
         # ---- bore clear over its full depth ----------------------------------------------
@@ -368,22 +410,26 @@ def run(f):
         face_meas = (max if S.ny > 0 else min)(f.bbox(towers[S.side])[1], f.bbox(towers[S.side])[4])
         near(L + ": face plane (tower box) at doc Y", face_meas, S.face_y, 1e-3)
         near(L + ": rim-centre standoff normal to the face = 8.0", (rim_c[1] - face_meas) * S.ny, STANDOFF, TOL)
-        near(L + ": closed-bottom centre outboard of the face = 4.50", (bot_c[1] - face_meas) * S.ny, BOTTOM_OUT, TOL)
+        near(L + ": floor (seat) centre outboard of the face = 4.50 (§2.3)", (flo_c[1] - face_meas) * S.ny, BOTTOM_OUT, TOL)
+        near(L + ": outer bottom face centre outboard of the face = 8.0 - 7.09 sin30", (bot_c[1] - face_meas) * S.ny,
+             BOTTOM_FACE_OUT, TOL)
         wb = f.bbox([tube])
         inb = (wb[1] - face_meas) if S.ny > 0 else (face_meas - wb[4])
         outb = (wb[4] - face_meas) if S.ny > 0 else (face_meas - wb[1])
-        near(L + ": inboard edge outboard of the face = 1.61", inb, INBOARD_EDGE, TOL)
+        near(L + ": inboard edge outboard of the face = 4.455 - 3.34 cos30", inb, INBOARD_EDGE, TOL,
+             " (§2.3 prints %.2f, taken at the 7.0 seat without the 0.09 bottom plate)" % DOC_INBOARD_EDGE)
         near(L + ": outboard extent = 10.89 (VISION-GUIDE §1.3)", outb, OUTBOARD_EDGE, TOL)
-        near(L + ": lowest point Z (%s)" % ("22.27 per §2.3/§7" if S.kind == "Low" else "rim - 7.73"),
-             wb[2], S.zr - LOWEST_BELOW_RIM, TOL)
+        near(L + ": lowest point Z = rim - (7.09 cos30 + 3.34 sin30)", wb[2], S.zr - LOWEST_BELOW_RIM, TOL,
+             (" (§2.3 / §7 print %.2f, taken at the 7.0 seat without the 0.09 bottom plate)" % DOC_LOWEST_LOW)
+             if S.kind == "Low" else "")
         near(L + ": uphill lip = rim + 1.67", wb[5], S.zr + UPHILL_LIP, TOL)
         near(L + ": lateral silhouette +/-3.34 about the station", (wb[0] + wb[3]) / 2, S.lat_x, TOL,
              ", width %.4f" % (wb[3] - wb[0]))
         tv = sum(_common(solid, s) for s in towers[S.side][0]["solids"])
         dt = f.dist([tube], towers[S.side])
-        add(L + ": nothing penetrates the tower shell (no common volume, gap = 1.61)",
+        add(L + ": nothing penetrates the tower shell (no common volume, gap = inboard edge %.4f)" % INBOARD_EDGE,
             tv < 1e-9 and abs(dt - INBOARD_EDGE) < TOL, "common %.2e in^3, gap %.4f" % (tv, dt))
-        near(L + ": tube volume = pi(3.34^2*7.0 - 3.25^2*6.91)", f.volume([tube]), tube_vol_doc, 1e-3)
+        near(L + ": tube volume = pi(3.34^2*7.09 - 3.25^2*7.0)", f.volume([tube]), tube_vol_doc, 1e-3)
 
         # ---- the tag under the socket ------------------------------------------------------
         tag = f.find(r"re:^AprilTag %d - " % S.tag)
@@ -410,10 +456,10 @@ def run(f):
         cv = _common(cell_c, solid)
         add(L + ": seated CELL (coaxial) fits the bore", cv < 1e-6, "common volume %.2e in^3" % cv)
         protr = CELL_L - fd
-        near(L + ": seated CELL protrudes 7.0 along the axis (§2.3; +0.1 allows the modelled floor)",
-             protr, DOC_PROTRUSION, 0.1, " — floor %.3f below the rim" % fd)
-        near(L + ": seated CELL pole above the rim centre = 6.06", protr * C30, DOC_APEX_ABOVE_RIM, 0.1)
-        near(L + ": seated CELL clears the uphill lip by 4.39", S.zr + protr * C30 - wb[5], DOC_MOUTH_CLEAR, 0.1)
+        near(L + ": seated CELL protrudes 7.0 along the axis (DESIGN-SPEC §3, §2.3)",
+             protr, DOC_PROTRUSION, TOL, " — floor %.4f below the rim" % fd)
+        near(L + ": seated CELL pole above the rim centre = 6.06", protr * C30, DOC_APEX_ABOVE_RIM, 0.005)
+        near(L + ": seated CELL clears the uphill lip by 4.39", S.zr + protr * C30 - wb[5], DOC_MOUTH_CLEAR, 0.005)
         hits = _hits_any(f, cell_c, exclude=[tube])
         add(L + ": seated CELL (coaxial) meets no other field body", not hits, str(hits))
         # physical rest: gravity presses the CELL onto the downhill (outboard) side of the bore
@@ -454,8 +500,10 @@ def run(f):
             add(L + ": plan silhouette lies over the DEPOT corner arm (§2.3 'directly above it')", in_arm,
                 "tube X %.3f-%.3f Y %.3f-%.3f, arm X %s Y %s" % (wb[0], wb[3], wb[1], wb[4], arm_x, arm_y))
             cols = sorted([wb[0] - arm_x[0], arm_x[1] - wb[3], wb[1] - arm_y[0], arm_y[1] - wb[4]])
-            add(L + ": clear sky columns in the arm = 1.61 / 2.66 / 5.11 / 6.66 (§3)",
-                max(abs(a - b) for a, b in zip(cols, ARM_CLEAR_COLUMNS)) < 0.01, "measured %s" % _fmt(cols))
+            add(L + ": clear sky columns in the arm = %.2f / 2.66 / 5.11 / 6.66 (§3)" % INBOARD_EDGE,
+                max(abs(a - b) for a, b in zip(cols, ARM_CLEAR_COLUMNS)) < 0.01,
+                "measured %s (§3 prints 1.61 for the column at the face: the inboard edge at the 7.0 seat, "
+                "without the 0.09 bottom plate)" % _fmt(cols))
             lb = f.bbox(depot_lip[S.side])
             lip_out = (lb[4] - S.face_y) if S.ny > 0 else (S.face_y - lb[1])
             near(L + ": DEPOT lip outer face along the SOCKET FACE = 16.75", lip_out, ARM + LIP_T, 1e-3)
@@ -482,6 +530,8 @@ def run(f):
         S, tube, F, wb = d["S"], d["tube"], d["F"], d["wb"]
         brks = recs[(S.side, S.kind, "brk")]
         brk = min(brks, key=lambda r: np.linalg.norm(np.array(f.bbox([r])).reshape(2, 3).mean(0) - (S.rim - S.a * LEN)))
+        want_name = "%s CRAG %s Socket bracket%s" % (S.side, S.kind, _side_suffix(S.face_y))
+        add(L + " bracket: named '%s'" % want_name, brk["name"] == want_name, "matched body %r" % brk["name"])
         bl = L + " bracket"
         bw = f.bbox([brk])
         add(bl + ": one bracket at this socket's lateral station",
@@ -522,7 +572,7 @@ def run(f):
         add(bl + ": horizontal reach off the face within the tube's", bout <= tout + EPS,
             "bracket %.4f, tube %.4f outboard" % (bout, tout))
         add(bl + ": lives in the wedge under the tube (inboard of the tube wall, above its bottom plane)",
-            bf[4] <= -RO + 1e-3 and bf[2] >= -LEN - 1e-3, "rim-frame box %s" % _fmt(bf))
+            bf[4] <= -RO + 1e-3 and bf[2] >= -OVERALL - 1e-3, "rim-frame box %s" % _fmt(bf))
         add(bl + ": attaches below the rim", bw[5] < S.zr, "top Z %.4f vs rim %.1f" % (bw[5], S.zr))
         # tag below
         tb = d["tb"]
@@ -651,10 +701,12 @@ def _occlusion(f, per_socket, recs):
                      for k, v in ex if k[0] in (8, 21) and k[1] in (24.0, 30.0, 36.0) and k[2] in (17.0, 24.0, 48.0))
     tags_hit = sorted({r[0] for r in res["sec_tube"]})
     kinds_hit = sorted({r[1] for r in res["sec_tube"]})
-    out.append(("§7 claim 'no field structure ... can occlude a CRAG tag' / VISION-GUIDE §1.3 'clear at every "
-                "outboard station' — for the VISION-GUIDE §5.2 second camera (24-36 in) the Low Socket tube "
-                "blocks no sight line to the tag below it",
-                not res["sec_tube"],
-                "%d of %d sight lines blocked (tags %s, by %s tube). %s"
-                % (len(res["sec_tube"]), n_sec, tags_hit, kinds_hit, summ)))
+    # DESIGN-SPEC §6, FCP §7 and VISION-GUIDE §1.3: from a 24-36 in camera the Low Socket tube can hide
+    # part of the tag beneath it (tags 8, 10, 21 and 23), and no other tag or structure is involved
+    stray = [r for r in res["sec_tube"] if r[0] not in (8, 10, 21, 23) or r[1] != "Low"]
+    out.append(("§7 / VISION-GUIDE §1.3: from the §5.2 second camera (24-36 in) only the Low Socket tube hides "
+                "any sight line, and only to tags 8, 10, 21 and 23 (the tags beneath it)",
+                not stray,
+                "%d of %d sight lines blocked (tags %s, by %s tube); outside the documented case: %s. %s"
+                % (len(res["sec_tube"]), n_sec, tags_hit, kinds_hit, stray[:3] or "none", summ)))
     return out

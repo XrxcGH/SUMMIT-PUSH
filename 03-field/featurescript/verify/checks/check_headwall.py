@@ -14,11 +14,22 @@ Expected values come from the package documents only — nothing is read from sr
     §10 rows 10, 11, 14.
   * 01-design/DESIGN-SPEC.md §3 HEADWALL (same numbers; 16.0-in wrap band; 28.0 end to end).
   * 02-manual/sections/02-arena.md §3.4 (lanes structurally independent; stagger table) and the
-    BASECAMP commentary (H(X), 42 in up to X = 32.6).
+    BASECAMP commentary (H(X), 42 in up to X = 30.5).
   * REVISION-LOG M34 (crossbeam / wedge / panel must not share volume; beam notched or set back).
   * 03-field/MATERIALS-AND-COLORS.md §1.2, §2 (truss #8A6D3B, truss-dark #5C4823, rung #9AA0A6;
     steel square tube / steel round bar / steel plate 0.25 / aluminium wedge; tag neutral-white).
   * 04-vision/apriltag-field-layout.json (tag 3/4/5/16/17/18 poses).
+
+Construction readings (the package leaves these free; the generator's documented design):
+  * each lane's truss is ONE welded frame body "<A> HEADWALL lane n frame" (§4.2 "one lane frame",
+    patterned x3): two 2 x 2 uprights running up plane P and 2 x 2 chords across the lane (a bottom
+    rail, a carrier behind each rung, a top rail), all in one layer 4.0-6.0 in behind P.  Members
+    are measured by sectioning the welded body: across the uprights at w stations clear of every
+    chord, and across the chords at a lateral station clear of both uprights;
+  * the lower crossbeam is welded to a 2 x 2 standoff at every upright ("<A> HEADWALL lower
+    crossbeam"), so its own 2 x 2 section and centreline are measured at the lane centres;
+  * 2 x 2 members are solid bars whose material is an effective density: their mass per inch must
+    be that of a real 2 x 2 steel square tube (MATERIALS-AND-COLORS §2), wall 0.065-0.25 in.
 
 Frames (built here from the document definition, not from the part code):
   A(side)  alliance frame: Blue = world; Red = world rotated 180 deg about (324, 162).  Local
@@ -85,10 +96,12 @@ PANEL_T = 0.25                                       # (ref)
 TARGET = 8.125
 TAG_CLR = 4.4                                        # ">= 4.4 in behind plane P" (4.42 computed)
 TAG_CLR_PUB = 4.42
-H_K, H_X0 = 3.7321, 43.859                           # H(X) = 3.7321 (43.859 - X)
-H_TABLE = ((0, 163.7), (12, 118.9), (24, 74.1), (32.6, 42.0), (36, 29.3), (40, 14.4), (43.86, 0.0))
+H_K, H_X0 = 3.7321, 41.788                           # H(X) = 3.7321 (41.788 - X), under the frames' lower face
+FRAME_D = 2.0                                        # (ref) front-layer member depth, 4.0-6.0 behind P
+BEAM_SPAN, BEAM_CLEAR = (34.2, 38.6), 10.8           # the lower crossbeam limits H there (FCP §4.1)
+H_TABLE = ((0, 156.0), (12, 111.2), (24, 66.4), (30.5, 42.1), (32.6, 34.3), (36, 10.8), (40, 6.7), (41.79, 0.0))
 ROBOT_START_H = 42.0                                 # R104 42-in starting configuration
-ROBOT_START_X = 32.6
+ROBOT_START_X = 30.5
 REACH_TO_CL = {"LEDGE": 10.84, "CAMP": 17.27, "SUMMIT": 23.70}   # from FRAME PERIMETER X = 51
 REACH_WRAP = {"LEDGE": 11.59, "CAMP": 18.02, "SUMMIT": 24.45}
 FP_X = 51.0
@@ -97,12 +110,16 @@ DIRECT_BACK = 12.86
 RGB = {"truss": (0x8A, 0x6D, 0x3B), "truss-dark": (0x5C, 0x48, 0x23), "rung": (0x9A, 0xA0, 0xA6),
        "neutral-white": (0xF5, 0xF5, 0xF5)}
 STEEL_RHO = (7750.0, 8050.0)                         # mild steel, kg/m^3 (plausible band)
+TUBE_LB_PER_IN = (0.143, 0.496)                      # 2 x 2 steel square tube, wall 0.065-0.25 in
 ALU_RHO = (2640.0, 2810.0)                           # aluminium alloys
 M_PER_IN = 0.0254
 CAM_Z = (10.0, 20.0)                                 # VISION-GUIDE §5: primary camera 10-20 in
 SUPPLY_NAMES = ("CACHE CRATE", "O2 CELL", "ROPE COIL")
 
 S15, C15, T15 = math.sin(math.radians(LEAN)), math.cos(math.radians(LEAN)), math.tan(math.radians(LEAN))
+
+# FCP §4.1 publishes H(X) under the lane frames' lower (wall-side) face, 4.0 + FRAME_D behind P
+H_FINDING = "FCP §4.1: H(X) = 3.7321 (41.788 - X), 10.8 under the lower crossbeam (X 34.2-38.6)"
 
 
 # ---- helpers ------------------------------------------------------------------------------
@@ -234,6 +251,25 @@ def lane_of(y_local):
     return None
 
 
+def section(f, recs, F, lo, hi):
+    """Solids of `recs` inside the box lo..hi of frame F, with their bboxes in F."""
+    cut = box_in(F, lo, hi)
+    out = []
+    for r in recs:
+        for sld in r["solids"]:
+            for piece in K._solids(common_shape(sld, cut)):
+                if vol(piece) > 1e-9:
+                    out.append(bb_shape(BRepBuilderAPI_Transform(piece, F.trsf().Inverted(), True).Shape()))
+    return out
+
+
+def tube_mass_ok(f, rec):
+    """A 2 x 2 steel member: either hollow steel, or a solid bar whose mass per inch of 2 x 2
+    section is a real square tube's (the effective-density reading)."""
+    lb_in = f.mass_lb([rec]) / (f.volume([rec]) / (TUBE * TUBE))
+    return TUBE_LB_PER_IN[0] <= lb_in <= TUBE_LB_PER_IN[1], lb_in
+
+
 def rgb_ok(rec, tok):
     return tuple(int(round(v)) for v in rec["rgb"]) == RGB[tok] and abs(rec["alpha"] - 1.0) < 1e-9
 
@@ -262,11 +298,14 @@ def run(f):
         zc = RUNG_TOP[r] - RUNG_OD / 2
         ck("doc: derived rung centre X for %s = 48 - Zc tan15 rounds to %.2f" % (r, DERIVED_X[r]),
            abs((48 - zc * T15) - DERIVED_X[r]) < 0.005, "48 - %.2f tan15 = %.4f" % (zc, 48 - zc * T15))
-    ck("doc: H(X) constants: 43.859 = 48 - 4.0/cos15 and 3.7321 = 1/tan15",
-       abs((48 - CLR / C15) - H_X0) < 5e-4 and abs(1 / T15 - H_K) < 5e-4,
-       "48 - 4/cos15 = %.4f, 1/tan15 = %.5f" % (48 - CLR / C15, 1 / T15))
-    bad = [(x, h, H_K * (H_X0 - x)) for x, h in H_TABLE if abs(H_K * (H_X0 - x) - h) > 0.051]
-    ck("doc: H(X) table values follow the formula", not bad, "mismatches: %s" % bad if bad else "all 7 within 0.05")
+    ck("doc: H(X) constants: 41.788 = 48 - (4.0 + 2.0)/cos15 and 3.7321 = 1/tan15",
+       abs((48 - (CLR + FRAME_D) / C15) - H_X0) < 5e-4 and abs(1 / T15 - H_K) < 5e-4,
+       "48 - 6/cos15 = %.4f, 1/tan15 = %.5f" % (48 - (CLR + FRAME_D) / C15, 1 / T15))
+    bad = [(x, h, H_K * (H_X0 - x)) for x, h in H_TABLE
+           if not BEAM_SPAN[0] <= x <= BEAM_SPAN[1] and abs(H_K * (H_X0 - x) - h) > 0.051]
+    bad += [(x, h, BEAM_CLEAR) for x, h in H_TABLE if BEAM_SPAN[0] <= x <= BEAM_SPAN[1] and abs(h - BEAM_CLEAR) > 0.051]
+    ck("doc: H(X) table values follow the formula (and the crossbeam value under the crossbeam)", not bad,
+       "mismatches: %s" % bad if bad else "all %d within 0.05" % len(H_TABLE))
 
     rot = K.Frame((FIELD_L, FIELD_W, 0), (-1, 0, 0), (0, 0, 1))   # 180 deg about (324, 162)
     all_hw_ids = {}
@@ -286,8 +325,13 @@ def run(f):
                 except KeyError:
                     rungs[(li, r)] = []
         brackets = f.find("%s rung end bracket" % pre)
-        uprights = f.find("%s upright" % pre)
-        rails = f.find("%s rail" % pre)
+        frames = {}
+        for li in (1, 2, 3):
+            try:
+                frames[li] = f.find("%s lane %d frame" % (pre, li))
+            except KeyError:
+                frames[li] = []
+        frame_recs = [x for v in frames.values() for x in v]
         beam = f.find("%s lower crossbeam" % pre)
         wedges = f.find("%s tag wedge bracket" % pre)
         tags = {}
@@ -305,11 +349,16 @@ def run(f):
         ck("%s: one lower crossbeam, three tag wedge brackets, three lane tag panels" % pre,
            len(beam) == 1 and len(wedges) == 3 and all(len(v) == 1 for v in tags.values()),
            "crossbeam %d, wedges %d, tags %s" % (len(beam), len(wedges), [len(v) for v in tags.values()]))
-        ck("%s: every lane has its own truss members (uprights and rails inside each lane)" % pre,
-           all(any(lane_of(0.5 * (f.bbox([u], A)[1] + f.bbox([u], A)[4])) == li for u in uprights) and
-               any(lane_of(0.5 * (f.bbox([u], A)[1] + f.bbox([u], A)[4])) == li for u in rails)
+        ck("%s: every lane has its own welded frame, one body and one solid, inside its lane" % pre,
+           all(len(frames[li]) == 1 and len(frames[li][0]["solids"]) == 1 and
+               lane_of(f.bbox(frames[li], A)[1] + 1e-3) == li and lane_of(f.bbox(frames[li], A)[4] - 1e-3) == li
                for li in (1, 2, 3)),
-           "%d uprights, %d rails/carriers" % (len(uprights), len(rails)))
+           "; ".join("lane %d: %d bodies, %s solids, local Y %s" % (
+               li, len(frames[li]), [len(x["solids"]) for x in frames[li]],
+               "-".join(fmt(v) for v in (f.bbox(frames[li], A)[1], f.bbox(frames[li], A)[4])) if frames[li] else "-")
+               for li in (1, 2, 3)))
+        ck("%s lower crossbeam: one welded body, one solid" % pre, len(beam) == 1 and len(beam[0]["solids"]) == 1,
+           "%d bodies, solids %s" % (len(beam), [len(x["solids"]) for x in beam]))
 
         # ---------------- rungs ----------------
         xc_meas = {}
@@ -385,12 +434,12 @@ def run(f):
                        abs(cc - LANE_W) < 1e-3 and abs(d - END_TO_END) < 1e-3, "c-c %s, gap %s" % (fmt(cc), fmt(d)))
 
         # ---------------- clearance behind plane P (CRITICAL) ----------------
-        for grp, recs in (("uprights", uprights), ("rails and rung carriers", rails), ("lower crossbeam", beam),
+        for grp, recs in (("lane frames (uprights, rails and rung carriers)", frame_recs), ("lower crossbeam", beam),
                           ("tag wedge brackets", wedges)):
             mx = max(f.bbox([x], PF)[3] for x in recs)
             ck("%s: %s >= 4.0 behind plane P (normal)" % (pre, grp), mx <= -CLR + 1e-6, "max n = %s (need <= -4.0)" % fmt(mx, 4))
         # the published field-side face X_t(Z) = 43.859 - 0.26795 Z is this model's face
-        mx_truss = max(f.bbox([x], PF)[3] for x in uprights + rails + beam)
+        mx_truss = max(f.bbox([x], PF)[3] for x in frame_recs + beam)
         ck("%s: truss field-side face lies on the 4.0 surface (X_t(Z) = 43.859 - 0.26795 Z)" % pre,
            abs(mx_truss + CLR) < 1e-3, "front-most truss n = %s" % fmt(mx_truss, 4))
 
@@ -444,8 +493,8 @@ def run(f):
         ck("%s: rung end bracket = steel plate 0.25 thick, colour truss-dark" % pre,
            bt == [0.25] and all(rgb_ok(bk, "truss-dark") and mat_ok(bk, "steel") for bk in brackets),
            "thickness %s, rgb %s, mat %s" % (bt, brackets[0]["rgb"], brackets[0]["mat"]))
-        sup = all(min(f.dist([bk], [t]) for t in rails + uprights) < 1e-6 for bk in brackets)
-        ck("%s: every rung end bracket is carried by a truss member (contact)" % pre, sup, "")
+        sup = all(min(f.dist([bk], [t]) for t in frame_recs) < 1e-6 for bk in brackets)
+        ck("%s: every rung end bracket is carried by its lane frame (contact)" % pre, sup, "")
         ov = sum(f.common_volume([bk], rungs[k]) for k, lst in per_rung.items() for bk, *_ in lst)
         ck("%s: rung passes through its brackets without shared volume" % pre, ov < 1e-6, "common volume %s" % fmt(ov, 6))
         # climbing volume: nothing but rungs (and bracket plates, reported below) forward of P
@@ -473,7 +522,7 @@ def run(f):
             h = W.intruders(cyl, exclude={x["id"] for x in rs})
             if h:
                 bad.append("lane %d %s: %s" % (k[0], k[1], hit_str(h)))
-            dmin = min(dmin, f.dist(rs, uprights + rails + beam + wedges))
+            dmin = min(dmin, f.dist(rs, frame_recs + beam + wedges))
         ck("%s: hook-wrap envelope (R 4.0 about the axis, middle 16.0 in) of all 9 rungs is empty" % pre, not bad,
            "; ".join(bad) if bad else "empty")
         ck("%s: rung to nearest truss member >= 3.25 (4.0 - rung radius)" % pre, dmin >= CLR - RUNG_OD / 2 - 1e-6,
@@ -485,19 +534,45 @@ def run(f):
         ck("%s: structure top at 84 (ref, +/-0.25) and no rung above it" % pre,
            abs(zmax - TRUSS_TOP) <= REF_TOL and max(RUNG_TOP.values()) < zmax, "top Z %s" % fmt(zmax))
         ck("%s: stands on the carpet (lowest point Z 0)" % pre, abs(zmin) < 1e-6, "min Z %s" % fmt(zmin, 5))
-        ub = [f.bbox([u], PF) for u in uprights]
-        ck("%s: uprights are 2 x 2 tube running up plane P (15 deg from vertical: n and y extents 2.0)" % pre,
-           all(abs(b[3] - b[0] - TUBE) < 1e-3 and abs(b[4] - b[1] - TUBE) < 1e-3 for b in ub),
-           "n x y extents %s" % sorted({(fmt(b[3] - b[0]), fmt(b[4] - b[1])) for b in ub}))
-        rb_ = [f.bbox([x], PF) for x in rails + beam]
-        ck("%s: rails / carriers / crossbeam are 2 x 2 tube lying in P-parallel layers (n and w extents 2.0)" % pre,
-           all(abs(b[3] - b[0] - TUBE) < 1e-3 and abs(b[5] - b[2] - TUBE) < 1e-3 for b in rb_),
-           "n x w extents %s" % sorted({(fmt(b[3] - b[0]), fmt(b[5] - b[2])) for b in rb_}))
-        hollow = all(not f.inside([u], ((f.bbox([u], PF)[0] + f.bbox([u], PF)[3]) / 2, (f.bbox([u], PF)[1] + f.bbox([u], PF)[4]) / 2, 40), PF)
-                     for u in uprights)
-        ck("%s: square tube members are tubes (hollow), steel, colour truss" % pre,
-           hollow and all(rgb_ok(x, "truss") and mat_ok(x, "steel") for x in uprights + rails + beam),
-           "rgb %s mat %s" % (uprights[0]["rgb"], uprights[0]["mat"]))
+        # uprights: sections across each lane frame at w stations clear of every chord
+        w_st = (15.0, 42.0, 67.0)
+        bad_up, n_up = [], []
+        for li in (1, 2, 3):
+            yl = LANE_C[li - 1]
+            for w0 in w_st:
+                secs = section(f, frames[li], PF, (-30.0, yl - LANE_W / 2, w0), (30.0, yl + LANE_W / 2, w0 + 0.5))
+                n_up.append(len(secs))
+                for b in secs:
+                    if not (abs(b[3] - b[0] - TUBE) < 1e-3 and abs(b[4] - b[1] - TUBE) < 1e-3 and abs(b[5] - b[2] - 0.5) < 1e-3):
+                        bad_up.append("lane %d w %g: n x y x w %s x %s x %s" % (li, w0, fmt(b[3] - b[0]), fmt(b[4] - b[1]), fmt(b[5] - b[2])))
+        ck("%s: each lane frame has two uprights, 2 x 2 tube running up plane P (15 deg from vertical)" % pre,
+           n_up == [2] * (3 * len(w_st)) and not bad_up,
+           "sections per lane/station %s; off-size %s" % (n_up, bad_up[:4]))
+        # chords: sections across each lane frame at a lateral station clear of both uprights
+        bad_ch, n_ch = [], []
+        for li in (1, 2, 3):
+            yl = LANE_C[li - 1] + 5.0
+            secs = section(f, frames[li], PF, (-30.0, yl, -10.0), (30.0, yl + 0.5, 120.0))
+            n_ch.append(len(secs))
+            for b in secs:
+                if not (abs(b[3] - b[0] - TUBE) < 1e-3 and abs(b[5] - b[2] - TUBE) < 1e-3):
+                    bad_ch.append("lane %d: n x w %s x %s" % (li, fmt(b[3] - b[0]), fmt(b[5] - b[2])))
+        ck("%s: lane frame chords (bottom rail, a carrier behind each rung, top rail) are 2 x 2 tube in a P-parallel layer" % pre,
+           all(n >= 2 for n in n_ch) and not bad_ch, "chords per lane %s; off-size %s" % (n_ch, bad_ch[:4]))
+        # crossbeam: its own section at each lane centre, clear of the standoffs at the uprights
+        bad_bm = []
+        for yc in LANE_C:
+            secs = section(f, beam, PF, (-30.0, yc, -10.0), (30.0, yc + 0.5, 120.0))
+            if len(secs) != 1 or abs(secs[0][3] - secs[0][0] - TUBE) > 1e-3 or abs(secs[0][5] - secs[0][2] - TUBE) > 1e-3:
+                bad_bm.append("Y %g: %s" % (yc, [(fmt(b[3] - b[0]), fmt(b[5] - b[2])) for b in secs]))
+        ck("%s: lower crossbeam is 2 x 2 tube in a P-parallel layer (section at each lane centre)" % pre, not bad_bm,
+           "; ".join(bad_bm) or "3 sections 2 x 2")
+        mass = [(x["name"],) + tube_mass_ok(f, x) for x in frame_recs + beam]
+        ck("%s: lane frames and crossbeam are 2 x 2 steel square tube (mass per inch of a real tube), colour truss" % pre,
+           all(m[1] for m in mass) and all(rgb_ok(x, "truss") and "steel" in ((x["mat"] or {}).get("name", "").lower())
+                                           for x in frame_recs + beam),
+           "lb/in %s; rgb %s mat %s" % ([(m[0], fmt(m[2], 3)) for m in mass], frame_recs[0]["rgb"] if frame_recs else "-",
+                                      frame_recs[0]["mat"] if frame_recs else "-"))
         loc = [f.bbox([x], A) for x in hw]
         ck("%s: width 144 — all structure within Y 90-234 and spanning it (Red by rotation)" % pre,
            min(b_[1] for b_ in loc) >= HW_Y0 - 1e-6 and max(b_[4] for b_ in loc) <= HW_Y1 + 1e-6 and
@@ -505,17 +580,22 @@ def run(f):
            "local Y %s-%s" % (fmt(min(b_[1] for b_ in loc)), fmt(max(b_[4] for b_ in loc))))
         # lanes structurally independent (manual §3.4) — lane frames do not touch each other
         lane_sets = {li: [] for li in (1, 2, 3)}
-        for x in uprights + rails + brackets + rung_recs:
+        for x in frame_recs + brackets + rung_recs:
             b_ = f.bbox([x], A)
             lane_sets[lane_of(0.5 * (b_[1] + b_[4]))].append(x)
         dl = [f.dist(lane_sets[1], lane_sets[2]), f.dist(lane_sets[2], lane_sets[3])]
-        ck("%s: lane frames are separate (uprights/rails/rungs/brackets of adjacent lanes do not touch)" % pre,
+        ck("%s: lane frames are separate (frames/rungs/brackets of adjacent lanes do not touch)" % pre,
            all(d > 1e-3 for d in dl), "gaps %s (the lower crossbeam alone spans all three lanes)" % [fmt(d) for d in dl])
 
         # ---------------- lower crossbeam, wedges, tag panels (M34) ----------------
         bb_beam = f.bbox(beam, A)
-        ck("%s lower crossbeam: centreline Z 12.0 (ref, +/-0.25)" % pre, abs(0.5 * (bb_beam[2] + bb_beam[5]) - BEAM_Z) <= REF_TOL,
-           "Z %s-%s, centre %s" % (fmt(bb_beam[2]), fmt(bb_beam[5]), fmt(0.5 * (bb_beam[2] + bb_beam[5]), 4)))
+        zc_beam = []
+        for yc in LANE_C:
+            secs = section(f, beam, A, (-10.0, yc, -10.0), (100.0, yc + 0.5, 100.0))
+            zc_beam += [0.5 * (b[2] + b[5]) for b in secs]
+        ck("%s lower crossbeam: centreline Z 12.0 (ref, +/-0.25), measured at the lane centres" % pre,
+           len(zc_beam) == 3 and all(abs(z - BEAM_Z) <= REF_TOL for z in zc_beam),
+           "centre Z %s" % [fmt(z, 4) for z in zc_beam])
         for li in (1, 2, 3):
             yc = LANE_C[li - 1]
             tid = TAG_IDS[side][li - 1]
@@ -617,15 +697,15 @@ def run(f):
         def hw_intr(shape):
             return [h_ for h_ in W.intruders(shape) if h_[2] in hw_ids]
 
-        # a 42-in robot anywhere in Y 90-234 up to X = 32.6
+        # a 42-in robot anywhere in Y 90-234 up to X = 30.5
         rb42 = box_in(A, (0.01, HW_Y0, 0.02), (ROBOT_START_X, HW_Y1, ROBOT_START_H))
         hits = hw_intr(rb42)
         # the X a 42-in robot can actually reach, and the clear height at the table stations
         reach = common_shape(box_in(A, (0.01, HW_Y0, 0.02), (60, HW_Y1, ROBOT_START_H)),
                              K._compound([s for x in hwall for s in x["solids"]]))
         rx = bb_shape(BRepBuilderAPI_Transform(reach, A.trsf().Inverted(), True).Shape())[0] if vol(reach) > 0 else float("nan")
-        ck("%s: BASECAMP — a 42-in robot fits anywhere in Y 90-234 up to X = 32.6 (H(32.6) = 42.0)" % pre, not hits,
-           "intruders: %s; a 42-in box across Y 90-234 reaches only X = %s" % (hit_str(hits), fmt(rx)))
+        ck("%s: BASECAMP — a 42-in robot fits anywhere in Y 90-234 up to X = 30.5 (H(30.5) = 42.1)" % pre, not hits,
+           "intruders: %s; a 42-in box across Y 90-234 reaches only X = %s. %s" % (hit_str(hits), fmt(rx), H_FINDING))
         stations = []
         okH = True
         for x, hpub in H_TABLE[1:-1]:
@@ -637,7 +717,8 @@ def run(f):
             stations.append("X %s: published %s, clear %s" % (fmt(x, 1), fmt(hpub, 1), fmt(zlow, 1)))
             if zlow < hpub - 0.05:
                 okH = False
-        ck("%s: BASECAMP clear height under the truss >= published H(X) at X = 12/24/32.6/36/40" % pre, okH, "; ".join(stations))
+        ck("%s: BASECAMP clear height under the truss >= published H(X) at X = 12/24/30.5/32.6/36/40" % pre, okH,
+           "%s. %s" % ("; ".join(stations), H_FINDING))
         # between the uprights of each lane (lane centre +/- 15): the same 42-in robot
         mid_ok, mid_det = True, []
         for yc in LANE_C:
@@ -645,7 +726,7 @@ def run(f):
             if h_:
                 mid_ok = False
                 mid_det.append("lane Y %d: %s" % (yc, hit_str(h_)))
-        ck("%s: BASECAMP — a 30-in-wide 42-in robot centred on a lane fits up to X = 32.6" % pre, mid_ok,
+        ck("%s: BASECAMP — a 30-in-wide 42-in robot centred on a lane fits up to X = 30.5" % pre, mid_ok,
            "; ".join(mid_det) if mid_det else "clear in all three lanes")
 
     # ---------------- §4.2: the lane is linear-patterned x3 at 48 in, no mirroring ----------------

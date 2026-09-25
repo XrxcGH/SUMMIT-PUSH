@@ -553,7 +553,7 @@ function countBodies(context is Context, bodies is array) returns number
 // LEDGER — every number the field is built from.  Sources: 03-field/FIELD-CAD-PACKAGE.md
 // (§10 master dimension ledger and the per-element sections) and
 // 03-field/MATERIALS-AND-COLORS.md.  Inches and degrees.  (ref) = reference geometry the
-// package leaves free; the value chosen here is documented in README.md.
+// package leaves free; the value here is this generator's choice.
 // =====================================================================================
 
 // ---- field (§0, §1) ---------------------------------------------------------------------
@@ -575,6 +575,7 @@ const LED_Z = 19;               // FIELD LED lens centre
 const LED_W = 1;
 const LED_DEPTH = 0.25;         // (ref) let into the top rail
 const LED_BLOCKS = 3;           // lit blocks per alliance segment (manual §3.1.2)
+const LED_GAP = 12;             // (ref) dark stretch after each block, so lit blocks read separately (R207)
 const WALL_H = 78;
 const WALL_T = 2;
 const WALL_SOLID_H = 39;
@@ -627,7 +628,8 @@ const GUSSET_T = 0.125;
 const GUSSET_Y = [-22, -7.75, 7.75, 22];  // (ref) lateral stations, clear of the tag prisms
 const SOCK_ID = 6.5;
 const SOCK_WALL = 0.09;
-const SOCK_LEN = 7;             // along the axis, rim plane to outer bottom face
+const SOCK_LEN = 7;             // along the axis, rim plane to the floor a CELL seats on (DESIGN-SPEC §3:
+                                // a seated 14.0 CELL stands 7.0 proud); the closed bottom lies beyond it
 const SOCK_STANDOFF = 8;
 const SOCK_LAT = 14;
 const SOCK_TILT = 30;
@@ -683,7 +685,7 @@ const TRUSS_CLR = 4;
 const TRUSS_TOP = 84;
 const TUBE_S = 2;
 const FRONT_N = [-6, -4];       // front layer: rung carriers, rails
-const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer — see README (spec finding)
+const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer, set back so the tag wedges and panels sit in front
 const UPRIGHT_INSET = 2.5;      // (ref) upright's inner face from the lane edge
 const BRACKET_T = 0.25;
 const BRACKET_FROM_END = 1;     // bracket plate 1.0-1.25 in from each rung end
@@ -901,10 +903,12 @@ function buildCarpet(context is Context, id is Id)
     paint(context, [id + "carpet"], "Field carpet", "carpet", 1, "carpet");
 }
 
-// FIELD LEDs (manual §3.1.2): each 324-in alliance segment is three 108-in blocks, counted from
-// its own alliance wall.  GREEN lights all three; FORECAST lights 1 / 2 / 3 white blocks for
-// WHITEOUT / ICEFALL / GALE in both alliances' segments; ROUTE lights 1 / 2 / 3 alliance-colour
-// blocks for that alliance's LOW / MID / HIGH ROUTE.  Unlit blocks are dark.
+// FIELD LEDs (manual §3.1.2): each 324-in alliance segment is three blocks on a 108-in pitch,
+// counted from its own alliance wall.  GREEN lights all three; FORECAST lights 1 / 2 / 3 white
+// blocks for WHITEOUT / ICEFALL / GALE in both alliances' segments; ROUTE lights 1 / 2 / 3
+// alliance-colour blocks for that alliance's LOW / MID / HIGH ROUTE.  Unlit blocks are dark.
+// R207 describes the indication as "equal, discrete, separated lit blocks", so every block is
+// followed, on the field-centre side, by a LED_GAP stretch of the band that never lights.
 function ledLitCount(opts, isRedHalf)
 {
     const st = opts["fieldLed"];
@@ -959,15 +963,16 @@ function ledOnRGB(opts, isRedHalf)
     return allianceRGB(isRedHalf);
 }
 
-// X range of LED block k (0 = nearest its own alliance wall) in the Blue or Red half.
+// X ranges of LED block k (0 = nearest its own alliance wall) in the Blue or Red half:
+// [the block's lit length, the dark gap after it].
 function ledBlockX(isRedHalf, k)
 {
     const b = FIELD_CX / LED_BLOCKS;
     if (isRedHalf)
     {
-        return [FIELD_L - b * (k + 1), FIELD_L - b * k];
+        return [[FIELD_L - b * (k + 1) + LED_GAP, FIELD_L - b * k], [FIELD_L - b * (k + 1), FIELD_L - b * (k + 1) + LED_GAP]];
     }
-    return [b * k, b * (k + 1)];
+    return [[b * k, b * (k + 1) - LED_GAP], [b * (k + 1) - LED_GAP, b * (k + 1)]];
 }
 
 // One long-side guardrail.  side 0 runs along Y = 0, side 1 along Y = 324.  Built in world
@@ -1002,14 +1007,17 @@ function buildGuardrail(context is Context, id is Id, side, opts)
         {
             const bx = ledBlockX(isRedHalf, k);
             const lid = id + nm(nm("led", allianceName(isRedHalf)), k);
-            mkBox(context, lid, W, [bx[0], ledLo, LED_Z - LED_W / 2], [bx[1], ledHi, LED_Z + LED_W / 2]);
+            mkBox(context, lid, W, [bx[0][0], ledLo, LED_Z - LED_W / 2], [bx[0][1], ledHi, LED_Z + LED_W / 2]);
             var rgb = PAL["led-dark"];
             if (k < lit)
             {
                 rgb = ledOnRGB(opts, isRedHalf);
             }
             paintRGB(context, [lid], msg([name, " FIELD LED, ", allianceName(isRedHalf), " segment block ", k + 1]), rgb, 1, "acrylic");
-            leds = append(leds, lid);
+            const gid = id + nm(nm("ledGap", allianceName(isRedHalf)), k);
+            mkBox(context, gid, W, [bx[1][0], ledLo, LED_Z - LED_W / 2], [bx[1][1], ledHi, LED_Z + LED_W / 2]);
+            paint(context, [gid], msg([name, " FIELD LED, ", allianceName(isRedHalf), " segment gap ", k + 1]), "led-dark", 1, "acrylic");
+            leds = concatenateArrays([leds, [lid, gid]]);
         }
     }
     bSubtract(context, id + "groove", [id + "top"], leds, true);
@@ -1040,7 +1048,8 @@ function buildGuardrail(context is Context, id is Id, side, opts)
 }
 
 // Driver-station shelf span for station centre s: the shelf is cut back clear of the
-// OUTFITTER chute so a CACHE CRATE can slide down the ramp (README: spec finding F-1).
+// OUTFITTER chute funnel (the corner stations' 96-in bands overlap it) so a CACHE CRATE can
+// slide down the ramp.
 function stationShelfSpan(s)
 {
     var lo = s - STATION_W / 2;
@@ -1176,8 +1185,10 @@ function buildOutfitterRamp(context is Context, id is Id, F, c, name)
     const tt = THROAT_T;
     // throat liner: sill plate, two jambs and a head plate, flush with the opening
     mkBox(context, id + "throatSill", F, [x0, c - hw - tt, zs - tt], [xp, c + hw + tt, zs]);
-    mkBox(context, id + "throatJambA", F, [x0, c - hw - tt, zs], [xp, c - hw, zh]);
-    mkBox(context, id + "throatJambB", F, [x0, c + hw, zs], [xp, c + hw + tt, zh]);
+    // the jambs stand behind the lower panel up to Z 39 and behind the 0.25 glazing above it
+    const jamb = [[x0, zs], [xp, zs], [xp, WALL_SOLID_H], [-WALL_GLAZE_T, WALL_SOLID_H], [-WALL_GLAZE_T, zh], [x0, zh]];
+    prismXZ(context, id + "throatJambA", F, jamb, c - hw - tt, c - hw);
+    prismXZ(context, id + "throatJambB", F, jamb, c + hw, c + hw + tt);
     mkBox(context, id + "throatHead", F, [x0, c - hw - tt, zh], [-WALL_GLAZE_T, c + hw + tt, zh + tt]);
     const th = [id + "throatSill", id + "throatJambA", id + "throatJambB", id + "throatHead"];
     paint(context, th, msg([name, " chute throat"]), "wall", 1, "aluminum");
@@ -1265,15 +1276,24 @@ function buildRing(context is Context, id is Id, F, h, gc, z0, z1)
     return [id + "a", id + "b"];
 }
 
+// Length of a socket tube along its axis, rim plane to the outer bottom face: the SOCK_LEN
+// bore a CELL seats in, plus the closed bottom.
+function sockOverall()
+{
+    return SOCK_LEN + SOCK_WALL;
+}
+
 // Open-topped tube with a closed bottom: outer bottom-face centre b, unit axis a (towards
-// the mouth), unit radial r perpendicular to a.  Rim plane at SOCK_LEN along a.
+// the mouth), unit radial r perpendicular to a.  Floor at SOCK_WALL, rim plane at
+// sockOverall() along a, so the bore is SOCK_LEN deep.
 function buildSocketTube(context is Context, id is Id, F, b, a, r)
 {
     const ri = SOCK_ID / 2;
     const ro = ri + SOCK_WALL;
+    const L = sockOverall();
     mkRevolve(context, id, F, plAxis(b, a, r),
-            [["L", [0, 0], [ro, 0]], ["L", [ro, 0], [ro, SOCK_LEN]], ["L", [ro, SOCK_LEN], [ri, SOCK_LEN]],
-                ["L", [ri, SOCK_LEN], [ri, SOCK_WALL]], ["L", [ri, SOCK_WALL], [0, SOCK_WALL]], ["L", [0, SOCK_WALL], [0, 0]]]);
+            [["L", [0, 0], [ro, 0]], ["L", [ro, 0], [ro, L]], ["L", [ro, L], [ri, L]],
+                ["L", [ri, L], [ri, SOCK_WALL]], ["L", [ri, SOCK_WALL], [0, SOCK_WALL]], ["L", [0, SOCK_WALL], [0, 0]]]);
 }
 
 // Peg with a hemispherical tip: root point p on the face, unit axis u, unit radial r.
@@ -1422,8 +1442,8 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             const zr = q[1];
             const tid = id + nm(nm("sock", q[2]), fk);
             const a = [0, sgn * s30, c30];
-            const yb = sgn * (h + SOCK_STANDOFF - SOCK_LEN * s30);
-            const zbt = zr - SOCK_LEN * c30;
+            const yb = sgn * (h + SOCK_STANDOFF - sockOverall() * s30);
+            const zbt = zr - sockOverall() * c30;
             buildSocketTube(context, tid, F, [lat, yb, zbt], a, [1, 0, 0]);
             paint(context, [tid], msg([cn, " ", q[2], " Socket (", side, ")"]), "socket", 1, "aluminum");
             // bracket plate in the wedge under the tube, top edge 1.0 in below the rim height
@@ -1441,14 +1461,20 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     // ---- Summit Socket (SHELF FACE, rim 72, 15 degrees) and its mast ----------------
     const s15 = sind(SUM_TILT);
     const c15 = cosd(SUM_TILT);
-    const sbx = h + SOCK_STANDOFF - SOCK_LEN * s15;
-    const sbz = SUM_SOCK_Z - SOCK_LEN * c15;
+    const sbx = h + SOCK_STANDOFF - sockOverall() * s15;
+    const sbz = SUM_SOCK_Z - sockOverall() * c15;
     buildSocketTube(context, id + "sockSummit", F, [sbx, 0, sbz], [s15, 0, c15], [0, 1, 0]);
     paint(context, [id + "sockSummit"], msg([cn, " Summit Socket"]), "socket", 1, "aluminum");
+    // mast (§2.4): an arm on the top plate from 4.0 in inside the shelf-face edge, then a post
+    // leaning out 15 degrees on the tube's own axis to the closed bottom, square to its face
     const mh = MAST_S / 2;
-    mkBox(context, id + "mastArm", F, [MAST_BASE_X, -mh, CRAG_H], [sbx + mh, mh, CRAG_H + MAST_S]);
-    prismXZ(context, id + "mastPost", F, [[sbx - mh, CRAG_H + MAST_S], [sbx + mh, CRAG_H + MAST_S],
-                [sbx + mh, sbz - mh * s15 / c15], [sbx - mh, sbz + mh * s15 / c15]], -mh, mh);
+    const zArm = CRAG_H + MAST_S;
+    const pHi = [sbx + mh * c15, sbz - mh * s15];            // post corners on the tube's bottom face
+    const pLo = [sbx - mh * c15, sbz + mh * s15];
+    const xHi = pHi[0] - (pHi[1] - zArm) * s15 / c15;       // ... and where their edges meet the arm top
+    const xLo = pLo[0] - (pLo[1] - zArm) * s15 / c15;
+    mkBox(context, id + "mastArm", F, [MAST_BASE_X, -mh, CRAG_H], [xHi, mh, zArm]);
+    prismXZ(context, id + "mastPost", F, [[xLo, zArm], [xHi, zArm], pHi, pLo], -mh, mh);
     paint(context, [id + "mastArm", id + "mastPost"], msg([cn, " Summit Socket mast"]), "crag-accent", 1, "steel-tube-2x2");
     bUnion(context, id + "mastJoin", [id + "mastArm", id + "mastPost"]);
 
@@ -2351,8 +2377,11 @@ function ckSocket(context is Context, checks, label, F, bodies, r, a, radial)
 {
     const T = frameIn(F, r, radial, a);
     const ro = SOCK_ID / 2 + SOCK_WALL;
-    var out = ckBox(checks, label, measureBox(context, bodies, T), [-ro, -ro, -SOCK_LEN, ro, ro, 0], 0.005);
+    var out = ckBox(checks, label, measureBox(context, bodies, T), [-ro, -ro, -(SOCK_LEN + SOCK_WALL), ro, ro, 0], 0.005);
     out = ck(out, msg([label, " bore radius at the rim"]), measureDistToPoint(context, bodies, F, r), SOCK_ID / 2, 0.005);
+    // the floor is SOCK_LEN below the rim: a point on the axis 0.5 above it is 0.5 from the tube
+    out = ck(out, msg([label, " floor 7.0 below the rim (a seated CELL stands 7.0 proud)"]),
+            measureDistToPoint(context, bodies, T, [0, 0, 0.5 - SOCK_LEN]), 0.5, 0.005);
     return out;
 }
 
@@ -2456,7 +2485,9 @@ function selfCheck(context is Context, id is Id, opts)
                 const fk = (sgn + 1) / 2;
                 ch = ckSocket(context, ch, msg([A, " Low Socket y", sgn]), F, [cid + nm("sockLow", fk)], [SOCK_LAT, sgn * (h + SOCK_STANDOFF), LOW_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
                 ch = ckSocket(context, ch, msg([A, " Mid Socket y", sgn]), F, [cid + nm("sockMid", fk)], [-SOCK_LAT, sgn * (h + SOCK_STANDOFF), MID_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
-                ch = ck(ch, msg([A, " Low Socket y", sgn, " lowest point"]), measureBox(context, [cid + nm("sockLow", fk)], F)[2], 22.268, 0.001);
+                // FIELD-CAD-PACKAGE §2.3 prints 22.27, computed at the 7.0 seat without the 0.09 bottom
+                ch = ck(ch, msg([A, " Low Socket y", sgn, " lowest point"]), measureBox(context, [cid + nm("sockLow", fk)], F)[2],
+                        LOW_SOCK_Z - (SOCK_LEN + SOCK_WALL) * c30 - (SOCK_ID / 2 + SOCK_WALL) * s30, 0.001);
                 for (var q in [["Low", LOW_SOCK_Z], ["Mid", MID_SOCK_Z]])
                 {
                     const bid = cid + nm(nm("brk", q[0]), fk);

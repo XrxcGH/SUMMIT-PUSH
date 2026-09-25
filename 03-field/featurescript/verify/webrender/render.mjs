@@ -1,11 +1,13 @@
 // Headless WebGL renders of the off-line build.
 //
 //   node render.mjs --model field.glb [--model more.glb ...] --shots shots.json --out DIR
-//   node render.mjs --model match.glb --shots frames.json --video match.webm [--fps 24]
+//   node render.mjs --model motion.glb --shots frames.json --video motion.webm [--fps 24]
 //
-// shots.json: [{ "name": "reveal-wide", "eye": [x, y, z], "target": [x, y, z], "fov": 35,
-//               "width": 1600, "height": 900, ...stage options }]   (field inches, Z up)
-// Chromium comes from PLAYWRIGHT_BROWSERS_PATH (/opt/pw-browsers here) or CHROMIUM=path.
+// shots.json: [{ "name": "field-wide", "eye": [x, y, z], "target": [x, y, z], "fov": 35,
+//               "width": 1600, "height": 900, "time": t, ...stage options }]   (field inches, Z up)
+// field.glb comes from verify/export_glb.py, an animated .glb from verify/animate.py.
+// Chromium: CHROMIUM=path, else the Playwright browser cache under /opt/pw-browsers;
+// ffmpeg for --video: FFMPEG=path, else the one Playwright ships there.
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';

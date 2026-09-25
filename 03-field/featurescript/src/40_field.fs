@@ -11,10 +11,12 @@ function buildCarpet(context is Context, id is Id)
     paint(context, [id + "carpet"], "Field carpet", "carpet", 1, "carpet");
 }
 
-// FIELD LEDs (manual §3.1.2): each 324-in alliance segment is three 108-in blocks, counted from
-// its own alliance wall.  GREEN lights all three; FORECAST lights 1 / 2 / 3 white blocks for
-// WHITEOUT / ICEFALL / GALE in both alliances' segments; ROUTE lights 1 / 2 / 3 alliance-colour
-// blocks for that alliance's LOW / MID / HIGH ROUTE.  Unlit blocks are dark.
+// FIELD LEDs (manual §3.1.2): each 324-in alliance segment is three blocks on a 108-in pitch,
+// counted from its own alliance wall.  GREEN lights all three; FORECAST lights 1 / 2 / 3 white
+// blocks for WHITEOUT / ICEFALL / GALE in both alliances' segments; ROUTE lights 1 / 2 / 3
+// alliance-colour blocks for that alliance's LOW / MID / HIGH ROUTE.  Unlit blocks are dark.
+// R207 describes the indication as "equal, discrete, separated lit blocks", so every block is
+// followed, on the field-centre side, by a LED_GAP stretch of the band that never lights.
 function ledLitCount(opts, isRedHalf)
 {
     const st = opts["fieldLed"];
@@ -69,15 +71,16 @@ function ledOnRGB(opts, isRedHalf)
     return allianceRGB(isRedHalf);
 }
 
-// X range of LED block k (0 = nearest its own alliance wall) in the Blue or Red half.
+// X ranges of LED block k (0 = nearest its own alliance wall) in the Blue or Red half:
+// [the block's lit length, the dark gap after it].
 function ledBlockX(isRedHalf, k)
 {
     const b = FIELD_CX / LED_BLOCKS;
     if (isRedHalf)
     {
-        return [FIELD_L - b * (k + 1), FIELD_L - b * k];
+        return [[FIELD_L - b * (k + 1) + LED_GAP, FIELD_L - b * k], [FIELD_L - b * (k + 1), FIELD_L - b * (k + 1) + LED_GAP]];
     }
-    return [b * k, b * (k + 1)];
+    return [[b * k, b * (k + 1) - LED_GAP], [b * (k + 1) - LED_GAP, b * (k + 1)]];
 }
 
 // One long-side guardrail.  side 0 runs along Y = 0, side 1 along Y = 324.  Built in world
@@ -112,14 +115,17 @@ function buildGuardrail(context is Context, id is Id, side, opts)
         {
             const bx = ledBlockX(isRedHalf, k);
             const lid = id + nm(nm("led", allianceName(isRedHalf)), k);
-            mkBox(context, lid, W, [bx[0], ledLo, LED_Z - LED_W / 2], [bx[1], ledHi, LED_Z + LED_W / 2]);
+            mkBox(context, lid, W, [bx[0][0], ledLo, LED_Z - LED_W / 2], [bx[0][1], ledHi, LED_Z + LED_W / 2]);
             var rgb = PAL["led-dark"];
             if (k < lit)
             {
                 rgb = ledOnRGB(opts, isRedHalf);
             }
             paintRGB(context, [lid], msg([name, " FIELD LED, ", allianceName(isRedHalf), " segment block ", k + 1]), rgb, 1, "acrylic");
-            leds = append(leds, lid);
+            const gid = id + nm(nm("ledGap", allianceName(isRedHalf)), k);
+            mkBox(context, gid, W, [bx[1][0], ledLo, LED_Z - LED_W / 2], [bx[1][1], ledHi, LED_Z + LED_W / 2]);
+            paint(context, [gid], msg([name, " FIELD LED, ", allianceName(isRedHalf), " segment gap ", k + 1]), "led-dark", 1, "acrylic");
+            leds = concatenateArrays([leds, [lid, gid]]);
         }
     }
     bSubtract(context, id + "groove", [id + "top"], leds, true);
@@ -150,7 +156,8 @@ function buildGuardrail(context is Context, id is Id, side, opts)
 }
 
 // Driver-station shelf span for station centre s: the shelf is cut back clear of the
-// OUTFITTER chute so a CACHE CRATE can slide down the ramp (README: spec finding F-1).
+// OUTFITTER chute funnel (the corner stations' 96-in bands overlap it) so a CACHE CRATE can
+// slide down the ramp.
 function stationShelfSpan(s)
 {
     var lo = s - STATION_W / 2;
@@ -286,8 +293,10 @@ function buildOutfitterRamp(context is Context, id is Id, F, c, name)
     const tt = THROAT_T;
     // throat liner: sill plate, two jambs and a head plate, flush with the opening
     mkBox(context, id + "throatSill", F, [x0, c - hw - tt, zs - tt], [xp, c + hw + tt, zs]);
-    mkBox(context, id + "throatJambA", F, [x0, c - hw - tt, zs], [xp, c - hw, zh]);
-    mkBox(context, id + "throatJambB", F, [x0, c + hw, zs], [xp, c + hw + tt, zh]);
+    // the jambs stand behind the lower panel up to Z 39 and behind the 0.25 glazing above it
+    const jamb = [[x0, zs], [xp, zs], [xp, WALL_SOLID_H], [-WALL_GLAZE_T, WALL_SOLID_H], [-WALL_GLAZE_T, zh], [x0, zh]];
+    prismXZ(context, id + "throatJambA", F, jamb, c - hw - tt, c - hw);
+    prismXZ(context, id + "throatJambB", F, jamb, c + hw, c + hw + tt);
     mkBox(context, id + "throatHead", F, [x0, c - hw - tt, zh], [-WALL_GLAZE_T, c + hw + tt, zh + tt]);
     const th = [id + "throatSill", id + "throatJambA", id + "throatJambB", id + "throatHead"];
     paint(context, th, msg([name, " chute throat"]), "wall", 1, "aluminum");

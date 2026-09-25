@@ -2,7 +2,7 @@
 // LEDGER — every number the field is built from.  Sources: 03-field/FIELD-CAD-PACKAGE.md
 // (§10 master dimension ledger and the per-element sections) and
 // 03-field/MATERIALS-AND-COLORS.md.  Inches and degrees.  (ref) = reference geometry the
-// package leaves free; the value chosen here is documented in README.md.
+// package leaves free; the value here is this generator's choice.
 // =====================================================================================
 
 // ---- field (§0, §1) ---------------------------------------------------------------------
@@ -24,6 +24,7 @@ const LED_Z = 19;               // FIELD LED lens centre
 const LED_W = 1;
 const LED_DEPTH = 0.25;         // (ref) let into the top rail
 const LED_BLOCKS = 3;           // lit blocks per alliance segment (manual §3.1.2)
+const LED_GAP = 12;             // (ref) dark stretch after each block, so lit blocks read separately (R207)
 const WALL_H = 78;
 const WALL_T = 2;
 const WALL_SOLID_H = 39;
@@ -76,7 +77,8 @@ const GUSSET_T = 0.125;
 const GUSSET_Y = [-22, -7.75, 7.75, 22];  // (ref) lateral stations, clear of the tag prisms
 const SOCK_ID = 6.5;
 const SOCK_WALL = 0.09;
-const SOCK_LEN = 7;             // along the axis, rim plane to outer bottom face
+const SOCK_LEN = 7;             // along the axis, rim plane to the floor a CELL seats on (DESIGN-SPEC §3:
+                                // a seated 14.0 CELL stands 7.0 proud); the closed bottom lies beyond it
 const SOCK_STANDOFF = 8;
 const SOCK_LAT = 14;
 const SOCK_TILT = 30;
@@ -132,7 +134,7 @@ const TRUSS_CLR = 4;
 const TRUSS_TOP = 84;
 const TUBE_S = 2;
 const FRONT_N = [-6, -4];       // front layer: rung carriers, rails
-const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer — see README (spec finding)
+const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer, set back so the tag wedges and panels sit in front
 const UPRIGHT_INSET = 2.5;      // (ref) upright's inner face from the lane edge
 const BRACKET_T = 0.25;
 const BRACKET_FROM_END = 1;     // bracket plate 1.0-1.25 in from each rung end

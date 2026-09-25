@@ -17,6 +17,16 @@ Expected values come from the package documents only — never from src/:
 Frames: a tag frame T has its origin at the tag centre on the front face, x = the facing normal
 (yaw from the JSON quaternion), z = up, y = z x x (the WPILib tag frame).  A viewer facing the
 tag looks along -x; his right is +y and up is +z.
+
+Low Socket tube in the occlusion budget (the documents disagree by the socket's bottom-plate
+thickness; DESIGN-SPEC governs): DESIGN-SPEC §3 makes the 7.0 socket length the depth a CELL seats
+at ("a seated 14.0-in O2 CELL therefore stands 7.0 in proud"), so the 0.09 closed bottom lies beyond
+it.  FIELD-CAD §2.3 / §7 and VISION-GUIDE §1.3 print the tube's lowest point as Z 22.27 (0.71 above
+the target) and its span as 1.61-10.89 outboard, taking the 7.0 to the outer bottom; with the plate
+they are Z 22.19 (0.63 above the target) and 1.5625-10.89.  The budget's conclusion is unchanged.
+
+Construction reading (naming only): pegs and side sockets are named "... (guardrail side)" /
+"... (centre side)".
 """
 import json
 import math
@@ -38,6 +48,7 @@ MANUAL_PATH = os.path.join(REPO, "02-manual", "sections", "02-arena.md")
 VISION_PATH = os.path.join(REPO, "04-vision", "VISION-GUIDE.md")
 
 M_PER_IN = 0.0254
+SIDED = (" (guardrail side)", " (centre side)")
 
 # ---- document values ------------------------------------------------------------------------
 PANEL = 9.0           # FIELD-CAD §7, §10 #14; VISION-GUIDE §1; manual §3.7
@@ -471,16 +482,23 @@ def run(f):
         s1 = f.bbox(f.find("%s CRAG Shelf 1" % side))[2]
         ck("%s Shelf 1 underside Z 23.25 = 1.25 above the panel top (§7)" % side, abs(s1 - 23.25) < 1e-4 and abs(s1 - 22.0 - 1.25) < 1e-4,
            "underside %.4f -> %.4f above the panel" % (s1, s1 - 22.0))
-        lows = f.find("%s CRAG Low Socket" % side)
+        lows = [r for sfx in SIDED for r in f.find("%s CRAG Low Socket%s" % (side, sfx))]
         lz = min(f.bbox([r])[2] for r in lows)
-        ck("%s Low Socket tube lowest point Z 22.27, 0.71 above the target top (§2.3, §7)" % side,
-           abs(lz - 22.27) < 0.005 and abs((lz - 21.5625) - 0.71) < 0.005, "lowest %.4f -> %.4f above target top" % (lz, lz - 21.5625))
+        # §2.3: rim 30, 8.0 out, 30 deg, outer radius 3.34; 7.0 bore + 0.09 closed bottom (docstring)
+        s30, c30 = 0.5, math.sqrt(3) / 2
+        lz_want = 30.0 - (7.0 + 0.09) * c30 - 3.34 * s30
+        ck("%s Low Socket tube lowest point Z %.2f, %.2f above the target top (§2.3, §7)" % (side, lz_want, lz_want - 21.5625),
+           abs(lz - lz_want) < 0.005 and lz - 21.5625 > 0.5,
+           "lowest %.4f -> %.4f above target top (§2.3 / §7 print 22.27 and 0.71: the tube taken to the 7.0 seat, "
+           "without the 0.09 closed bottom)" % (lz, lz - 21.5625))
         span = []
         for r in lows:
             b = f.bbox([r], F)
             span.append((abs(b[1] if b[1] > 0 else b[4]) - CRAG_HALF, abs(b[4] if b[4] > 0 else b[1]) - CRAG_HALF))
-        ck("%s Low Socket tubes span 1.61-10.89 in outboard of their faces (§7, VISION-GUIDE §1.3)" % side,
-           all(abs(a - 1.61) < 0.01 and abs(b - 10.89) < 0.01 for a, b in span), "spans %s" % [(fmt(a, 3), fmt(b, 3)) for a, b in span])
+        in_want = 8.0 - (7.0 + 0.09) * s30 - 3.34 * c30
+        ck("%s Low Socket tubes span %.2f-10.89 in outboard of their faces (§7, VISION-GUIDE §1.3)" % (side, in_want),
+           len(span) == 2 and all(abs(a - in_want) < 0.005 and abs(b - 10.89) < 0.01 for a, b in span),
+           "spans %s (the documents print 1.61 for the inboard edge, at the 7.0 seat)" % [(fmt(a, 3), fmt(b, 3)) for a, b in span])
         # Shelf 1 gussets: above Z 22.0 inside the prisms over the SHELF FACE panels (§2.2)
         shelf_tags = (6, 7) if side == "BLUE" else (19, 20)
         gus = f.find("%s CRAG Shelf 1 gusset" % side)
@@ -623,7 +641,7 @@ def run(f):
             for nm, t in (("Low", low_t), ("Mid", mid_t)):
                 T = frames[t]
                 hits = []
-                for r in f.find("%s CRAG %s Socket" % (side, nm)):
+                for r in [r for sfx in SIDED for r in f.find("%s CRAG %s Socket%s" % (side, nm, sfx))]:
                     b = f.bbox([r], T)
                     if b[0] > -1:     # on this face (outboard of it)
                         hits.append(b)
@@ -633,7 +651,7 @@ def run(f):
         for t in (12 + o, 13 + o):
             T = frames[t]
             for nm, up in (("Low", 30.0 - Z_CRAG), ("Mid", 54.0 - Z_CRAG)):
-                hits = [f.bbox([r], T) for r in f.find("%s CRAG %s Peg" % (side, nm))]
+                hits = [f.bbox([r], T) for sfx in SIDED for r in f.find("%s CRAG %s Peg%s" % (side, nm, sfx))]
                 hits = [b for b in hits if abs((b[1] + b[4]) / 2) < 3]
                 ok = len(hits) == 1 and abs((hits[0][1] + hits[0][4]) / 2) < 1e-6
                 ck("tag %d: %s Peg root directly above it (+%.1f up)" % (t, nm, up), ok,

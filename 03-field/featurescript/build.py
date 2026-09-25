@@ -58,17 +58,24 @@ def assemble(files):
 
 
 def lint_parts(files, std=None):
-    errs = []
     parts = []
     kernel = ""
     for f in files:
         with open(f, encoding="utf-8") as fh:
             text = fh.read()
         if PART_RE.match(os.path.basename(f)):
-            errs += fs2py.lint(text, os.path.relpath(f, HERE))
             parts.append((os.path.relpath(f, HERE), text))
         elif os.path.basename(f) == "10_kernel.fs":
             kernel = text
+    return lint_texts(parts, kernel, std)
+
+
+def lint_texts(parts, kernel, std=None):
+    """Dialect lint and FeatureScript scope rules for part-code texts [(name, text)]; `kernel` is
+    the text of src/10_kernel.fs.  build.py runs it on src/2x-4x, check_twin on its snippets."""
+    errs = []
+    for name, text in parts:
+        errs += fs2py.lint(text, name)
     # block scope, const, loop and value semantics that FeatureScript and the twin must share
     std_names = None
     if std:

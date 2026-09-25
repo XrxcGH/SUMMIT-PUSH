@@ -29,15 +29,24 @@ function buildRing(context is Context, id is Id, F, h, gc, z0, z1)
     return [id + "a", id + "b"];
 }
 
+// Length of a socket tube along its axis, rim plane to the outer bottom face: the SOCK_LEN
+// bore a CELL seats in, plus the closed bottom.
+function sockOverall()
+{
+    return SOCK_LEN + SOCK_WALL;
+}
+
 // Open-topped tube with a closed bottom: outer bottom-face centre b, unit axis a (towards
-// the mouth), unit radial r perpendicular to a.  Rim plane at SOCK_LEN along a.
+// the mouth), unit radial r perpendicular to a.  Floor at SOCK_WALL, rim plane at
+// sockOverall() along a, so the bore is SOCK_LEN deep.
 function buildSocketTube(context is Context, id is Id, F, b, a, r)
 {
     const ri = SOCK_ID / 2;
     const ro = ri + SOCK_WALL;
+    const L = sockOverall();
     mkRevolve(context, id, F, plAxis(b, a, r),
-            [["L", [0, 0], [ro, 0]], ["L", [ro, 0], [ro, SOCK_LEN]], ["L", [ro, SOCK_LEN], [ri, SOCK_LEN]],
-                ["L", [ri, SOCK_LEN], [ri, SOCK_WALL]], ["L", [ri, SOCK_WALL], [0, SOCK_WALL]], ["L", [0, SOCK_WALL], [0, 0]]]);
+            [["L", [0, 0], [ro, 0]], ["L", [ro, 0], [ro, L]], ["L", [ro, L], [ri, L]],
+                ["L", [ri, L], [ri, SOCK_WALL]], ["L", [ri, SOCK_WALL], [0, SOCK_WALL]], ["L", [0, SOCK_WALL], [0, 0]]]);
 }
 
 // Peg with a hemispherical tip: root point p on the face, unit axis u, unit radial r.
@@ -186,8 +195,8 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             const zr = q[1];
             const tid = id + nm(nm("sock", q[2]), fk);
             const a = [0, sgn * s30, c30];
-            const yb = sgn * (h + SOCK_STANDOFF - SOCK_LEN * s30);
-            const zbt = zr - SOCK_LEN * c30;
+            const yb = sgn * (h + SOCK_STANDOFF - sockOverall() * s30);
+            const zbt = zr - sockOverall() * c30;
             buildSocketTube(context, tid, F, [lat, yb, zbt], a, [1, 0, 0]);
             paint(context, [tid], msg([cn, " ", q[2], " Socket (", side, ")"]), "socket", 1, "aluminum");
             // bracket plate in the wedge under the tube, top edge 1.0 in below the rim height
@@ -205,14 +214,20 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     // ---- Summit Socket (SHELF FACE, rim 72, 15 degrees) and its mast ----------------
     const s15 = sind(SUM_TILT);
     const c15 = cosd(SUM_TILT);
-    const sbx = h + SOCK_STANDOFF - SOCK_LEN * s15;
-    const sbz = SUM_SOCK_Z - SOCK_LEN * c15;
+    const sbx = h + SOCK_STANDOFF - sockOverall() * s15;
+    const sbz = SUM_SOCK_Z - sockOverall() * c15;
     buildSocketTube(context, id + "sockSummit", F, [sbx, 0, sbz], [s15, 0, c15], [0, 1, 0]);
     paint(context, [id + "sockSummit"], msg([cn, " Summit Socket"]), "socket", 1, "aluminum");
+    // mast (§2.4): an arm on the top plate from 4.0 in inside the shelf-face edge, then a post
+    // leaning out 15 degrees on the tube's own axis to the closed bottom, square to its face
     const mh = MAST_S / 2;
-    mkBox(context, id + "mastArm", F, [MAST_BASE_X, -mh, CRAG_H], [sbx + mh, mh, CRAG_H + MAST_S]);
-    prismXZ(context, id + "mastPost", F, [[sbx - mh, CRAG_H + MAST_S], [sbx + mh, CRAG_H + MAST_S],
-                [sbx + mh, sbz - mh * s15 / c15], [sbx - mh, sbz + mh * s15 / c15]], -mh, mh);
+    const zArm = CRAG_H + MAST_S;
+    const pHi = [sbx + mh * c15, sbz - mh * s15];            // post corners on the tube's bottom face
+    const pLo = [sbx - mh * c15, sbz + mh * s15];
+    const xHi = pHi[0] - (pHi[1] - zArm) * s15 / c15;       // ... and where their edges meet the arm top
+    const xLo = pLo[0] - (pLo[1] - zArm) * s15 / c15;
+    mkBox(context, id + "mastArm", F, [MAST_BASE_X, -mh, CRAG_H], [xHi, mh, zArm]);
+    prismXZ(context, id + "mastPost", F, [[xLo, zArm], [xHi, zArm], pHi, pLo], -mh, mh);
     paint(context, [id + "mastArm", id + "mastPost"], msg([cn, " Summit Socket mast"]), "crag-accent", 1, "steel-tube-2x2");
     bUnion(context, id + "mastJoin", [id + "mastArm", id + "mastPost"]);
 

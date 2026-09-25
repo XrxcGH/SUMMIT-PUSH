@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Export an off-line build to binary glTF 2.0 (.glb) for the WebGL renderer and the web viewer.
+Export an off-line build to binary glTF 2.0 (.glb), for verify/webrender or any glTF viewer.
 
     python 03-field/featurescript/verify/export_glb.py [--out FILE] [--lit]
 
@@ -9,9 +9,9 @@ Coordinates are converted from the field frame (inches, Z up) to glTF (metres, Y
     (x, y, z) field  ->  (x, z, -y) * 0.0254
 Face-colour overrides and AprilTag cells are carried over; the tag cells become thin coplanar
 quads 0.02 in proud of their face.  Materials are PBR: metals get metalness,
-glazing and the lantern keep their alpha, lit LEDs / the lit beacon / screens are emissive.
+glazing and the lantern keep their alpha, lit FIELD LED blocks and the lit beacon are emissive.
 
-export(ctx, path, extra_nodes=None) is importable (verify/animate.py uses it).
+export(ctx, path, extras=None, keys=None) is importable; verify/animate.py uses the _Glb writer.
 """
 import argparse
 import json
@@ -36,7 +36,7 @@ import kernel_occ as K  # noqa: E402
 
 IN = 0.0254
 METAL = re.compile(r"steel|alumin|metal", re.I)
-EMISSIVE_NAME = re.compile(r"\(lit\)|screen|display|\bLEDs?\b|stack light|lamp|lens", re.I)
+EMISSIVE_NAME = re.compile(r"\(lit\)|\bFIELD LED\b", re.I)
 
 
 def to_gltf(p):

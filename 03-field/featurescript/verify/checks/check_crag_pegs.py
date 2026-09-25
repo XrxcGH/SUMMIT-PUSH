@@ -18,6 +18,11 @@ Sources (expected values come ONLY from these documents, never from src/):
 Virtual ROPE COILS are built here as OpenCascade tori from the §9.3 numbers and posed on the
 built pegs in the §2.5 rest poses; a copy of the generator's own staged ROPE COIL is posed
 the same way so the piece and the peg are checked together.
+
+Construction reading (naming only; the package does not name parts): each peg is its own part,
+"<A> CRAG <Low|Mid|High> Peg (guardrail side)" or "(centre side)", the guardrail side being the
+one farther from the field's long centreline Y = 162.  Pegs are matched to their expected roots by
+geometry and the name's side is then checked against the match.
 """
 import math
 
@@ -170,6 +175,25 @@ class Ctx:
         return hits
 
 
+SIDE_SUFFIX = (" (guardrail side)", " (centre side)")
+
+
+def find_sided(f, base):
+    """Both parts named base + " (guardrail side)" / " (centre side)"; [] if there are none."""
+    out = []
+    for suf in SIDE_SUFFIX:
+        try:
+            out += f.find(base + suf)
+        except KeyError:
+            pass
+    return out
+
+
+def side_suffix(root):
+    """Name suffix the documents' geometry implies: guardrail side = farther from Y 162."""
+    return SIDE_SUFFIX[0] if abs(root[1] - FIELD_W / 2) > 162.0 - 84.0 else SIDE_SUFFIX[1]
+
+
 def fmt(v, n=4):
     return "(" + ", ".join(("%." + str(n) + "f") % x for x in v) + ")"
 
@@ -217,13 +241,10 @@ def run(f):
         # ---- counts, names ------------------------------------------------------------
         found = {}
         for level, _, _, _ in LEVELS:
-            try:
-                rs = f.find("%s CRAG %s" % (side, level))
-            except KeyError:
-                rs = []
+            rs = find_sided(f, "%s CRAG %s" % (side, level))
             found[level] = rs
-            add("%s %s: 2 bodies named '%s CRAG %s'" % (side, level, side, level), len(rs) == 2,
-                "found %d" % len(rs))
+            add("%s %s: 2 bodies named '%s CRAG %s (guardrail side)' / '(centre side)'" % (side, level, side, level),
+                len(rs) == 2, "found %d" % len(rs))
         try:
             bosses = f.find("%s CRAG High Peg root boss" % side)
         except KeyError:
@@ -247,6 +268,9 @@ def run(f):
                 np.array(C.bb[r["id"]][:3]) + np.array(C.bb[r["id"]][3:]) - 2 * (pg["root"] + pg["u"] * 4.6)))
             used.add(best["id"])
             pg["rec"] = best
+            want_name = "%s CRAG %s%s" % (side, pg["level"], side_suffix(pg["root"]))
+            add("%s %s at Y = %g is named '%s'" % (side, pg["level"], pg["root"][1], want_name),
+                best["name"] == want_name, "matched body %r" % best["name"])
 
         side_coils = {}
         for pg in pegs:
@@ -502,9 +526,12 @@ def run(f):
     # ---- symmetry: Red pegs are the Blue pegs rotated 180 deg about (324, 162) --------------
     for level, _, _, _ in LEVELS:
         try:
-            bl = f.find("BLUE CRAG %s" % level)
-            rd = f.find("RED CRAG %s" % level)
+            bl = find_sided(f, "BLUE CRAG %s" % level)
+            rd = find_sided(f, "RED CRAG %s" % level)
+            if not bl or not rd:
+                raise KeyError(level)
         except KeyError:
+            add("RED %ss = BLUE %ss rotated 180 deg about (324, 162)" % (level, level), False, "pegs missing")
             continue
         vb, vr = f.volume(bl), f.volume(rd)
         bbb = f.bbox(bl)
@@ -516,7 +543,7 @@ def run(f):
 
     # ---- coil tilt capacity on a built peg (§2.5 "at most about 48 deg (47.9)") --------------
     pg = [p for p in expected_pegs("BLUE") if p["level"] == "Low Peg" and p["sgn"] == 1][0]
-    rs = [r for r in f.find("BLUE CRAG Low Peg") if abs((f.bbox([r])[1] + f.bbox([r])[4]) / 2 - pg["root"][1]) < 1]
+    rs = [r for r in find_sided(f, "BLUE CRAG Low Peg") if abs((f.bbox([r])[1] + f.bbox([r])[4]) / 2 - pg["root"][1]) < 1]
     if rs:
         def clash_at(th):
             el = math.radians(PEG_ANG - th)
@@ -531,4 +558,7 @@ def run(f):
                 lo = mid
         add("coil (10.0 OD torus) can hang vertically on a 1.5 peg at 45 deg (tilt capacity >= 45 deg)", lo >= 45.0,
             "measured max tilt from perpendicular-to-peg %.2f deg (package states 47.9)" % lo)
+    else:
+        add("coil (10.0 OD torus) can hang vertically on a 1.5 peg at 45 deg (tilt capacity >= 45 deg)", False,
+            "no BLUE Low Peg at Y %g" % pg["root"][1])
     return out

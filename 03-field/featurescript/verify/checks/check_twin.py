@@ -19,7 +19,7 @@ run(f) -> [(label, ok, detail)], one group per question:
 
 Expected values come from the std library source and the package documents, never from the
 part code or the ledger.  The std library is found through $FS_STD or at 03-field/featurescript/.fs-std
-(see README.md); the [src] checks that need it are skipped (and say so) when it is absent.
+(see AUTHORING.md); the [src] checks that need it are skipped (and say so) when it is absent.
 """
 import ast
 import glob
@@ -274,8 +274,13 @@ def _src_checks(out, std):
                 "std opBoolean UNION doc; twin bUnion keeps context.bodies[keys[0]]"))
     ok = ('If an entity is split (as in a split part operation), the resulting entities are "created by" both the '
           "original entity's creator and the split part operation.") in qry
-    out.append(("[src] split bodies: std qCreatedBy keeps every piece under the original creator = twin keeps all "
-                "pieces under the target key", ok, "std query.fs qCreatedBy doc"))
+    out.append(("[src] split bodies: std qCreatedBy answers every piece to the original creator and the splitting "
+                "operation = twin keeps the pieces under the target key and adds the operation to their provenance", ok,
+                "std query.fs qCreatedBy doc; kernel_occ bSubtract"))
+    ok = ('If two entities are merged (as in a union of coincident faces), that entity is "created by" the creators of '
+          "each merged entity, as well as the merging operation itself.") in qry
+    out.append(("[src] merged bodies: std qCreatedBy answers the merged body to every merged creator and the union = "
+                "twin records all of them in the merged solid's provenance", ok, "std query.fs qCreatedBy doc; kernel_occ bUnion"))
 
     # warnings on sub-feature ids never reach the feature's status in Onshape
     err = _squash(_read(os.path.join(std, "error.fs")))
@@ -540,16 +545,32 @@ def _pillow_net_vs_kernel(reg, key, fr, h, crown):
 # ======================================================================================
 # [twin] latent divergences, each demonstrated
 # ======================================================================================
-def _run_fs(snippet, fname="<demo>"):
-    """Lint + transpile a part-code snippet exactly as run.py does and return its namespace."""
-    errs = fs2py.lint(snippet, fname)
+def _run_fs(snippet, std, fname="<demo>"):
+    """Lint a part-code snippet exactly as build.py lints src/2x-4x (fs2py.lint + scope_lint) and,
+    if build.py would accept it, transpile and compile it exactly as run.py does.  Returns
+    (errors, namespace); the namespace is None when build.py would reject the snippet."""
+    errs = _import_build().lint_texts([(fname, snippet)], _read(KERNEL_FS), std)
+    if errs:
+        return errs, None
     ns = {}
     for name in dir(K):
         if not name.startswith("_"):
             ns[name] = getattr(K, name)
     exec(fs2py.PRELUDE, ns)
-    exec(compile(fs2py.transpile(snippet, fname), fname, "exec"), ns)
+    exec(fs2py.compile_part(fs2py.transpile(snippet, fname), fname), ns)
     return errs, ns
+
+
+def _call(ns, fn, *args):
+    """ns[fn](*args), or the exception it raises (FeatureScript's run-time errors are results here)."""
+    try:
+        return ns[fn](*args)
+    except Exception as e:  # noqa: BLE001
+        return e
+
+
+def _kinds(errs):
+    return sorted({re.sub(r"^scope \((\w+)\).*", r"\1", e) if e.startswith("scope") else "dialect" for e in errs})
 
 
 def _import_build():
@@ -577,10 +598,9 @@ def _twin_checks(out, std):
         acc_f = False
     out.append(("[twin] plane()/coordSystem() perpendicularity tolerance = std TOLERANCE.zeroAngle", not acc_p and not acc_f,
                 "std: plane() is cast `as Plane` requiring |x.n| < %g and coordSystem() has precondition "
-                "perpendicularVectors (|x.z| < %g); twin _Plane/Frame reject only above 1e-9, so a plane with "
-                "|x.n| = 1e-10 %s and a frame with |x.z| = 1e-10 %s in the twin but throw in Onshape "
-                "(kernel_occ.py:149, :187)" % (tol, tol, "is accepted" if acc_p else "is rejected",
-                                                 "is accepted" if acc_f else "is rejected")))
+                "perpendicularVectors (|x.z| < %g); in the twin (kernel_occ _Plane / Frame) a plane with |x.n| = 1e-10 "
+                "%s and a frame with |x.z| = 1e-10 %s" % (tol, tol, "is accepted" if acc_p else "is rejected",
+                                                         "is accepted" if acc_f else "is rejected")))
 
     # softFilletAt all-or-nothing
     W = _kf([0, 0, 0], [1, 0, 0], [0, 0, 1])
@@ -590,11 +610,10 @@ def _twin_checks(out, std):
     dv = 64 - K.measureVolume(reg, [K.Id(("T", "f"))])
     out.append(("[twin] softFilletAt with one point off every edge still fillets the matched edges (as in Onshape)",
                 dv > 1e-6, "FS filletAt unions one qContainsPoint query per point, so an unmatched point adds "
-                           "nothing and the edge at (2,0,0) is filleted; the twin's filletAt raises on the unmatched "
-                           "point, softFilletAt swallows it and skips the whole roundover (volume change %.6f, "
-                           "warning %r) - kernel_occ.py:536-538, :556-559" % (dv, reg.warnings[-1][:60] if reg.warnings else None)))
+                           "nothing and the edge at (2,0,0) is filleted; twin volume change %.6f, warning %r"
+                           % (dv, reg.warnings[-1][:60] if reg.warnings else None)))
 
-    # union: consumed id no longer answers
+    # union: every merged creator and the union op answer to the merged body
     reg = K.Registry()
     for key, x0 in (("u1", 0), ("u2", 1)):
         K.mkPrism(reg, K.Id(("T", key)), W, [[0, 0, 0], [0, 0, 1], [1, 0, 0]], [[x0, 0], [x0 + 2, 0], [x0 + 2, 2], [x0, 2]], 0, 2)
@@ -603,8 +622,8 @@ def _twin_checks(out, std):
     nj = K.countBodies(reg, [K.Id(("T", "join"))])
     out.append(("[twin] after bUnion every merged creator and the union op still resolve to the merged body",
                 n2 == 1 and nj == 1, "std qCreatedBy: a merged entity is 'created by' the creators of each merged entity "
-                                     "and the merging operation; twin: qCreatedBy(u2) -> %d bodies, qCreatedBy(join) -> %d "
-                                     "(kernel_occ.py:469-471 keeps only keys[0])" % (n2, nj)))
+                                     "and the merging operation; twin: qCreatedBy(u2) -> %d bodies, qCreatedBy(join) -> %d"
+                                     % (n2, nj)))
 
     # split: the splitting op is also a creator
     reg = K.Registry()
@@ -616,29 +635,31 @@ def _twin_checks(out, std):
                 "std qCreatedBy: split pieces are 'created by' both the original creator and the splitting "
                 "operation; twin qCreatedBy(T/cut) -> %d bodies (expected 2)" % nc))
 
-    # ---- fs2py: expression semantics ----
-    errs, ns = _run_fs("function twA(a, b)\n{\n    return a + b;\n}\n\nfunction twS(a)\n{\n    return 2 * a;\n}\n")
-    ra, rs = ns["twA"]([1, 2], [3, 4]), ns["twS"]([1, 2])
+    # ---- fs2py: the part code under build.py's lint and run.py's FeatureScript run-time rules ----
+    errs, ns = _run_fs("function twA(a, b)\n{\n    return a + b;\n}\n\nfunction twS(a)\n{\n    return 2 * a;\n}\n", std)
+    ra, rs = (_call(ns, "twA", [1, 2], [3, 4]), _call(ns, "twS", [1, 2])) if ns else (None, None)
     out.append(("[twin] fs2py: array arithmetic means what it means in FeatureScript", ra == [4, 6] and rs == [2, 4],
-                "std vector.fs: every non-empty array is a Vector, `[1,2] + [3,4]` = [4, 6] and `2 * [1,2]` = [2, 4]; "
-                "the lint-clean (%d errors) snippet runs in the twin as list concatenation/repetition: %r, %r" % (len(errs), ra, rs)))
+                "std vector.fs: every non-empty array of numbers is a Vector, `[1,2] + [3,4]` = [4, 6] and `2 * [1,2]` = "
+                "[2, 4]; the lint-clean (%d errors) snippet runs in the twin as %r, %r" % (len(errs), ra, rs)))
 
-    errs, ns = _run_fs("function twC(a, b, c)\n{\n    if (a == b == c)\n    {\n        return 1;\n    }\n    return 0;\n}\n")
-    r = ns["twC"](2, 2, 2)
-    out.append(("[twin] fs2py/lint: chained comparisons are rejected (FeatureScript evaluates them pairwise)", bool(errs) or r == 0,
-                "lint errors %d; FeatureScript has no chained comparisons - `a == b == c` is either rejected or read "
-                "as (a == b) == c (2, 2, 2: true == 2 -> false), and `a < b < c` compares a boolean with a number - "
-                "but the twin runs Python's chain a == b and b == c -> %r (fs2py.py:92-97 passes comparisons "
-                "through unchanged)" % (len(errs), bool(r))))
+    errs, ns = _run_fs("function twC(a, b, c)\n{\n    if (a == b == c)\n    {\n        return 1;\n    }\n    return 0;\n}\n", std)
+    r = _call(ns, "twC", 2, 2, 2) if ns else None
+    out.append(("[twin] fs2py/lint: chained comparisons are rejected (FeatureScript evaluates them pairwise)",
+                "chain" in _kinds(errs) or r == 0,
+                "build.py lint: %s; FeatureScript has no chained comparisons (`a == b == c` is (a == b) == c, true == 2 "
+                "-> false), so build.py must reject them or the twin must give 0 (twin: %r)" % (_kinds(errs) or "clean", r)))
 
     errs, ns = _run_fs("function twL()\n{\n    var n = 3;\n    var count = 0;\n    for (var i = 0; i < n; i += 1)\n    {\n"
-                       "        n = 2;\n        count += 1;\n    }\n    return count;\n}\n\n"
-                       "function twV()\n{\n    var count = 0;\n    for (var i = 0; i < 4; i += 1)\n    {\n        i += 1;\n"
-                       "        count += 1;\n    }\n    return count;\n}\n")
-    rl, rv = ns["twL"](), ns["twV"]()
-    out.append(("[twin] fs2py: C-style for re-evaluates its bound and sees body writes to the loop variable", rl == 2 and rv == 2,
-                "FS re-tests `i < n` each pass (bound shrinks 3 -> 2: 2 passes) and `i += 1` in the body skips "
-                "(2 passes); _frange evaluates the bound once and ignores body writes: %d and %d passes" % (rl, rv)))
+                       "        n = 2;\n        count += 1;\n    }\n    return count;\n}\n", std)
+    rl = _call(ns, "twL") if ns else None
+    errs2, ns2 = _run_fs("function twV()\n{\n    var count = 0;\n    for (var i = 0; i < 4; i += 1)\n    {\n        i += 1;\n"
+                         "        count += 1;\n    }\n    return count;\n}\n", std)
+    rv = _call(ns2, "twV") if ns2 else None
+    out.append(("[twin] fs2py: C-style for re-evaluates its bound and sees body writes to the loop variable",
+                ("loop_mut" in _kinds(errs) or rl == 2) and ("loop_mut" in _kinds(errs2) or rv == 2),
+                "FS re-tests `i < n` each pass (bound shrinks 3 -> 2: 2 passes) and `i += 1` in the body skips (2 passes); "
+                "the twin's _frange fixes both up front, so build.py must reject the writes: lint %s / %s, twin %r / %r"
+                % (_kinds(errs) or "clean", _kinds(errs2) or "clean", rl, rv)))
 
     def fs_loop(a, b, st, incl):
         x, n = a, 0
@@ -648,51 +669,51 @@ def _twin_checks(out, std):
         return n
     errs, ns = _run_fs("function twF(b, st)\n{\n    var n = 0;\n    for (var x = 0; x < b; x += st)\n    {\n        n += 1;\n"
                        "    }\n    return n;\n}\n\nfunction twG(b, st)\n{\n    var n = 0;\n    for (var x = 0; x <= b; x += st)\n"
-                       "    {\n        n += 1;\n    }\n    return n;\n}\n")
+                       "    {\n        n += 1;\n    }\n    return n;\n}\n", std)
     cases = [(1, 0.1), (1, 0.2), (0.3, 0.1), (5.5, 0.5), (84, 6)]
-    bad = [(b, st, ns["twF"](b, st), fs_loop(0, b, st, False), ns["twG"](b, st), fs_loop(0, b, st, True))
-           for b, st in cases if ns["twF"](b, st) != fs_loop(0, b, st, False) or ns["twG"](b, st) != fs_loop(0, b, st, True)]
+    if ns is None:
+        bad = ["build.py lint rejects the loop snippet: %s" % errs[:3]]
+    else:
+        bad = [(b, st, ns["twF"](b, st), fs_loop(0, b, st, False), ns["twG"](b, st), fs_loop(0, b, st, True))
+               for b, st in cases if ns["twF"](b, st) != fs_loop(0, b, st, False) or ns["twG"](b, st) != fs_loop(0, b, st, True)]
     out.append(("[conv] fs2py float-step loops accumulate exactly like FeatureScript (same IEEE sums, < and <=)", not bad,
                 "cases %s; mismatches %s" % (cases, bad or "none")))
 
-    errs, ns = _run_fs("function twI(a, i)\n{\n    return a[i - 1];\n}\n")
-    r = ns["twI"]([10, 20, 30], 0)
-    out.append(("[twin] fs2py: a negative array index fails as it does in FeatureScript", False if r == 30 else True,
-                "FS a[-1] throws (index out of range); the lint-clean snippet returns %r in the twin (Python wraps)" % r))
+    errs, ns = _run_fs("function twI(a, i)\n{\n    return a[i - 1];\n}\n", std)
+    r = _call(ns, "twI", [10, 20, 30], 0) if ns else None
+    out.append(("[twin] fs2py: a negative array index fails as it does in FeatureScript", isinstance(r, Exception),
+                "FS a[-1] throws (index out of range); the lint-clean snippet gives %r in the twin (Python would wrap to 30)" % (r,)))
 
-    errs, ns = _run_fs("function twB(n)\n{\n    if (n)\n    {\n        return 1;\n    }\n    return 0;\n}\n")
-    r = ns["twB"](3)
-    out.append(("[twin] fs2py: a non-boolean if-condition fails as it does in FeatureScript", r != 1,
-                "FS requires a boolean condition; `if (n)` with n = 3 returns %r in the twin (lint errors %d)" % (r, len(errs))))
+    errs, ns = _run_fs("function twB(n)\n{\n    if (n)\n    {\n        return 1;\n    }\n    return 0;\n}\n", std)
+    r = _call(ns, "twB", 3) if ns else None
+    out.append(("[twin] fs2py: a non-boolean if-condition fails as it does in FeatureScript", isinstance(r, Exception),
+                "FS requires a boolean condition; `if (n)` with n = 3 gives %r in the twin (lint errors %d)" % (r, len(errs))))
 
     snip = ("function twE(c)\n{\n    if (c)\n    {\n        var a = 1;\n    }\n    else\n    {\n        var a = 2;\n    }\n"
             "    return a;\n}\n")
-    errs, ns = _run_fs(snip)
-    r = ns["twE"](True)
-    out.append(("[twin] fs2py/lint: a variable used outside the block that declared it is rejected", bool(errs),
-                "FS variables are block-scoped (`a` is undefined at `return a`); lint errors %d, twin returns %r" % (len(errs), r)))
+    errs, ns = _run_fs(snip, std)
+    out.append(("[twin] fs2py/lint: a variable used outside the block that declared it is rejected", "after_block" in _kinds(errs),
+                "FS variables are block-scoped (`a` is undefined at `return a`); build.py lint: %s" % (_kinds(errs) or "clean")))
 
-    errs, ns = _run_fs("function twK()\n{\n    const a = 1;\n    a = 2;\n    return a;\n}\n")
-    r = ns["twK"]()
-    out.append(("[twin] fs2py/lint: assignment to a const is rejected", bool(errs),
-                "FS rejects `const a = 1; a = 2;`; lint errors %d, twin returns %r" % (len(errs), r)))
+    errs, ns = _run_fs("function twK()\n{\n    const a = 1;\n    a = 2;\n    return a;\n}\n", std)
+    out.append(("[twin] fs2py/lint: assignment to a const is rejected", "const_assign" in _kinds(errs),
+                "FS rejects `const a = 1; a = 2;`; build.py lint: %s" % (_kinds(errs) or "clean")))
 
-    errs, ns = _run_fs("function twM()\n{\n    var a = [1, 2];\n    var b = a;\n    b[0] = 5;\n    return a[0];\n}\n")
-    r = ns["twM"]()
-    out.append(("[twin] fs2py: arrays have value semantics (assignment copies)", r == 1,
-                "FS arrays are values (std vector.fs operators write into their own copy); `var b = a; b[0] = 5;` "
-                "leaves a[0] == 1 in FS; twin (aliased Python list) returns a[0] = %r; lint errors %d" % (r, len(errs))))
+    errs, ns = _run_fs("function twM()\n{\n    var a = [1, 2];\n    var b = a;\n    b[0] = 5;\n    return a[0];\n}\n", std)
+    r = _call(ns, "twM") if ns else None
+    out.append(("[twin] fs2py: arrays have value semantics (assignment copies)", "sub_store" in _kinds(errs) or r == 1,
+                "FS arrays are values: `var b = a; b[0] = 5;` leaves a[0] == 1; Python lists alias, so build.py must reject "
+                "indexed stores: lint %s, twin %r" % (_kinds(errs) or "clean", r)))
 
-    errs, ns = _run_fs("function twT()\n{\n    return LB;\n}\n\nfunction twP()\n{\n    return \"a\" + \"b\";\n}\n")
-    r1, r2 = ns["twT"](), ns["twP"]()
-    api = None
-    if std:
-        api = _import_build().api_check("function twT()\n{\n    return LB;\n}\n", std)
+    errs, ns = _run_fs("function twT()\n{\n    return LB;\n}\n", std)
+    errs2, ns2 = _run_fs("function twP()\n{\n    return \"a\" + \"b\";\n}\n", std)
+    errs3, ns3 = _run_fs("function twQ(s)\n{\n    return s + \"b\";\n}\n", std)
+    r3 = _call(ns3, "twQ", "a") if ns3 else None
     out.append(("[twin] lint/api_check reject names that exist only in the Python twin, and `+` on strings",
-                bool(errs) or (api is not None and any("LB" in e for e in api)),
-                "`return LB;` (a kernel_occ constant) and `\"a\" + \"b\"` are lint-clean (%d errors), run in the twin "
-                "(%r, %r) and are errors in FS (undefined variable; no string +); build.py api_check only checks "
-                "called names: %s" % (len(errs), r1, r2, api)))
+                "undeclared" in _kinds(errs) and "dialect" in _kinds(errs2) and isinstance(r3, Exception),
+                "`return LB;` (a kernel_occ constant): build.py lint %s; `\"a\" + \"b\"`: %s; `s + \"b\"` with s a string "
+                "(lint cannot see the type) fails at run time in the twin as in FS: %r"
+                % (_kinds(errs) or "clean", _kinds(errs2) or "clean", r3)))
 
 
 # ======================================================================================
@@ -759,7 +780,8 @@ FS_OPIDS = {   # sub-ids each kernel entry point hands to Onshape operations (ch
     "mkCyl": ["sk", "ex", "dl"], "mkRevolve": ["sk", "rv", "dl"],
     "mkPillowBox": ["face0n", "face0p", "face1n", "face1p", "face2n", "face2p", "ex", "dl"],
     "bSubtract": [None], "bUnion": [None], "bDelete": [None], "shellHollow": [None], "filletAt": [None],
-    "softFilletAt": [None], "copyBody": [None], "tagDecal": ["sk", "sp", "dl"],
+    "softFilletAt": [None], "copyBody": [None],
+    "tagDecal": ["u%d" % i for i in range(11)] + ["v%d" % i for i in range(11)] + ["sp", "dl"],   # 10 cells: 11 planes each
 }
 QUERY_PARAMS = ("bodies", "targets", "tools", "src", "a", "b")
 
@@ -771,7 +793,10 @@ def _opid_model_matches_kernel():
         b = kf.get(fn, ("", ""))[1]
         lits = set(re.findall(r'\bid \+ "(\w+)"', b))
         direct = bool(re.search(r"\((context, )?id,", b)) or bool(re.search(r"\bop\w+\(context, id,", b))
-        want = set(s for s in subs if s and not s.startswith("face"))
+        want = set(s for s in subs if s and not s.startswith("face") and not re.match(r"^[uv]\d+$", s))
+        if fn == "tagDecal" and not ('id + ("u" ~ i)' in b and 'id + ("v" ~ i)' in b
+                                     and "for (var i = 0; i <= cells; i += 1)" in b):
+            bad.append(fn)
         if fn == "mkPillowBox":
             if 'id + ("face" ~ ax ~ (sgn > 0 ? "p" : "n"))' not in _squash(b):
                 bad.append(fn)
@@ -873,8 +898,8 @@ def _instrumented_build(f):
                 rec["div_union"].append("%s resolves the merged body in Onshape but nothing in the twin" % [str(h) for h in hits])
         for (opid, target) in rec["splits"]:
             hits = [i for i in ids if opid[:len(i)] == i and target[:len(i)] != i]
-            if hits and target in ctx.bodies:
-                rec["div_split"].append("%s also resolves the pieces of %s in Onshape" % ([str(h) for h in hits], target))
+            if hits and target in ctx.bodies and target not in twin_keys:
+                rec["div_split"].append("%s resolves the pieces of %s in Onshape but not in the twin" % ([str(h) for h in hits], target))
 
     def wrap(name):
         orig = getattr(K, name)
@@ -1086,10 +1111,10 @@ def _guard_checks(out, f):
                 not bad and bool(st), "%d points; off-face or multi-face: %s" % (len(st), bad or "none")))
     out.append(("[guard] no soft roundover was skipped, so the twin's all-or-nothing softFilletAt never diverged",
                 not ctx.warnings, "warnings: %s" % (ctx.warnings or "none")))
-    out.append(("[guard] no query after a bUnion depends on the twin dropping the merged creators' Ids",
+    out.append(("[guard] every query after a bUnion resolves the merged body in the twin as qCreatedBy does in Onshape",
                 not rec["div_union"], "%d unions %s; divergent queries: %s" % (
                     len(rec["unions"]), [(str(c), str(s)) for c, s, _ in rec["unions"]], rec["div_union"][:5] or "none")))
-    out.append(("[guard] no query Id is a prefix of a splitting subtraction's Id (Onshape would add the pieces)",
+    out.append(("[guard] every query naming a splitting subtraction resolves its pieces in the twin as in Onshape",
                 not rec["div_split"], "%d splitting subtractions; divergent queries: %s" % (
                     len({str(o) for o, _ in rec["splits"]}), rec["div_split"][:5] or "none")))
     out.append(("[guard] no self-check distance is measured from a point inside a body (evDistance semantics for "
@@ -1214,16 +1239,20 @@ def _static_checks(out, std):
 # [decal] tagDecal emulated with the kernel's own FeatureScript expressions
 # ======================================================================================
 def _decal_exprs():
+    """The expressions tagDecal hands Onshape, read from the kernel text: the offset of split
+    plane i, the two plane families (point, normal) and the query point of cell rc."""
     b = _squash(_fs_functions(_read(KERNEL_FS))["tagDecal"][1])
-    need = ["const h = cells / 2;", "for (var i = 0; i <= cells; i += 1)", "for (var j = 0; j < cells; j += 1)",
-            "P.origin + (P.x * c[0] + cross(P.normal, P.x) * c[1]) * inch",
-            '"faceTargets" : qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin)']
+    need = ["const yDir = cross(P.normal, P.x);", "const h = cells / 2;", "for (var i = 0; i <= cells; i += 1)",
+            'opPlane(context, id + ("u" ~ i), { "plane" : plane(P.origin + P.x * d, P.x, yDir) });',
+            'opPlane(context, id + ("v" ~ i), { "plane" : plane(P.origin + yDir * d, yDir, P.x) });',
+            '"faceTargets" : qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin)',
+            '"planeTools" : qUnion(tools)', '"keepToolSurfaces" : false',
+            "P.origin + (P.x * c[0] + yDir * c[1]) * inch"]
     miss = [x for x in need if x not in b]
-    hl = re.search(r'skLineSegment\(sk, "h" ~ i ~ "_" ~ j, \{ "start" : k2\(\[(.+?)\]\), "end" : k2\(\[(.+?)\]\) \}\);', b)
-    vl = re.search(r'skLineSegment\(sk, "v" ~ i ~ "_" ~ j, \{ "start" : k2\(\[(.+?)\]\), "end" : k2\(\[(.+?)\]\) \}\);', b)
+    dd = re.search(r"const d = (.+?) \* inch;", b)
     cc = re.search(r"const c = \[(.+?)\];", b)
-    if miss or not (hl and vl and cc):
-        return None, "kernel tagDecal text changed: missing %s" % (miss or "segment/cell expressions")
+    if miss or not (dd and cc):
+        return None, "kernel tagDecal text changed: missing %s" % (miss or "plane offset / cell expressions")
 
     def split2(e):
         depth = 0
@@ -1233,8 +1262,22 @@ def _decal_exprs():
             if ch == "," and depth == 0:
                 return e[:k].strip(), e[k + 1:].strip()
         raise ValueError(e)
-    return {"h": [split2(hl.group(1)), split2(hl.group(2))], "v": [split2(vl.group(1)), split2(vl.group(2))],
-            "c": split2(cc.group(1))}, ""
+    return {"d": dd.group(1), "c": split2(cc.group(1))}, ""
+
+
+def _plane_face(p, n, half=50.0):
+    """A square planar face (2 half on a side) centred on p with normal n: an opPlane stand-in
+    large enough to cut any 9-in panel face as the infinite plane would."""
+    n = np.asarray(n, float) / np.linalg.norm(n)
+    a = np.cross(n, [0.0, 0.0, 1.0] if abs(n[2]) < 0.9 else [1.0, 0.0, 0.0])
+    a /= np.linalg.norm(a)
+    b = np.cross(n, a)
+    from OCP.BRepBuilderAPI import BRepBuilderAPI_MakePolygon
+    poly = BRepBuilderAPI_MakePolygon()
+    for su, sv in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+        poly.Add(K._gp(p + a * su * half + b * sv * half))
+    poly.Close()
+    return BRepBuilderAPI_MakeFace(poly.Wire(), True).Face()
 
 
 def _decal_checks(out, f):
@@ -1262,43 +1305,47 @@ def _decal_checks(out, f):
             bad_target.append("%d: %d faces contain the plane origin" % (tid, len(tgt)))
             continue
         h = cells / 2.0
-        edges = []
+        # the 2 (cells + 1) opPlane tools: u-planes normal P.x, v-planes normal yDir (both cut the
+        # face along lines, since both normals lie in the face); every cut line must cross the face
+        tools, offs = [], []
         for i in range(0, int(cells) + 1):
-            for j in range(0, int(cells)):
-                env = {"i": i, "j": j, "h": h, "s": s}
-                for kind in ("h", "v"):
-                    (a0, a1), (b0, b1) = ex[kind]
-                    pa = O + X * eval(a0, {}, env) + V * eval(a1, {}, env)
-                    pb = O + X * eval(b0, {}, env) + V * eval(b1, {}, env)
-                    edges.append(BRepBuilderAPI_MakeEdge(K._gp(pa), K._gp(pb)).Edge())
-        off = max(_dist(tgt[0], e) for e in edges[::7])
-        if off > 1e-9:
-            bad_plane.append("%d: grid %.1e off the face" % (tid, off))
+            d = eval(ex["d"], {}, {"i": i, "h": h, "s": s})
+            offs.append(d)
+            tools.append(_plane_face(O + X * d, X))
+            tools.append(_plane_face(O + V * d, V))
+        fv = _vertices(tgt[0])
+        fu = [(p - O) @ X for p in fv]
+        fw = [(p - O) @ V for p in fv]
+        if abs(X @ N) > 1e-12 or abs(V @ N) > 1e-12 or not all(min(fu) < d < max(fu) and min(fw) < d < max(fw) for d in offs):
+            bad_plane.append("%d: split planes not across the face (offsets %s)" % (tid, [round(d, 4) for d in offs]))
         sp = BRepAlgoAPI_Splitter()
-        sp.SetArguments(K._lst([solid]))
-        sp.SetTools(K._lst(edges))
+        sp.SetArguments(K._lst([tgt[0]]))
+        sp.SetTools(K._lst(tools))
         sp.Build()
         if not sp.IsDone():
             bad_split.append("%d: split failed" % tid)
             continue
-        cellsq, ring = [], []
+        cellsq, border = [], []
         for fc in _subshapes(sp.Shape(), TopAbs_FACE):
             vs = _vertices(fc)
             loc = np.array([[(p - O) @ X, (p - O) @ V, (p - O) @ N] for p in vs])
             if np.max(np.abs(loc[:, 2])) > 1e-7:
                 continue
             lo, hi = loc[:, :2].min(axis=0), loc[:, :2].max(axis=0)
-            (cellsq if np.allclose(hi - lo, [s, s], atol=1e-7) else ring).append((lo, hi))
-        if len(cellsq) != cells * cells or len(ring) != 1:
-            bad_split.append("%d: %d cells + %d other faces in the tag plane" % (tid, len(cellsq), len(ring)))
+            inner = np.all(lo >= -h * s - 1e-7) and np.all(hi <= h * s + 1e-7)
+            (cellsq if inner and np.allclose(hi - lo, [s, s], atol=1e-7) else border).append((lo, hi))
+        # infinite planes cut the white border too: (cells + 2)^2 - cells^2 = 4 cells + 4 pieces
+        if len(cellsq) != cells * cells or len(border) != 4 * cells + 4:
+            bad_split.append("%d: %d cells + %d border pieces in the tag plane" % (tid, len(cellsq), len(border)))
             continue
         painted = set()
         for rc in dec["black"]:
             env = {"rc": list(rc), "h": h, "s": s}
             cu, cv = eval(ex["c"][0], {}, env), eval(ex["c"][1], {}, env)
             hits = [k for k, (lo, hi) in enumerate(cellsq) if lo[0] - 1e-9 <= cu <= hi[0] + 1e-9 and lo[1] - 1e-9 <= cv <= hi[1] + 1e-9]
-            if len(hits) != 1:
-                bad_hit.append("%d: cell %s selects %d faces" % (tid, rc, len(hits)))
+            hb = [k for k, (lo, hi) in enumerate(border) if lo[0] - 1e-9 <= cu <= hi[0] + 1e-9 and lo[1] - 1e-9 <= cv <= hi[1] + 1e-9]
+            if len(hits) != 1 or hb:
+                bad_hit.append("%d: cell %s selects %d cell and %d border faces" % (tid, rc, len(hits), len(hb)))
             painted |= set(hits)
         # read the painted target back as a camera facing the tag sees it (JSON pose, not the part code):
         # facing normal n from the yaw, up = +Z, viewer's right = up x n; row 0 at the top, col 0 at the left
@@ -1322,8 +1369,8 @@ def _decal_checks(out, f):
             bad_pattern.append("%d: %d black seen, %d expected, %d differ" % (tid, len(seen), len(want), len(seen ^ want)))
     out.append(("[decal] 26 tag panels carry a decal whose plane origin lies on exactly one panel face (faceTargets)",
                 n_tags == 26 and not bad_target, "%d panels; %s" % (n_tags, bad_target or "all single-face")))
-    out.append(("[decal] the kernel's sketch grid lies in that face and splits it into 100 cells + the white ring",
-                not bad_split and not bad_plane, "%s %s" % (bad_split[:4] or "", bad_plane[:4] or "all 26 split into 101 faces")))
+    out.append(("[decal] the kernel's 22 split planes cross that face and cut it into 100 cells + 44 border pieces",
+                not bad_split and not bad_plane, "%s %s" % (bad_split[:4] or "", bad_plane[:4] or "all 26 split into 144 faces")))
     out.append(("[decal] each black cell's query point (kernel expression) selects exactly one cell face",
                 not bad_hit, "%s" % (bad_hit[:4] or "all selections unique")))
     out.append(("[decal] painted cells, read facing the tag (JSON pose, row 0 top / col 0 left), = WPILib 36h11 artwork",

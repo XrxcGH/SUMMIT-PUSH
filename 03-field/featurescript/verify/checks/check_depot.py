@@ -40,6 +40,16 @@ Expected values come from the package documents only (never from src/20_ledger.f
 All expected coordinates below are written for the BLUE CRAG in world inches; the RED CRAG is checked
 with every probe rotated 180 deg about (324, 162) and every measurement rotated back, so the same
 numbers apply to both.
+
+Low Socket overhang (the documents disagree by the socket's bottom-plate thickness; DESIGN-SPEC
+governs): DESIGN-SPEC §3 makes the 7.0 socket length the depth a CELL seats at ("a seated 14.0-in
+O2 CELL therefore stands 7.0 in proud"), so the 0.09 closed bottom lies beyond it and the tube is
+7.09 overall.  The §3 overhang figures (Y from 265.6, Z from 22.27, the 1.61 column) take the 7.0 to
+the outer bottom; with the plate the tube starts 1.5625 off the SOCKET FACE (Y 265.56) at Z 22.19.
+They are derived below from the §2.3 socket numbers (rim 30, 8.0 out, 30 deg, 3.34 outer radius).
+
+Construction reading (naming only): the two Low Socket tubes of a CRAG are "<A> CRAG Low Socket
+(guardrail side)" and "(centre side)".
 """
 import math
 
@@ -82,8 +92,14 @@ REACH = 18.0
 SLOT_X_OFF = 7.0
 RIM_OFF = 8.0
 BUMPER_BOTTOM_MIN = 1.25        # R403: 4.5 section, bottom edge 1.25 .. 2.5
-LOW_SOCK_SIL = (306.66, 265.61, 313.34, 274.89)  # §3 open-to-sky: X 306.7-313.3 x Y 265.6-274.9,
-LOW_SOCK_ZMIN = 22.27                            # columns 6.66 / 2.66 / 5.11 / 1.61
+# Low Socket tube over the +Y arm (Blue), from §2.3: rim (310, 272, 30), axis 30 deg outward, 3.34
+# outer radius, 7.0 bore + 0.09 closed bottom (see the docstring).  §3 prints X 306.7-313.3 x
+# Y 265.6-274.9 from Z 22.27 and columns 6.66 / 2.66 / 5.11 / 1.61.
+_S30, _C30 = 0.5, math.sqrt(3) / 2
+SOCK_RO, SOCK_OVERALL = 3.34, 7.0 + 0.09
+SOCK_INBOARD = RIM_OFF - SOCK_OVERALL * _S30 - SOCK_RO * _C30       # 1.5625 (prints 1.61)
+LOW_SOCK_SIL = (310.0 - SOCK_RO, SOCK_YP + SOCK_INBOARD, 310.0 + SOCK_RO, SOCK_YP + RIM_OFF + SOCK_RO * _C30)
+LOW_SOCK_ZMIN = 30.0 - SOCK_OVERALL * _C30 - SOCK_RO * _S30         # 22.19 (prints 22.27)
 CENTRELINE_X = 324.0
 STOP_SHORT = 8.0
 APRON_SHELF, APRON_SOCK, APRON_R = 36.0, 20.0, 20.0
@@ -575,8 +591,10 @@ def run(f):
         for lab, (x0, y0, x1, y1) in sky:
             hit = C.hits(box(side, x0, y0, FLOOR_T + 1e-3, x1, y1, SKY), exclude=is_tray)
             add(S + "open to the sky: " + lab, not hit, "; ".join("%s %.5f" % h for h in hit) or "clear")
-        for lab, (x0, y0, x1, y1) in (("-Y arm 1.61-in column at the SOCKET FACE", (300 + eps, 214.39 + eps, 316 - eps, 216)),
-                                      ("+Y arm 1.61-in column at the SOCKET FACE", (300 + eps, 264, 316 - eps, 265.61 - eps))):
+        for lab, (x0, y0, x1, y1) in (("-Y arm %.2f-in column at the SOCKET FACE" % SOCK_INBOARD,
+                                       (300 + eps, SOCK_YN - SOCK_INBOARD + eps, 316 - eps, 216)),
+                                      ("+Y arm %.2f-in column at the SOCKET FACE" % SOCK_INBOARD,
+                                       (300 + eps, 264, 316 - eps, SOCK_YP + SOCK_INBOARD - eps))):
             hit = C.hits(box(side, x0, y0, FLOOR_T + 1e-3, x1, y1, SKY), exclude=is_tray)
             others = [h for h in hit if "Low Socket bracket" not in h[0]]
             add(S + lab + " clear except the Low Socket attachment (§2.3 wedge under the tube)", not others,
@@ -585,12 +603,14 @@ def run(f):
         for lab, (ax0, ay0, ax1, ay1), sil in (
                 ("+Y arm", ARM_P, LOW_SOCK_SIL),
                 ("-Y arm", ARM_N, (LOW_SOCK_SIL[0], 480 - LOW_SOCK_SIL[3], LOW_SOCK_SIL[2], 480 - LOW_SOCK_SIL[1]))):
-            tube = f.find(side + " CRAG Low Socket")
+            tube = f.find(side + " CRAG Low Socket (guardrail side)") + f.find(side + " CRAG Low Socket (centre side)")
             e = ext(side, f.solids(tube), ax0, ay0, 0, ax1, ay1, SKY)
             ok = e is not None and all(abs(a - b) < 0.02 for a, b in zip((e[0], e[1], e[3], e[4]), sil)) \
                 and abs(e[2] - LOW_SOCK_ZMIN) < 0.01
-            add(S + "Low Socket tube overhangs the " + lab + " at X 306.7-313.3 x Y 265.6-274.9 from Z 22.27 (as published)",
-                ok, "tube over the arm: %s" % ([round(v, 3) for v in e] if e else None))
+            add(S + "Low Socket tube overhangs the " + lab + " at X %.2f-%.2f x Y %.2f-%.2f from Z %.2f" % (
+                sil[0], sil[2], sil[1], sil[3], LOW_SOCK_ZMIN),
+                ok, "tube over the arm: %s (§3 prints X 306.7-313.3 x Y 265.6-274.9 from Z 22.27: the tube taken to "
+                "the 7.0 seat, without the 0.09 closed bottom)" % ([round(v, 3) for v in e] if e else None))
         # drop tests
         for lab, (x0, y0, x1, y1) in (("-Y corner square", SQ_N), ("+Y corner square", SQ_P)):
             cx_, cy_ = (x0 + x1) / 2, (y0 + y1) / 2

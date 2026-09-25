@@ -8,7 +8,10 @@ geometry off-line.  Units: inches and degrees, plain floats.
 
 The "context" is a Registry: a dict of body records keyed by the Id tuple of the operation
 that created them.  Like Onshape's qCreatedBy, looking up an Id returns every body whose key
-starts with that Id.
+starts with that Id.  Each solid of a record also carries its "prov": the further operation
+Ids it counts as created by, following std query.fs: the pieces of a split body are created by
+the original creator and the splitting operation, and a merged body by the creators of every
+merged body and the merging operation.  A lookup through "prov" selects only those solids.
 """
 import math
 
@@ -221,23 +224,49 @@ class Registry:
         solids = _solids(shape)
         if not solids:
             raise KernelError("operation %s produced no solid" % key)
-        self.bodies[key] = {"solids": solids, "name": None, "rgb": None, "alpha": 1.0,
-                            "mat": None, "faces": [], "decal": None, "id": key}
+        self.bodies[key] = {"solids": solids, "prov": [frozenset()] * len(solids), "name": None, "rgb": None,
+                            "alpha": 1.0, "mat": None, "faces": [], "decal": None, "id": key}
         return key
 
-    def keys_for(self, ids):
-        out = []
+    def select(self, ids):
+        """qCreatedBy(ids) as [(key, [solid indices])], records in the order the Ids are given:
+        every solid of a record created under one of the Ids, and any solid whose provenance
+        names one of them (see the module docstring)."""
+        order, picked = [], {}
         for i in ids:
             i = tuple(i)
-            hit = [k for k in self.bodies if k[:len(i)] == i]
-            out += [k for k in hit if k not in out]
-        return out
+            for k, rec in self.bodies.items():
+                if k[:len(i)] == i:
+                    idx = range(len(rec["solids"]))
+                else:
+                    idx = [j for j, pv in enumerate(rec["prov"]) if any(a[:len(i)] == i for a in pv)]
+                if not idx:
+                    continue
+                if k not in picked:
+                    order.append(k)
+                    picked[k] = set()
+                picked[k].update(idx)
+        return [(k, sorted(picked[k])) for k in order]
+
+    def keys_for(self, ids):
+        return [k for k, _ in self.select(ids)]
 
     def solids_for(self, ids):
         out = []
-        for k in self.keys_for(ids):
-            out += self.bodies[k]["solids"]
+        for k, idx in self.select(ids):
+            out += [self.bodies[k]["solids"][j] for j in idx]
         return out
+
+    def remove(self, sel):
+        """Drop the selected solids [(key, [indices])]; a record left with none is deleted."""
+        for k, idx in sel:
+            rec = self.bodies[k]
+            keep = [j for j in range(len(rec["solids"])) if j not in idx]
+            if not keep:
+                del self.bodies[k]
+            else:
+                rec["solids"] = [rec["solids"][j] for j in keep]
+                rec["prov"] = [rec["prov"][j] for j in keep]
 
     def shape_for(self, ids):
         return _compound(self.solids_for(ids))
@@ -443,12 +472,14 @@ def mkPillowBox(context, id, F, h, crown):
 # ---------------------------------------------------------------------------------------
 # booleans and body operations
 # ---------------------------------------------------------------------------------------
-def _replace(context, key, shape):
-    rec = context.bodies[key]
-    sol = _solids(shape)
-    if not sol:
-        raise KernelError("boolean consumed body " + str(key))
-    rec["solids"] = sol
+def _bbox6(shape):
+    b = Bnd_Box()
+    BRepBndLib.Add_s(shape, b, False)
+    return _box6(b)
+
+
+def _boxes_touch(a, b, pad=1e-6):
+    return all(a[i] <= b[i + 3] + pad and b[i] <= a[i + 3] + pad for i in range(3))
 
 
 def _lst(shapes):
@@ -469,65 +500,102 @@ def _cut(target, tools):
 
 
 def bSubtract(context, id, targets, tools, keepTools):
-    tkeys = context.keys_for(targets)
-    if not tkeys:
+    tsel = context.select(targets)
+    if not tsel:
         raise KernelError("bSubtract %s: no targets" % (id,))
-    if not context.keys_for(tools):
+    toolsel = context.select(tools)
+    if not toolsel:
         raise KernelError("bSubtract %s: no tools" % (id,))
     tool_solids = context.solids_for(tools)
-    for k in tkeys:
-        new = []
-        for s in context.bodies[k]["solids"]:
-            new += _solids(_cut(s, tool_solids))
+    op = tuple(id)
+    for k, idx in tsel:
+        rec = context.bodies[k]
+        new, prov = [], []
+        for j, s in enumerate(rec["solids"]):
+            if j not in idx:
+                new.append(s)
+                prov.append(rec["prov"][j])
+                continue
+            pieces = _solids(_cut(s, tool_solids))
+            for x in pieces:
+                _check(x, "bSubtract " + str(id))
+            # a split body's pieces are also created by the splitting operation (std qCreatedBy)
+            pv = rec["prov"][j] | {op} if len(pieces) > 1 else rec["prov"][j]
+            new += pieces
+            prov += [pv] * len(pieces)
         if not new:
             raise KernelError("bSubtract %s consumed %s" % (id, k))
-        for s in new:
-            _check(s, "bSubtract " + str(id))
-        context.bodies[k]["solids"] = new
+        rec["solids"], rec["prov"] = new, prov
     if not keepTools:
-        for k in context.keys_for(tools):
-            del context.bodies[k]
+        context.remove(context.select(tools))
 
 
 def bUnion(context, id, bodies):
-    keys = context.keys_for(bodies)
-    if len(keys) < 1:
+    sel = context.select(bodies)
+    if len(sel) < 1:
         raise KernelError("bUnion: nothing to merge")
-    solids = context.solids_for(bodies)
+    inputs = [(k, context.bodies[k]["solids"][j], context.bodies[k]["prov"][j]) for k, idx in sel for j in idx]
     op = BRepAlgoAPI_Fuse()
-    op.SetArguments(_lst(solids[:1]))
-    op.SetTools(_lst(solids[1:]))
+    op.SetArguments(_lst([x[1] for x in inputs[:1]]))
+    op.SetTools(_lst([x[1] for x in inputs[1:]]))
     op.Build()
     if not op.IsDone():
         raise KernelError("fuse failed " + str(id))
     sol = _solids(op.Shape())
     for x in sol:
         _check(x, "bUnion " + str(id))
-    context.bodies[keys[0]]["solids"] = sol
-    for k in keys[1:]:
-        del context.bodies[k]
+    # which inputs each result solid holds: all of them when the fuse gives one solid
+    if len(sol) == 1:
+        members = [inputs]
+    else:
+        members = []
+        for o in sol:
+            ob = _bbox6(o)
+            members.append([x for x in inputs if _boxes_touch(ob, _bbox6(x[1]))
+                            and _volume(_solids(BRepAlgoAPI_Common(x[1], o).Shape())) > 1e-9])
+    # every selected solid is replaced by the result; a merged solid joins the first record (the
+    # generator styles every input alike) and is created by every merged creator and the union
+    # (std qCreatedBy); an input merged with nothing keeps its record and provenance
+    placed = []
+    for o, mem in zip(sol, members):
+        if not mem:
+            raise KernelError("bUnion %s: a result solid matches no input" % (id,))
+        if len(mem) == 1:
+            placed.append((mem[0][0], o, mem[0][2]))
+        else:
+            pv = frozenset({tuple(id)}).union(*[{m[0]} | m[2] for m in mem])
+            placed.append((mem[0][0], o, pv))
+    for k, idx in sel:
+        rec = context.bodies[k]
+        keep = [j for j in range(len(rec["solids"])) if j not in idx]
+        rec["solids"] = [rec["solids"][j] for j in keep]
+        rec["prov"] = [rec["prov"][j] for j in keep]
+    for k, o, pv in placed:
+        context.bodies[k]["solids"].append(o)
+        context.bodies[k]["prov"].append(pv)
+    for k, _ in sel:
+        if not context.bodies[k]["solids"]:
+            del context.bodies[k]
 
 
 def bDelete(context, id, bodies):
-    for k in context.keys_for(bodies):
-        del context.bodies[k]
+    context.remove(context.select(bodies))
 
 
 def removeSlivers(context, id, bodies, minVolume):
-    for k in context.keys_for(bodies):
-        keep = [x for x in context.bodies[k]["solids"] if _volume([x]) >= minVolume]
-        if keep:
-            context.bodies[k]["solids"] = keep
-        else:
-            del context.bodies[k]
+    small = []
+    for k, idx in context.select(bodies):
+        small.append((k, [j for j in idx if _volume([context.bodies[k]["solids"][j]]) < minVolume]))
+    context.remove(small)
 
 
 def shellHollow(context, id, bodies, t):
     """Hollow each solid inward by t with no faces removed (Onshape opShell, negative
     thickness): the solid minus its inward offset, leaving an internal void."""
-    for k in context.keys_for(bodies):
-        new = []
-        for s in context.bodies[k]["solids"]:
+    for k, idx in context.select(bodies):
+        rec = context.bodies[k]
+        for j in idx:
+            s = rec["solids"][j]
             mk = BRepOffsetAPI_MakeThickSolid()
             mk.MakeThickSolidByJoin(s, TopTools_ListOfShape(), -t, 1e-6)
             mk.Build()
@@ -536,10 +604,11 @@ def shellHollow(context, id, bodies, t):
             inner = _solids(mk.Shape())
             if len(inner) != 1 or _volume(inner) >= _volume([s]):
                 raise KernelError("shell offset unexpected at " + str(id))
-            new += _solids(_cut(s, inner))
-        for s in new:
-            _check(s, "shellHollow " + str(id))
-        context.bodies[k]["solids"] = new
+            new = _solids(_cut(s, inner))
+            if len(new) != 1:
+                raise KernelError("shell result is not one solid at " + str(id))
+            _check(new[0], "shellHollow " + str(id))
+            rec["solids"][j] = new[0]
 
 
 def _edges_through(shape, points, tol=1e-5):
@@ -563,13 +632,13 @@ def _edges_through(shape, points, tol=1e-5):
 
 def filletAt(context, id, bodies, F, pts, r, strict=True):
     wp = [F.pt(p) for p in pts]
-    keys = context.keys_for(bodies)
     # every requested point must lie on an edge of one of the bodies (as in FeatureScript,
     # where an unmatched point contributes nothing; here it is an error, to catch mistakes)
     found = [False] * len(wp)
     plan = []
-    for k in keys:
-        for si, s in enumerate(context.bodies[k]["solids"]):
+    for k, idx in context.select(bodies):
+        for si in idx:
+            s = context.bodies[k]["solids"][si]
             edges = []
             for pi, p in enumerate(wp):
                 try:
@@ -598,11 +667,12 @@ def filletAt(context, id, bodies, F, pts, r, strict=True):
         if not mk.IsDone():
             raise KernelError("fillet failed " + str(id))
         out = _solids(mk.Shape())
-        for x in out:
-            _check(x, "filletAt " + str(id))
-        results.append((k, si, out))
-    for k, si, out in reversed(results):
-        context.bodies[k]["solids"][si:si + 1] = out
+        if len(out) != 1:
+            raise KernelError("fillet %s split a body" % (id,))
+        _check(out[0], "filletAt " + str(id))
+        results.append((k, si, out[0]))
+    for k, si, out in results:
+        context.bodies[k]["solids"][si] = out
 
 
 def softFilletAt(context, id, bodies, F, pts, r, label):
@@ -618,10 +688,7 @@ def copyBody(context, id, src, F):
     keys = context.keys_for(src)
     if not keys:
         raise KernelError("copyBody: no source")
-    shapes = []
-    for k in keys:
-        for s in context.bodies[k]["solids"]:
-            shapes.append(BRepBuilderAPI_Transform(s, F.trsf(), True).Shape())
+    shapes = [BRepBuilderAPI_Transform(s, F.trsf(), True).Shape() for s in context.solids_for(src)]
     newk = context.add(id + "c", _compound(shapes))
     rec0 = context.bodies[keys[0]]
     rec = context.bodies[newk]

@@ -37,6 +37,21 @@ Every expected value below is taken from the package documents, never from src/:
                           hardwood `shelf`; gusset aluminium plate `crag-accent` #4A3B22 0.125;
                           Summit Socket mast steel 2 x 2 square tube `crag-accent`; socket tube
                           rolled aluminium `socket` #9DB8D6, 0.09 wall, bore >= 6.375
+
+Socket depth (the documents disagree by the bottom-plate thickness; DESIGN-SPEC governs):
+  DESIGN-SPEC §3 gives "tube length 7.0 in along the axis, closed bottom" and "a seated 14.0-in O2
+  CELL therefore stands 7.0 in proud of the rim"; both hold only if the 7.0 runs from the rim plane
+  to the floor the CELL seats on (FCP §2.3: the length "sets the 7.0-in protrusion"; §9.2: "7.0-in
+  socket tube depth").  The 0.09 closed bottom lies beyond it, 7.09 overall.  The §2.4 clearance
+  figures take the 7.0 to the outer bottom: 6.19 / Z 65.24 are right for the floor (seat) centre,
+  while the outer bottom face centre is 6.165 / Z 65.15, the inboard edge 2.94 (prints 2.96) and the
+  lowest point Z 64.29 (prints ~64.4), leaving 9.29 over a Shelf 2 CRATE (prints ~9.4).
+
+Mast reading (§2.4 Support, (ref)): the mast is "rising from the tower top plate within 4.0 in of
+its shelf-face edge and leaning outward to the tube's closed bottom", with nothing outside the
+socket's plan silhouette + 2.0 above Z 62.  A straight 2 x 2 member cannot both start on the plate
+and be inside that envelope by Z 62, so the reading tested is an arm on the plate (Z 60-62) plus a
+post that leans outward to the closed bottom.
 """
 import math
 
@@ -77,7 +92,8 @@ TAG_TOP = 17.5 + 4.5                                         # §7 panel top 22.
 GUSSET_T = 0.125                                             # MATERIALS §2
 SUM_Z, SUM_STANDOFF, SUM_TILT = 72.0, 8.0, 15.0              # §2.4 CRITICAL
 SOCK_ID, SOCK_ID_TOL = 6.50, 0.125                           # §2.4 CRITICAL
-SOCK_LEN, SOCK_WALL = 7.0, 0.09                              # §2.4 CRITICAL / (ref)
+SOCK_LEN, SOCK_WALL = 7.0, 0.09                              # DESIGN-SPEC §3 rim to seat, CRITICAL / (ref)
+SOCK_OVERALL = SOCK_LEN + SOCK_WALL                          # rim plane to the outer bottom face
 RO = SOCK_ID / 2 + SOCK_WALL                                 # 3.34 — the package's own figure
 MAST_BASE_BAND = 4.0                                         # §2.4
 MAST_CAP_Z, MAST_SIL_MARGIN = 62.0, 2.0                      # §2.4
@@ -522,24 +538,36 @@ def run(f):
                 near("%s Summit Socket bore ID (CRITICAL 6.50 +/- 0.125)" % A, 2 * ri, SOCK_ID, SOCK_ID_TOL)
                 near("%s Summit Socket bore ID nominal" % A, 2 * ri, SOCK_ID, 0.005)
                 near("%s Summit Socket wall 0.09 (ref)" % A, ro - ri, SOCK_WALL, 0.005)
-                near("%s Summit Socket tube length along the axis, rim to outer bottom (CRITICAL 7.0)" % A, s_rim - s_bot, SOCK_LEN, TOL)
+                near("%s Summit Socket bore depth along the axis, rim to the floor a CELL seats on (CRITICAL 7.0)" % A,
+                     s_rim - s_floor, SOCK_LEN, TOL, " — DESIGN-SPEC §3's 7.0 length and 7.0 protrusion both hold only with "
+                     "the 7.0 measured to the seat")
+                near("%s Summit Socket overall length rim to outer bottom = 7.0 + 0.09 closed bottom" % A, s_rim - s_bot,
+                     SOCK_OVERALL, TOL)
                 ck("%s Summit Socket closed bottom" % A,
                    s_floor - s_bot > 0.01 and f.inside(tube, rim_w - axis_w * ((s_rim - s_bot) - 0.5 * (s_floor - s_bot))),
                    "bottom plate %.4f thick" % (s_floor - s_bot))
                 bore = s_rim - s_floor
                 prot = CELL_L - bore
-                near("%s seated 14.0 O2 CELL protrudes 7.0 proud of the rim (DESIGN-SPEC §3)" % A, prot, CELL_PROTRUDE, 0.02,
-                     " — bore depth rim->floor %.4f; package-inconsistency: FCP §2.3/§2.4 figures (22.27, 64.4, 65.24) use 7.0 to the OUTER bottom" % bore)
+                near("%s seated 14.0 O2 CELL protrudes 7.0 proud of the rim (DESIGN-SPEC §3)" % A, prot, CELL_PROTRUDE, TOL,
+                     " — bore depth rim->floor %.4f (DESIGN-SPEC governs: FCP §2.4's 6.19 / 65.24 / ~64.4 take the 7.0 "
+                     "to the outer bottom, which would leave the CELL 7.09 proud)" % bore)
                 bot_l = F.to_local(p_axis_w + axis_w * s_bot)
-                near("%s Summit Socket bottom centre outboard of the face (6.19)" % A, bot_l[0] - HALF, SUM_STANDOFF - SOCK_LEN * S15, 0.01)
-                near("%s Summit Socket bottom centre Z (65.24)" % A, bot_l[2], SUM_Z - SOCK_LEN * C15, 0.01)
+                flo_l = F.to_local(p_axis_w + axis_w * s_floor)
+                near("%s Summit Socket floor (seat) centre outboard of the face (6.19)" % A, flo_l[0] - HALF,
+                     SUM_STANDOFF - SOCK_LEN * S15, 0.01)
+                near("%s Summit Socket floor (seat) centre Z (65.24)" % A, flo_l[2], SUM_Z - SOCK_LEN * C15, 0.01)
+                near("%s Summit Socket outer bottom centre outboard of the face (8.0 - 7.09 sin15)" % A, bot_l[0] - HALF,
+                     SUM_STANDOFF - SOCK_OVERALL * S15, TOL)
+                near("%s Summit Socket outer bottom centre Z (72 - 7.09 cos15)" % A, bot_l[2], SUM_Z - SOCK_OVERALL * C15, TOL)
                 # ID is the same the whole bore depth (bore reached at three depths)
                 for dd in (0.5, 2.0, 3.5):
                     d = f.dist_point(tube, rim_w - axis_w * dd)
                     near("%s Summit Socket bore radius %.1f below the rim" % (A, dd), d, SOCK_ID / 2, 0.0625)
         tb_l = f.bbox(tube, F)
-        near("%s Summit Socket inboard edge outboard of the face (2.96, free air)" % A, tb_l[0] - HALF, SUM_STANDOFF - SOCK_LEN * S15 - RO * C15, 0.01)
-        near("%s Summit Socket lowest point Z (~64.4)" % A, tb_l[2], 64.4, 0.05)
+        near("%s Summit Socket inboard edge outboard of the face (free air)" % A, tb_l[0] - HALF,
+             SUM_STANDOFF - SOCK_OVERALL * S15 - RO * C15, TOL, " (§2.4 prints 2.96, taken at the 7.0 seat)")
+        near("%s Summit Socket lowest point Z" % A, tb_l[2], SUM_Z - SOCK_OVERALL * C15 - RO * S15, TOL,
+             " (§2.4 prints ~64.4, taken at the 7.0 seat)")
         bad = offenders(f.solids(tube), exclude_ids={r["id"] for r in tube + mast})
         ck("%s Summit Socket interferes with nothing" % A, not bad, ", ".join(bad) or "none")
 
@@ -574,10 +602,13 @@ def run(f):
         inclined = [a for a in angs if 0.5 < a[0] < 89.5 and abs(a[0] - seat_tilt) > 0.5]
         seat = [a for a in angs if abs(a[0] - seat_tilt) <= 0.5]
         ck("%s mast leans outward from the top plate to the tube bottom (§2.4 Support, (ref))" % A, bool(inclined),
-           "planar-face tilts from vertical: %s; only the %d tube-seat face(s) are inclined — modelled as a horizontal "
-           "arm on the plate (x %.2f..%.2f, Z %.1f-%.1f, cantilevered %.2f beyond the face) plus a plumb post; "
-           "numeric §2.4 constraints all hold (see finding)"
-           % (sorted({round(a[0], 2) for a in angs}), len(seat), mb[0], mb[3], mb[2], mb[2] + MAST_S, mb[3] - HALF))
+           "planar-face tilts from vertical: %s; %d tube-seat face(s); inclined member faces %d "
+           "(arm on the plate x %.2f..%.2f, Z %.1f-%.1f)"
+           % (sorted({round(a[0], 2) for a in angs}), len(seat), len(inclined), mb[0], mb[3], mb[2], mb[2] + MAST_S))
+        # the leaning member tilts OUTWARD: its inclined faces' normals point down-outboard or up-inboard
+        lean_out = all(a[2][0] * a[2][2] < 0 for a in inclined)
+        ck("%s mast leans outward (toward the owning alliance), never back over the tower" % A, bool(inclined) and lean_out,
+           "inclined face normals (local) %s" % [np.round(a[2], 3).tolist() for a in inclined])
         bad = [a for a in angs if not (_is_mult15(a[0]) and _is_mult15(a[1]))]
         ck("%s mast every face at a multiple of 15 deg" % A, not bad, "%d off-angle faces" % len(bad))
         # above Z 62: nothing outside the socket's plan silhouette + 2.0
@@ -688,7 +719,9 @@ def run(f):
         ck("%s Shelf 1 CRATE anywhere in its slot clears the Shelf 2 gussets by >= 1.0" % A, worst_g >= 1.0 - TOL, "min %.4f" % worst_g)
         ck("%s Shelf 2 centre-slot CRATE has >= 5.0 overhead clearance to the mast" % A, worst_m >= 5.0 - TOL, "min %.4f" % worst_m)
         near("%s Shelf 2 centre-slot overhead clearance is the published 5.0" % A, worst_m, 5.0, 0.02)
-        near("%s Shelf 2 CRATE clearance under the Summit Socket tube (~9.4)" % A, tb_l[2] - (SHELF_TOP[1] + CRATE_ENV), 9.4, 0.05)
+        near("%s Shelf 2 CRATE clearance under the Summit Socket tube" % A, tb_l[2] - (SHELF_TOP[1] + CRATE_ENV),
+             SUM_Z - SOCK_OVERALL * C15 - RO * S15 - (SHELF_TOP[1] + CRATE_ENV), TOL,
+             " (§2.4 prints ~9.4, taken at the 7.0 seat)")
         ck("%s Shelf 2 CRATE anywhere in a slot clears the tube by >= 9.3" % A, worst_t >= 9.3, "min %.4f" % worst_t)
 
         # ---- clear volumes ---------------------------------------------------------------------------

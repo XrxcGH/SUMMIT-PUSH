@@ -13,6 +13,11 @@ Every expected value below is taken from the package documents, never from src/:
 The CRAG-local frame used here is built from the documents (not taken from the generator):
 origin at the CRAG centre on the carpet, +x = SHELF FACE outward normal (Blue: world -X, Red: +X,
 §1.1), +z up, +y = z x x.  So the SHELF FACE is x = +24, the PEG FACE x = -24, SOCKET FACES y = +/-24.
+
+Construction reading (naming only; the package does not name parts): each peg and side socket is
+its own part, named "<A> CRAG <Low|Mid|High> Peg (guardrail side)" / "(centre side)" (and likewise
+"<A> CRAG <Low|Mid> Socket (...)"), the guardrail side being the one farther from the field's long
+centreline Y = 162.  The lookups below find both sides and check that each name matches its side.
 """
 import math
 import os
@@ -243,6 +248,22 @@ def run(f):
         except KeyError:
             return []
 
+    def sided(base):
+        """Both parts named "<base> (guardrail side)" and "<base> (centre side)"."""
+        return find(base + " (guardrail side)") + find(base + " (centre side)")
+
+    def side_names_ok(base, cy):
+        """Each sided part lies on the side its name gives: guardrail side = farther from Y 162."""
+        g, c = find(base + " (guardrail side)"), find(base + " (centre side)")
+        if len(g) != 1 or len(c) != 1:
+            ck(base + ": one guardrail-side and one centre-side part", False, "found %d / %d" % (len(g), len(c)))
+            return
+        yg = 0.5 * (f.bbox(g)[1] + f.bbox(g)[4])
+        yc = 0.5 * (f.bbox(c)[1] + f.bbox(c)[4])
+        ok = abs(yg - FIELD_CTR[1]) > abs(yc - FIELD_CTR[1]) and (yg - cy) * (yc - cy) < 0
+        ck(base + ": '(guardrail side)' / '(centre side)' names match the geometry", ok,
+           "guardrail-side part centre Y %.3f, centre-side part centre Y %.3f (CRAG centre Y %g)" % (yg, yc, cy))
+
     def material_ok(label, rs, key):
         m = f.material(rs)
         lo, hi = DENS[key]
@@ -274,8 +295,10 @@ def run(f):
         rings = {k: find(pre + "tier ring " + k) for k in RINGS}
         kick = find(pre + "kick-guard")
         boss = find(pre + "High Peg root boss")
-        hpeg = find(pre + "High Peg")
-        lpeg = find(pre + "Low Peg") + find(pre + "Mid Peg")
+        hpeg = sided(pre + "High Peg")
+        lpeg = sided(pre + "Low Peg") + sided(pre + "Mid Peg")
+        for part in ("Low Peg", "Mid Peg", "High Peg", "Low Socket", "Mid Socket"):
+            side_names_ok(pre + part, cy)
 
         # ---------------- existence / body structure -----------------------------------
         for nm_, rs, nb in (("tower", tower, 1), ("spire", spire, 1), ("SUMMIT BEACON lantern", lantern, 1),
@@ -443,6 +466,7 @@ def run(f):
              f.bbox(rings["78"], F)[5] - f.bbox(lantern, F)[2], 0.0)
         near(pre + "tier ring 78 / lantern common volume (stays on the opaque spire)", f.common_volume(rings["78"], lantern), 0.0, 1e-6)
         near(pre + "tier ring 78 / High Peg root boss common volume", f.common_volume(rings["78"], boss), 0.0, 1e-6)
+        ck(pre + "Low + Mid Pegs: body count", len(lpeg) == 4, "found %d, expected 4" % len(lpeg))
         if lpeg:
             near(pre + "tier rings 30/54 / Low+Mid Peg common volume", f.common_volume(rings["30"] + rings["54"], lpeg), 0.0, 1e-6)
         if hpeg:
@@ -579,7 +603,7 @@ def run(f):
             ok = (b[0] >= want - 1e-6) if sgnx > 0 else (b[3] <= want + 1e-6)
             ck(pre + "SHELF FACE faces its own alliance wall (shelf outboard of X = %g toward %s)" %
                (want, "+X" if sgnx > 0 else "-X"), ok, "Shelf 1 world bbox %s" % fmt(b))
-        pegs_all = find(pre + "Low Peg") + find(pre + "Mid Peg")
+        pegs_all = sided(pre + "Low Peg") + sided(pre + "Mid Peg")
         if pegs_all:
             b = f.bbox(pegs_all)
             want = cx - sgnx * H
@@ -590,7 +614,7 @@ def run(f):
             want = cx - sgnx * SH
             got = b[3] if sgnx > 0 else b[0]
             near(pre + "High Peg roots on the spire peg face plane X = %g" % want, got, want)
-        socks = find(pre + "Low Socket") + find(pre + "Mid Socket")
+        socks = sided(pre + "Low Socket") + sided(pre + "Mid Socket")
         if socks:
             ys = sorted(((f.bbox([r])[1] + f.bbox([r])[4]) / 2) for r in socks)
             ok = len(ys) == 4 and ys[0] < cy - H and ys[1] < cy - H and ys[2] > cy + H and ys[3] > cy + H

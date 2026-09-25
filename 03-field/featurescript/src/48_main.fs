@@ -130,8 +130,11 @@ function ckSocket(context is Context, checks, label, F, bodies, r, a, radial)
 {
     const T = frameIn(F, r, radial, a);
     const ro = SOCK_ID / 2 + SOCK_WALL;
-    var out = ckBox(checks, label, measureBox(context, bodies, T), [-ro, -ro, -SOCK_LEN, ro, ro, 0], 0.005);
+    var out = ckBox(checks, label, measureBox(context, bodies, T), [-ro, -ro, -(SOCK_LEN + SOCK_WALL), ro, ro, 0], 0.005);
     out = ck(out, msg([label, " bore radius at the rim"]), measureDistToPoint(context, bodies, F, r), SOCK_ID / 2, 0.005);
+    // the floor is SOCK_LEN below the rim: a point on the axis 0.5 above it is 0.5 from the tube
+    out = ck(out, msg([label, " floor 7.0 below the rim (a seated CELL stands 7.0 proud)"]),
+            measureDistToPoint(context, bodies, T, [0, 0, 0.5 - SOCK_LEN]), 0.5, 0.005);
     return out;
 }
 
@@ -235,7 +238,9 @@ function selfCheck(context is Context, id is Id, opts)
                 const fk = (sgn + 1) / 2;
                 ch = ckSocket(context, ch, msg([A, " Low Socket y", sgn]), F, [cid + nm("sockLow", fk)], [SOCK_LAT, sgn * (h + SOCK_STANDOFF), LOW_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
                 ch = ckSocket(context, ch, msg([A, " Mid Socket y", sgn]), F, [cid + nm("sockMid", fk)], [-SOCK_LAT, sgn * (h + SOCK_STANDOFF), MID_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
-                ch = ck(ch, msg([A, " Low Socket y", sgn, " lowest point"]), measureBox(context, [cid + nm("sockLow", fk)], F)[2], 22.268, 0.001);
+                // FIELD-CAD-PACKAGE §2.3 prints 22.27, computed at the 7.0 seat without the 0.09 bottom
+                ch = ck(ch, msg([A, " Low Socket y", sgn, " lowest point"]), measureBox(context, [cid + nm("sockLow", fk)], F)[2],
+                        LOW_SOCK_Z - (SOCK_LEN + SOCK_WALL) * c30 - (SOCK_ID / 2 + SOCK_WALL) * s30, 0.001);
                 for (var q in [["Low", LOW_SOCK_Z], ["Mid", MID_SOCK_Z]])
                 {
                     const bid = cid + nm(nm("brk", q[0]), fk);

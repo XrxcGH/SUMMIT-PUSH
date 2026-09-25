@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Animated glTF from the generator: build the scene at a series of times, recover every part's
-rigid motion from the builds, and write one .glb whose nodes carry glTF animation channels.
+Animated glTF from off-line builds: build the moving bodies at a series of times, recover every
+part's rigid motion from the builds, and write one .glb whose nodes carry glTF animation channels.
 
     from animate import export_animation
-    export_animation(build_at, times, "match.glb", static=static_ctx)
+    export_animation(build_at, times, "motion.glb", static=static_ctx)
 
-build_at(t) -> kernel_occ.Registry holding the MOVING bodies at time t (robots, held SUPPLIES,
-people ...); `static` is an optional Registry of bodies that never move (the field), exported
-once without channels.  The first time is the reference pose: its geometry becomes the nodes'
-meshes and every later build contributes one keyframe per node:
+build_at(t) is a caller-supplied function returning a kernel_occ.Registry that holds the bodies
+that move, posed for time t (for example SUPPLIES placed with copyBody at poses that depend on t);
+`static` is an optional Registry of bodies that never move (the field), exported once without
+channels.  Nothing in this repository calls export_animation; it is a library entry point.  The
+first time is the reference pose: its geometry becomes the nodes' meshes and every later build
+contributes one keyframe per node:
 
   * a body built identically (same construction, same topology) at every time is matched by
     part name; its rigid transform is solved from its vertices (Kabsch; the rms residual must
@@ -177,7 +179,7 @@ def _write_with_animation(g, path, roots, channels, samplers, extras):
            "materials": g.materials, "accessors": g.accessors, "bufferViews": g.views,
            "buffers": [{"byteLength": len(g.bin)}], "extras": extras}
     if channels:
-        doc["animations"] = [{"name": "MATCH", "channels": channels, "samplers": samplers}]
+        doc["animations"] = [{"name": "MOTION", "channels": channels, "samplers": samplers}]
     js = json.dumps(doc, separators=(",", ":")).encode()
     js += b" " * ((4 - len(js) % 4) % 4)
     while len(g.bin) % 4:

@@ -56,7 +56,7 @@ def load_part_code():
         with open(f, encoding="utf-8") as fh:
             py.append(fs2py.transpile(fh.read(), os.path.relpath(f, ROOT)))
     code = "\n".join(py)
-    exec(compile(code, "<part-code>", "exec"), ns)
+    exec(fs2py.compile_part(code, "<part-code>"), ns)
     return ns, code
 
 

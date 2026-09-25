@@ -49,6 +49,16 @@ Every expected value below comes from the package documents, never from src/:
   DESIGN-SPEC §2 dimensions, weights, colours, counts; staging 12 ft from the alliance wall.
   Manual §3.6 / §3.6.1 counts and staging; VISION-GUIDE §1.3 upright CELL: top Z 14.25, full
           diameter to Z 12.47 on the tray floor.
+
+Socket depth (the documents disagree by the socket's bottom-plate thickness; DESIGN-SPEC governs):
+  DESIGN-SPEC §3 "tube length 7.0 in along the axis, closed bottom ... A seated 14.0-in O2 CELL
+  therefore stands 7.0 in proud of the rim" holds only with the 7.0 measured from the rim plane to
+  the floor the CELL seats on (§9.2 says "7.0-in socket tube depth"), so the 0.09 closed bottom lies
+  beyond it.  §2.4's "lowest point Z ~64.4, 9.4 over a crowned crate on Shelf 2" takes the 7.0 to
+  the outer bottom; with the plate the Summit Socket tube is 9.29 above that crate.
+
+Construction reading (naming only): pegs and side sockets are named "... (guardrail side)" /
+"... (centre side)"; the lookups below take both.
 """
 import math
 import os
@@ -105,8 +115,13 @@ N_SHELF = {"BLUE": np.array([-1.0, 0, 0]), "RED": np.array([1.0, 0, 0])}
 HALF, SPIRE_HALF = 24.0, 10.0
 SHELF_Z, SLOT_LAT, SLOT_OUT = (24.0, 42.0), (-15.5, 0.0, 15.5), 7.0
 SHELF2_GUSSET_FLOOR, SHELF1_GUSSET_FLOOR = 38.0, 19.0
-MAST_CLR, SUMMIT_TUBE_CLR = 5.0, 9.4
 SOCK_STANDOFF, SOCK_LEN, SOCK_ID, SOCK_TOL = 8.0, 7.0, 6.50, 0.125
+SOCK_WALL = 0.09                                 # §2.3 (ref) wall; the closed bottom lies beyond the 7.0 seat
+# §2.4: rim 72, 15 deg; lowest point = 72 - 7.09 cos15 - 3.34 sin15 (prints ~64.4 -> 9.4 over a
+# crowned crate on Shelf 2, taking the 7.0 to the outer bottom; see the docstring)
+MAST_CLR = 5.0
+SUMMIT_TUBE_CLR = (72.0 - (SOCK_LEN + SOCK_WALL) * math.cos(math.radians(15))
+                   - (SOCK_ID / 2 + SOCK_WALL) * math.sin(math.radians(15)) - (42.0 + 13.0))
 PEG_OD, PEG_LEN = 1.5, 10.0
 TILT_BOUND, TILT_MARGIN = 47.9, 2.9              # §2.5
 DEPOT_FLOOR, DEPOT_CH, DEPOT_ARM = 0.25, 16.0, 16.0
@@ -874,10 +889,11 @@ def sec_shelves(f, C, add):
         hm = [x for x in C.hits_any(up, bspline=True)]
         add("%s CRAG: CRATE on Shelf 2 centre slot has >= 5.0 in of overhead clearance to the mast (§2.4)" % side,
             not hm, "raised 4.99: %s" % hm)
-        up2 = _moved(over[0.0], np.zeros(3), np.eye(3), (SUMMIT_TUBE_CLR - 0.05) * Z)
+        up2 = _moved(over[0.0], np.zeros(3), np.eye(3), (SUMMIT_TUBE_CLR - 0.01) * Z)
         hs = sum(_clash(up2, s, True) for s in f.solids(sock))
-        add("%s CRAG: Summit Socket tube >= 9.4 in above a CRATE on Shelf 2 (§2.4)" % side, hs < 1e-6,
-            "raised 9.35: common %.5f" % hs)
+        add("%s CRAG: Summit Socket tube >= %.2f in above a CRATE on Shelf 2 (§2.4)" % (side, SUMMIT_TUBE_CLR), hs < 1e-6,
+            "raised %.2f: common %.5f (§2.4 prints ~9.4, the tube taken to the 7.0 seat without the 0.09 closed "
+            "bottom)" % (SUMMIT_TUBE_CLR - 0.01, hs))
         drop = _moved(over[0.0], np.zeros(3), np.eye(3), 30.0 * Z)
         hd = sum(_clash(drop, s, True) for s in f.solids(mast) + f.solids(sock))
         add("%s CRAG: Shelf 2 centre slot is overhung by the Summit Socket/mast (no vertical drop) (§2.4)" % side,
@@ -954,6 +970,20 @@ def sec_depot(f, C, add):
             "top %.4f shoulder %.4f; interference %s" % (top, shoulder, h))
 
 
+def _find_parts(f, base):
+    """Bodies named `base`, or, for the sided parts (pegs, side sockets), both
+    base + " (guardrail side)" and base + " (centre side)"."""
+    out = []
+    for suf in ("", " (guardrail side)", " (centre side)"):
+        try:
+            out += f.find(base + suf)
+        except KeyError:
+            pass
+    if not out:
+        raise KeyError("no body named %r" % base)
+    return out
+
+
 def _sockets(side):
     n = N_SHELF[side]
     out = [("Summit", "Summit Socket", CRAG_C[side] + (HALF + SOCK_STANDOFF) * n + 72.0 * Z,
@@ -971,7 +1001,7 @@ def sec_sockets(f, C, add):
     for side in ("BLUE", "RED"):
         res, hits = [], []
         for lab, nm, rim, a in _sockets(side):
-            recs = f.find("%s CRAG %s" % (side, nm))
+            recs = _find_parts(f, "%s CRAG %s" % (side, nm))
             tube = min(recs, key=lambda r: f.dist_point([r], rim - 3.0 * a))
             pr = Probe(K._compound(tube["solids"]))
             t = pr.first(rim + 0.5 * a, -a)
@@ -986,11 +1016,10 @@ def sec_sockets(f, C, add):
             if h:
                 hits.append((lab, h))
             res.append((lab, round(depth, 4), round(CELL_L - depth, 4), None if bore is None else round(bore - CELL_D / 2, 4)))
-        add("%s CRAG: a seated O2 CELL protrudes 7.0 in from every socket (§9.2 / §2.3)" % side,
-            all(abs(r[2] - (CELL_L - SOCK_LEN)) < 0.01 for r in res),
-            "(socket, inner depth, protrusion, radial clr) %s — §2.3 also uses 7.0 as the OVERALL tube length "
-            "(bottom centre 4.50 outboard, lowest point Z 22.27), which a closed bottom makes incompatible with a "
-            "7.0 inner depth" % res)
+        add("%s CRAG: a seated O2 CELL protrudes 7.0 in from every socket (DESIGN-SPEC §3, §9.2 / §2.3)" % side,
+            len(res) == 5 and all(abs(r[2] - (CELL_L - SOCK_LEN)) < 0.005 for r in res),
+            "(socket, inner depth, protrusion, radial clr) %s — DESIGN-SPEC governs: the 7.0 runs from the rim to "
+            "the seat, the 0.09 closed bottom beyond it" % res)
         add("%s CRAG: O2 CELL radial clearance in every socket 0.75 +/- 0.0625 (ID 6.50 +/- 0.125) (§9.2)" % side,
             all(r[3] is not None and abs(r[3] - (SOCK_ID - CELL_D) / 2) <= SOCK_TOL / 2 for r in res), "%s" % res)
         add("%s CRAG: a seated O2 CELL interferes with nothing, in all five sockets" % side, not hits, "%s" % hits[:3])
@@ -1013,7 +1042,7 @@ def sec_pegs(f, C, add):
     for side in ("BLUE", "RED"):
         hits, clr = [], []
         for lab, nm, root, u, npeg in _pegs(side):
-            peg = min(f.find("%s CRAG %s" % (side, nm)), key=lambda r: f.dist_point([r], root + 2.0 * u))
+            peg = min(_find_parts(f, "%s CRAG %s" % (side, nm)), key=lambda r: f.dist_point([r], root + 2.0 * u))
             sh = _moved(coil["solid"], coil["c"], _basis_z(u), root + 6.0 * u)
             h = C.hits_any(sh)
             if h:
@@ -1026,7 +1055,7 @@ def sec_pegs(f, C, add):
     # §2.5 rest-pose statements against the built coil and peg (Blue +14 Low Peg)
     side = "BLUE"
     lab, nm, root, u, npeg = [p for p in _pegs(side) if p[0] == "Low +14"][0]
-    peg = min(f.find("%s CRAG %s" % (side, nm)), key=lambda r: f.dist_point([r], root + 2.0 * u))
+    peg = min(_find_parts(f, "%s CRAG %s" % (side, nm)), key=lambda r: f.dist_point([r], root + 2.0 * u))
     pegs = peg["solids"]
     lat_axis = _unit(np.cross(Z, npeg))
 
@@ -1035,13 +1064,17 @@ def sec_pegs(f, C, add):
         a = _unit(math.cos(math.radians(45 - theta)) * npeg + math.sin(math.radians(45 - theta)) * Z)
         return _moved(coil["solid"], coil["c"], _basis_z(a), root + 6.0 * u)
 
-    vols = {th: sum(_common(tilted(th), s) for s in pegs) for th in (45.0, 50.0, 55.0, 57.0, 59.0)}
+    # The documents disagree on the tilt at which a coil binds: §2.5 says ~47.9 deg (2.5 tan + 1.5/cos
+    # <= 5.0, a flat washer with a 2.5-long bore), while the coil DESIGN-SPEC §2 locks (and §9.3
+    # builds) is a torus, R 3.75 / r 1.25, which clears a centred 0.75-radius rod until the rod's
+    # axis comes within 2.0 of the core circle: acos(2.0 / 3.75) = 57.8 deg.  DESIGN-SPEC governs.
     bound = math.degrees(math.acos((PEG_OD / 2 + COIL_TUBE / 2) / COIL_RC))
-    add("[package §2.5 vs §9.3] the built ROPE COIL binds on a 1.5-in peg beyond ~47.9 deg of tilt",
-        vols[50.0] > 1e-6 and vols[55.0] > 1e-6,
-        "common volume with the peg by tilt %s; the §9.3 torus clears a centred 0.75-radius rod up to "
-        "acos(2.0/3.75) = %.1f deg (§2.5's 2.5 tan + 1.5/cos <= 5.0 is a flat washer with a 2.5-long bore), "
-        "so the vertical hang has %.1f deg of margin, not 2.9" % ({k: round(v, 5) for k, v in vols.items()}, bound, bound - 45))
+    vols = {th: sum(_common(tilted(th), s) for s in pegs) for th in (45.0, 50.0, 55.0, bound - 0.5, bound + 1.0)}
+    add("ROPE COIL (DESIGN-SPEC torus) threaded on a built 1.5-in peg binds at acos(2.0/3.75) = %.1f deg of tilt" % bound,
+        all(vols[t] < 1e-6 for t in (45.0, 50.0, 55.0, bound - 0.5)) and vols[bound + 1.0] > 1e-6,
+        "common volume with the peg by tilt %s; the vertical hang (45 deg) has %.1f deg of margin.  FCP §2.5 "
+        "prints ~47.9 deg and 2.9 deg of margin from a flat-washer model, which is not the DESIGN-SPEC §2 torus"
+        % ({round(k, 1): round(v, 5) for k, v in vols.items()}, bound - 45))
 
     def vertical(h):
         cen = root + (COIL_TUBE / 2 + COIL_TUBE / 2) * npeg + h * Z      # inner face 1.25 outboard
@@ -1056,10 +1089,19 @@ def sec_pegs(f, C, add):
             lo = mid
         else:
             hi = mid
-    add("[package §2.5] stated coil rest pose (centre ~1 in above the peg root, inner face 1.25 outboard) is feasible",
-        v1 < 1e-6,
-        "the built coil in that pose shares %.4f in^3 with the peg; with its inner face 1.25 outboard the coil "
-        "centre cannot be lower than %.2f in above the root (on the peg axis it is 2.50)" % (v1, hi))
+    # §2.5 describes the wedged rest pose as "center roughly 1 in above the peg root and its inner face
+    # about 1.25 in outboard".  For the DESIGN-SPEC torus hung plumb with its mid-plane 2.5 out, the core
+    # circle keeps 2.0 (= 1.25 + 0.75) from the 45-deg peg axis only while the centre is at least
+    # 2.5 - k above the root, k the root of k^2 + 7.5 k + 6.0625 = 0 (the top of the core circle is the
+    # closest point): 1.578 in.  DESIGN-SPEC governs, so the built coil must wedge there.
+    k = (7.5 - math.sqrt(7.5 ** 2 - 4 * 6.0625)) / 2
+    h_min = 2.5 - k
+    add("ROPE COIL hung plumb on a built Low Peg, inner face 1.25 outboard (§2.5), wedges with its centre %.2f in "
+        "above the peg root (DESIGN-SPEC torus on a 1.5-in 45-deg peg)" % h_min,
+        abs(hi - h_min) < 0.01,
+        "lowest clear centre %.3f in above the root (bisection on the built bodies), want %.3f.  FCP §2.5 prints "
+        "'roughly 1 in': the built coil at 1.0 shares %.4f in^3 with the peg, so that figure cannot hold for the "
+        "DESIGN-SPEC torus" % (hi, h_min, v1))
 
 
 def sec_gamepiece(f, C, add):

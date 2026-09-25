@@ -659,6 +659,8 @@ def run(f):
     code = B.assemble(files)
     api_errs = B.api_check(code, std)
     ck("A2 build.py api_check against std v%s" % FS_VERSION, not api_errs, "; ".join(api_errs[:8]) or "0 errors")
+    regen = B.regen_check(code)
+    ck("A2b no std call that fails while a feature regenerates (getProperty)", not regen, "; ".join(regen) or "none")
     committed = _read(os.path.join(ROOT, "SummitPushField.fs"))
     ck("A3 committed SummitPushField.fs == assembly of src/*.fs", committed == code,
        "differs" if committed != code else "identical (%d lines)" % code.count("\n"))

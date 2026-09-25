@@ -333,10 +333,18 @@ function kColor(rgb is array, alpha is number) returns Color
     return color(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, alpha);
 }
 
+// Part names are also kept in a named attribute: getProperty is not available while a feature
+// regenerates, so numberSharedNames reads the attribute instead.
+function kSetName(context is Context, q is Query, name is string)
+{
+    setProperty(context, { "entities" : q, "propertyType" : PropertyType.NAME, "value" : name });
+    setAttribute(context, { "entities" : q, "name" : "summitPushPartName", "attribute" : name });
+}
+
 function styleBody(context is Context, bodies is array, name is string, rgb is array, alpha is number, mat is map)
 {
     const q = kQ(bodies);
-    setProperty(context, { "entities" : q, "propertyType" : PropertyType.NAME, "value" : name });
+    kSetName(context, q, name);
     setProperty(context, { "entities" : q, "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, alpha) });
     setProperty(context, { "entities" : q, "propertyType" : PropertyType.MATERIAL,
                 "value" : material(mat["name"], mat["density"] * kilogram / meter ^ 3) });
@@ -344,11 +352,11 @@ function styleBody(context is Context, bodies is array, name is string, rgb is a
 
 function nameBody(context is Context, bodies is array, name is string)
 {
-    setProperty(context, { "entities" : kQ(bodies), "propertyType" : PropertyType.NAME, "value" : name });
+    kSetName(context, kQ(bodies), name);
 }
 
 // Give every part of `bodies` a unique name: parts that share a name get " 1", " 2", ... in
-// creation order.  Call once, after every body has been named.
+// creation order.  Call once, after every body has been named (styleBody / nameBody).
 function numberSharedNames(context is Context, bodies is array)
 {
     const parts = evaluateQuery(context, kQ(bodies));
@@ -356,7 +364,9 @@ function numberSharedNames(context is Context, bodies is array)
     var total = {};
     for (var p in parts)
     {
-        const n = getProperty(context, { "entity" : p, "propertyType" : PropertyType.NAME });
+        var n = getAttribute(context, { "entity" : p, "name" : "summitPushPartName" });
+        if (!(n is string))
+            n = "";
         names = append(names, n);
         if (total[n] == undefined)
             total[n] = 0;
@@ -366,7 +376,7 @@ function numberSharedNames(context is Context, bodies is array)
     for (var i = 0; i < size(parts); i += 1)
     {
         const n = names[i];
-        if (total[n] > 1)
+        if (n != "" && total[n] > 1)
         {
             if (seen[n] == undefined)
                 seen[n] = 0;

@@ -9,7 +9,8 @@ Checks, in order:
   1. every part-code file (src/2x-4x) passes the dialect lint (verify/fs2py.py) and the
      FeatureScript scope rules (verify/scope_lint.py)
   2. the assembled Feature Studio raises none of the Onshape editor's warnings
-     (verify/onshape_lint.py: unused declarations, variables set but not used)
+     (verify/onshape_lint.py: unused declarations, variables set but not used) and calls no
+     std function that fails during regeneration (getProperty)
   3. with --std PATH, or $FS_STD, or a checkout at .fs-std/ (the FeatureScript standard
      library, e.g. https://github.com/javawizard/onshape-std-library-mirror), every function
      the Feature Studio calls is either defined in it or exported by the standard library, and
@@ -101,6 +102,16 @@ def std_index(std):
     return names, enums
 
 
+# std functions that exist but fail when called while a feature regenerates
+NOT_DURING_REGEN = {"getProperty": "Cannot get properties during feature regeneration"}
+
+
+def regen_check(code):
+    src = strip_comments_and_strings(code)
+    return ["%s() is not available while a feature regenerates (Onshape: %s)" % (f, why)
+            for f, why in sorted(NOT_DURING_REGEN.items()) if re.search(r"(?<![\.\w])%s\s*\(" % f, src)]
+
+
 def api_check(code, std):
     names, enums = std_index(std)
     src = strip_comments_and_strings(code)
@@ -150,6 +161,7 @@ def main():
     files = sources()
     errs = lint_parts(files, a.std)
     code = assemble(files)
+    errs += regen_check(code)
     for ln, text in onshape_lint.warnings(code):
         errs.append("SummitPushField.fs:%d: %s (Onshape editor warning)" % (ln, text))
     with open(OUT, "w", encoding="utf-8", newline="\n") as fh:

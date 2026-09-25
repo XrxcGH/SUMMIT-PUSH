@@ -6,13 +6,13 @@ In this section, SUPPLY (plural SUPPLIES) is the collective term for the three G
 
 Penalties use the violation taxonomy of Section 4.8: VERBAL WARNING (no points; persists for the event), MINOR FOUL (+3 to the opposing ALLIANCE), MAJOR FOUL (+8 to the opposing ALLIANCE), YELLOW CARD, and RED CARD.
 
-Unless a rule says otherwise, contact rules are judged by outcome: what happened to the contacted ROBOT. The geometry and speed of the contact are not the test. There are two exceptions, both line calls: the CRAG APRON (**G407**) and the ENDGAME HEADWALL ZONE (**G412**). In those zones the taped line defines the violation, regardless of consequences.
+Unless a rule says otherwise, contact rules are judged by outcome: what happened to the contacted ROBOT. The geometry and speed of the contact are not the test. The protected zones are the exceptions, and they are line calls: the CRAG APRON (**G407**), the OUTFITTER LANES (**G410**), the ENDGAME HEADWALL ZONE (**G412**), and during AUTO the opponent's side of the centerline (**G403**). In those zones the taped line defines the violation, regardless of consequences. A single contact or action draws at most one YELLOW CARD, however many rules it violates; the foul points of every rule it violates still apply.
 
 ---
 
 ## 5.1 Personal Safety (G1xx)
 
-**G101** *Enter the FIELD only when it is safe.* Team members may be on the FIELD, or reach over the guardrail or alliance wall, only when the FIELD LEDs are green and FIELD STAFF have signaled that the FIELD is safe for entry.
+**G101** *Enter the FIELD only when it is safe.* Team members may be on the FIELD, or reach over the guardrail or alliance wall, only when FIELD STAFF have signaled that the FIELD is safe for entry, normally shown by green FIELD LEDs.
 
 *Violation:* VERBAL WARNING. Repeated or dangerous violations: YELLOW CARD.
 
@@ -54,7 +54,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 *Violation:* VERBAL WARNING; persistent or hostile argument: YELLOW CARD.
 
-**G205** *Do not bait fouls.* Strategies aimed solely at forcing the opposing ALLIANCE to violate a rule are contrary to the spirit of SUMMIT PUSH, and the intended violation is not assigned. Under **G407** and **G412**, foul-baiting is (a) any contact initiated by the protected ROBOT, (b) any action that pushes, carries, or holds an opponent ROBOT into a zone where its mere presence is penalized, and (c) any action by a ROBOT intended to cause an opponent to push, carry, or hold it into such a zone. Mere presence in one's own protected zone, however prolonged or tactical, is never baiting. Referees resolve doubt in favor of the protected ROBOT.
+**G205** *Do not bait fouls.* Strategies aimed solely at forcing the opposing ALLIANCE to violate a rule are contrary to the spirit of SUMMIT PUSH, and the intended violation is not assigned. Under **G407**, **G410** and **G412**, foul-baiting is (a) any contact initiated by the protected ROBOT, (b) any action that pushes, carries, or holds an opponent ROBOT into a zone where its mere presence is penalized, and (c) any action by a ROBOT intended to cause an opponent to push, carry, or hold it into such a zone. Mere presence in one's own protected zone, however prolonged or tactical, is never baiting. Referees resolve doubt in favor of the protected ROBOT.
 
 *Violation:* No foul is assigned to the baited ALLIANCE; repeated foul-baiting: YELLOW CARD to the baiting team.
 
@@ -68,7 +68,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 ## 5.3 Pre-MATCH (G3xx)
 
-**G301** *Inspected ROBOTS only.* A ROBOT may not participate in a MATCH unless it has passed INSPECTION against the R-rules (Section 6) in its current configuration. MECHANISMS not shown at INSPECTION may not be used.
+**G301** *Inspected ROBOTS only.* A ROBOT may not participate in a Qualification or Playoff MATCH unless it has passed INSPECTION against the R-rules (Section 6) in its current configuration. MECHANISMS not shown at INSPECTION may not be used.
 
 *Violation:* The team is BYPASSED for the MATCH. Deliberate use of an uninspected configuration: RED CARD.
 
@@ -166,9 +166,9 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 **G409** *No ganging up.* Two or more ROBOTS from the same ALLIANCE may not coordinate to isolate, PIN, or trap a single opponent ROBOT, and may not combine to form a blockade that an opponent ROBOT cannot drive around (for example, wall-to-CRAG). One-on-one defense by multiple ROBOTS against multiple opponents is legal.
 
-*Violation:* MAJOR FOUL to each participating ROBOT; sustained or repeated: YELLOW CARD to the ALLIANCE.
+*Violation:* MAJOR FOUL to each participating ROBOT; sustained or repeated: YELLOW CARD to each participating team.
 
-**G410** *OUTFITTER LANES are no-defense zones.* A ROBOT may not position its BUMPERS within an opponent's OUTFITTER LANE (the taped 36 in × 48 in zone in front of each OUTFITTER chute). It may not contact an opponent ROBOT whose BUMPERS are partially or wholly within that opponent's own OUTFITTER LANE, regardless of which ROBOT initiated the contact.
+**G410** *OUTFITTER LANES are no-defense zones.* A ROBOT may not position its BUMPERS within an opponent's OUTFITTER LANE (the taped 36 in × 48 in zone in front of each OUTFITTER chute). It may not contact an opponent ROBOT whose BUMPERS are partially or wholly within that opponent's own OUTFITTER LANE, unless the protected ROBOT initiated the contact (**G205**). A ROBOT that an opponent pushed, carried, or held into an OUTFITTER LANE does not violate this rule while that contact persists or for 5 seconds after it ends.
 
 *Violation:* MINOR FOUL for lane incursion; MAJOR FOUL for contact with a protected ROBOT. Blocking a chute so that SUPPLIES cannot be fed for approximately 10 seconds or more: MAJOR FOUL and YELLOW CARD.
 

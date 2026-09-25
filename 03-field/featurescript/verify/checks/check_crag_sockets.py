@@ -307,7 +307,7 @@ def run(f):
                 "%d bodies, solids %s" % (len(brks), [len(r["solids"]) for r in brks]))
             recs[(side, kind, "tube")] = tubes
             recs[(side, kind, "brk")] = brks
-    allsock = f.find(r"re:^(BLUE|RED) CRAG (Low|Mid) Socket \((guardrail|centre) side\)$")
+    allsock = f.find(r"re:^(BLUE|RED) CRAG (Low|Mid) Socket \((guardrail|center) side\)$")
     add("8 side-face socket tubes on the FIELD (4 per CRAG)", len(allsock) == 8, "%d" % len(allsock))
 
     towers = {s: f.find("%s CRAG tower" % s) for s in ("BLUE", "RED")}

@@ -15,7 +15,8 @@ bash 06-style/pdf/render_figures.sh  # the figures in 02-manual/figures (after a
   `playwright-core` and the Fontsource packages pinned in `package-lock.json`.
 - Chromium: set `CHROME_PATH` to a Chromium or Chrome binary, or run
   `npx playwright install chromium` once.
-- `render_figures.sh` also needs the field model's off-line build and Pillow: `pip install cadquery-ocp numpy pillow`.
+- `render_figures.sh` also needs the field model's off-line build and Pillow:
+  `pip install cadquery-ocp numpy pillow`.
 
 ## How it works
 
@@ -34,7 +35,8 @@ exports it to glTF and renders the views in `figure-shots.json` with the three.j
 `03-field/featurescript/verify/webrender`. `figures.py` trims each image, projects each callout's
 anchor (a point in field inches) through the same camera, places the labels inside the image, and
 fails if an anchor falls outside the image, or if a label overlaps another label or anchor or has
-a leader that crosses another leader or label. `make_html.py` draws the callouts as vector leaders and labels over the image.
+a leader that crosses another leader or label. `make_html.py` draws the callouts as vector leaders
+and labels over the image.
 
 The revision stamp and the revision history table come from `revisions.json`: add a row for each
 Team Update.

@@ -202,7 +202,7 @@ h1, h2, h3, h4, .opener { break-after: avoid; }
   columns: 2;
   column-gap: 18pt;
   font: 400 9pt/1.35 var(--font-sans);
-  color: var(--muted);
+  color: var(--ink);             /* --muted is only 4.2 : 1 on the opener wash (§3.2 rule 4) */
 }
 .opener-list li { margin: 0; break-inside: avoid; }
 .opener-list .tnum { display: inline-block; min-width: 0.34in; color: var(--accent); font-weight: 500; }

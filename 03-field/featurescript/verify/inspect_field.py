@@ -5,7 +5,7 @@ A small measuring API over the off-line build, for the element check scripts in 
     from inspect_field import Field
     f = Field()                          # builds the whole field (default options)
     f.names()                            # every distinct body name
-    rs = f.find("BLUE CRAG Low Socket")  # records whose name matches exactly (or a regex: f.find(r"re:..."))
+    rs = f.find("BLUE CRAG Summit Socket")  # records named exactly that, " n" suffix allowed (or f.find(r"re:..."))
     f.bbox(rs)                           # world bounding box [x0, y0, z0, x1, y1, z1] (inches)
     F = f.crag_frame("BLUE")             # CRAG-local frame (+x = SHELF FACE normal)
     f.bbox(rs, F)                        # bounding box in that frame

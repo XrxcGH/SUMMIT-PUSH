@@ -17,6 +17,8 @@ You may, free of charge, use, reproduce, print, display and share **unmodified**
 - modeling the field, designing robots, and writing and simulating software against the Materials;
 - running the Onshape field generator and the build and verification tools.
 
+Organizers running a SUMMIT PUSH event may publish Team Updates, Q&A rulings and errata that amend the rules for their own event, provided each is clearly labeled as an amendment for that event and names the rule or section it changes.
+
 You may change the Materials privately for your own training use. Work you create yourself, such as a robot design, software, a technical binder, renders or a video, remains yours. Where it includes or depicts the Materials (for example, a field model built by the field generator), you may share it for training and educational purposes, with the credit required by section 3.
 
 ## 3. Credit
@@ -43,8 +45,8 @@ The Materials are provided "as is", without warranty of any kind, express or imp
 These components are not covered by this license. Each keeps its own license:
 
 - The Roboto, Roboto Condensed, JetBrains Mono and Noto Sans Math fonts in the PDF build's `fonts/` folder, under the SIL Open Font License 1.1. Their license files are in the same folder.
-- The AprilTag 36h11 tag family patterns, from the AprilTag project of the University of Michigan (BSD 2-Clause License).
-- Packages the build tools download at build time (listed in each `package-lock.json`), under their own licenses.
+- The AprilTag 36h11 tag family patterns, from the AprilTag project of the University of Michigan, under the BSD 2-Clause License. Its notice is reproduced in `THIRD-PARTY-NOTICES.md`.
+- Packages the build tools install (the npm packages listed in each `package-lock.json`, and Python packages such as `markdown-it-py`, `pypdf`, `cadquery-ocp` and `numpy`), under their own licenses.
 
 ## 7. Ending the permission
 

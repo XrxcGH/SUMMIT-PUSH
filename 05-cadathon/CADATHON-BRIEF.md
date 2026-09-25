@@ -73,7 +73,7 @@ Three scheduled evening sessions (Days 3, 4, 6), about 90 minutes each, drop-in.
 
 ## 4. Deliverables
 
-All four items are posted **publicly** to the event thread/channel by the Day 8 deadline. Public submission is intentional: the shared library of every squad's CAD and reasoning provides much of the event's educational value.
+All four items are posted **publicly** to the event thread/channel by the Day 8 deadline. Public submission is intentional: the shared library of every squad's CAD and reasoning provides much of the event's educational value. A posted entry that includes the field model or other SUMMIT PUSH material carries the credit line required by the SUMMIT PUSH Training Use License (§3 of `LICENSE.md`).
 
 ### 4.1 Robot CAD (Onshape, required)
 
@@ -109,7 +109,7 @@ The binder is the design review in document form. Required sections, in order:
 3. **Mechanism descriptions.** For each mechanism: what it does, how it works (geometry, DOF, motors/reductions chosen from the legal list), how the game piece travels from acquisition to SCORED, and what the 2-piece possession limit means for the entry's serializer/indexing.
 4. **Weight budget.** The table from §4.1, with commentary on the riskiest line items.
 5. **Risk register.** The 4–8 things most likely to make this robot fail in week 1, each with likelihood, impact, and mitigation. Candid entries score higher than confident omissions. "Summit traversal swing damping unproven; fallback is banking CAMP RUNG for 20" is the kind of entry this section is for.
-6. **BASECAMP BOT comparison.** Compare the entry quantitatively with the published BASECAMP BOT reference (Appendix A): the entry's projected points against its 25–35, and which additional capabilities account for the difference. If the margin is thin, say so. A simple robot executed well beats a complex one executed poorly, and a paragraph that acknowledges this in the entry's own arithmetic is worth including.
+6. **BASECAMP BOT comparison.** Compare the entry quantitatively with the published BASECAMP BOT reference (Appendix A): the entry's projected points against its roughly 24 of its own (about 30 with the CAMP I it completes), and which additional capabilities account for the difference. If the margin is thin, say so. A simple robot executed well beats a complex one executed poorly, and a paragraph that acknowledges this in the entry's own arithmetic is worth including.
 
 There is no page limit. Judges favor concise binders: 10–20 well-organized pages score better than 40 padded ones.
 
@@ -164,7 +164,7 @@ Ambiguous rules wording is a common failure in events like this; in one communit
 - **How to ask:** students post rules questions to the designated event channel (or a shared Q&A form, at the mentor's choice; answers must be public either way). Questions cite the rule number in question (e.g., "Does G501's possession limit count a piece bridging the DEPOT lip?"). Private direct-message answers are prohibited, because an answer that one squad hears and another does not is unfair.
 - **Turnaround:** the mentor (acting as the game authority) answers within 24 hours on weekdays, and the same day on the Day 0–1 weekend. Questions asked after the Day 6 last call are answered on a best-effort basis, the same day where possible; questions asked on Day 8 may go unanswered, so plan ahead.
 - **Authority:** the published Q&A answer sheet is authoritative and cumulative. Answers interpret the Game Manual; they do not change it.
-- **Team Updates:** rule *changes*, and clarifications that alter the manual text, are issued only as numbered **Team Updates** (Update 01 in the Day 4 slot, Update 02 in the Day 5 slot, emergency updates any time before Day 6). Each uses the same format: rule number, old text struck, new text, and a one-line rationale. If no changes are needed, a "no changes" update is still posted on schedule. The manual is not changed after Day 6 except to close a game-breaking exploit.
+- **Team Updates:** rule *changes*, and clarifications that alter the manual text, are issued only as numbered **Team Updates** (Update 01 in the Day 4 slot, Update 02 in the Day 5 slot, emergency updates any time through Day 6). Each uses the same format: rule number, old text struck, new text, and a one-line rationale. If no changes are needed, a "no changes" update is still posted on schedule. The manual is not changed after Day 6 except to close a game-breaking exploit.
 - **Spirit clause:** rules are to be read as intended. A reading that produces absurd scoring (e.g., infinite foul loops) is wrong even if it is grammatically defensible; ask before exploiting it. Judges score strategy built on Q&A-confirmed readings; strategy built on an unconfirmed exploit reading is scored as if the exploit did not exist.
 
 ---
@@ -204,7 +204,7 @@ This appendix is the published BASECAMP BOT reference design, included in full s
 | TELEOP | CACHE CRATE cycles into the BASE DEPOT | 2 each |
 | ENDGAME | PARK in BASECAMP | 3 |
 
-Every SUPPLY it scores counts toward **SUPPLY LINE**. At Regional tier, four CACHE CRATES SCORED in the DEPOT satisfy **CAMP I**'s crate slot under the substitution in Manual §4.4.3, so a ROBOT that never touches a shelf can still unlock a CAMP for its ALLIANCE. Across a full MATCH this ROBOT contributes roughly 25–35 points plus RP-relevant volume, which makes it a useful ALLIANCE partner.
+Every SUPPLY it scores counts toward **SUPPLY LINE**. At Regional tier, four CACHE CRATES SCORED in the DEPOT satisfy **CAMP I**'s crate slot under the substitution in Manual §4.4.3, so a ROBOT that never touches a shelf can still unlock a CAMP for its ALLIANCE. Across a full MATCH this ROBOT scores up to about 24 points on its own (28 when WHITEOUT makes CACHE CRATES the PRIORITY SUPPLY), and its DEPOT CRATES can complete CAMP I for another 6, or 18 if the ALLIANCE declared the LOW ROUTE. That makes it a useful ALLIANCE partner.
 
 ### A.3 The graduation ladder
 
@@ -214,6 +214,6 @@ The BASECAMP BOT is a starting point. Each rung of the ladder adds one capabilit
 2. **Add an elevator** → unlocks Shelf 2 (42 in) and the mid tier (Mid Sockets and Mid Pegs at 54 in), and brings in the elevator-versus-arm analysis that §4.2 requires in any case.
 3. **Add hooks** → unlocks the LEDGE RUNG (30 in) for 12 ENDGAME points instead of PARK's 3, the first step on the climb ladder. Under **G416** the climb must start with every BUMPER on the field side of the CLIMB LINE (X = 48 Blue / X = 600 Red), so a LEDGE grab is an 11.6-in reach from that line (10.84 in to the rung centerline plus 0.75 in to wrap it) rather than a straight lift from underneath. Nothing above the LEDGE RUNG is reachable from the carpet.
 
-A rookie squad that submits the BASECAMP BOT plus one rung, fully modeled, realistically weighed, and cleanly documented, is submitting the entry this event was designed to teach. Veteran squads should read A.2 as a benchmark: if a complex design's realistic output does not clearly beat 25–35 points, the binder comparison in §4.2 will show it in the squad's own arithmetic.
+A rookie squad that submits the BASECAMP BOT plus one rung, fully modeled, realistically weighed, and cleanly documented, is submitting the entry this event was designed to teach. Veteran squads should read A.2 as a benchmark: if a complex design's realistic output does not clearly beat the BASECAMP BOT's 24–30 points, the binder comparison in §4.2 will show it in the squad's own arithmetic.
 
 > *Commentary:* The BASECAMP BOT path follows a principle from the education research: programs motivate students best when perceived difficulty matches actual difficulty. The BASE DEPOT and the 24-in shelf look easy and are easy; the Summit Socket and the staggered traversal look hard and are hard. A rookie squad is rewarded for attempting the easy tasks, and a veteran squad cannot score on the hard ones without doing the engineering.

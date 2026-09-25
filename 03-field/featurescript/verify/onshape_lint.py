@@ -11,8 +11,8 @@ The two warnings the Onshape Feature Studio editor reports for this code, reprod
 
 build.py runs this on the assembled Feature Studio and fails on any warning, so the Studio
 pastes into Onshape without warnings.  Scoping follows FeatureScript: blocks nest, a `for` or
-`catch` header belongs to the block that follows it, and `{` after `=`, `(`, `,`, `:`, `[` or
-`return` opens a map literal, not a block.
+`catch` header belongs to the block (or, for `for`, the single statement) that follows it, and `{`
+after `=`, `(`, `,`, `:`, `[` or `return` opens a map literal, not a block.
 """
 import os
 import re

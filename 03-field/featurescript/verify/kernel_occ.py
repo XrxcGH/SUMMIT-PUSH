@@ -264,6 +264,44 @@ def _compound(shapes):
 def _check(shape, what):
     if not BRepCheck_Analyzer(shape).IsValid():
         raise KernelError("invalid shape from " + what)
+    bad = _nonmanifold(shape)
+    if bad:
+        raise KernelError("non-manifold result from %s (%s); Onshape rejects it as BOOLEAN_NON_MANIFOLD_RESULT" % (what, bad))
+
+
+def _nonmanifold(shape):
+    """Where a solid's boundary touches itself: an edge not shared by exactly two faces, or a
+    vertex whose faces fall apart into separate fans.  OpenCascade accepts such solids;
+    Parasolid (Onshape) rejects the operation that produces them."""
+    from OCP.OCP.collections import IndexedDataMap_TopoDS_Shape_List_TopoDS_Shape_TopTools_ShapeMapHasher as ShapeMap
+    from OCP.TopExp import TopExp
+    from OCP.TopAbs import TopAbs_VERTEX
+    em = ShapeMap()
+    TopExp.MapShapesAndUniqueAncestors_s(shape, TopAbs_EDGE, TopAbs_FACE, em)
+    edge_faces = []
+    for i in range(1, em.Extent() + 1):
+        e = TopoDS.Edge(em.FindKey(i))
+        faces = list(em.FindFromIndex(i))
+        edge_faces.append((e, faces))
+        if BRep_Tool.Degenerated_s(e):
+            continue
+        if len(faces) == 1 and BRep_Tool.IsClosed_s(e, TopoDS.Face(faces[0])):
+            continue                                  # seam of a closed surface
+        if len(faces) != 2:
+            return "an edge shared by %d faces" % len(faces)
+    vm = ShapeMap()
+    TopExp.MapShapesAndUniqueAncestors_s(shape, TopAbs_VERTEX, TopAbs_EDGE, vm)
+    for i in range(1, vm.Extent() + 1):
+        edges = list(vm.FindFromIndex(i))
+        groups = []                                   # connected sets of faces around the vertex
+        for e in edges:
+            fs = next((f for (x, f) in edge_faces if x.IsSame(e)), [])
+            hit = [g for g in groups if any(f.IsSame(h) for f in fs for h in g)]
+            merged = [f for g in hit for f in g] + list(fs)
+            groups = [g for g in groups if not any(g is h for h in hit)] + [merged]
+        if len(groups) > 1:
+            return "a vertex where %d separate fans of faces meet" % len(groups)
+    return None
 
 
 # ---------------------------------------------------------------------------------------

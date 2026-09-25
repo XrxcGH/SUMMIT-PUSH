@@ -1186,18 +1186,21 @@ function buildOutfitterRamp(context is Context, id is Id, F, c, name)
         cheeks = append(cheeks, cid);
     }
     paint(context, cheeks, msg([name, " cheek"]), "wall", 1, "plywood");
-    // funnel wings: plumb plates at 45 degrees in plan, from the cheek ends out to +/-18 in
+    // funnel wings: plumb plates at 45 degrees in plan, from the cheek ends out to +/-18 in.
+    // Each wing is one plan-view prism that stops at the cheek's end plane x = xTop.  (Trimming
+    // an overlapping plate against the cheek left a knife-edge sliver above the cheek's sloped
+    // top, which Onshape rejects as a non-manifold boolean result.)
     const flare = RAMP_FLARE_W / 2 - hw;
     const wl = flare * sqrt(2) + RAMP_T;
+    const c45 = cosd(45);
     var wings = [];
     for (var sg in [-1, 1])
     {
         const wid = id + nm("wing", (sg + 1) / 2);
-        const t = [-cosd(45), sg * sind(45), 0];
-        const n = [cosd(45), sg * sind(45), 0];
-        mkPrism(context, wid, F, [[xTop, c + sg * hw, 0], n, t],
-                [[0, sg * (zTop - 1)], [wl, sg * (zTop - 1)], [wl, sg * (zTop + CHEEK_H)], [0, sg * (zTop + CHEEK_H)]], 0, RAMP_T);
-        bSubtract(context, wid + "trim", [wid], cheeks, true);
+        const yc = c + sg * hw;
+        prismXY(context, wid, F, [[xTop, yc], [xTop - wl * c45, yc + sg * wl * c45],
+                [xTop - (wl - RAMP_T) * c45, yc + sg * (wl + RAMP_T) * c45], [xTop, yc + sg * 2 * RAMP_T * c45]],
+                zTop - 1, zTop + CHEEK_H);
         wings = append(wings, wid);
     }
     paint(context, wings, msg([name, " funnel wing"]), "wall", 1, "plywood");

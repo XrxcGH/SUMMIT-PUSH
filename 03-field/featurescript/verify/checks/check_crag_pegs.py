@@ -66,7 +66,7 @@ COIL_OD, COIL_TUBE, COIL_ID = 10.0, 2.5, 5.0        # §9.3 CRITICAL
 COIL_R = COIL_OD / 2 - COIL_TUBE / 2                # torus centre radius 3.75 (§9.3 "centre at r = 3.75")
 COIL_r = COIL_TUBE / 2
 COIL_INNER_OUT = 1.25                               # §2.5 "inner face about 1.25 in outboard of the crag face"
-COIL_CENTRE_UP = 1.0                                # §2.5 "center roughly 1 in above the peg root"
+COIL_CENTRE_UP = 1.0                                # a lower plumb pose: centre 1.0 above the root, inner face nearer the face
 TAG_PANEL_TOP = 17.5 + 9.0 / 2                      # §7 CRAG panel spans Z 13.00-22.00
 FRAME_PERIM = 3.0                                   # §2.5 FRAME PERIMETER 3.0 in off the tower face
 REACH_LIMIT = 18.0                                  # §2.5 / R105
@@ -401,7 +401,7 @@ def run(f):
                 not hits and dv_ < 0.03 and thread > 1e-4,
                 "centre %.3f above root, peg gap %.4f, peg-in-hole section %.4f in^3, clashes %s" % (zc, dv_, thread, hits))
             side_coils[(pg["level"], pg["sgn"])] = Tv
-            # (d) near-vertical with the centre exactly 1.0 above the root (the other published number)
+            # (d) near-vertical with the centre exactly 1.0 above the root (a lower pose, inner face nearer the face)
             oc2 = COIL_CENTRE_UP + COIL_R - (COIL_r + PEG_R + eps) * math.sqrt(2)
             Tv2 = torus(root + n * oc2 + EZ * COIL_CENTRE_UP, n)
             hits = C.clashes(Tv2, exclude=())
@@ -541,7 +541,7 @@ def run(f):
         add("RED %ss = BLUE %ss rotated 180 deg about (324, 162)" % (level, level), err < 1e-3 and abs(vb - vr) < 1e-3,
             "bbox err %.5f, volumes %.4f / %.4f" % (err, vb, vr))
 
-    # ---- coil tilt capacity on a built peg (§2.5 "at most about 48 deg (47.9)") --------------
+    # ---- coil tilt capacity on a built peg (§2.5: acos(2.0/3.75) = 57.8 deg) ------------------
     pg = [p for p in expected_pegs("BLUE") if p["level"] == "Low Peg" and p["sgn"] == 1][0]
     rs = [r for r in find_sided(f, "BLUE CRAG Low Peg") if abs((f.bbox([r])[1] + f.bbox([r])[4]) / 2 - pg["root"][1]) < 1]
     if rs:
@@ -557,7 +557,7 @@ def run(f):
             else:
                 lo = mid
         add("coil (10.0 OD torus) can hang vertically on a 1.5 peg at 45 deg (tilt capacity >= 45 deg)", lo >= 45.0,
-            "measured max tilt from perpendicular-to-peg %.2f deg (package states 47.9)" % lo)
+            "measured max tilt from perpendicular-to-peg %.2f deg (package states 57.8)" % lo)
     else:
         add("coil (10.0 OD torus) can hang vertically on a 1.5 peg at 45 deg (tilt capacity >= 45 deg)", False,
             "no BLUE Low Peg at Y %g" % pg["root"][1])

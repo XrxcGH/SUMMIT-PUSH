@@ -40,7 +40,7 @@ Sixty-three (63) SUPPLIES (21 CACHE CRATES, 21 O2 CELLS, and 21 ROPE COILS) are 
 
 ### 4.2.2 Preloads and Starting Configuration
 
-Each ROBOT may begin the MATCH with up to one preloaded SUPPLY of any type, drawn from the ALLIANCE's OUTFITTER stock during setup. The preload must be fully supported by the ROBOT and must not cause the ROBOT to exceed its STARTING CONFIGURATION limits (no more than 42 in tall and within the FRAME PERIMETER; see **R104**). A team may choose not to preload.
+Each ROBOT may begin the MATCH with up to one preloaded SUPPLY of any type, drawn from the ALLIANCE's OUTFITTER stock during setup. The preload must be fully supported by the ROBOT and must not cause the ROBOT to exceed its STARTING CONFIGURATION limits (no more than 42 in tall and, apart from its BUMPERS, within the FRAME PERIMETER; see **R104**). A team may choose not to preload.
 
 ROBOTS must start the MATCH (**G302**):
 
@@ -188,7 +188,7 @@ Every CAMP requires one SCORED SUPPLY of each type that its tier accepts. The CR
 
 ### 4.4.4 Restoration and Out-of-Bounds Supplies
 
-**No-fault knock-offs:** any SUPPLY that leaves a scoring position without direct ROBOT contact on that SUPPLY (for example, from vibration, a bumped CRAG, wind from a passing ROBOT, or another SUPPLY settling) is restored by FIELD STAFF to an equivalent scoring position at the next safe opportunity (**G504**). Referees do not attribute causation for no-fault knock-offs, and no points are lost for the interval the SUPPLY was displaced. A latched CAMP is unaffected in any case.
+**No-fault knock-offs:** any SUPPLY that leaves a scoring position without direct ROBOT contact on that SUPPLY (for example, from vibration, a bumped CRAG, wind from a passing ROBOT, or another SUPPLY settling) is restored by FIELD STAFF to its scoring position at the next safe opportunity (**G504**). Referees do not attribute causation for no-fault knock-offs, and no points are lost for the interval the SUPPLY was displaced. A latched CAMP is unaffected in any case.
 
 **De-scoring contact:** direct ROBOT contact on a SUPPLY that removes it from a scoring position is a MAJOR FOUL per SUPPLY (Section 4.4.2, **G503**), and the SUPPLY is restored by FIELD STAFF.
 
@@ -351,7 +351,7 @@ Every rule violation that carries an in-MATCH penalty uses the following taxonom
 
 Foul points are added to the opponent's score. They count toward the MATCH outcome and toward every points-based threshold except the bonus-RP thresholds, which are computed only from the earning ALLIANCE's own SCORED SUPPLIES, CAMPS, and ENDGAME points.
 
-> *Commentary:* The contact rules in §5 are judged by outcome (damage, functional impairment, tipping). Two exceptions are line calls that referees make from the tape: the CRAG APRON and the ENDGAME HEADWALL ZONE. Everywhere else, whether a defensive contact draws a foul depends on what the contact did.
+> *Commentary:* The contact rules in §5 are judged by outcome (damage, functional impairment, tipping). The exceptions are the protected zones, line calls that referees make from the tape: the CRAG APRON, the OUTFITTER LANES, the ENDGAME HEADWALL ZONE, and during AUTO the opponent's side of the centerline. Everywhere else, whether a defensive contact draws a foul depends on what the contact did.
 
 ## 4.9 Score Finality and the Question Box
 

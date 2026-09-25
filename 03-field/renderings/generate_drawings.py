@@ -868,8 +868,8 @@ def sheet_crag():
     # exposed length: dimension line clear of both COIL poses, value carried out past the tip
     s.dim_a(root, tip, "10.0 exposed", off=90, critical=True, shift=112)
     # pose A: the COIL's plane is parallel to the face, so this side view shows it edge-on,
-    # inner face 1.25 outboard of the face, center about 1 in above the peg root
-    s.rect(root[0] + F * 1.25, root[1] - F * (1.0 + COIL_OD / 2), F * COIL_TUBE, F * COIL_OD,
+    # inner face 1.25 outboard of the face, center 1.58 in above the peg root
+    s.rect(root[0] + F * 1.25, root[1] - F * (1.58 + COIL_OD / 2), F * COIL_TUBE, F * COIL_OD,
            fill="none", stroke=GHOST, sw=2.2, rx=F * COIL_TUBE / 2)
     s.text(root[0] - 10, root[1] - 74, "REST POSE A", size=L, fill=GHOST_T, anchor="end")
     s.add('<g transform="rotate(-45 %.2f %.2f)">' % (root[0] + 74, root[1] - 74))
@@ -880,12 +880,12 @@ def sheet_crag():
     _notes(s, 1010, DNY, [
         "Peg OD 1.5 (CRITICAL), 45 deg up from the face, 10.0 exposed, tip R0.75.",
         "Root heights Z = 30 / 54 / 78; roots +/-14.0 (low, mid) and +/-7.0 (high).",
-        "POSE A (settled): the COIL hangs near-vertical in a plane parallel to",
-        "the face and wedges on the peg. A 5.0 hole over a 1.5 peg permits at",
-        "most about 48 deg (47.9) of tilt (2.5 tan t + 1.5 / cos t <= 5.0);",
-        "a vertical hang needs 45 deg, so a SCORED COIL is captured, not balanced.",
-        "The coil center rests about 1 in above the peg root, its inner face",
-        "about 1.25 in outboard of the CRAG face.",
+        "POSE A (settled): the COIL hangs plumb in a plane parallel to the face,",
+        "from the top of its hole. The torus (core R 3.75, tube r 1.25) can tilt",
+        "up to acos(2.0 / 3.75) = 57.8 deg off perpendicular-to-peg before the",
+        "peg binds; a vertical hang needs 45 deg, so it hangs with 12.8 deg to spare.",
+        "With its inner face 1.25 in outboard of the CRAG face, its center",
+        "rests about 1.6 in (1.58) above the peg root.",
         "POSE B (as dropped, grey): perpendicular to the peg; it settles to A.",
     ], title="D3 NOTES", w=COLW + 30)
 
@@ -1497,17 +1497,17 @@ def sheet_pieces():
            stroke="#333333", sw=1.6, rx=E * PEG_OD / 2)
     s.add('</g>')
     # settled pose, edge-on: plane parallel to the face, inner face 1.25 outboard of it
-    s.rect(root[0] + E * 1.25, root[1] - E * (1.0 + COIL_OD / 2), E * COIL_TUBE, E * COIL_OD,
+    s.rect(root[0] + E * 1.25, root[1] - E * (1.58 + COIL_OD / 2), E * COIL_TUBE, E * COIL_OD,
            fill="none", stroke=COIL_D, sw=2.2, rx=E * COIL_TUBE / 2)
     s.line(root[0], root[1], root[0] + 60, root[1], stroke=MUTED, sw=0.9, dash="6 3")
     s.angle(root[0], root[1], 46, 0, -45, "45 deg", lx=root[0] + 52, ly=root[1] - 20,
             anchor="start")
     note_col(x4 - 150, y4 + 210, [
         "5.0 hole over a 1.5 peg at 45 deg, 10.0 exposed.",
-        "Max tilt from perpendicular-to-peg is about 48 deg;",
-        "a vertical hang needs 45 deg, so the COIL wedges",
-        "near-vertical and is captured, not balanced.",
-        "Center rests about 1 in above the peg root.",
+        "Max tilt from perpendicular-to-peg is 57.8 deg;",
+        "a vertical hang needs 45 deg, so the COIL hangs",
+        "plumb from the top of its hole, captured by the peg.",
+        "Center about 1.6 in above the peg root.",
         "Drawn edge-on: its plane is parallel to the face."])
 
     N, H = s.NOTE, s.HEAD

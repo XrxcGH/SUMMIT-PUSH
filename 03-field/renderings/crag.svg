@@ -372,7 +372,7 @@
   <line x1="1154.35" y1="908.93" x2="1225.40" y2="837.88" stroke="#C02020" stroke-width="1.10"/>
   <rect x="1159.71" y="868.89" width="76.97" height="14.72" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-45.00 1198.19 865.09)"/>
   <text x="1198.19" y="879.93" font-size="11.15" fill="#C02020" text-anchor="middle" transform="rotate(-45.00 1198.19 865.09)">10.0 exposed</text>
-  <rect x="1032.50" y="856.00" width="25.00" height="100.00" fill="none" stroke="#2E8B57" stroke-width="2.20" rx="12.50"/>
+  <rect x="1032.50" y="850.20" width="25.00" height="100.00" fill="none" stroke="#2E8B57" stroke-width="2.20" rx="12.50"/>
   <text x="1010.00" y="842.00" font-size="11.02" fill="#1F6B40" text-anchor="end">REST POSE A</text>
   <g transform="rotate(-45 1094.00 842.00)">
   <ellipse cx="1094.00" cy="842.00" rx="12.50" ry="50.00" fill="none" stroke="#6E7378" stroke-width="1.40"/>
@@ -381,12 +381,12 @@
   <text x="1010.00" y="1070.00" font-size="11.67" fill="#1F4E79" font-weight="bold">D3 NOTES</text>
   <text x="1010.00" y="1085.75" font-size="9.72" fill="#1A1D21">Peg OD 1.5 (CRITICAL), 45 deg up from the face, 10.0 exposed, tip R0.75.</text>
   <text x="1010.00" y="1098.58" font-size="9.72" fill="#1A1D21">Root heights Z = 30 / 54 / 78; roots +/-14.0 (low, mid) and +/-7.0 (high).</text>
-  <text x="1010.00" y="1111.42" font-size="9.72" fill="#1A1D21">POSE A (settled): the COIL hangs near-vertical in a plane parallel to</text>
-  <text x="1010.00" y="1124.25" font-size="9.72" fill="#1A1D21">the face and wedges on the peg. A 5.0 hole over a 1.5 peg permits at</text>
-  <text x="1010.00" y="1137.08" font-size="9.72" fill="#1A1D21">most about 48 deg (47.9) of tilt (2.5 tan t + 1.5 / cos t &lt;= 5.0);</text>
-  <text x="1010.00" y="1149.92" font-size="9.72" fill="#1A1D21">a vertical hang needs 45 deg, so a SCORED COIL is captured, not balanced.</text>
-  <text x="1010.00" y="1162.75" font-size="9.72" fill="#1A1D21">The coil center rests about 1 in above the peg root, its inner face</text>
-  <text x="1010.00" y="1175.58" font-size="9.72" fill="#1A1D21">about 1.25 in outboard of the CRAG face.</text>
+  <text x="1010.00" y="1111.42" font-size="9.72" fill="#1A1D21">POSE A (settled): the COIL hangs plumb in a plane parallel to the face,</text>
+  <text x="1010.00" y="1124.25" font-size="9.72" fill="#1A1D21">from the top of its hole. The torus (core R 3.75, tube r 1.25) can tilt</text>
+  <text x="1010.00" y="1137.08" font-size="9.72" fill="#1A1D21">up to acos(2.0 / 3.75) = 57.8 deg off perpendicular-to-peg before the</text>
+  <text x="1010.00" y="1149.92" font-size="9.72" fill="#1A1D21">peg binds; a vertical hang needs 45 deg, so it hangs with 12.8 deg to spare.</text>
+  <text x="1010.00" y="1162.75" font-size="9.72" fill="#1A1D21">With its inner face 1.25 in outboard of the CRAG face, its center</text>
+  <text x="1010.00" y="1175.58" font-size="9.72" fill="#1A1D21">rests about 1.6 in (1.58) above the peg root.</text>
   <text x="1010.00" y="1188.42" font-size="9.72" fill="#1A1D21">POSE B (as dropped, grey): perpendicular to the peg; it settles to A.</text>
   <text x="1580.00" y="694.00" font-size="14.26" fill="#1F4E79" text-anchor="middle" font-weight="bold">D4 - SHELF AND DEPOT SECTION</text>
   <text x="1580.00" y="707.74" font-size="10.37" fill="#6E7378" text-anchor="middle">6.2 px/in</text>

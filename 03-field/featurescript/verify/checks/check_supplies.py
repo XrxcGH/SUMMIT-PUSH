@@ -1062,16 +1062,15 @@ def sec_pegs(f, C, add):
         a = _unit(math.cos(math.radians(45 - theta)) * npeg + math.sin(math.radians(45 - theta)) * Z)
         return _moved(coil["solid"], coil["c"], _basis_z(a), root + 6.0 * u)
 
-    # The documents disagree on the tilt at which a coil binds: §2.5 says ~47.9 deg (2.5 tan + 1.5/cos
-    # <= 5.0, a flat washer with a 2.5-long bore), while the coil DESIGN-SPEC §2 locks (and §9.3
-    # builds) is a torus, R 3.75 / r 1.25, which clears a centred 0.75-radius rod until the rod's
-    # axis comes within 2.0 of the core circle: acos(2.0 / 3.75) = 57.8 deg.  DESIGN-SPEC governs.
+    # The coil DESIGN-SPEC §2 locks (and §9.3 builds) is a torus, R 3.75 / r 1.25, which clears a
+    # centred 0.75-radius rod until the rod's axis comes within 2.0 of the core circle:
+    # acos(2.0 / 3.75) = 57.8 deg, the figure FCP §2.5 prints.
     bound = math.degrees(math.acos((PEG_OD / 2 + COIL_TUBE / 2) / COIL_RC))
     vols = {th: sum(_common(tilted(th), s) for s in pegs) for th in (45.0, 50.0, 55.0, bound - 0.5, bound + 1.0)}
     add("ROPE COIL (DESIGN-SPEC torus) threaded on a built 1.5-in peg binds at acos(2.0/3.75) = %.1f deg of tilt" % bound,
         all(vols[t] < 1e-6 for t in (45.0, 50.0, 55.0, bound - 0.5)) and vols[bound + 1.0] > 1e-6,
-        "common volume with the peg by tilt %s; the vertical hang (45 deg) has %.1f deg of margin.  FCP §2.5 "
-        "prints ~47.9 deg and 2.9 deg of margin from a flat-washer model, which is not the DESIGN-SPEC §2 torus"
+        "common volume with the peg by tilt %s; the vertical hang (45 deg) has %.1f deg of margin (FCP §2.5 "
+        "prints 57.8 deg and 12.8 deg)"
         % ({round(k, 1): round(v, 5) for k, v in vols.items()}, bound - 45))
 
     def vertical(h):
@@ -1087,8 +1086,8 @@ def sec_pegs(f, C, add):
             lo = mid
         else:
             hi = mid
-    # §2.5 describes the wedged rest pose as "center roughly 1 in above the peg root and its inner face
-    # about 1.25 in outboard".  For the DESIGN-SPEC torus hung plumb with its mid-plane 2.5 out, the core
+    # §2.5: with its inner face 1.25 in outboard, the centre rests about 1.6 in above the peg root.
+    # For the DESIGN-SPEC torus hung plumb with its mid-plane 2.5 out, the core
     # circle keeps 2.0 (= 1.25 + 0.75) from the 45-deg peg axis only while the centre is at least
     # 2.5 - k above the root, k the root of k^2 + 7.5 k + 6.0625 = 0 (the top of the core circle is the
     # closest point): 1.578 in.  DESIGN-SPEC governs, so the built coil must wedge there.
@@ -1097,9 +1096,8 @@ def sec_pegs(f, C, add):
     add("ROPE COIL hung plumb on a built Low Peg, inner face 1.25 outboard (§2.5), wedges with its centre %.2f in "
         "above the peg root (DESIGN-SPEC torus on a 1.5-in 45-deg peg)" % h_min,
         abs(hi - h_min) < 0.01,
-        "lowest clear centre %.3f in above the root (bisection on the built bodies), want %.3f.  FCP §2.5 prints "
-        "'roughly 1 in': the built coil at 1.0 shares %.4f in^3 with the peg, so that figure cannot hold for the "
-        "DESIGN-SPEC torus" % (hi, h_min, v1))
+        "lowest clear centre %.3f in above the root (bisection on the built bodies), want %.3f; at 1.0 the built "
+        "coil shares %.4f in^3 with the peg" % (hi, h_min, v1))
 
 
 def sec_gamepiece(f, C, add):

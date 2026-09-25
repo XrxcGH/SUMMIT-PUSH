@@ -168,17 +168,17 @@
   <g transform="rotate(-45 1230.0 632.0)">
   <rect x="1230.00" y="626.00" width="80.00" height="12.00" fill="#999999" stroke="#333333" stroke-width="1.60" rx="6.00"/>
   </g>
-  <rect x="1240.00" y="584.00" width="20.00" height="80.00" fill="none" stroke="#8A6414" stroke-width="2.20" rx="10.00"/>
+  <rect x="1240.00" y="579.36" width="20.00" height="80.00" fill="none" stroke="#8A6414" stroke-width="2.20" rx="10.00"/>
   <line x1="1230.00" y1="632.00" x2="1290.00" y2="632.00" stroke="#6E7378" stroke-width="0.90" stroke-dasharray="6 3"/>
   <path d="M 1275.87 628.60 A 46.00 46.00 0 0 0 1264.84 601.97" fill="none" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1262.53 599.47 L 1267.92 602.98 L 1265.28 605.29 Z" fill="#C02020" stroke="none"/>
   <path d="M 1276.00 632.00 L 1273.83 625.94 L 1277.33 625.71 Z" fill="#C02020" stroke="none"/>
   <text x="1282.00" y="612.00" font-size="9.00" fill="#C02020">45 deg</text>
   <text x="1140.00" y="722.00" font-size="8.50" fill="#1A1D21">5.0 hole over a 1.5 peg at 45 deg, 10.0 exposed.</text>
-  <text x="1140.00" y="733.22" font-size="8.50" fill="#1A1D21">Max tilt from perpendicular-to-peg is about 48 deg;</text>
-  <text x="1140.00" y="744.44" font-size="8.50" fill="#6E7378">a vertical hang needs 45 deg, so the COIL wedges</text>
-  <text x="1140.00" y="755.66" font-size="8.50" fill="#6E7378">near-vertical and is captured, not balanced.</text>
-  <text x="1140.00" y="766.88" font-size="8.50" fill="#6E7378">Center rests about 1 in above the peg root.</text>
+  <text x="1140.00" y="733.22" font-size="8.50" fill="#1A1D21">Max tilt from perpendicular-to-peg is 57.8 deg;</text>
+  <text x="1140.00" y="744.44" font-size="8.50" fill="#6E7378">a vertical hang needs 45 deg, so the COIL hangs</text>
+  <text x="1140.00" y="755.66" font-size="8.50" fill="#6E7378">plumb from the top of its hole, captured by the peg.</text>
+  <text x="1140.00" y="766.88" font-size="8.50" fill="#6E7378">Center about 1.6 in above the peg root.</text>
   <text x="1140.00" y="778.10" font-size="8.50" fill="#6E7378">Drawn edge-on: its plane is parallel to the face.</text>
   <rect x="90.00" y="830.00" width="1380.00" height="92.45" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
   <text x="98.00" y="845.03" font-size="9.50" fill="#1F4E79" font-weight="bold">SUPPLY SUMMARY</text>

@@ -315,18 +315,17 @@ chk("OD 10.0 from the profile", abs(2 * _OUTER_R - 10.0) < 1e-9, "%.1f" % (2 * _
 chk("ID 5.0 from the profile", abs(2 * _inner_r - 5.0) < 1e-9, "%.1f" % (2 * _inner_r))
 chk("tube section 2.5", abs(_TUBE_D - 2.5) < 1e-9)
 chk("tube centre sits at r = 3.75", abs(_ctr_r - 3.75) < 1e-9, "%.2f" % _ctr_r)
-# tilt bound: rod dia d through a hole dia D in a section of thickness t
-_lo, _hi = 0.0, 89.0
-for _ in range(200):
-    _m = (_lo + _hi) / 2
-    _r = math.radians(_m)
-    if 2.5 * math.tan(_r) + 1.5 / math.cos(_r) <= 2 * _inner_r:
-        _lo = _m
-    else:
-        _hi = _m
-chk("max tilt off perpendicular-to-peg is 47.9 deg", abs(_lo - 47.87) < 0.05, "%.2f" % _lo)
-chk("a 45-deg peg leaves positive margin, so the COIL wedges", _lo > 45.0,
+# tilt bound: the torus binds on a rod of radius 0.75 when the rod's axis comes within
+# tube radius + rod radius of the core circle, i.e. at acos((r + 0.75) / R)
+_lo = math.degrees(math.acos((_tube_r + 0.75) / _ctr_r))
+chk("max tilt off perpendicular-to-peg is 57.8 deg", abs(_lo - 57.77) < 0.05, "%.2f" % _lo)
+chk("a 45-deg peg leaves positive margin, so the COIL hangs plumb", _lo > 45.0,
     "%.2f deg of margin" % (_lo - 45.0))
+# plumb coil, inner face 1.25 out: its core circle keeps 2.0 from the 45-deg peg axis only
+# while the centre is at least 2.5 - k above the root, k^2 + 7.5 k + 6.0625 = 0
+_k = (7.5 - math.sqrt(7.5 ** 2 - 4 * 6.0625)) / 2
+chk("plumb COIL with inner face 1.25 out rests with its centre 1.58 above the peg root",
+    abs((2.5 - _k) - 1.578) < 0.005, "%.3f" % (2.5 - _k))
 
 print("== piece accounting ==")
 chk("21 per type", 3 + 2 * 2 + 2 * 7 == 21)

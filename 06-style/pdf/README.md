@@ -22,7 +22,7 @@ bash 06-style/pdf/render_figures.sh  # the figures in 02-manual/figures (after a
 | Step | File | What it does |
 |---|---|---|
 | 1 | `make_html.py` | Parses the manual sources and writes `build/manual.html` (cover, contents, revision history, the nine sections, Appendix A) and `build/plates.html` (the six drawing sheets). Rule paragraphs, violation lines, Example and Commentary boxes, captions, figures and cross-references get the classes and links the stylesheet expects. |
-| 2 | `manual-print.css`, `furniture.js` | The print stylesheet (page, type, colour, tables, boxes) and the Paged.js handler that draws the header band on every page but the cover. |
+| 2 | `manual-print.css`, `furniture.js` | The print stylesheet (page, type, colour, tables, boxes) and the Paged.js handlers that draw the header band on every page but the cover and repeat a table's header row on each page it runs onto. |
 | 3 | `render.mjs` | Serves the pages locally, paginates the manual with Paged.js in headless Chromium, prints both PDFs, and records the page of every section for the bookmarks. |
 | 4 | `postprocess.py` | Appends the plates, sets the print boxes (0.125-in bleed kept in the MediaBox and BleedBox; TrimBox and CropBox at Letter size), and adds the bookmarks and metadata. |
 

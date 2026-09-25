@@ -303,13 +303,14 @@ Leader lines and arrowheads use `--callout-leader` (`#E100E1`), 1.5 pt, with a 3
 
 The six sheets in `03-field/renderings/` are reproduced on dedicated landscape ANSI C (22 × 17 in) plates, one per sheet, at not less than 20.5 in of image width. ANSI C is the standard sheet size for a drawing set and the smallest that meets the 6-pt floor below. The build sets every sheet 21 in wide (`06-style/pdf/plates.css`) and appends the plates after Appendix A, which lists them (§8).
 
-The sheets cannot run at the 7.00-in body measure. `crag.svg` is 1960 user units wide, so at 504 pt its 8-unit note text prints at about 2 pt and its largest type at about 5.4 pt. The other five sheets fall in the same range, with smallest type of 2.3 to 3.0 pt at body width, and a 6-pt floor needs 13.9 in (`apriltag-map`) to 20.4 in (`crag`) of image width. That rules out an 11 × 17 plate: at 15 in, five of the six sheets would still fall below 6 pt, and 20.4 in does not fit on a tabloid plate at any margin.
+The sheets cannot run at the 7.00-in body measure. `crag.svg` is 1960 user units wide, so at 504 pt its smallest text (about 9.7 units) prints at 2.5 pt and its largest at about 5.4 pt. The other five sheets fall in the same range, with smallest type of 2.5 to 3.0 pt at body width, and a 6-pt floor needs 13.9 in (`apriltag-map`) to 16.8 in (`crag`, `headwall`) of image width. That rules out an 11 × 17 plate: at 15 in, three of the six sheets would still fall below 6 pt, and a 16.8-in image leaves no margin on a 17-in tabloid sheet. At 21 in the smallest text on any sheet prints at 7.5 pt; `verify/svg_collide.py` holds every sheet to 7 pt at that width, and 8 pt for dimension values and bold labels.
 
 A thumbnail may appear inline in the body, cross-referenced to the full-size plate. Each sheet carries its own title block, so a plate has no figure caption. It carries a label line above the sheet, `Plate N` followed by the sheet name (the form in which the manual's figure captions cite the plates), and a three-cell footer like the one in §2.3.
 
 Sheet conventions:
 
 - Dimension lines and text in `#C02020`; extension lines 0.7 pt; arrowheads at both ends.
+- Callout leaders in `--callout-leader` (§7.3), with the arrowhead on the feature, never at the label.
 - Each sheet's primary view carries its scale in the sheet subtitle; every additional view carries its own name and px/in scale, and the title block repeats "Scale: as noted per view".
 - Every sheet carries a title block: sheet name, sheet number of six, units note, scale note, tolerance note, revision, and the governing document reference.
 - CRITICAL dimensions are boxed; reference dimensions are suffixed `(ref)`.

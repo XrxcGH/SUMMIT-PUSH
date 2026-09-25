@@ -284,6 +284,9 @@ blockquote.box > p:first-child { margin-top: 0; }
   margin-right: 3pt;
 }
 blockquote.note { background: var(--paper-dim); border-color: var(--rule-line-strong); }
+blockquote.box table { font-size: 9.5pt; }
+blockquote.box th, blockquote.box td { padding: 4pt 5pt; }
+blockquote.box td { white-space: nowrap; }
 blockquote.caution { background: var(--warn-fill); border-color: var(--warn-border); }
 blockquote.caution .box-label { color: var(--warn-border); }
 blockquote.warning { background: var(--danger-fill); border-color: var(--danger-border); }

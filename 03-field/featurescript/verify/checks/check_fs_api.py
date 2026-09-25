@@ -334,7 +334,7 @@ KOPS = {
     "mkPillowBox": ["face0n", "face0p", "face1n", "face1p", "face2n", "face2p", "ex", "dl"],
     "bSubtract": [None], "bUnion": [None], "bDelete": [None], "shellHollow": [None],
     "filletAt": [None], "copyBody": [None], "removeSlivers": [None], "groupParts": [None],
-    "tagDecal": ["sk", "sp", "dl"],
+    "tagDecal": ["u%d" % i for i in range(11)] + ["v%d" % i for i in range(11)] + ["sp", "dl"],
 }
 
 
@@ -702,6 +702,7 @@ def run(f):
         "opBoolean": ("geomOperations.fs", "opBoolean"), "opShell": ("geomOperations.fs", "opShell"),
         "opEnclose": ("geomOperations.fs", "opEnclose"), "opFillet": ("geomOperations.fs", "opFillet"),
         "opPattern": ("geomOperations.fs", "opPattern"), "opSplitFace": ("geomOperations.fs", "opSplitFace"),
+        "opPlane": ("geomOperations.fs", "opPlane"),
         "opDeleteBodies": ("geomOperations.fs", "opDeleteBodies"),
         "opCreateBSplineSurface": ("geomOperations.fs", "opCreateBSplineSurface"),
         "evBox3d": ("evaluate.fs", "evBox3d"), "evDistance": ("evaluate.fs", "evDistance"),
@@ -836,7 +837,7 @@ def run(f):
     ops_read, _ = kernel_op_suffixes(ktext)
     mism = []
     for name, want in (("mkPrismProfile", ['id + "ex"', 'id + "dl"', "skId"]), ("mkRevolve", ['id + "rv"', 'id + "dl"', "skId"]),
-                       ("mkPillowBox", ["sid", 'id + "ex"', 'id + "dl"']), ("tagDecal", ["skId", 'id + "sp"', 'id + "dl"', 'id + "dl2"']),
+                       ("mkPillowBox", ["sid", 'id + "ex"', 'id + "dl"']), ("tagDecal", ['id + ("u" ~ i)', 'id + ("v" ~ i)', 'id + "sp"', 'id + "dl"', 'id + "dl2"']),
                        ("bSubtract", ["id"]), ("bUnion", ["id"]), ("bDelete", ["id"]), ("shellHollow", ["id"]),
                        ("filletAt", ["id"]), ("copyBody", ["id"]), ("removeSlivers", ["id"]),
                        ("groupParts", ["id"])):
@@ -845,7 +846,7 @@ def run(f):
             mism.append("%s: %s" % (name, got))
     ck("D21 kernel operation ids match the table the Id-rule stub uses", not mism, "; ".join(mism))
     ck("D22 skId is id + \"sk\" in every kernel helper that sketches",
-       len(re.findall(r'const skId = id \+ "sk";', ktext)) == 3, "")
+       len(re.findall(r'const skId = id \+ "sk";', ktext)) == 2, "")
 
     # ---------------------------------------------------------------- E. block scoping
     std_all_names = set(all_std) | set(reach)

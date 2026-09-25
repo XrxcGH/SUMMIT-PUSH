@@ -408,47 +408,63 @@ function massBody(context is Context, bodies is array, matName is string, massLb
     return rho / (kilogram / meter ^ 3);
 }
 
-// AprilTag decal: split the panel face lying in plane pl into a grid of `cells` x `cells`
-// squares of side s centred on the plane origin, and paint the listed [row, col] cells
-// (row 0 at the top, col 0 at the left, as seen facing the tag).
+// AprilTag decal: split the panel face lying in plane pl along the lines of a `cells` x `cells`
+// grid of squares of side s centred on the plane origin, and paint the listed [row, col] cells
+// (row 0 at the top, col 0 at the left, as seen facing the tag).  The grid lines are
+// construction planes normal to the face, passed as planeTools (the std thread feature splits
+// faces the same way); they run on through the white border, which stays white.
 function tagDecal(context is Context, id is Id, bodies is array, F is CoordSystem, pl is array, black is array, cells is number, s is number, rgb is array)
 {
     const P = kPlane(F, pl, 0);
-    const skId = id + "sk";
+    const yDir = cross(P.normal, P.x);
+    const h = cells / 2;
+    var planes = [];
     try silent
     {
-        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : P });
-        const h = cells / 2;
         for (var i = 0; i <= cells; i += 1)
         {
-            for (var j = 0; j < cells; j += 1)
-            {
-                skLineSegment(sk, "h" ~ i ~ "_" ~ j, { "start" : k2([(j - h) * s, (h - i) * s]), "end" : k2([(j + 1 - h) * s, (h - i) * s]) });
-                skLineSegment(sk, "v" ~ i ~ "_" ~ j, { "start" : k2([(i - h) * s, (h - j) * s]), "end" : k2([(i - h) * s, (h - j - 1) * s]) });
-            }
+            const d = (i - h) * s * inch;
+            opPlane(context, id + ("u" ~ i), { "plane" : plane(P.origin + P.x * d, P.x, yDir) });
+            opPlane(context, id + ("v" ~ i), { "plane" : plane(P.origin + yDir * d, yDir, P.x) });
+            planes = concatenateArrays([planes, [id + ("u" ~ i), id + ("v" ~ i)]]);
         }
-        skSolve(sk);
+        var tools = [];
+        for (var pid in planes)
+        {
+            tools = append(tools, qCreatedBy(pid, EntityType.FACE));
+        }
         opSplitFace(context, id + "sp", {
                     "faceTargets" : qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin),
-                    "edgeTools" : qCreatedBy(skId, EntityType.EDGE)
+                    "planeTools" : qUnion(tools),
+                    "keepToolSurfaces" : false
                 });
-        opDeleteBodies(context, id + "dl", { "entities" : qCreatedBy(skId, EntityType.BODY) });
+        opDeleteBodies(context, id + "dl", { "entities" : qUnion(kPlaneBodies(planes)) });
         var qs = [];
         for (var rc in black)
         {
             const c = [(rc[1] + 0.5 - h) * s, (h - rc[0] - 0.5) * s];
-            qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin + (P.x * c[0] + cross(P.normal, P.x) * c[1]) * inch));
+            qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin + (P.x * c[0] + yDir * c[1]) * inch));
         }
         setProperty(context, { "entities" : qUnion(qs), "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, 1) });
     }
-    catch
+    catch (error)
     {
         try silent
         {
-            opDeleteBodies(context, id + "dl2", { "entities" : qCreatedBy(skId, EntityType.BODY) });
+            opDeleteBodies(context, id + "dl2", { "entities" : qUnion(kPlaneBodies(planes)) });
         }
-        kWarn(context, id, "AprilTag decal could not be applied; the panel is built without it");
+        kWarn(context, id, "AprilTag decal could not be applied (" ~ error ~ "); the panel is built without it");
     }
+}
+
+function kPlaneBodies(ids is array) returns array
+{
+    var out = [];
+    for (var pid in ids)
+    {
+        out = append(out, qCreatedBy(pid, EntityType.BODY));
+    }
+    return out;
 }
 
 // ---------- warnings that reach the feature -------------------------------------------------

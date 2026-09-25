@@ -146,12 +146,12 @@ Zone washes are composited: alliance hue at 38% opacity over `--carpet`, with a 
 
 ## 4. Typography
 
-All faces are freely licensed and must be vendored into `assets/fonts/` and embedded in the PDF.
+All faces are freely licensed, vendored in `06-style/pdf/fonts/` with their licence files, and embedded in the PDF.
 
 | Role | Family | License |
 |---|---|---|
-| Body, headings, tables | **Roboto** (400, 400i, 500, 700, 700i) | Apache 2.0 |
-| Condensed (header band, drawing sheets) | **Roboto Condensed** (400, 700) | Apache 2.0 |
+| Body, headings, tables | **Roboto** (400, 400i, 500, 700, 700i) | OFL 1.1 |
+| Condensed (header band, drawing sheets) | **Roboto Condensed** (400, 700) | OFL 1.1 |
 | Monospace (code, coordinates, part numbers) | **JetBrains Mono** (400, 700) | OFL 1.1 |
 
 ```css
@@ -313,86 +313,48 @@ The six sheets in `03-field/renderings/` are reproduced on dedicated **landscape
 | Version precedence | One paragraph stating that the manual plus all Team Updates is the current ruleset, and that the design specification governs any discrepancy. |
 | Glossary | Section 9. Two-column table, terms in Roboto Bold 10 pt ALL CAPS, definitions 10 pt regular, alphabetical. |
 
-No index. A well-cross-referenced 100-page manual with a hyperlinked TOC does not need one, and a bad index is worse than none. (The compiled Markdown is 1,579 lines and 30,917 words — about 52 pages of running text at 11 pt on a 7.00-in measure, and roughly 100 once its 32 tables, callout boxes and section openers are set.)
+No index. A well-cross-referenced 100-page manual with a hyperlinked TOC does not need one, and a bad index is worse than none. (The PDF edition runs to about 95 Letter pages, plus the six drawing plates.)
 
 ---
 
 ## 9. Production Recipe
 
-### 9.1 Recommended toolchain
+### 9.1 Toolchain
 
-**Pandoc → HTML → Paged.js → headless Chromium → PDF.** Reasons: the sources are Markdown with tables and blockquotes, which Pandoc handles natively; the whole spec above is expressible in a CSS print stylesheet; Paged.js implements running headers/footers, page counters, and break control; and the result is inspectable in a browser during development.
+**Markdown → HTML → Paged.js → headless Chromium → PDF**, implemented in `06-style/pdf/`
+(see its `README.md`). The sources are Markdown with tables and blockquotes; the whole
+specification above is expressible in a CSS print stylesheet; Paged.js supplies running
+footers, page counters, cross-reference page numbers and break control; and every stage can be
+inspected in a browser.
 
 ```bash
-# 1. compile the manual sources
-bash 02-manual/build.sh
-
-# 2. Markdown -> standalone HTML with the print stylesheet
-pandoc 02-manual/GAME-MANUAL.md \
-  --from=gfm --to=html5 --standalone \
-  --metadata title="SUMMIT PUSH — Official Game Manual" \
-  --css=06-style/manual-print.css \
-  --output=build/manual.html
-
-# 3. paginate and render
-#    (paged.js polyfill is included by manual-print.css; any headless
-#     Chromium with --print-to-pdf and --no-margins produces the PDF)
+bash 06-style/pdf/build.sh            # -> 02-manual/SUMMIT-PUSH-Game-Manual.pdf
+bash 06-style/pdf/render_figures.sh   # -> 02-manual/figures/*.png (after a geometry change)
 ```
 
-`06-style/manual-print.css`, `assets/fonts/` and `build/` are **not shipped with this package**: §9.2 is the sketch from which to author the stylesheet, the three families are downloaded from Google Fonts, and `build/` must be created before step 2. The recipe is a specification, not a turnkey script.
+| Stage | File |
+|---|---|
+| Markdown to structured HTML (rule, violation, box, caption and cross-reference markup) | `make_html.py` |
+| Print stylesheet: every token, size and rule in §2–§8 | `manual-print.css` |
+| Header band (drawn on every page except the cover) | `furniture.js` |
+| Pagination and printing in headless Chromium | `render.mjs` |
+| Drawing plates, print boxes (bleed), bookmarks, metadata | `plates.css`, `postprocess.py` |
+| Figure renders and callout placement | `render_figures.sh`, `figures.py`, `figure-shots.json` |
 
-A LaTeX route (`pandoc --pdf-engine=lualatex` with a custom class) is a viable alternative and produces better hyphenation and float control, at the cost of expressing the palette and boxes in TeX rather than CSS. A Typst route is the third option and is the fastest to iterate. Pick one and commit; do not maintain two.
+The PDF is built with 0.125 in of bleed on every page. The MediaBox and BleedBox keep it; the
+TrimBox and CropBox are set to the Letter page, so screen viewers and office printers show the
+trimmed page while a print shop still receives the bleed.
 
-### 9.2 Starter stylesheet sketch
+LaTeX (`lualatex` with a custom class) and Typst were the alternatives considered. Maintain one
+route only.
 
-```css
-@page {
-  size: letter;
-  margin: 1.30in 0.75in 0.85in 0.75in;
-  @top-left-corner { content: ""; }
-  @bottom-left   { content: string(section-title); font: bold 10pt var(--font-sans); }
-  @bottom-center { content: "Revision: " string(revision); }
-  @bottom-right  { content: counter(page) " of " counter(pages); }
-}
-:root {
-  --ink:#1A1D21; --paper:#fff; --paper-dim:#F4F5F7;
-  --accent:#1F4E79; --accent-bright:#2E6FA8; --accent-deep:#16385A;
-  --muted:#6E7378; --rule-line:#C8CCD1; --rule-line-strong:#8A9199;
-  --box-fill:#DCE6F1; --box-border:#1F4E79;
-  --alliance-blue:#1D63C8; --alliance-red:#CC3333;
-  --font-sans:"Roboto","Arimo","Liberation Sans",Arial,sans-serif;
-  --font-cond:"Roboto Condensed","Liberation Sans Narrow",sans-serif;
-  --font-mono:"JetBrains Mono","DejaVu Sans Mono",monospace;
-}
-body { font: 11pt/1.38 var(--font-sans); color: var(--ink); text-align: left; }
-p    { margin: 6pt 0 0; }
-h1   { font-size:16pt; font-weight:700; letter-spacing:1pt; margin:12pt 0 12pt;
-       string-set: section-title content(); break-before: page; }
-/* the revision stamp: a page-margin box has no originating element, so attr() has
-   nothing to read there. Carry it in a named string set once in the front matter. */
-.revision-stamp { string-set: revision content(); position: absolute; visibility: hidden; }
-h2   { font-size:13pt; font-weight:700; color:var(--accent); margin:12pt 0 2pt; }
-h3   { font-size:11pt; font-weight:700; margin:10pt 0 0; }
+### 9.2 Figure callouts
 
-/* Rule paragraphs: the Markdown emits "**G412** *headline.* body" */
-p:has(> strong:first-child)      { padding-left:.5in; text-indent:-.5in; }
-p > strong:first-child + em      { font-style:normal; font-weight:700; color:var(--accent); }
-p > em:only-child                { /* Violation: line */
-  margin-left:.5in; color:var(--muted); font-style:italic; }
-
-blockquote { margin:6pt 1in 0; padding:8pt; background:var(--box-fill);
-             border:1.5pt solid var(--box-border); break-inside:avoid; }
-
-table { width:100%; border-collapse:collapse; font-size:10pt;
-        font-feature-settings:"tnum" 1; border:1pt solid var(--rule-line-strong); }
-th    { background:var(--accent); color:#fff; font-weight:700; text-align:left;
-        padding:4pt 6pt; }
-td    { border-top:.5pt solid var(--rule-line); padding:4pt 6pt; }
-tbody tr:nth-child(even) { background:var(--paper-dim); }
-
-code, pre { font-family:var(--font-mono); background:var(--paper-dim); }
-pre { font-size:9pt; line-height:1.40; padding:6pt; border:1pt solid var(--rule-line); }
-```
+Rendered figures carry vector callouts drawn over the image: 8.5-pt Roboto Medium labels in white
+boxes with a 0.75-pt `--callout-leader` outline, and 1.5-pt `--callout-leader` leaders ending in a
+3-pt arrowhead at the feature. `figures.py` places them and rejects a figure in which a label
+leaves the image, two labels overlap, a label covers another callout's anchor, a leader runs
+through a label, or two leaders cross. Plan views add the §7.2 coordinate compass.
 
 ### 9.3 Source conventions that make typesetting work
 
@@ -401,7 +363,8 @@ The Markdown already follows these; keep them:
 - Rules are written `**G412** *Headline sentence.* Body text…` on one line, and the `Violation:` line is a separate paragraph written `*Violation:* …`.
 - Examples and Commentary are blockquotes beginning `> *Example:*` / `> *Commentary:*`.
 - Defined terms are hard-typed capitals in the source.
-- Tables are GitHub-flavored pipe tables. They carry **no** alignment row — all 32 separator rows in the compiled manual are bare `|---|` — so Pandoc emits no per-cell alignment and §6's column rules are applied in CSS by column type, not from the source.
+- Tables are GitHub-flavored pipe tables with a bare `|---|` separator row; §6's alignment rules are applied by column type (numeric columns right-aligned), not from the source. Every table is captioned by a bold line directly above it, `**Table 6-2: Legal Motors and Actuators**`.
+- Figures are a caption paragraph `*Figure 3-2. The Blue CRAG, …*` directly above the image `![alt](../figures/crag.png)`.
 - Section headings are `# 5 Game Rules (G)` — number and title on the heading line, so `string-set: section-title` populates the footer with no extra markup.
 
 ### 9.4 Acceptance checks before release

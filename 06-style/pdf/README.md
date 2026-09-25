@@ -41,6 +41,8 @@ Team Update.
 
 ## Fonts
 
-Roboto, Roboto Condensed and JetBrains Mono (SIL Open Font License 1.1) are vendored in `fonts/`
-with their licence files, in the weights and Unicode subsets the manual uses.
-`vendor_fonts.py` regenerates them and `fonts.css` from the Fontsource packages.
+Roboto, Roboto Condensed, JetBrains Mono and Noto Sans Math (all SIL Open Font License 1.1) are
+vendored in `fonts/` with their license files, in the weights and Unicode subsets the manual uses.
+Noto Sans Math supplies only the arrows block (U+2190–21FF), which Roboto lacks; it sits second in
+the sans and condensed stacks. `vendor_fonts.py` regenerates the fonts and `fonts.css` from the
+Fontsource packages.

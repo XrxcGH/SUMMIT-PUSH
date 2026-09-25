@@ -46,6 +46,7 @@ PLATES = [
 ]
 
 RULE_RE = re.compile(r"^<strong>([GR]\d{3})</strong>")
+POINT_HEADERS = {"AUTO", "TELEOP", "Points", "Pts", "AUTO points", "TELEOP points"}
 NUMERIC_CELL = re.compile(r"^[\s+\-−–±~≈<>≤≥]*(\d[\d.,]*|\.\d+)(\s*(×|x|/|–|-|:)\s*\d[\d.,]*)*"
                           r"\s*(in|lb|s|sec|pts?|points?|%|°|ft|mm|kg|m|V|A)?\s*[*†]?\s*$")
 
@@ -157,7 +158,8 @@ def annotate(tokens, chapters, figures):
                 j += 1
             ch = [c for c in (tokens[j].children or []) if not (c.type == "text" and c.content == "")]
             label = ch[1].content.strip() if len(ch) >= 2 and ch[0].type == "em_open" else ""
-            kind = {"Example:": "example", "Commentary:": "commentary"}.get(label, "note")
+            kind = {"Example:": "example", "Commentary:": "commentary",
+                    "Caution:": "caution", "Warning:": "warning"}.get(label, "note")
             t.attrSet("class", "box " + kind)
         elif t.type == "table_open":
             style_table(tokens, i)
@@ -186,10 +188,20 @@ def style_table(tokens, i):
     for c in range(ncol):
         vals = [r[c][1] for r in body if c < len(r)]
         filled = [v for v in vals if v not in ("", "—", "–", "-")]
+        points = rows[0][c][1] in POINT_HEADERS
         if filled and all(NUMERIC_CELL.match(v) for v in filled):
-            for r in rows:
-                if c < len(r):
-                    r[c][0].attrSet("class", "num")
+            cls = "num"
+        elif points and filled and sum(bool(NUMERIC_CELL.match(v)) for v in filled) * 2 >= len(filled):
+            cls = "pts"                       # a scoring column that also holds a few notes
+        else:
+            continue
+        for r in rows:
+            if c < len(r):
+                r[c][0].attrSet("class", cls)
+        if points:                            # §6: point values bold
+            for r in body:
+                if c < len(r) and re.fullmatch(r"[+\-−]?\d+", r[c][1]):
+                    r[c][0].attrSet("class", cls + " pv")
     for r in body:
         for tk, v in r:
             m = re.match(r"^(Blue|Red)\b", v)
@@ -211,7 +223,8 @@ def render_chapter(parser, chap, toks, figures):
     # rule numbers: mark the rule's own number so cross-reference linking skips it
     html_ = re.sub(r'(<p class="rule" id="[GR]\d{3}">)<strong>', r'\1<strong class="rule-no">', html_)
     # box labels
-    html_ = re.sub(r'(<blockquote class="box (example|commentary)">\s*<p>)<em>(Example|Commentary):</em>\s*',
+    html_ = re.sub(r'(<blockquote class="box (example|commentary|caution|warning)">\s*<p>)'
+                   r'<em>(Example|Commentary|Caution|Warning):</em>\s*',
                    r'\1<span class="box-label">\3</span> ', html_)
     # horizontal rules inside sections are source separators only
     html_ = re.sub(r"<hr\s*/?>\n?", "", html_)
@@ -276,7 +289,8 @@ def resolve_image(src):
 def caption_tables(chap, html_):
     """Number every table 'Table <section>-<n>' and caption it above (style guide §7.1).  The
     caption is a bold label paragraph directly above the table when there is one, otherwise the
-    title of the nearest heading."""
+    title of the nearest heading.  A table inside an Example or Commentary box belongs to the box
+    and is neither numbered nor captioned (§6)."""
     out, pos = [], 0
     last_heading = chap.title
     explicit = set(int(n) for n in re.findall(r"<p><strong>Table %s-(\d+):" % re.escape(chap.num), html_))
@@ -285,8 +299,13 @@ def caption_tables(chap, html_):
         if m.group(0).startswith("<h"):
             last_heading = re.sub(r"<[^>]+>", "", m.group(1)).strip()
             continue
-        chap.tables += 1
         before = html_[pos:m.start()]
+        if html_.rfind("<blockquote", 0, m.start()) > html_.rfind("</blockquote>", 0, m.start()):
+            out.append(before)
+            out.append('<div class="table-wrap">' + m.group(0))
+            pos = m.end()
+            continue
+        chap.tables += 1
         cap, n = None, None
         lm = re.search(r"<p><strong>(?:Table (\d+)-(\d+):\s*)?([^<]{2,100})</strong></p>\s*$", before)
         if lm:
@@ -354,6 +373,26 @@ def link_refs(doc, ids):
                  lambda m: '<a class="xref rule-ref" href="#%s"><strong>%s</strong></a>' % (m.group(1), m.group(1))
                  if m.group(1) in ids else m.group(0), doc)
     return doc
+
+
+NBSP_UNIT = re.compile(r"(\d) (in|ft|lb|lbs|oz|s|sec|min|ms|mm|cm|m|kg|g|V|W|A|Hz|pt|pts|RP)(?![\w-])")
+NBSP_LABEL = re.compile(r"\b(Section|Sections|Table|Figure|Plate|Appendix|§) (?=[\dA-Z]|$)")
+
+
+def nbsp(doc):
+    """Style guide §4.4: a no-break space between a number and its unit, and after the words
+    that introduce a cross-reference number.  Text only: tags, code, SVG and style are skipped."""
+    parts = re.split(r"(<[^>]+>)", doc)
+    skip = 0
+    for k, p in enumerate(parts):
+        if p.startswith("<"):
+            m = re.match(r"<(/?)(pre|code|svg|style|script)\b", p)
+            if m:
+                skip += -1 if m.group(1) else 1
+            continue
+        if not skip and p:
+            parts[k] = NBSP_LABEL.sub("\\1\u00a0", NBSP_UNIT.sub("\\1\u00a0\\2", p))
+    return "".join(parts)
 
 
 # ----------------------------------------------------------------------------------------
@@ -513,7 +552,7 @@ def build(total=None, first_plate=None):
     doc = "\n".join([cover(info, rev), contents(chapters, appendix), front_matter(info, revs)] + body
                     + [appendix_page(appendix, first_plate)])
     ids = set(re.findall(r'\bid="([^"]+)"', doc))
-    doc = link_refs(doc, ids)
+    doc = nbsp(link_refs(doc, ids))
     missing = sorted(set(re.findall(r'href="#([^"]+)"', doc)) - ids)
     if missing:
         raise SystemExit("unresolved links: %s" % missing)

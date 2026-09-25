@@ -22,6 +22,7 @@
   --danger-fill: #F7DEDE;
   --danger-border: #A32A2A;
   --link: #245C9E;
+  --change-add: #FFF3A8;
   --alliance-blue: #1D63C8;
   --alliance-blue-tint: #D9E4F5;
   --alliance-red: #CC3333;
@@ -42,7 +43,7 @@
     font: 700 10pt/1.2 var(--font-sans);
     color: var(--ink);
     vertical-align: top;
-    padding-top: 0.24in;
+    padding-top: 0.21in;
     white-space: pre;
   }
   @bottom-center {
@@ -50,14 +51,14 @@
     font: 700 10pt/1.2 var(--font-sans);
     color: var(--ink);
     vertical-align: top;
-    padding-top: 0.24in;
+    padding-top: 0.21in;
   }
   @bottom-right {
     content: counter(page) " of " counter(pages);
     font: 700 10pt/1.2 var(--font-sans);
     color: var(--ink);
     vertical-align: top;
-    padding-top: 0.24in;
+    padding-top: 0.21in;
     font-variant-numeric: tabular-nums;
   }
 }
@@ -139,6 +140,7 @@ code {
   background: var(--paper-dim);
   padding: 0 2pt;
   border-radius: 1.5pt;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 pre {
@@ -155,6 +157,8 @@ a { color: inherit; text-decoration: none; }
 a.xref { color: var(--link); }
 a.xref strong { color: var(--link); }
 del { color: var(--muted); }
+/* §3: text added by a Team Update, marked <ins> in the source */
+ins { background: var(--change-add); text-decoration: none; }
 
 ul, ol { padding-left: 0.30in; }
 li { margin-top: 3pt; }
@@ -280,6 +284,10 @@ blockquote.box > p:first-child { margin-top: 0; }
   margin-right: 3pt;
 }
 blockquote.note { background: var(--paper-dim); border-color: var(--rule-line-strong); }
+blockquote.caution { background: var(--warn-fill); border-color: var(--warn-border); }
+blockquote.caution .box-label { color: var(--warn-border); }
+blockquote.warning { background: var(--danger-fill); border-color: var(--danger-border); }
+blockquote.warning .box-label { color: var(--danger-border); }
 
 /* §6 tables -------------------------------------------------------------------------------------- */
 .table-wrap { margin-top: 8pt; }
@@ -318,6 +326,8 @@ td {
 tr { break-inside: avoid; }
 table.zebra tbody tr:nth-child(even) td { background: var(--paper-dim); }
 th.num, td.num { text-align: right; white-space: nowrap; }
+th.pts, td.pts { text-align: right; }
+td.pv { font-weight: 700; }
 td.tint-blue { background: var(--alliance-blue-tint) !important; }
 td.tint-red { background: var(--alliance-red-tint) !important; }
 td code, th code { font-size: 8.5pt; }

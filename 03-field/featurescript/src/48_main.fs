@@ -314,10 +314,13 @@ function selfCheck(context is Context, id is Id, opts)
                 ch = ck(ch, msg([A, " lane ", li + 1, " frame inside its lane"]), min(ub[1] - (LANE_Y[li] - LANE_W / 2), 0) + min(LANE_Y[li] + LANE_W / 2 - ub[4], 0), 0, 0.0001);
                 // BASECAMP clear volume: a 42-in ROBOT stages up to X = 43.859 - 2 / cos15 - 42 / 3.7321 (= 30.53)
                 const xStage = HW_X - (TRUSS_CLR + TUBE_S) / cosd(HW_LEAN) - 42 * tand(HW_LEAN);
-                mkBox(context, lid + "probe42", F, [0, LANE_Y[li] - 20, 0], [xStage - 0.01, LANE_Y[li] + 20, 42]);
+                // the probe gets its own top-level Id: re-entering hid or lid after later operations
+                // would break the std rule that every Id prefix is one contiguous run of operations
+                const pid = id + msg(["probe42", sideTag(isRed), li + 1]);
+                mkBox(context, pid, F, [0, LANE_Y[li] - 20, 0], [xStage - 0.01, LANE_Y[li] + 20, 42]);
                 ch = ck(ch, msg([A, " lane ", li + 1, " 42-in staging envelope clear of the lane (X to the frame's front at 42 in)"]),
-                        min(measureDist(context, [lid + "probe42"], [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"]), 0.001), 0.001, 0.0001);
-                bDelete(context, lid + "probe42del", [lid + "probe42"]);
+                        min(measureDist(context, [pid], [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"]), 0.001), 0.001, 0.0001);
+                bDelete(context, id + msg(["probe42del", sideTag(isRed), li + 1]), [pid]);
             }
             const cb = measureBox(context, [hid + "crossbeam"], PF);
             ch = ck(ch, msg([A, " lower crossbeam >= 4.0 behind plane P (margin)"]), min(-TRUSS_CLR - cb[3], 0), 0, 0.0001);

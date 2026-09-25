@@ -1,6 +1,6 @@
 // =====================================================================================
 // KERNEL — the only code in this Feature Studio that talks to the Onshape standard
-// library.  Everything else (the part code in 20_*.fs .. 49_*.fs) is written in plain
+// library.  Everything else (the part code in src/2x-4x and the features in 90) is written in plain
 // numbers — inches and degrees — and calls these helpers, which add the units.
 //
 // Every helper here has a twin in verify/kernel_occ.py with identical semantics, so the
@@ -82,12 +82,6 @@ function msg(parts is array) returns string
         s = s ~ p;
     }
     return s;
-}
-
-// One-character strings of s ("AB" -> ["A", "B"]), for the pixel font.
-function chars(s is string) returns array
-{
-    return splitIntoCharacters(s);
 }
 
 // ---------- frames ---------------------------------------------------------------------
@@ -181,11 +175,6 @@ function mkPrismHoles(context is Context, id is Id, F is CoordSystem, pl is arra
 function mkCyl(context is Context, id is Id, F is CoordSystem, pl is array, c, r is number, d0 is number, d1 is number)
 {
     mkPrismProfile(context, id, F, pl, [[["C", c, r]]], d0, d1);
-}
-
-function mkTube(context is Context, id is Id, F is CoordSystem, pl is array, c, ro is number, ri is number, d0 is number, d1 is number)
-{
-    mkPrismProfile(context, id, F, pl, [[["C", c, ro]], [["C", c, ri]]], d0, d1);
 }
 
 // Full 360-degree revolve of the closed profile `loop` (sketched on pl) about the
@@ -321,7 +310,7 @@ function softFilletAt(context is Context, id is Id, bodies is array, F is CoordS
     {
         filletAt(context, id, bodies, F, pts, r);
     }
-    catch (e)
+    catch
     {
         kWarn(context, id, "reference roundover skipped - " ~ label);
     }
@@ -442,7 +431,7 @@ function tagDecal(context is Context, id is Id, bodies is array, F is CoordSyste
         }
         setProperty(context, { "entities" : qUnion(qs), "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, 1) });
     }
-    catch (e)
+    catch
     {
         try silent
         {
@@ -463,87 +452,6 @@ function kWarn(context is Context, id is Id, message is string)
     if (prev is string)
         text = prev ~ "; " ~ message;
     reportFeatureWarning(context, top, text);
-}
-
-// Equal-offset chamfer on the edges of `bodies` through the local points `pts`.
-function chamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number)
-{
-    var qs = [];
-    for (var p in pts)
-    {
-        qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.EDGE), kPt(F, p)));
-    }
-    opChamfer(context, id, { "entities" : qUnion(qs), "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : d * inch, "tangentPropagation" : true });
-}
-
-function softChamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number, label is string)
-{
-    try silent
-    {
-        chamferAt(context, id, bodies, F, pts, d);
-    }
-    catch (e)
-    {
-        kWarn(context, id, "decorative chamfer skipped - " ~ label);
-    }
-}
-
-// Solid loft through planar profiles, in order.  Each profile is [pl, loop]: a local plane
-// and one closed loop of segments on it (see kSketchLoops).
-function mkLoft(context is Context, id is Id, F is CoordSystem, profiles is array)
-{
-    var regions = [];
-    var sketches = [];
-    for (var i = 0; i < size(profiles); i += 1)
-    {
-        const skId = id + ("sk" ~ i);
-        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : kPlane(F, profiles[i][0], 0) });
-        kSketchLoops(sk, [profiles[i][1]]);
-        skSolve(sk);
-        regions = append(regions, qSketchRegion(skId, true));
-        sketches = append(sketches, qCreatedBy(skId, EntityType.BODY));
-    }
-    opLoft(context, id + "lf", { "profileSubqueries" : regions, "bodyType" : ToolBodyType.SOLID });
-    opDeleteBodies(context, id + "dl", { "entities" : qUnion(sketches) });
-}
-
-// Paint rectangles [u0, v0, u1, v1] onto the face(s) of `bodies` lying in plane pl (numbers,
-// lettering, stripes).  The face is split, so the decal is exact and coplanar; rectangles
-// must not overlap.  A failure leaves the face plain and warns.
-function faceDecal(context is Context, id is Id, bodies is array, F is CoordSystem, pl is array, rects is array, rgb is array)
-{
-    const P = kPlane(F, pl, 0);
-    const skId = id + "sk";
-    try silent
-    {
-        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : P });
-        for (var i = 0; i < size(rects); i += 1)
-        {
-            const r = rects[i];
-            skRectangle(sk, "r" ~ i, { "firstCorner" : k2([r[0], r[1]]), "secondCorner" : k2([r[2], r[3]]) });
-        }
-        skSolve(sk);
-        opSplitFace(context, id + "sp", {
-                    "faceTargets" : qCoincidesWithPlane(qOwnedByBody(kQ(bodies), EntityType.FACE), P),
-                    "edgeTools" : qCreatedBy(skId, EntityType.EDGE)
-                });
-        opDeleteBodies(context, id + "dl", { "entities" : qCreatedBy(skId, EntityType.BODY) });
-        var qs = [];
-        for (var r in rects)
-        {
-            const c = [(r[0] + r[2]) / 2, (r[1] + r[3]) / 2];
-            qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin + (P.x * c[0] + cross(P.normal, P.x) * c[1]) * inch));
-        }
-        setProperty(context, { "entities" : qUnion(qs), "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, 1) });
-    }
-    catch (e)
-    {
-        try silent
-        {
-            opDeleteBodies(context, id + "dl2", { "entities" : qCreatedBy(skId, EntityType.BODY) });
-        }
-        kWarn(context, id, "decal skipped");
-    }
 }
 
 // Group bodies into one open composite part (the parts list shows one entry; the members

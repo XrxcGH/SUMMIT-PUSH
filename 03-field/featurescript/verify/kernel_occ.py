@@ -130,10 +130,6 @@ def nm(s, i):
     return s + str(i)
 
 
-def chars(s):
-    return list(s)
-
-
 def msg(parts):
     out = ""
     for p in parts:
@@ -345,10 +341,6 @@ def mkPrismHoles(context, id, F, pl, outer, holes, d0, d1):
 
 def mkCyl(context, id, F, pl, c, r, d0, d1):
     mkPrismProfile(context, id, F, pl, [[["C", c, r]]], d0, d1)
-
-
-def mkTube(context, id, F, pl, c, ro, ri, d0, d1):
-    mkPrismProfile(context, id, F, pl, [[["C", c, ro]], [["C", c, ri]]], d0, d1)
 
 
 def mkRevolve(context, id, F, pl, loop):
@@ -754,110 +746,10 @@ def measureDist(context, a, b):
 
 
 # ---------------------------------------------------------------------------------------
-# decoration and grouping (twins of chamferAt / softChamferAt / mkLoft / faceDecal /
-# compositePart in src/10_kernel.fs)
+# warnings and grouping (twins of kWarn / groupParts in src/10_kernel.fs)
 # ---------------------------------------------------------------------------------------
 def kWarn(context, id, message):
     context.warnings.append(message)
-
-
-def chamferAt(context, id, bodies, F, pts, d, strict=True):
-    from OCP.BRepFilletAPI import BRepFilletAPI_MakeChamfer
-    wp = [F.pt(p) for p in pts]
-    keys = context.keys_for(bodies)
-    found = [False] * len(wp)
-    plan = []
-    for k in keys:
-        for si, s in enumerate(context.bodies[k]["solids"]):
-            edges = []
-            for pi, p in enumerate(wp):
-                try:
-                    e = _edges_through(s, [p])
-                except KernelError:
-                    continue
-                found[pi] = True
-                edges += [x for x in e if not any(x.IsSame(y) for y in edges)]
-            plan.append((k, si, edges))
-    missing = [list(wp[i]) for i in range(len(wp)) if not found[i]]
-    if missing:
-        if strict:
-            raise KernelError("chamferAt %s: no edge through %s" % (id, missing))
-        context.warnings.append("chamfer %s: no edge through %s" % (id, missing))
-    results = []
-    for k, si, edges in plan:
-        if not edges:
-            continue
-        s = context.bodies[k]["solids"][si]
-        mk = BRepFilletAPI_MakeChamfer(s)
-        for e in edges:
-            mk.Add(float(d), e)
-        mk.Build()
-        if not mk.IsDone():
-            raise KernelError("chamfer failed " + str(id))
-        out = _solids(mk.Shape())
-        for x in out:
-            _check(x, "chamferAt " + str(id))
-        results.append((k, si, out))
-    for k, si, out in reversed(results):
-        context.bodies[k]["solids"][si:si + 1] = out
-
-
-def softChamferAt(context, id, bodies, F, pts, d, label):
-    try:
-        chamferAt(context, id, bodies, F, pts, d, strict=False)
-    except (KernelError, RuntimeError, Standard_Failure) as e:
-        context.warnings.append("decorative chamfer skipped - %s (%s)" % (label, e))
-
-
-def mkLoft(context, id, F, profiles):
-    from OCP.BRepOffsetAPI import BRepOffsetAPI_ThruSections
-    if len(profiles) < 2:
-        raise KernelError("mkLoft needs two or more profiles at " + str(id))
-    ts = BRepOffsetAPI_ThruSections(True, False, 1e-6)
-    for pl, loop in profiles:
-        P = _Plane(F, pl, 0)
-        ts.AddWire(_wire(P, loop))
-    ts.CheckCompatibility(False)
-    ts.Build()
-    if not ts.IsDone():
-        raise KernelError("loft failed " + str(id))
-    shape = ts.Shape()
-    fix = ShapeFix_Shape(shape)
-    fix.Perform()
-    shape = fix.Shape()
-    _check(shape, "mkLoft " + str(id))
-    context.add(id + "lf", shape)
-
-
-def faceDecal(context, id, bodies, F, pl, rects, rgb):
-    """Records the painted rectangles; checks each lies on a planar face of the bodies in pl
-    (the off-line twin does not split faces — the split is exact and coplanar in Onshape)."""
-    P = _Plane(F, pl, 0)
-    keys = context.keys_for(bodies)
-    sh = context.shape_for(bodies)
-    for r in rects:
-        u0, v0, u1, v1 = r
-        if not (u1 > u0 and v1 > v0):
-            raise KernelError("faceDecal %s: degenerate rectangle %s" % (id, r))
-        for uv in ((u0, v0), (u1, v0), (u1, v1), (u0, v1), ((u0 + u1) / 2, (v0 + v1) / 2)):
-            p = P.p3(uv)
-            v = BRepBuilderAPI_MakeVertex(_gp(p)).Vertex()
-            if BRepExtrema_DistShapeShape(v, sh).Value() > 1e-6:
-                raise KernelError("faceDecal %s: rectangle %s leaves the face" % (id, r))
-            # and the point is on the surface, not inside: a point just outside along the
-            # normal must be off the body
-            q = p + P.n * 1e-3
-            for s in context.solids_for(bodies):
-                cl = BRepClass3d_SolidClassifier(s, _gp(q), 1e-7)
-                if cl.State() == TopAbs_IN:
-                    raise KernelError("faceDecal %s: plane is not an outer face" % (id,))
-    for i, a in enumerate(rects):
-        for b in rects[i + 1:]:
-            if a[0] < b[2] - 1e-9 and b[0] < a[2] - 1e-9 and a[1] < b[3] - 1e-9 and b[1] < a[3] - 1e-9:
-                raise KernelError("faceDecal %s: rectangles overlap %s %s" % (id, a, b))
-    for k in keys:
-        context.bodies[k].setdefault("decals", []).append(
-            {"origin": tuple(P.o), "normal": tuple(P.n), "x": tuple(P.x), "rects": [tuple(r) for r in rects], "rgb": tuple(rgb)})
 
 
 def groupParts(context, id, bodies, name):

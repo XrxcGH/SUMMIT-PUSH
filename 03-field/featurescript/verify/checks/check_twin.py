@@ -18,8 +18,8 @@ run(f) -> [(label, ok, detail)], one group per question:
   [style]  styleFacesAt: every styled point selects exactly one face (as qContainsPoint would)
 
 Expected values come from the std library source and the package documents, never from the
-part code or the ledger.  The std library path is taken from $FS_STD or the scratchpad checkout;
-the [src] checks that need it are skipped (and say so) when it is absent.
+part code or the ledger.  The std library is found through $FS_STD or at 03-field/featurescript/.fs-std
+(see README.md); the [src] checks that need it are skipped (and say so) when it is absent.
 """
 import ast
 import glob
@@ -57,7 +57,7 @@ from OCP.TopoDS import TopoDS  # noqa: E402
 
 KERNEL_FS = os.path.join(FSROOT, "src", "10_kernel.fs")
 LAYOUT_JSON = os.path.join(PKG, "04-vision", "apriltag-field-layout.json")
-SCRATCH_STD = "/tmp/claude-0/-home-user-SUMMIT-PUSH/2d3069ce-8855-52b5-8721-54e54f71c127/scratchpad/std"
+LOCAL_STD = os.path.join(FSROOT, ".fs-std")
 
 
 # ======================================================================================
@@ -69,7 +69,7 @@ def _read(p):
 
 
 def _std_dir():
-    cands = [os.environ.get("FS_STD"), SCRATCH_STD] + sorted(glob.glob("/tmp/claude-*/*/*/scratchpad/std"))
+    cands = [os.environ.get("FS_STD"), LOCAL_STD]
     for c in cands:
         if c and os.path.isfile(os.path.join(c, "geomOperations.fs")):
             return c
@@ -756,7 +756,7 @@ def _isnum(v):
 
 FS_OPIDS = {   # sub-ids each kernel entry point hands to Onshape operations (checked against the kernel text)
     "mkPrismProfile": ["sk", "ex", "dl"], "mkPrism": ["sk", "ex", "dl"], "mkPrismHoles": ["sk", "ex", "dl"],
-    "mkCyl": ["sk", "ex", "dl"], "mkTube": ["sk", "ex", "dl"], "mkRevolve": ["sk", "rv", "dl"],
+    "mkCyl": ["sk", "ex", "dl"], "mkRevolve": ["sk", "rv", "dl"],
     "mkPillowBox": ["face0n", "face0p", "face1n", "face1p", "face2n", "face2p", "ex", "dl"],
     "bSubtract": [None], "bUnion": [None], "bDelete": [None], "shellHollow": [None], "filletAt": [None],
     "softFilletAt": [None], "copyBody": [None], "tagDecal": ["sk", "sp", "dl"],
@@ -775,7 +775,7 @@ def _opid_model_matches_kernel():
         if fn == "mkPillowBox":
             if 'id + ("face" ~ ax ~ (sgn > 0 ? "p" : "n"))' not in _squash(b):
                 bad.append(fn)
-        if fn in ("mkPrism", "mkPrismHoles", "mkCyl", "mkTube"):
+        if fn in ("mkPrism", "mkPrismHoles", "mkCyl"):
             if "mkPrismProfile(context, id," not in b:
                 bad.append(fn)
             continue
@@ -910,13 +910,11 @@ def _instrumented_build(f):
                 wp = a["F"].pt(a["p"])
                 if _inside(ctx.solids_for(a["bodies"]), wp):
                     rec["inside"].append("%s at %s" % ([str(i) for i in a["bodies"]], np.round(wp, 3).tolist()))
-            if name in ("mkPrismProfile", "mkPrism", "mkPrismHoles", "mkTube", "mkCyl", "mkRevolve"):
+            if name in ("mkPrismProfile", "mkPrism", "mkPrismHoles", "mkCyl", "mkRevolve"):
                 if name == "mkPrismHoles":
                     loops = [K._kPolyLoop(a["outer"])] + [K._kPolyLoop(hh) for hh in a["holes"]]
                 elif name == "mkPrism":
                     loops = [K._kPolyLoop(a["pts"])]
-                elif name == "mkTube":
-                    loops = [[["C", a["c"], a["ro"]]], [["C", a["c"], a["ri"]]]]
                 elif name == "mkCyl":
                     loops = [[["C", a["c"], a["r"]]]]
                 elif name == "mkRevolve":

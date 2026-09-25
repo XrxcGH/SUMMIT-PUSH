@@ -21,7 +21,7 @@ import(path : "onshape/std/geometry.fs", version : "2960.0");
 
 // =====================================================================================
 // KERNEL — the only code in this Feature Studio that talks to the Onshape standard
-// library.  Everything else (the part code in 20_*.fs .. 49_*.fs) is written in plain
+// library.  Everything else (the part code in src/2x-4x and the features in 90) is written in plain
 // numbers — inches and degrees — and calls these helpers, which add the units.
 //
 // Every helper here has a twin in verify/kernel_occ.py with identical semantics, so the
@@ -103,12 +103,6 @@ function msg(parts is array) returns string
         s = s ~ p;
     }
     return s;
-}
-
-// One-character strings of s ("AB" -> ["A", "B"]), for the pixel font.
-function chars(s is string) returns array
-{
-    return splitIntoCharacters(s);
 }
 
 // ---------- frames ---------------------------------------------------------------------
@@ -202,11 +196,6 @@ function mkPrismHoles(context is Context, id is Id, F is CoordSystem, pl is arra
 function mkCyl(context is Context, id is Id, F is CoordSystem, pl is array, c, r is number, d0 is number, d1 is number)
 {
     mkPrismProfile(context, id, F, pl, [[["C", c, r]]], d0, d1);
-}
-
-function mkTube(context is Context, id is Id, F is CoordSystem, pl is array, c, ro is number, ri is number, d0 is number, d1 is number)
-{
-    mkPrismProfile(context, id, F, pl, [[["C", c, ro]], [["C", c, ri]]], d0, d1);
 }
 
 // Full 360-degree revolve of the closed profile `loop` (sketched on pl) about the
@@ -342,7 +331,7 @@ function softFilletAt(context is Context, id is Id, bodies is array, F is CoordS
     {
         filletAt(context, id, bodies, F, pts, r);
     }
-    catch (e)
+    catch
     {
         kWarn(context, id, "reference roundover skipped - " ~ label);
     }
@@ -463,7 +452,7 @@ function tagDecal(context is Context, id is Id, bodies is array, F is CoordSyste
         }
         setProperty(context, { "entities" : qUnion(qs), "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, 1) });
     }
-    catch (e)
+    catch
     {
         try silent
         {
@@ -484,87 +473,6 @@ function kWarn(context is Context, id is Id, message is string)
     if (prev is string)
         text = prev ~ "; " ~ message;
     reportFeatureWarning(context, top, text);
-}
-
-// Equal-offset chamfer on the edges of `bodies` through the local points `pts`.
-function chamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number)
-{
-    var qs = [];
-    for (var p in pts)
-    {
-        qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.EDGE), kPt(F, p)));
-    }
-    opChamfer(context, id, { "entities" : qUnion(qs), "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : d * inch, "tangentPropagation" : true });
-}
-
-function softChamferAt(context is Context, id is Id, bodies is array, F is CoordSystem, pts is array, d is number, label is string)
-{
-    try silent
-    {
-        chamferAt(context, id, bodies, F, pts, d);
-    }
-    catch (e)
-    {
-        kWarn(context, id, "decorative chamfer skipped - " ~ label);
-    }
-}
-
-// Solid loft through planar profiles, in order.  Each profile is [pl, loop]: a local plane
-// and one closed loop of segments on it (see kSketchLoops).
-function mkLoft(context is Context, id is Id, F is CoordSystem, profiles is array)
-{
-    var regions = [];
-    var sketches = [];
-    for (var i = 0; i < size(profiles); i += 1)
-    {
-        const skId = id + ("sk" ~ i);
-        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : kPlane(F, profiles[i][0], 0) });
-        kSketchLoops(sk, [profiles[i][1]]);
-        skSolve(sk);
-        regions = append(regions, qSketchRegion(skId, true));
-        sketches = append(sketches, qCreatedBy(skId, EntityType.BODY));
-    }
-    opLoft(context, id + "lf", { "profileSubqueries" : regions, "bodyType" : ToolBodyType.SOLID });
-    opDeleteBodies(context, id + "dl", { "entities" : qUnion(sketches) });
-}
-
-// Paint rectangles [u0, v0, u1, v1] onto the face(s) of `bodies` lying in plane pl (numbers,
-// lettering, stripes).  The face is split, so the decal is exact and coplanar; rectangles
-// must not overlap.  A failure leaves the face plain and warns.
-function faceDecal(context is Context, id is Id, bodies is array, F is CoordSystem, pl is array, rects is array, rgb is array)
-{
-    const P = kPlane(F, pl, 0);
-    const skId = id + "sk";
-    try silent
-    {
-        const sk = newSketchOnPlane(context, skId, { "sketchPlane" : P });
-        for (var i = 0; i < size(rects); i += 1)
-        {
-            const r = rects[i];
-            skRectangle(sk, "r" ~ i, { "firstCorner" : k2([r[0], r[1]]), "secondCorner" : k2([r[2], r[3]]) });
-        }
-        skSolve(sk);
-        opSplitFace(context, id + "sp", {
-                    "faceTargets" : qCoincidesWithPlane(qOwnedByBody(kQ(bodies), EntityType.FACE), P),
-                    "edgeTools" : qCreatedBy(skId, EntityType.EDGE)
-                });
-        opDeleteBodies(context, id + "dl", { "entities" : qCreatedBy(skId, EntityType.BODY) });
-        var qs = [];
-        for (var r in rects)
-        {
-            const c = [(r[0] + r[2]) / 2, (r[1] + r[3]) / 2];
-            qs = append(qs, qContainsPoint(qOwnedByBody(kQ(bodies), EntityType.FACE), P.origin + (P.x * c[0] + cross(P.normal, P.x) * c[1]) * inch));
-        }
-        setProperty(context, { "entities" : qUnion(qs), "propertyType" : PropertyType.APPEARANCE, "value" : kColor(rgb, 1) });
-    }
-    catch (e)
-    {
-        try silent
-        {
-            opDeleteBodies(context, id + "dl2", { "entities" : qCreatedBy(skId, EntityType.BODY) });
-        }
-        kWarn(context, id, "decal skipped");
-    }
 }
 
 // Group bodies into one open composite part (the parts list shows one entry; the members
@@ -626,7 +534,6 @@ function countBodies(context is Context, bodies is array) returns number
 const FIELD_L = 648;
 const FIELD_W = 324;
 const FIELD_CX = 324;
-const FIELD_CY = 162;
 const CARPET_T = 0.25;          // (ref) carpet thickness, below Z = 0
 const TAPE_W = 2;
 const TAPE_T = 0.01;
@@ -749,7 +656,6 @@ const RUNG_L = 20;
 const TRUSS_CLR = 4;
 const TRUSS_TOP = 84;
 const TUBE_S = 2;
-const TUBE_WALL = 0.12;         // (ref) 11-gauge
 const FRONT_N = [-6, -4];       // front layer: rung carriers, rails
 const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer — see README (spec finding)
 const UPRIGHT_INSET = 2.5;      // (ref) upright's inner face from the lane edge
@@ -757,16 +663,13 @@ const BRACKET_T = 0.25;
 const BRACKET_FROM_END = 1;     // bracket plate 1.0-1.25 in from each rung end
 const BRACKET_FRONT = 0.5;      // saddle plate reaches 0.5 in in front of plane P, 0.25 behind the rung front
 const TAG_HW_X = 39;
-const TAG_Z_HW = 12;
 const BEAM_Z = 12;
 
 // ---- AprilTags (§7) ----------------------------------------------------------------------
-const TAG_BODY = 6.5;
-const TAG_TARGET = 8.125;
 const TAG_PANEL = 9;
 const TAG_PANEL_T = 0.25;
 const TAG_Z_OUT = 52;
-const TAG_CELL = 0.8125;        // 8.125 / 10 = 6.5 / 8
+const TAG_CELL = 0.8125;        // 8.125-in target / 10 cells = 6.5-in tag body / 8 cells
 
 // ---- game pieces (§9) --------------------------------------------------------------------
 const CRATE_S = 12;
@@ -870,12 +773,6 @@ function plAxis(o, axis, radial)
     return [o, cross(vector(radial[0], radial[1], radial[2]), vector(axis[0], axis[1], axis[2])), radial];
 }
 
-// Plane normal to `axis` through `o`, with `xd` as its sketch u direction.
-function plNormal(o, axis, xd)
-{
-    return [o, axis, xd];
-}
-
 function rectPts(u0, v0, u1, v1)
 {
     return [[u0, v0], [u1, v0], [u1, v1], [u0, v1]];
@@ -892,11 +789,6 @@ function mkBox(context is Context, id is Id, F, p0, p1)
 function prismXZ(context is Context, id is Id, F, pts, y0, y1)
 {
     mkPrism(context, id, F, plXZ(0), pts, -y1, -y0);
-}
-
-function prismXZHoles(context is Context, id is Id, F, outer, holes, y0, y1)
-{
-    mkPrismHoles(context, id, F, plXZ(0), outer, holes, -y1, -y0);
 }
 
 // Prism from a (y, z) polygon, spanning x0..x1 in frame F.
@@ -966,103 +858,6 @@ function paint(context is Context, bodies, name, tok, alpha, matKey)
 function paintRGB(context is Context, bodies, name, rgb, alpha, matKey)
 {
     styleBody(context, bodies, name, rgb, alpha, MAT[matKey]);
-}
-
-// Square tube profile (outer square with a hole) for hollow members: returns [outer, [hole]].
-function tubeLoops(u0, v0, u1, v1, wall)
-{
-    return [rectPts(u0, v0, u1, v1), [rectPts(u0 + wall, v0 + wall, u1 - wall, v1 - wall)]];
-}
-
-// ---------------------------------------------------------------- src/35_font.fs
-
-// =====================================================================================
-// PIXEL FONT — a 5 x 7 dot-matrix font for signage, bumper numbers and screens, drawn with
-// faceDecal (the lettering is painted onto a planar face; no geometry is added).  Each glyph is
-// seven rows, top first; a row is a 5-bit number, most significant bit = leftmost pixel.
-// Every lit run is inset by FONT_GAP on all sides, so no two rectangles touch (clean face
-// splits in Onshape, and an LED-matrix look).  Part-code dialect.
-// =====================================================================================
-
-const FONT_POW2 = [16, 8, 4, 2, 1];
-const FONT_GAP = 0.06;          // inset of each lit run, as a fraction of the pixel size
-const FONT5X7 = {
-        "A" : [14, 17, 17, 31, 17, 17, 17], "B" : [30, 17, 17, 30, 17, 17, 30],
-        "C" : [14, 17, 16, 16, 16, 17, 14], "D" : [30, 17, 17, 17, 17, 17, 30],
-        "E" : [31, 16, 16, 30, 16, 16, 31], "F" : [31, 16, 16, 30, 16, 16, 16],
-        "G" : [14, 17, 16, 23, 17, 17, 15], "H" : [17, 17, 17, 31, 17, 17, 17],
-        "I" : [14, 4, 4, 4, 4, 4, 14], "J" : [7, 2, 2, 2, 2, 18, 12],
-        "K" : [17, 18, 20, 24, 20, 18, 17], "L" : [16, 16, 16, 16, 16, 16, 31],
-        "M" : [17, 27, 21, 21, 17, 17, 17], "N" : [17, 17, 25, 21, 19, 17, 17],
-        "O" : [14, 17, 17, 17, 17, 17, 14], "P" : [30, 17, 17, 30, 16, 16, 16],
-        "Q" : [14, 17, 17, 17, 21, 18, 13], "R" : [30, 17, 17, 30, 20, 18, 17],
-        "S" : [15, 16, 16, 14, 1, 1, 30], "T" : [31, 4, 4, 4, 4, 4, 4],
-        "U" : [17, 17, 17, 17, 17, 17, 14], "V" : [17, 17, 17, 17, 17, 10, 4],
-        "W" : [17, 17, 17, 21, 21, 21, 10], "X" : [17, 17, 10, 4, 10, 17, 17],
-        "Y" : [17, 17, 17, 10, 4, 4, 4], "Z" : [31, 1, 2, 4, 8, 16, 31],
-        "0" : [14, 17, 19, 21, 25, 17, 14], "1" : [4, 12, 4, 4, 4, 4, 14],
-        "2" : [14, 17, 1, 2, 4, 8, 31], "3" : [31, 2, 4, 2, 1, 17, 14],
-        "4" : [2, 6, 10, 18, 31, 2, 2], "5" : [31, 16, 30, 1, 1, 17, 14],
-        "6" : [6, 8, 16, 30, 17, 17, 14], "7" : [31, 1, 2, 4, 8, 8, 8],
-        "8" : [14, 17, 17, 14, 17, 17, 14], "9" : [14, 17, 17, 15, 1, 2, 12],
-        " " : [0, 0, 0, 0, 0, 0, 0], "-" : [0, 0, 0, 31, 0, 0, 0],
-        "." : [0, 0, 0, 0, 0, 12, 12], ":" : [0, 12, 12, 0, 12, 12, 0],
-        "!" : [4, 4, 4, 4, 4, 0, 4], "/" : [1, 1, 2, 4, 8, 16, 16]
-    };
-
-// 1 if column c (0 = leftmost) of the 5-bit glyph row value r is lit, else 0.
-function fontBit(r, c)
-{
-    return floor(r / FONT_POW2[c]) - 2 * floor(r / (2 * FONT_POW2[c]));
-}
-
-// Width of n characters at pixel size `cell` (5 pixels per glyph, 1 pixel between glyphs).
-function textWidth(n, cell)
-{
-    return (6 * n - 1) * cell;
-}
-
-// Rectangles [u0, v0, u1, v1] that draw `text` — an array of one-character strings, e.g.
-// chars("SUMMIT PUSH") — with the lower-left corner of the first glyph at (u0, v0).  The text is
-// 7 * cell tall and textWidth(size(text), cell) wide.  Pass the result to faceDecal.
-function textRects(text, u0, v0, cell)
-{
-    var out = [];
-    const g0 = FONT_GAP * cell;
-    for (var k = 0; k < size(text); k += 1)
-    {
-        const g = FONT5X7[text[k]];
-        const ux = u0 + 6 * cell * k;
-        for (var r = 0; r < 7; r += 1)
-        {
-            const v = v0 + (6 - r) * cell;
-            var start = -1;
-            for (var c = 0; c < 6; c += 1)
-            {
-                var lit = false;
-                if (c < 5)
-                {
-                    lit = fontBit(g[r], c) == 1;
-                }
-                if (lit && start < 0)
-                {
-                    start = c;
-                }
-                if (!lit && start >= 0)
-                {
-                    out = append(out, [ux + start * cell + g0, v + g0, ux + c * cell - g0, v + cell - g0]);
-                    start = -1;
-                }
-            }
-        }
-    }
-    return out;
-}
-
-// Rectangles for `text` centred on (uc, vc).
-function textRectsCentred(text, uc, vc, cell)
-{
-    return textRects(text, uc - textWidth(size(text), cell) / 2, vc - 3.5 * cell, cell);
 }
 
 // ---------------------------------------------------------------- src/40_field.fs
@@ -1895,7 +1690,6 @@ function buildAllianceTape(context is Context, id is Id, isRed)
     const A = allianceName(isRed);
     const rgb = allianceRGB(isRed);
     const w = TAPE_W;
-    var t = [];
     // BASECAMP / HEADWALL ZONE: X 0-48, Y 90-234 (the wall closes the fourth side)
     tapeBox(context, id + "bcX", F, HW_X - w, HW_Y0, HW_X, HW_Y1);
     tapeBox(context, id + "bcLo", F, 0, HW_Y0, HW_X - w, HW_Y0 + w);
@@ -2712,10 +2506,13 @@ function selfCheck(context is Context, id is Id, opts)
                 ch = ck(ch, msg([A, " lane ", li + 1, " frame inside its lane"]), min(ub[1] - (LANE_Y[li] - LANE_W / 2), 0) + min(LANE_Y[li] + LANE_W / 2 - ub[4], 0), 0, 0.0001);
                 // BASECAMP clear volume: a 42-in ROBOT stages up to X = 43.859 - 2 / cos15 - 42 / 3.7321 (= 30.53)
                 const xStage = HW_X - (TRUSS_CLR + TUBE_S) / cosd(HW_LEAN) - 42 * tand(HW_LEAN);
-                mkBox(context, lid + "probe42", F, [0, LANE_Y[li] - 20, 0], [xStage - 0.01, LANE_Y[li] + 20, 42]);
+                // the probe gets its own top-level Id: re-entering hid or lid after later operations
+                // would break the std rule that every Id prefix is one contiguous run of operations
+                const pid = id + msg(["probe42", sideTag(isRed), li + 1]);
+                mkBox(context, pid, F, [0, LANE_Y[li] - 20, 0], [xStage - 0.01, LANE_Y[li] + 20, 42]);
                 ch = ck(ch, msg([A, " lane ", li + 1, " 42-in staging envelope clear of the lane (X to the frame's front at 42 in)"]),
-                        min(measureDist(context, [lid + "probe42"], [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"]), 0.001), 0.001, 0.0001);
-                bDelete(context, lid + "probe42del", [lid + "probe42"]);
+                        min(measureDist(context, [pid], [lid + "upright0", lid + "upright1", lid + "railBot", lid + "railTop", lid + "carrier0", lid + "carrier1", lid + "carrier2"]), 0.001), 0.001, 0.0001);
+                bDelete(context, id + msg(["probe42del", sideTag(isRed), li + 1]), [pid]);
             }
             const cb = measureBox(context, [hid + "crossbeam"], PF);
             ch = ck(ch, msg([A, " lower crossbeam >= 4.0 behind plane P (margin)"]), min(-TRUSS_CLR - cb[3], 0), 0, 0.0001);

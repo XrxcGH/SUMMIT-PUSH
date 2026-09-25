@@ -42,7 +42,6 @@ function buildAllianceTape(context is Context, id is Id, isRed)
     const A = allianceName(isRed);
     const rgb = allianceRGB(isRed);
     const w = TAPE_W;
-    var t = [];
     // BASECAMP / HEADWALL ZONE: X 0-48, Y 90-234 (the wall closes the fourth side)
     tapeBox(context, id + "bcX", F, HW_X - w, HW_Y0, HW_X, HW_Y1);
     tapeBox(context, id + "bcLo", F, 0, HW_Y0, HW_X - w, HW_Y0 + w);

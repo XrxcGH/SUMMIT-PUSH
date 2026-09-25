@@ -55,7 +55,7 @@ exactly its published weight, computed from its modelled volume at regeneration.
 | hardwood | Hardwood (maple), painted | 705 | slot fences |
 | uhmw-ply | UHMW-faced plywood | 650 | OUTFITTER chute ramps |
 | aluminum | Aluminum 6061 | 2700 | socket tubes and brackets, gussets, kick-guard, tag wedges |
-| steel | Steel, mild | 7850 | rungs, pegs, High Peg bosses, HEADWALL tubes (modelled hollow, 0.120 wall) and brackets |
+| steel | Steel, mild | 7850 | rungs, pegs, High Peg bosses, rung end brackets |
 | polycarbonate | Polycarbonate | 1200 | glazing, SUMMIT BEACON lantern |
 | acrylic | Acrylic (PMMA), frosted | 1190 | tier rings, FIELD LED lenses |
 | tape | Gaffer tape | 830 | all tape (2 in × 0.01 in) |
@@ -63,7 +63,7 @@ exactly its published weight, computed from its modelled volume at regeneration.
 | abs | ABS, molded | 1050 | E-STOP / A-STOP |
 | carpet | Event carpet, low pile | 220 | carpet (0.25 in thick, below Z 0) |
 | al-tube-2x1 | Aluminum 2 × 1 × 0.125 tube (effective solid) | 928.1 | guardrail rails and posts |
-| steel-tube-2x2 | Steel 2 × 2 × 0.120 tube (effective solid) | 1771 | Summit Socket mast |
+| steel-tube-2x2 | Steel 2 × 2 × 0.120 tube (effective solid) | 1771 | HEADWALL lane frames and lower crossbeam, Summit Socket mast |
 | steel-frame | Steel 2 × 1.25 × 0.083 tube (effective solid) | 1608 | alliance-wall frame |
 
 | SUPPLY | Modelled volume | Density set | Mass |

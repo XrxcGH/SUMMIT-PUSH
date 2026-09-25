@@ -15,7 +15,8 @@ assertions, what a reading of the std source establishes:
   D. specific API facts (units, opShell hollow, union survivor rule, status reporting ids,
      try silent/catch, bSplineSurface knots, qSketchRegion, evBox3d cSys ...).
   E. FeatureScript block scoping (the Python twin is function-scoped and cannot see it):
-     unresolved names, nested redeclarations, assignments to const, unused locals.
+     unresolved names, nested redeclarations, assignments to const; and the Feature Studio
+     editor's own warnings (verify/onshape_lint.py): unused declarations, locals set but not used.
   F. Id rules from std context.fs: characters, no duplicate operation ids, and "each Id
      (including parents) must refer to a contiguous region of operations" - checked on the
      real operation order by running the part code against a logging stub kernel.
@@ -37,7 +38,7 @@ ROOT = os.path.dirname(VERIFY)                       # 03-field/featurescript
 SRC = os.path.join(ROOT, "src")
 STD_CANDIDATES = [
     os.environ.get("FS_STD", ""),
-    "/tmp/claude-0/-home-user-SUMMIT-PUSH/2d3069ce-8855-52b5-8721-54e54f71c127/scratchpad/std",
+    os.path.join(ROOT, ".fs-std"),
 ]
 FS_VERSION = "2960"
 
@@ -172,10 +173,10 @@ def top_level_names(files):
 
 
 def scope_analyse(path, known):
-    """Return (unresolved, redeclared, const_assign, unused) lists of strings for one file."""
+    """Return (unresolved, redeclared, const_assign) lists of strings for one file."""
     toks = tokenize(_read(path))
     fn = os.path.basename(path)
-    unresolved, redecl, const_assign, unused = [], [], [], []
+    unresolved, redecl, const_assign = [], [], []
     frames = []   # dicts: kind in {"func","for","catch","block","map"}, names {n: [kind, line, uses]}
 
     def lookup(name):
@@ -204,18 +205,13 @@ def scope_analyse(path, known):
             redecl.append("%s:%d '%s' declared twice in one scope" % (fn, ln, name))
         fr["names"][name] = [kind, ln, 0]
 
-    def close_frame(fr):
-        for n, (kind, ln, uses) in fr["names"].items():
-            if uses == 0 and kind in ("var", "const"):
-                unused.append("%s:%d '%s'" % (fn, ln, n))
-
     def pop_headers(i):
         # after a block closes: pop for/catch headers, and function headers unless another block follows
         while frames and frames[-1]["kind"] in ("for", "catch", "func"):
             nxt = toks[i + 1][1] if i + 1 < len(toks) else ""
             if frames[-1]["kind"] == "func" and nxt in ("{",):
                 break
-            close_frame(frames.pop())
+            frames.pop()
 
     i = 0
     n = len(toks)
@@ -284,7 +280,6 @@ def scope_analyse(path, known):
             fr = {"kind": "catch", "names": {}}
             frames.append(fr)
             declare(toks[i + 2][1], "catchvar", toks[i + 2][2], target=fr)
-            fr["names"][toks[i + 2][1]][2] = 1     # an unused catch variable is not worth noting
             i += 4
             prev = ("op", ")", ln)
             continue
@@ -299,9 +294,9 @@ def scope_analyse(path, known):
         elif k == "op" and v == "}":
             while frames and frames[-1]["kind"] in ("for", "catch", "func"):
                 # a header frame whose block never opened (should not happen)
-                close_frame(frames.pop())
+                frames.pop()
             if frames:
-                close_frame(frames.pop())
+                frames.pop()
             pop_headers(i)
         elif k == "id" and v not in FS_KEYWORDS:
             after_dot = prev is not None and prev[1] == "."
@@ -323,7 +318,7 @@ def scope_analyse(path, known):
                     unresolved.append("%s:%d '%s'" % (fn, ln, v))
         prev = (k, v, ln)
         i += 1
-    return unresolved, redecl, const_assign, unused
+    return unresolved, redecl, const_assign
 
 
 # =====================================================================================
@@ -338,7 +333,7 @@ KOPS = {
     "mkRevolve": ["sk", "rv", "dl"],
     "mkPillowBox": ["face0n", "face0p", "face1n", "face1p", "face2n", "face2p", "ex", "dl"],
     "bSubtract": [None], "bUnion": [None], "bDelete": [None], "shellHollow": [None],
-    "filletAt": [None], "copyBody": [None],
+    "filletAt": [None], "copyBody": [None], "removeSlivers": [None], "groupParts": [None],
     "tagDecal": ["sk", "sp", "dl"],
 }
 
@@ -443,9 +438,6 @@ def make_stub_ns(K, R):
     def mkCyl(context, id, F, pl, c, r, d0, d1):
         mkPrismProfile(context, id, F, pl, [], d0, d1)
 
-    def mkTube(context, id, F, pl, c, ro, ri, d0, d1):
-        mkPrismProfile(context, id, F, pl, [], d0, d1)
-
     def mkRevolve(context, id, F, pl, loop):
         context.op(id, KOPS["mkRevolve"])
         context.create(id + "rv")
@@ -487,6 +479,21 @@ def make_stub_ns(K, R):
 
     def softFilletAt(context, id, bodies, F, pts, r, label):
         filletAt(context, id, bodies, F, pts, r)
+
+    def removeSlivers(context, id, bodies, minVolume):
+        # the delete runs only when a sliver exists; record it so the Id order is checked either way
+        context.need("removeSlivers %s" % (id,), bodies)
+        context.op(id, KOPS["removeSlivers"])
+
+    def groupParts(context, id, bodies, name):
+        context.need("groupParts %r" % name, bodies)
+        context.op(id, KOPS["groupParts"])
+
+    def numberSharedNames(context, bodies):
+        context.need("numberSharedNames", bodies)
+
+    def kWarn(context, id, message):
+        pass
 
     def copyBody(context, id, src, F):
         context.need("copyBody %s" % (id,), src)
@@ -531,10 +538,14 @@ def make_stub_ns(K, R):
         context.need("countBodies", bodies)
         return 0
 
-    for f in (mkPrismProfile, mkPrism, mkPrismHoles, mkCyl, mkTube, mkRevolve, mkPillowBox, bSubtract,
-              bUnion, bDelete, shellHollow, filletAt, softFilletAt, copyBody, styleBody, nameBody,
-              styleFacesAt, massBody, tagDecal, measureBox, measureVolume, measureDistToPoint,
-              measureDist, countBodies):
+    def decalApplied(context, bodies):
+        context.need("decalApplied", bodies)
+        return 1
+
+    for f in (mkPrismProfile, mkPrism, mkPrismHoles, mkCyl, mkRevolve, mkPillowBox, bSubtract,
+              bUnion, bDelete, removeSlivers, shellHollow, filletAt, softFilletAt, copyBody,
+              styleBody, nameBody, numberSharedNames, styleFacesAt, massBody, tagDecal, kWarn, groupParts,
+              decalApplied, measureBox, measureVolume, measureDistToPoint, measureDist, countBodies):
         ns[f.__name__] = f
     return ns, Id
 
@@ -586,11 +597,11 @@ def contains_point_audit(K):
                 exp.Next()
         return best, n
 
-    def filletAt(context, id, bodies, F, pts, r):
+    def filletAt(context, id, bodies, F, pts, r, **kw):
         for p in pts:
             d, n = near(context.solids_for(bodies), F.pt(p), K.TopAbs_EDGE)
             rec.append(("edge", "/".join(id), p, d, n))
-        return of(context, id, bodies, F, pts, r)
+        return of(context, id, bodies, F, pts, r, **kw)
 
     def styleFacesAt(context, bodies, F, pts, rgb, alpha):
         for p in pts:
@@ -735,9 +746,11 @@ def run(f):
             undocumented = sorted(extra)
             extra = extra - rev_extra
             ck("C opRevolve fields are ones std revolve.fs itself passes to opRevolve", not extra,
-               "unknown: %s" % sorted(extra) if extra else "bounds form %s (not in the opRevolve doc, which lists %s)" % (undocumented, sorted(fields)))
-            ck("C opRevolve uses only the documented fields (angleForward/angleBack)", not undocumented,
-               "kernel passes %s; doc lists %s" % (undocumented, sorted(fields)))
+               "unknown: %s" % sorted(extra) if extra else "bounds form %s" % undocumented)
+            # the opRevolve doc comment still lists the older angleForward/angleBack form; at this
+            # version std revolve.fs passes the bounds form and treats angleBack as the pre-bounds marker
+            out.append(("C (info) opRevolve uses the bounds form std revolve.fs passes, not the doc comment's %s"
+                        % sorted(fields - {"entities", "axis"}), True, "kernel passes %s" % undocumented))
             continue
         ck("C %s: every definition field is documented (%d call(s))" % (fname, ncalls), not extra,
            ("undocumented: %s" % sorted(extra)) if extra else "fields %s" % sorted(used))
@@ -790,8 +803,9 @@ def run(f):
        "export function toWorld(cSys is CoordSystem) returns Transform" in cs, "coordSystem.fs")
     ck("D14 opPattern copies properties by default (copyPropertiesAndAttributes)",
        "If true (default), copies properties and attributes to patterned entities" in geo, "")
-    std_trycatch = sum(1 for fp in glob.glob(os.path.join(std, "*.fs")) if re.search(r"try silent\s*\{[^{}]*(\{[^{}]*\}[^{}]*)*\}\s*catch\s*\(\w+\)", _read(fp)))
-    ck("D15 'try silent { } catch (e) { }' is std syntax", std_trycatch > 0, "%d std files use it" % std_trycatch)
+    std_trycatch = sum(1 for fp in glob.glob(os.path.join(std, "*.fs"))
+                       if re.search(r"try(?: silent)?\s*\{[^{}]*(\{[^{}]*\}[^{}]*)*\}\s*catch\s*\{", _read(fp)))
+    ck("D15 'try silent { } catch { }' (no catch variable) is std syntax", std_trycatch > 0, "%d std files use it" % std_trycatch)
     ck("D16 color(r, g, b, alpha) 4-argument overload exists",
        "export function color(red is number, green is number, blue is number, alpha is number) returns Color" in props, "")
     un = _read(os.path.join(std, "units.fs"))
@@ -809,6 +823,9 @@ def run(f):
     sub_reports = []
     for name, body in kb.items():
         for m in re.finditer(r"reportFeature(Warning|Info|Error)\(context, (\w+)", body):
+            # kWarn rebuilds the feature's own id from its first component
+            if m.group(2) != "id" and re.search(r"const %s = newId\(\) \+ id\[0\];" % m.group(2), body):
+                continue
             sub_reports.append("10_kernel.fs %s -> reportFeature%s(context, %s, ...) where %s is an operation sub-id" % (name, m.group(1), m.group(2), m.group(2)))
     ck("D20 kernel warnings are reported on the feature id (visible), not on an operation sub-id",
        not sub_reports, "; ".join(sub_reports))
@@ -819,7 +836,8 @@ def run(f):
     for name, want in (("mkPrismProfile", ['id + "ex"', 'id + "dl"', "skId"]), ("mkRevolve", ['id + "rv"', 'id + "dl"', "skId"]),
                        ("mkPillowBox", ["sid", 'id + "ex"', 'id + "dl"']), ("tagDecal", ["skId", 'id + "sp"', 'id + "dl"', 'id + "dl2"']),
                        ("bSubtract", ["id"]), ("bUnion", ["id"]), ("bDelete", ["id"]), ("shellHollow", ["id"]),
-                       ("filletAt", ["id"]), ("copyBody", ["id"])):
+                       ("filletAt", ["id"]), ("copyBody", ["id"]), ("removeSlivers", ["id"]),
+                       ("groupParts", ["id"])):
         got = [x for x in ops_read.get(name, []) if not x.startswith("->")]
         if sorted(set(got)) != sorted(set(want)):
             mism.append("%s: %s" % (name, got))
@@ -830,18 +848,24 @@ def run(f):
     # ---------------------------------------------------------------- E. block scoping
     std_all_names = set(all_std) | set(reach)
     known = set(tl) | std_all_names | {"true", "false", "undefined"}
-    tot_unres, tot_redecl, tot_const, tot_unused = [], [], [], []
+    tot_unres, tot_redecl, tot_const = [], [], []
     for fp in files:
-        u, r, c, un_ = scope_analyse(fp, known)
+        u, r, c = scope_analyse(fp, known)
         tot_unres += u
         tot_redecl += r
         tot_const += c
-        tot_unused += un_
     ck("E1 every identifier resolves in FeatureScript's block scope (no use outside its block)", not tot_unres,
        "; ".join(tot_unres[:10]) or "all resolve")
     ck("E2 no local redeclared in an enclosing scope", not tot_redecl, "; ".join(tot_redecl[:10]))
     ck("E3 no assignment to a const", not tot_const, "; ".join(tot_const[:10]))
-    out.append(("E4 (info) unused locals: %d" % len(tot_unused), True, "; ".join(tot_unused)))
+    import onshape_lint
+    ow = onshape_lint.warnings(code)
+    unused_decl = ["line %d %s" % w for w in ow if w[1].startswith("Unused declaration")]
+    unread = ["line %d %s" % w for w in ow if not w[1].startswith("Unused declaration")]
+    ck("E4 no local is set but not used (the Feature Studio editor's 'Variable X set but not used')", not unread,
+       "; ".join(unread[:10]) or "none")
+    ck("E7 every top-level declaration is used (the Feature Studio editor's 'Unused declaration')", not unused_decl,
+       "; ".join(unused_decl[:20]) or "none")
     shadow, tl_refs = [], []
     for fp in files:
         toks = tokenize(_read(fp))

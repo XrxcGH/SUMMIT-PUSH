@@ -26,12 +26,6 @@ function plAxis(o, axis, radial)
     return [o, cross(vector(radial[0], radial[1], radial[2]), vector(axis[0], axis[1], axis[2])), radial];
 }
 
-// Plane normal to `axis` through `o`, with `xd` as its sketch u direction.
-function plNormal(o, axis, xd)
-{
-    return [o, axis, xd];
-}
-
 function rectPts(u0, v0, u1, v1)
 {
     return [[u0, v0], [u1, v0], [u1, v1], [u0, v1]];
@@ -48,11 +42,6 @@ function mkBox(context is Context, id is Id, F, p0, p1)
 function prismXZ(context is Context, id is Id, F, pts, y0, y1)
 {
     mkPrism(context, id, F, plXZ(0), pts, -y1, -y0);
-}
-
-function prismXZHoles(context is Context, id is Id, F, outer, holes, y0, y1)
-{
-    mkPrismHoles(context, id, F, plXZ(0), outer, holes, -y1, -y0);
 }
 
 // Prism from a (y, z) polygon, spanning x0..x1 in frame F.
@@ -122,10 +111,4 @@ function paint(context is Context, bodies, name, tok, alpha, matKey)
 function paintRGB(context is Context, bodies, name, rgb, alpha, matKey)
 {
     styleBody(context, bodies, name, rgb, alpha, MAT[matKey]);
-}
-
-// Square tube profile (outer square with a hole) for hollow members: returns [outer, [hole]].
-function tubeLoops(u0, v0, u1, v1, wall)
-{
-    return [rectPts(u0, v0, u1, v1), [rectPts(u0 + wall, v0 + wall, u1 - wall, v1 - wall)]];
 }

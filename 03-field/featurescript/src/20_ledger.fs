@@ -9,7 +9,6 @@
 const FIELD_L = 648;
 const FIELD_W = 324;
 const FIELD_CX = 324;
-const FIELD_CY = 162;
 const CARPET_T = 0.25;          // (ref) carpet thickness, below Z = 0
 const TAPE_W = 2;
 const TAPE_T = 0.01;
@@ -132,7 +131,6 @@ const RUNG_L = 20;
 const TRUSS_CLR = 4;
 const TRUSS_TOP = 84;
 const TUBE_S = 2;
-const TUBE_WALL = 0.12;         // (ref) 11-gauge
 const FRONT_N = [-6, -4];       // front layer: rung carriers, rails
 const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer — see README (spec finding)
 const UPRIGHT_INSET = 2.5;      // (ref) upright's inner face from the lane edge
@@ -140,16 +138,13 @@ const BRACKET_T = 0.25;
 const BRACKET_FROM_END = 1;     // bracket plate 1.0-1.25 in from each rung end
 const BRACKET_FRONT = 0.5;      // saddle plate reaches 0.5 in in front of plane P, 0.25 behind the rung front
 const TAG_HW_X = 39;
-const TAG_Z_HW = 12;
 const BEAM_Z = 12;
 
 // ---- AprilTags (§7) ----------------------------------------------------------------------
-const TAG_BODY = 6.5;
-const TAG_TARGET = 8.125;
 const TAG_PANEL = 9;
 const TAG_PANEL_T = 0.25;
 const TAG_Z_OUT = 52;
-const TAG_CELL = 0.8125;        // 8.125 / 10 = 6.5 / 8
+const TAG_CELL = 0.8125;        // 8.125-in target / 10 cells = 6.5-in tag body / 8 cells
 
 // ---- game pieces (§9) --------------------------------------------------------------------
 const CRATE_S = 12;

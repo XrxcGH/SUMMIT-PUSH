@@ -6,11 +6,14 @@ and check it.
     python 03-field/featurescript/build.py [--std PATH]
 
 Checks, in order:
-  1. every part-code file (src/2x-4x) passes the dialect lint (verify/fs2py.py)
-  2. with --std PATH (a checkout of the FeatureScript standard library, e.g.
-     https://github.com/javawizard/onshape-std-library-mirror), every function the Feature
-     Studio calls is either defined in it or exported by the standard library, and every
-     Enum.MEMBER it names exists
+  1. every part-code file (src/2x-4x) passes the dialect lint (verify/fs2py.py) and the
+     FeatureScript scope rules (verify/scope_lint.py)
+  2. the assembled Feature Studio raises none of the Onshape editor's warnings
+     (verify/onshape_lint.py: unused declarations, variables set but not used)
+  3. with --std PATH, or $FS_STD, or a checkout at .fs-std/ (the FeatureScript standard
+     library, e.g. https://github.com/javawizard/onshape-std-library-mirror), every function
+     the Feature Studio calls is either defined in it or exported by the standard library, and
+     every Enum.MEMBER it names exists
 Exit status is non-zero if any check fails.
 """
 import argparse
@@ -22,6 +25,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "verify"))
 import fs2py  # noqa: E402
+import onshape_lint  # noqa: E402
 import scope_lint  # noqa: E402
 
 OUT = os.path.join(HERE, "SummitPushField.fs")
@@ -138,9 +142,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--std", help="path to a FeatureScript standard-library checkout")
     a = ap.parse_args()
+    if not a.std:
+        for cand in (os.environ.get("FS_STD"), os.path.join(HERE, ".fs-std")):
+            if cand and os.path.isfile(os.path.join(cand, "geometry.fs")):
+                a.std = cand
+                break
     files = sources()
     errs = lint_parts(files, a.std)
     code = assemble(files)
+    for ln, text in onshape_lint.warnings(code):
+        errs.append("SummitPushField.fs:%d: %s (Onshape editor warning)" % (ln, text))
     with open(OUT, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(code)
     print("wrote %s (%d lines)" % (os.path.relpath(OUT, os.getcwd()), code.count("\n")))
@@ -151,7 +162,7 @@ def main():
         print("ERROR", e)
     if errs:
         sys.exit(1)
-    print("OK: dialect lint%s passed" % (" and API check" if a.std else ""))
+    print("OK: dialect lint, Onshape warning check%s passed" % (" and API check" if a.std else ""))
 
 
 if __name__ == "__main__":

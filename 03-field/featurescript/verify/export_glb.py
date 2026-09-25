@@ -7,11 +7,11 @@ Export an off-line build to binary glTF 2.0 (.glb) for the WebGL renderer and th
 One glTF node per body (named with the body's part name), one primitive per face colour.
 Coordinates are converted from the field frame (inches, Z up) to glTF (metres, Y up):
     (x, y, z) field  ->  (x, z, -y) * 0.0254
-Face-colour overrides, faceDecal rectangles and AprilTag cells are carried over; decals become
-thin coplanar quads 0.02 in proud of their face.  Materials are PBR: metals get metalness,
+Face-colour overrides and AprilTag cells are carried over; the tag cells become thin coplanar
+quads 0.02 in proud of their face.  Materials are PBR: metals get metalness,
 glazing and the lantern keep their alpha, lit LEDs / the lit beacon / screens are emissive.
 
-export(ctx, path, extra_nodes=None) is importable: the robot, arena and scene runners use it.
+export(ctx, path, extra_nodes=None) is importable (verify/animate.py uses it).
 """
 import argparse
 import json
@@ -114,8 +114,6 @@ def body_primitives(rec, defl=0.05, ang=0.25):
             q = np.array([o + x * u + y * v + n * 0.02 for (u, v) in ((u0, v0), (u1, v0), (u1, v1), (u0, v1))])
             add((tuple(rgb), a), q, np.tile(n, (4, 1)), np.array([[0, 1, 2], [0, 2, 3]]))
 
-    for d in rec.get("decals") or []:
-        quads(d["rects"], np.array(d["origin"]), np.array(d["normal"]), np.array(d["x"]), d["rgb"])
     t = rec.get("decal")
     if t:
         h, s = t["cells"] / 2.0, t["s"]
@@ -227,7 +225,7 @@ def export(ctx, path, extras=None, keys=None):
             continue
         if rec.get("solid_names"):
             for i, s in enumerate(rec["solids"]):
-                sub = dict(rec, solids=[s], decals=None, decal=None)
+                sub = dict(rec, solids=[s], decal=None)
                 n = g.add_body(sub, part_label(rec, i))
                 if n is not None:
                     roots.append(n)

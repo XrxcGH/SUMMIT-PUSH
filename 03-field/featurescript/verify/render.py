@@ -70,15 +70,7 @@ def mesh_record(rec, defl=0.08):
                     tris.append(t)
                     cols.append(col)
             exp.Next()
-    # painted decals (faceDecal rectangles, AprilTag cells), drawn a hair proud of their face
-    for d in rec.get("decals") or []:
-        o, n, x = np.array(d["origin"]), np.array(d["normal"]), np.array(d["x"])
-        y = np.cross(n, x)
-        c = np.array(d["rgb"]) / 255.0
-        for (u0, v0, u1, v1) in d["rects"]:
-            q = [o + x * u + y * v + n * 0.02 for (u, v) in ((u0, v0), (u1, v0), (u1, v1), (u0, v1))]
-            tris += [[q[0], q[1], q[2]], [q[0], q[2], q[3]]]
-            cols += [c, c]
+    # AprilTag cells, drawn a hair proud of their face
     t = rec.get("decal")
     if t:
         o, n, x = np.array(t["origin"]), np.array(t["normal"]), np.array(t["x"])

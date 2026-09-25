@@ -89,7 +89,7 @@ def _parts(ctx):
         names = rec.get("solid_names")
         if names:
             for i, s in enumerate(rec["solids"]):
-                out[names[i]] = dict(rec, solids=[s], name=names[i], decals=None, decal=None)
+                out[names[i]] = dict(rec, solids=[s], name=names[i], decal=None)
         else:
             out[rec["name"] or "/".join(k)] = rec
     return out

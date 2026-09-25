@@ -2,6 +2,8 @@
 
 *An original offseason game for competitive-robotics design training · Version 2.2*
 
+© 2026 Eric Dean. All rights reserved. Shared for training and educational use under the SUMMIT PUSH Training Use License (`LICENSE.md`, https://github.com/XrxcGH/SUMMIT-PUSH).
+
 ---
 
 **Contents**
@@ -26,7 +28,7 @@
 SUMMIT PUSH is an original offseason game, published as a design-training release for competitive robotics programs. This manual defines the game, the ARENA, the rules of play, the ROBOT construction rules, and the tournament structure. SUMMIT PUSH has no physical competition field. Every dimension, rule, and scoring value is nonetheless written for one, so that teams can design ROBOTS against it as they would for a competition season.
 
 - **Authority.** Where any other document in the SUMMIT PUSH package (CAD packages, drawings, the vision guide) appears to conflict with this manual, this manual governs, with one exception. The design specification (`01-design/DESIGN-SPEC.md`) is the source document from which this manual was written; any discrepancy found between the two is reported to the event organizer and resolved in the specification's favor.
-- **Defined terms.** Words in ALL CAPITAL LETTERS (e.g., CRAG, SCORED, MATCH) are defined terms. Each is collected, with its definition, in the Glossary (Section 9). When a rule uses a defined term, the definition governs over the everyday meaning of the word. Feature names that are not defined terms, such as Low Socket, Shelf 1, and slot fence, appear in title case.
+- **Defined terms.** Words in ALL CAPITAL LETTERS (e.g., CRAG, SCORED, MATCH) are defined terms. Each is collected, with its definition, in the Glossary (Section 9). When a rule uses a defined term, the definition governs over the everyday meaning of the word. Feature names that are not defined terms, such as Low Socket and Shelf 1, appear in title case.
 - **Rule numbers.** Game rules carry G numbers and robot construction rules carry R numbers. Section 1.4 gives the numbering scheme.
 - **Interpretation.** Referees, and in a design challenge the judges, enforce the rules as written. Teams raise ambiguities through the Q&A process rather than exploiting them (see Section 1.3).
 
@@ -221,8 +223,8 @@ The FIELD centerline is the line X = 324. The FIELD center is (324, 162). Height
 Each long-side guardrail (Y = 0 and Y = 324) carries a continuous 1.0-in-wide LED band set into its top rail, with a frosted lens facing inward and the lens center 19.0 in above the carpet. Each band is divided at the FIELD centerline into two 324-in ALLIANCE segments, so each ALLIANCE has two segments, one on each side of the FIELD. Segment states:
 
 - **Green:** the FIELD is safe for team members to enter or reach over (**G101**).
-- **White:** the FORECAST, displayed in both ALLIANCES' segments at T=0 of AUTO (Section 4.3.1). One lit block means WHITEOUT, two ICEFALL, three GALE.
-- **ALLIANCE color:** that ALLIANCE's declared ROUTE, from the "field ready" signal through MATCH start (Section 4.2.3, **G304**). One lit block means LOW ROUTE, two MID ROUTE, three HIGH ROUTE.
+- **White:** the FORECAST, displayed in both ALLIANCES' segments from T=0 until the end of AUTO (Section 4.3.1). One lit block means WHITEOUT, two ICEFALL, three GALE.
+- **ALLIANCE color:** that ALLIANCE's declared ROUTE, from the "field ready" signal until T=0, when the FORECAST replaces it (Section 4.2.3, **G304**). One lit block means LOW ROUTE, two MID ROUTE, three HIGH ROUTE.
 - **Dark:** at all other times.
 
 FIELD LEDs are indicators only and are never the scoring or safety authority. FIELD STAFF direction governs FIELD entry, and referee-recorded state governs scoring.
@@ -262,7 +264,7 @@ The SOCKET FACE offset is reduced for space. The corridor between the two CRAGS 
 
 Immediately before the MATCH, each ROBOT must be positioned entirely within its ALLIANCE's BASECAMP and in contact with its alliance wall. Each ROBOT may hold up to one preloaded SUPPLY of any type (Section 3.6.1).
 
-> *Commentary:* BASECAMP is the wedge under the leaning HEADWALL, so the clear height available to a ROBOT falls as it moves down-field. The lower face of the truss lies at X = 41.79 − 0.268·Z for Blue, so the clear height at any X is H(X) = 3.732 × (41.79 − X), and the lower crossbeam limits it to 10.8 in between X = 34.2 and 38.6. A ROBOT has 42.0 in of clearance anywhere up to X = 30.5. A ROBOT at the 42-in starting height of **R104** therefore stages against the alliance wall, which is why the contact requirement names the wall rather than the truss. The full clear-volume curve is published in the FIELD CAD PACKAGE §4.1.
+> *Commentary:* BASECAMP is the wedge under the leaning HEADWALL, so the clear height available to a ROBOT falls as it moves down-field. The lower face of the truss lies at X = 41.79 − 0.268·Z for Blue, so the clear height at any X is H(X) = 3.732 × (41.79 − X), and the lower crossbeam limits it to 10.8 in between X = 34.2 and 38.6. A ROBOT has 42.0 in of clearance anywhere up to X = 30.5. A ROBOT at the 42-in starting height of **R104** therefore stages against the alliance wall, which is why the contact requirement names the wall rather than the truss. At each lane center the HEADWALL tag panel hangs to Z = 7.5 across its 9.0-in width, so between X = 38.75 and 39.0 the clear height there is 7.5 in. The full clear-volume curve is published in the FIELD CAD PACKAGE §4.1.
 
 ## 3.3 The CRAG
 
@@ -320,7 +322,7 @@ The PEG FACE carries four pegs, and the spire carries two more:
 
 All pegs are 1.5 in OD, angled 45° upward from the face, with 10.0 in exposed and a fully rounded tip. Pegs accept ROPE COILS only, hung over the peg. Each peg SCORES at most one SUPPLY; extra SUPPLIES resting in or on an occupied peg are not SCORED and satisfy no requirement. Peg heights are measured to the peg root at the face.
 
-A ROPE COIL dropped over a peg settles into a near-vertical plane parallel to the CRAG face and wedges there. The 5.0-in hole over a 1.5-in peg permits at most about 48° (47.9°) of tilt away from perpendicular to the peg, and a vertical hang requires 45°, so a SCORED ROPE COIL is held captive rather than balanced. Its center comes to rest roughly 1 in above the peg root.
+A ROPE COIL dropped over a peg settles plumb, in a plane parallel to the CRAG face, hanging from the top of its hole. The coil can tilt up to 57.8° away from perpendicular to the peg before the peg binds inside the ring, and a vertical hang requires 45°, so a SCORED ROPE COIL is held captive rather than balanced. With its inner face 1.25 in outboard of the CRAG face, its center rests about 1.6 in above the peg root (FIELD CAD PACKAGE §2.5).
 
 ### 3.3.4 BASE DEPOT
 
@@ -383,7 +385,7 @@ All truss structure lies at least 4.0 in behind PLANE P, measured normal to PLAN
 
 The taped HEADWALL ZONE (coincident with BASECAMP, Section 3.2) lies beneath and behind the HEADWALL, between the truss base and the alliance wall. From the start of the ENDGAME period until climb assessment is complete, an opponent that contacts a ROBOT in this zone commits a MAJOR FOUL, and an additional MAJOR FOUL and a YELLOW CARD if the contact blocks or displaces a climb, as when a hanging ROBOT falls (**G412**). Contact that the protected ROBOT initiates is not a violation (**G205**). Climbing is legal at any time in the MATCH; the zone protection applies only in that window. A ROBOT may not contact a rung while any part of its BUMPERS is on the alliance-wall side of the CLIMB LINE (X = 48 in for Blue, X = 600 in for Red) unless it is then supported solely by rungs, or is still touching a rung it took hold of while so supported within the preceding 5 seconds (**G416**).
 
-> *Commentary:* The three-lane design lets all three ROBOTS of an ALLIANCE climb at the same time without traffic conflict. The difficulty comes from the 15° lean and the 24-in lateral alternation. **G416** exists because the truss leans back over BASECAMP: without it, a ROBOT could park under the SUMMIT RUNG and reach it with a purely vertical mast, and the traversal would be unnecessary.
+> *Commentary:* The three-lane design lets all three ROBOTS of an ALLIANCE climb at the same time without traffic conflict. The difficulty comes from the 15° lean and the 24-in lateral alternation. **G416** exists because the truss leans back over BASECAMP: without it, a ROBOT could park under the SUMMIT RUNG and reach it with a purely vertical mast, and would never need to hang from a lower rung.
 
 ## 3.5 OUTFITTERS
 
@@ -521,7 +523,7 @@ Sixty-three (63) SUPPLIES (21 CACHE CRATES, 21 O2 CELLS, and 21 ROPE COILS) are 
 
 | Location | Contents |
 |---|---|
-| CENTER CACHE (neutral) | 9 SUPPLIES (3 of each type) at the 9 taped marks of the 3 × 3 grid (24 in spacing, centered on FIELD center), one type per row and per column |
+| CENTER CACHE (neutral) | 9 SUPPLIES (3 of each type) at the 9 taped marks of the 3 × 3 grid (24 in spacing, centered on FIELD center), each type once per row and once per column |
 | Alliance staging marks (per alliance) | 6 SUPPLIES (2 of each type) at taped marks 12 ft from the alliance wall, at Y = 108, 162, and 216 |
 | OUTFITTER chutes (per alliance) | 21 SUPPLIES (7 of each type), stocked behind the ALLIANCE's two OUTFITTER stations for HUMAN PLAYER feed |
 | Robot preloads (per alliance) | Up to 1 SUPPLY per ROBOT, of any type, chosen by the team and drawn from the ALLIANCE's OUTFITTER stock during setup (§4.2.2) |
@@ -950,7 +952,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 **G303** *One preload per ROBOT.* Each ROBOT may begin the MATCH with up to 1 SUPPLY of any type, drawn from its ALLIANCE's OUTFITTER stock during setup (Section 4.2.2). The preload must be fully and solely supported by that ROBOT. A preload may not be taken from a CENTER CACHE mark or an alliance staging mark.
 
-*Violation:* Extra, unsupported, or wrongly sourced SUPPLIES are removed and re-staged before the MATCH starts. If discovered after the MATCH begins: MAJOR FOUL per extra SUPPLY, and MINOR FOUL per SUPPLY preloaded from a CENTER CACHE or alliance staging mark, which FIELD STAFF restore to its mark at the next safe opportunity. No SUPPLY that entered the MATCH as an extra preload is SCORED or counts toward any CAMP, ROPED UP, or RANKING POINT requirement.
+*Violation:* Extra, unsupported, or wrongly sourced SUPPLIES are removed and re-staged before the MATCH starts. If discovered after the MATCH begins: MAJOR FOUL per extra SUPPLY, and MINOR FOUL per SUPPLY preloaded from a CENTER CACHE or alliance staging mark, and FIELD STAFF return a SUPPLY of that type to play through the ALLIANCE's OUTFITTER chute (**G507**) at the next safe opportunity. No SUPPLY that entered the MATCH as an extra preload is SCORED or counts toward any CAMP, ROPED UP, or RANKING POINT requirement.
 
 > *Commentary:* A MINOR FOUL would not deter an extra preload. Two preloads sit inside the two-SUPPLY limit of **G501**, so G501 does not apply and G303 alone governs. A second PRIORITY SUPPLY placed in a Mid Socket during AUTO is worth 20 points, or 26 in the Summit Socket, against a 3-point foul. It also supplies a fifth SUPPLY toward ROPED UP, which foul points cannot offset (Section 4.8). **G501** is priced at a MAJOR FOUL for the same reason.
 
@@ -1670,7 +1672,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **ROPED UP** | An AUTO bonus (+10) earned when all 3 ALLIANCE ROBOTS LEAVE and the ALLIANCE scores ≥5 SUPPLIES in AUTO, including ≥2 of the PRIORITY SUPPLY and ≥1 of each other type. |
 | **ROUTE** | An ALLIANCE's pre-MATCH declaration of LOW ROUTE, MID ROUTE, or HIGH ROUTE (LOW by default), which raises the corresponding CAMP bonus to its declared value for the entire MATCH (CAMP I +6→+18, CAMP II +10→+24, HIGH CAMP +15→+35). The declared ROUTE is shown on the FIELD LEDs at MATCH start. |
 | **SCORED** | The state of a SUPPLY that is at rest, supported by a scoring element alone, and not in contact with any ROBOT of the scoring ALLIANCE (§4.4.1). AUTO values apply to SUPPLIES whose last placing ROBOT contact occurred before the end of AUTO. |
-| **SCORING ERROR** | A correctable mistake in the recorded score: a miscounted or misattributed SUPPLY, an unrecorded CAMP or SUMMIT BEACON latch, a mis-entered ENDGAME state, or a FOUL credited to the wrong ALLIANCE (§4.9). Referee judgment about whether a violation occurred is never a SCORING ERROR. |
+| **SCORING ERROR** | A correctable mistake in the recorded score: a miscounted or misattributed SUPPLY, an unrecorded CAMP or SUMMIT BEACON latch, a mis-entered ENDGAME state, or a foul credited to the wrong ALLIANCE (§4.9). Referee judgment about whether a violation occurred is never a SCORING ERROR. |
 | **SHELF FACE** | The CRAG face that faces the owning ALLIANCE's wall, carrying Shelf 1, Shelf 2, the Summit Socket, and the BASE DEPOT. |
 | **SOCKET FACE** | Either of the two CRAG faces perpendicular to the FIELD centerline, each carrying one Low Socket and one Mid Socket. |
 | **STARTING CONFIGURATION** | The ROBOT's pre-MATCH state: no more than 42 in tall and, apart from its BUMPERS, entirely within its FRAME PERIMETER (**R104**). |

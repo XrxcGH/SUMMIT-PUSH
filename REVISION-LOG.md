@@ -10,7 +10,7 @@ The log is divided into lettered sections by revision:
 | J | v2.1 | Corrections from a self-review of v2.0. |
 | K, L | v2.1 | The adversarial re-audit of v2.0: the blockers and first findings (K), then the remaining findings (L). |
 | M | v2.2 | A third pass that audited the v2.1 fixes, with its late findings, a completeness review, a closing sweep, findings from the first CAD build, and deferred style-guide fixes. |
-| N | v2.2, TU-00 | The public release: the editorial pass, text corrections, corrected derived figures, the PDF edition, the Onshape generator fixes, four rules corrections, the M45 decision, drawing fixes, and the license. |
+| N | v2.2, TU-00 | The public release: the editorial pass, text corrections, corrected derived figures, the PDF edition, the Onshape generator fixes, rules corrections, the M45 decision, drawing fixes, the license, and the release review. |
 
 Each change has an ID (section letter plus number, such as K12), which other documents and code comments cite. Many entries also name the files they touched, so that a single change can be reviewed or reverted on its own. In those file lists, *spec* is `01-design/DESIGN-SPEC.md`; *sections 01–06* are the manual source files in `02-manual/sections/`, with the glossary in section 06; *CAD package* is `03-field/FIELD-CAD-PACKAGE.md`; *vision guide* is `04-vision/VISION-GUIDE.md`; *brief* is `05-cadathon/CADATHON-BRIEF.md`; and *generator* is `03-field/renderings/generate_drawings.py`.
 
@@ -534,9 +534,9 @@ measure where their type sets at 2 pt.
 
 ## N. Public release (Version 2.2, Team Update TU-00)
 
-The release pass edited every document for publication and added the typeset PDF. Four rules
-(G406, G407, G412, G501) were corrected where a penalty or its wording contradicted another rule
-or the rule's own example (N17–N20). No rule was added, removed or renumbered, and no scoring
+The release pass edited every document for publication and added the typeset PDF. Rules were
+corrected where a penalty or its wording contradicted another rule or the rule's own example
+(N17–N20, N24). No rule was added, removed or renumbered, and no scoring
 value changed. The geometry corrections below fix derived figures that did not follow from the
 specification.
 
@@ -592,3 +592,12 @@ specification.
 | N21 | **M45 closed:** the 9.0-in CRAG tag panel stays centered at 17.5 in, and its center height is held to **±0.15 in** at field setup. A CRATE at the limit reaches only the target's white border; the black square starts 0.81 in higher. | `04-vision/VISION-GUIDE.md` §1.2–1.3, `03-field/FIELD-CAD-PACKAGE.md` §7, `01-design/DESIGN-SPEC.md` §1.5 and §6 |
 | N22 | ROPE COIL rest pose A drawn edge-on (its plane is parallel to the face) in CRAG View D3 and pieces study 4, where it was drawn face-on across the face line. Study 4's face line moved to the peg root; it was 4.25 in behind it. | `03-field/renderings/` |
 | N23 | `LICENSE.md` (SUMMIT PUSH Training Use License). The PDF front matter, the Feature Studio header and every drawing title block carry the copyright and license notice; the title block's spec line gives way to it. | `LICENSE.md`, `06-style/pdf/make_html.py`, `03-field/featurescript/src/00_header.fs`, `03-field/renderings/_drawlib.py` |
+
+### Release review
+
+| # | Change | Why |
+|---|---|---|
+| N24 | **Rules consistency.** **G205** now covers **G410**, and **G410** exempts contact the protected ROBOT initiated and a ROBOT pushed into a lane. The §5 preamble lists all four line-call zones (**G403**, **G407**, **G410**, **G412**) and allows one YELLOW CARD per action. **G101**: the FIELD STAFF signal, not the LEDs, governs entry. **G301**: INSPECTION is required for Qualification and Playoff MATCHES, as §7 says. **G409**: cards go to each team. **G303**: a wrongly sourced preload's SUPPLY returns through the OUTFITTER (**G507**). **G302**/**R104**: BUMPERS lie outside the FRAME PERIMETER in the STARTING CONFIGURATION. **R706**: the RSL is solid when disabled and blinks when enabled. §8.6: Playoff MATCHES are replayed for an ARENA FAULT. §3.1.2: the ROUTE shows until T=0 and the FORECAST through the end of AUTO. | Each pair of passages contradicted each other, or the rule could not be met as written. |
+| N25 | **ROPE COIL on a peg.** The coil is a torus, so it binds at acos(2.0/3.75) = **57.8°** of tilt, not 47.9°, and hangs plumb with 12.8° to spare; with its inner face 1.25 in out, its center rests **1.58 in** above the peg root, not 1 in. | The old figures came from a flat-washer model, and the two published pose numbers could not both hold. The model checks already asserted the torus values. |
+| N26 | **Derived field figures.** The HEADWALL crossbeam and tag-wedge rows now match the model; the tag panel lowers the BASECAMP clear height to 7.5 in at each lane center for X 38.75–39.0; shelf gusset clearances and the upright CELL height (14.25) are measured from the tray floor; CRAG View D4 draws 3-in gusset legs. | They predated M44 and N10, or described geometry the model does not build. |
+| N27 | **Editorial and tooling.** Every document proofread. The PDF no longer prints a second caption on Tables 6-1 to 6-4 or links references to other documents' sections into the manual; the Onshape lint and API check no longer lose track of scope after a single-statement loop; `run_checks.py` rejects an unknown module name. `LICENSE.md` permits organizers' Team Updates, and `THIRD-PARTY-NOTICES.md` reproduces the AprilTag license. | Found in the release review. |

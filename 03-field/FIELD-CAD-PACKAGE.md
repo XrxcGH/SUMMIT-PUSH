@@ -241,7 +241,7 @@ Every rung sits at least 2 in inside its lane boundary, and no lateral position 
 
 > **H(X) = 3.7321 × (41.788 − X)** inches
 
-except between X = 34.2 and 38.6, where the lower crossbeam (§4.1, 8.0–10.0 in behind plane P) limits the clear height to 10.8 in.
+except between X = 34.2 and 38.6, where the lower crossbeam (§4.1, 8.0–10.0 in behind plane P) limits the clear height to 10.8 in. At each lane center the tag panel hangs to Z = 7.5 across its 9.0-in width, so between X = 38.75 and 39.0 the clear height there is 7.5 in (Red: X 609.0–609.25).
 
 | X (in) | 0 | 12 | 24 | 30.5 | 32.6 | 34.2–38.6 | 40 | 41.79 |
 |---|---|---|---|---|---|---|---|---|

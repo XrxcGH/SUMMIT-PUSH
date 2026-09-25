@@ -2,6 +2,8 @@
 
 *An original offseason game for competitive-robotics design training · Version 2.2*
 
+© 2026 Eric Dean. All rights reserved. Shared for training and educational use under the SUMMIT PUSH Training Use License (`LICENSE.md`, https://github.com/XrxcGH/SUMMIT-PUSH).
+
 ---
 
 **Contents**

@@ -33,7 +33,7 @@ Sixty-three (63) SUPPLIES (21 CACHE CRATES, 21 O2 CELLS, and 21 ROPE COILS) are 
 
 | Location | Contents |
 |---|---|
-| CENTER CACHE (neutral) | 9 SUPPLIES (3 of each type) at the 9 taped marks of the 3 × 3 grid (24 in spacing, centered on FIELD center), one type per row and per column |
+| CENTER CACHE (neutral) | 9 SUPPLIES (3 of each type) at the 9 taped marks of the 3 × 3 grid (24 in spacing, centered on FIELD center), each type once per row and once per column |
 | Alliance staging marks (per alliance) | 6 SUPPLIES (2 of each type) at taped marks 12 ft from the alliance wall, at Y = 108, 162, and 216 |
 | OUTFITTER chutes (per alliance) | 21 SUPPLIES (7 of each type), stocked behind the ALLIANCE's two OUTFITTER stations for HUMAN PLAYER feed |
 | Robot preloads (per alliance) | Up to 1 SUPPLY per ROBOT, of any type, chosen by the team and drawn from the ALLIANCE's OUTFITTER stock during setup (§4.2.2) |

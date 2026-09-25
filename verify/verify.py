@@ -132,7 +132,8 @@ chk("Shelf 1 underside (23.25) above panel", 23.25 > panel_hi, "%.2f" % panel_hi
 chk("Low socket tube lowest (22.19) above target", 22.19 > tgt_hi, "%.2f" % tgt_hi)
 
 print("== shelf gusset floors clear what passes beneath them ==")
-_CRATE_APEX, _SHELF1_UNDER = 13.0, 23.25          # crowned crate standing; Shelf 1 underside
+_CRATE_H, _SHELF1_UNDER = 13.0, 23.25              # crowned crate height; Shelf 1 underside
+_CRATE_APEX = _DEPOT_FLOOR + _CRATE_H                # its top standing on the DEPOT tray floor
 _G1, _G1_TAG, _G2 = 19.0, 22.0, 38.0              # gusset floors: Shelf 1, over a tag, Shelf 2
 _TAG_TOP = 22.0                                   # CRAG tag panel top edge
 chk("Shelf 1 gusset floor clears a crowned CRATE pushed in beneath it",
@@ -142,7 +143,7 @@ chk("Shelf 1 gusset still has usable depth", _SHELF1_UNDER - _G1 >= 4.0,
 chk("no Shelf 1 gusset can stand in front of a CRAG tag", _G1_TAG >= _TAG_TOP,
     "%.1f vs panel top %.1f" % (_G1_TAG, _TAG_TOP))
 chk("Shelf 2 gusset floor clears a crowned CRATE on Shelf 1",
-    _G2 - (24.0 + _CRATE_APEX) >= 1.0, "%.1f in" % (_G2 - (24.0 + _CRATE_APEX)))
+    _G2 - (24.0 + _CRATE_H) >= 1.0, "%.1f in" % (_G2 - (24.0 + _CRATE_H)))
 
 print("== CACHE CRATE crown against the shelf slot ==")
 # The crate rests on its bottom crown, so the cube's bottom plane sits 0.5 above the

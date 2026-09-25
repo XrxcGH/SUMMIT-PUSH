@@ -72,19 +72,21 @@ async function load(url) {
       if (m.transparent) { m.depthWrite = false; o.castShadow = false; }
     }
   });
-  loaded[url] = gltf.scene;
-  return gltf.scene;
+  loaded[url] = gltf;
+  return gltf;
 }
 
-window.stage = async function (opts) {
-  const W = opts.width || 1600, H = opts.height || 900;
+let setupKey = null, mixers = [];
+
+// Build the stage for a set of models and stage options.  Frames of an animation reuse it: only
+// the camera and the animation time change, so video frames render quickly.
+async function setup(opts, W, H) {
   if (!renderer) {
     renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
     renderer.setPixelRatio(1);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     document.body.appendChild(renderer.domElement);
   }
@@ -105,18 +107,38 @@ window.stage = async function (opts) {
     floor.receiveShadow = true;
     scene.add(floor);
   }
-  for (const url of opts.models) scene.add((await load(url)).clone());
-  // per-node overrides for animation frames: {name: {position:[x,y,z] (in), quaternion:[x,y,z,w]}}
+  // animated models (the glTF "MATCH" clip written by verify/animate.py) are posed at opts.time
+  mixers = [];
+  for (const url of opts.models) {
+    const gltf = await load(url);
+    const root = gltf.scene.clone();
+    scene.add(root);
+    if (gltf.animations.length) {
+      const mixer = new THREE.AnimationMixer(root);
+      mixer.clipAction(gltf.animations[0]).play();
+      mixers.push(mixer);
+    }
+  }
   camera = new THREE.PerspectiveCamera(opts.fov ?? 35, W / H, 0.05, 400);
-  camera.position.copy(P(...opts.eye));
-  camera.up.set(0, 1, 0);
-  camera.lookAt(P(...opts.target));
   composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
   bloom = new UnrealBloomPass(new THREE.Vector2(W, H), opts.bloom ?? 0.55, 0.4, opts.bloomThreshold ?? 0.97);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
   composer.setSize(W, H);
+}
+
+window.stage = async function (opts) {
+  const W = opts.width || 1600, H = opts.height || 900;
+  const { eye, target, fov, time, name, ...rest } = opts;
+  const key = JSON.stringify([rest, W, H]);
+  if (key !== setupKey) { await setup(opts, W, H); setupKey = key; }
+  camera.fov = fov ?? 35;
+  camera.updateProjectionMatrix();
+  camera.position.copy(P(...eye));
+  camera.up.set(0, 1, 0);
+  camera.lookAt(P(...target));
+  for (const m of mixers) m.setTime(time ?? 0);
   composer.render();
   composer.render();
   return { triangles: renderer.info.render.triangles, calls: renderer.info.render.calls };

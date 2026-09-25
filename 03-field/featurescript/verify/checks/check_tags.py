@@ -16,14 +16,12 @@ Expected values come from the package documents only — never from src/:
 
 Frames: a tag frame T has its origin at the tag centre on the front face, x = the facing normal
 (yaw from the JSON quaternion), z = up, y = z x x (the WPILib tag frame).  A viewer facing the
-tag looks along -x; his right is +y and up is +z.
+tag looks along -x, with +y to the right and +z up.
 
-Low Socket tube in the occlusion budget (the documents disagree by the socket's bottom-plate
-thickness; DESIGN-SPEC governs): DESIGN-SPEC §3 makes the 7.0 socket length the depth a CELL seats
-at ("a seated 14.0-in O2 CELL therefore stands 7.0 in proud"), so the 0.09 closed bottom lies beyond
-it.  FIELD-CAD §2.3 / §7 and VISION-GUIDE §1.3 print the tube's lowest point as Z 22.27 (0.71 above
-the target) and its span as 1.61-10.89 outboard, taking the 7.0 to the outer bottom; with the plate
-they are Z 22.19 (0.63 above the target) and 1.5625-10.89.  The budget's conclusion is unchanged.
+Low Socket tube in the occlusion budget: DESIGN-SPEC §3 makes the 7.0 socket length the depth a
+CELL seats at ("a seated 14.0-in O2 CELL therefore stands 7.0 in proud"), so the 0.09 closed bottom
+lies beyond it.  FIELD-CAD §2.3 / §7 and the VISION-GUIDE §1.3 table compute the tube that way:
+lowest point Z 22.19 (0.63 above the target), span 1.56-10.89 outboard.
 
 Construction reading (naming only): pegs and side sockets are named "... (guardrail side)" /
 "... (centre side)".
@@ -68,7 +66,7 @@ P_X_BLUE, P_LEAN = 48.0, 15.0                           # plane P
 FIELD_C = (324.0, 162.0)
 RGB_WHITE = (0xF5, 0xF5, 0xF5)                          # MATERIALS §1.1 neutral-white
 RGB_BLACK = (0x11, 0x11, 0x11)                          # MATERIALS §2 tag black
-CLEAR_DEPTH = 12.0                                      # "nothing within 12 in along the normal"
+CLEAR_DEPTH = 12.0                                      # depth of the clear prism tested in front of each tag
 SIGHT_DEPTH = 48.0                                      # longer sightline (info)
 
 # Official tag36h11 images for IDs 1..26, row 0 = top, '1' = white (decoded from the PNGs).
@@ -489,8 +487,7 @@ def run(f):
         lz_want = 30.0 - (7.0 + 0.09) * c30 - 3.34 * s30
         ck("%s Low Socket tube lowest point Z %.2f, %.2f above the target top (§2.3, §7)" % (side, lz_want, lz_want - 21.5625),
            abs(lz - lz_want) < 0.005 and lz - 21.5625 > 0.5,
-           "lowest %.4f -> %.4f above target top (§2.3 / §7 print 22.27 and 0.71: the tube taken to the 7.0 seat, "
-           "without the 0.09 closed bottom)" % (lz, lz - 21.5625))
+           "lowest %.4f -> %.4f above target top (§2.3 / §7 print 22.19 and 0.63)" % (lz, lz - 21.5625))
         span = []
         for r in lows:
             b = f.bbox([r], F)
@@ -498,7 +495,7 @@ def run(f):
         in_want = 8.0 - (7.0 + 0.09) * s30 - 3.34 * c30
         ck("%s Low Socket tubes span %.2f-10.89 in outboard of their faces (§7, VISION-GUIDE §1.3)" % (side, in_want),
            len(span) == 2 and all(abs(a - in_want) < 0.005 and abs(b - 10.89) < 0.01 for a, b in span),
-           "spans %s (the documents print 1.61 for the inboard edge, at the 7.0 seat)" % [(fmt(a, 3), fmt(b, 3)) for a, b in span])
+           "spans %s (the documents print 1.56-10.89)" % [(fmt(a, 3), fmt(b, 3)) for a, b in span])
         # Shelf 1 gussets: above Z 22.0 inside the prisms over the SHELF FACE panels (§2.2)
         shelf_tags = (6, 7) if side == "BLUE" else (19, 20)
         gus = f.find("%s CRAG Shelf 1 gusset" % side)

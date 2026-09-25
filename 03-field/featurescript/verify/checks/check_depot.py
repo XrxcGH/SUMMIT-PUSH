@@ -24,8 +24,8 @@ Expected values come from the package documents only (never from src/20_ledger.f
                           entry chamfer strip outside the lip, 1.0-in leg; tray area 1792 in^2; ~8 CRATES
                           one abreast, ~12 SUPPLIES mixed, single layer; 12 crates need 2028 in^2;
                           open-to-sky: outer 2.0 in of the leg, both corner squares fully, the arms except
-                          under the Low Socket tube (X 306.7-313.3 x Y 265.6-274.9 from Z 22.27; clear
-                          columns 6.66 / 2.66 / 5.11 / 1.61); only the corner squares take a dropped CRATE
+                          under the Low Socket tube (X 306.7-313.3 x Y 265.6-274.9 from Z 22.19; clear
+                          columns 6.66 / 2.66 / 5.11 / 1.56); only the corner squares take a dropped CRATE
                           or COIL; 23.25 to the Shelf 1 underside and >= 19.0 anywhere a gusset descends;
                           robot standoff: lip outer face 16.75, FRAME PERIMETER 19.75, shelf slot 7.0 ->
                           12.75, Summit rim 8.0 -> 11.75, all inside the 18-in limit.
@@ -41,12 +41,11 @@ All expected coordinates below are written for the BLUE CRAG in world inches; th
 with every probe rotated 180 deg about (324, 162) and every measurement rotated back, so the same
 numbers apply to both.
 
-Low Socket overhang (the documents disagree by the socket's bottom-plate thickness; DESIGN-SPEC
-governs): DESIGN-SPEC §3 makes the 7.0 socket length the depth a CELL seats at ("a seated 14.0-in
-O2 CELL therefore stands 7.0 in proud"), so the 0.09 closed bottom lies beyond it and the tube is
-7.09 overall.  The §3 overhang figures (Y from 265.6, Z from 22.27, the 1.61 column) take the 7.0 to
-the outer bottom; with the plate the tube starts 1.5625 off the SOCKET FACE (Y 265.56) at Z 22.19.
-They are derived below from the §2.3 socket numbers (rim 30, 8.0 out, 30 deg, 3.34 outer radius).
+Low Socket overhang: DESIGN-SPEC §3 makes the 7.0 socket length the depth a CELL seats at ("a
+seated 14.0-in O2 CELL therefore stands 7.0 in proud"), so the 0.09 closed bottom lies beyond it and
+the tube is 7.09 overall.  The tube therefore starts 1.5625 off the SOCKET FACE (Y 265.56) at Z 22.19,
+as the §3 overhang figures give (Y from 265.6, Z from 22.19, the 1.56 column).  They are derived
+below from the §2.3 socket numbers (rim 30, 8.0 out, 30 deg, 3.34 outer radius).
 
 Construction reading (naming only): the two Low Socket tubes of a CRAG are "<A> CRAG Low Socket
 (guardrail side)" and "(centre side)".
@@ -94,12 +93,12 @@ RIM_OFF = 8.0
 BUMPER_BOTTOM_MIN = 1.25        # R403: 4.5 section, bottom edge 1.25 .. 2.5
 # Low Socket tube over the +Y arm (Blue), from §2.3: rim (310, 272, 30), axis 30 deg outward, 3.34
 # outer radius, 7.0 bore + 0.09 closed bottom (see the docstring).  §3 prints X 306.7-313.3 x
-# Y 265.6-274.9 from Z 22.27 and columns 6.66 / 2.66 / 5.11 / 1.61.
+# Y 265.6-274.9 from Z 22.19 and columns 6.66 / 2.66 / 5.11 / 1.56.
 _S30, _C30 = 0.5, math.sqrt(3) / 2
 SOCK_RO, SOCK_OVERALL = 3.34, 7.0 + 0.09
-SOCK_INBOARD = RIM_OFF - SOCK_OVERALL * _S30 - SOCK_RO * _C30       # 1.5625 (prints 1.61)
+SOCK_INBOARD = RIM_OFF - SOCK_OVERALL * _S30 - SOCK_RO * _C30       # 1.5625 (§3: 1.56)
 LOW_SOCK_SIL = (310.0 - SOCK_RO, SOCK_YP + SOCK_INBOARD, 310.0 + SOCK_RO, SOCK_YP + RIM_OFF + SOCK_RO * _C30)
-LOW_SOCK_ZMIN = 30.0 - SOCK_OVERALL * _C30 - SOCK_RO * _S30         # 22.19 (prints 22.27)
+LOW_SOCK_ZMIN = 30.0 - SOCK_OVERALL * _C30 - SOCK_RO * _S30         # 22.19 (§3)
 CENTRELINE_X = 324.0
 STOP_SHORT = 8.0
 APRON_SHELF, APRON_SOCK, APRON_R = 36.0, 20.0, 20.0
@@ -609,8 +608,8 @@ def run(f):
                 and abs(e[2] - LOW_SOCK_ZMIN) < 0.01
             add(S + "Low Socket tube overhangs the " + lab + " at X %.2f-%.2f x Y %.2f-%.2f from Z %.2f" % (
                 sil[0], sil[2], sil[1], sil[3], LOW_SOCK_ZMIN),
-                ok, "tube over the arm: %s (§3 prints X 306.7-313.3 x Y 265.6-274.9 from Z 22.27: the tube taken to "
-                "the 7.0 seat, without the 0.09 closed bottom)" % ([round(v, 3) for v in e] if e else None))
+                ok, "tube over the arm: %s (§3 prints X 306.7-313.3 x Y 265.6-274.9 from Z 22.19)"
+                % ([round(v, 3) for v in e] if e else None))
         # drop tests
         for lab, (x0, y0, x1, y1) in (("-Y corner square", SQ_N), ("+Y corner square", SQ_P)):
             cx_, cy_ = (x0 + x1) / 2, (y0 + y1) / 2

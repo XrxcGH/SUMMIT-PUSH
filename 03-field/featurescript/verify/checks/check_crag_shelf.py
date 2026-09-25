@@ -15,13 +15,13 @@ Every expected value below is taken from the package documents, never from src/:
                           Z 22.0 in the tag prisms Y 221.5-230.5 / 249.5-258.5 Blue); gussets within
                           the shelf plan footprint; Shelf 1 plan inside the 16-in DEPOT channel
                      §2.4 Summit Socket: rim 72, on the crag centreline, 8.0 standoff, 15 deg outward,
-                          ID 6.50 +/- 0.125, 7.0 tube, 0.09 wall, closed bottom; bottom centre 6.19
-                          outboard at Z 65.24; inboard edge 2.96 outboard; lowest point ~64.4; mast
+                          ID 6.50 +/- 0.125, 7.0 tube, 0.09 wall, closed bottom; floor centre 6.19
+                          outboard at Z 65.24; inboard edge 2.94 outboard; lowest point Z 64.29; mast
                           from the top plate within 4.0 of the shelf-face edge, leaning outward to the
                           tube bottom; above Z 62 nothing outside the plan silhouette + 2.0; socket +
                           mast over the Shelf 2 centre slot (X 286.8-299.0 x Y 234.7-245.3 Blue);
                           5.0 overhead clearance in that slot, outer Shelf 2 slots open to the sky;
-                          9.4 tube clearance over a Shelf 2 crate; robot reach 11.75
+                          9.29 tube clearance over a Shelf 2 crate; robot reach 11.75
                      §2.7 mirror symmetry about the crag's own X-Z plane; Red = Blue rotated 180 deg
                      §3   depot lip outer face 16.75 off the face -> FRAME PERIMETER 19.75; shelf slot
                           reach 12.75; outer 2.0-in strip of the shelf-face leg open to the sky;
@@ -38,14 +38,13 @@ Every expected value below is taken from the package documents, never from src/:
                           Summit Socket mast steel 2 x 2 square tube `crag-accent`; socket tube
                           rolled aluminium `socket` #9DB8D6, 0.09 wall, bore >= 6.375
 
-Socket depth (the documents disagree by the bottom-plate thickness; DESIGN-SPEC governs):
-  DESIGN-SPEC §3 gives "tube length 7.0 in along the axis, closed bottom" and "a seated 14.0-in O2
-  CELL therefore stands 7.0 in proud of the rim"; both hold only if the 7.0 runs from the rim plane
-  to the floor the CELL seats on (FCP §2.3: the length "sets the 7.0-in protrusion"; §9.2: "7.0-in
-  socket tube depth").  The 0.09 closed bottom lies beyond it, 7.09 overall.  The §2.4 clearance
-  figures take the 7.0 to the outer bottom: 6.19 / Z 65.24 are right for the floor (seat) centre,
-  while the outer bottom face centre is 6.165 / Z 65.15, the inboard edge 2.94 (prints 2.96) and the
-  lowest point Z 64.29 (prints ~64.4), leaving 9.29 over a Shelf 2 CRATE (prints ~9.4).
+Socket depth: DESIGN-SPEC §3 gives "tube length 7.0 in along the axis, closed bottom" and "a
+  seated 14.0-in O2 CELL therefore stands 7.0 in proud of the rim"; both hold only if the 7.0 runs
+  from the rim plane to the floor the CELL seats on (FCP §2.3: the length "sets the 7.0-in
+  protrusion"; §9.2: "7.0-in socket tube depth").  The 0.09 closed bottom lies beyond it, 7.09
+  overall, and the §2.4 clearance figures are computed that way: floor (seat) centre 6.19 outboard at
+  Z 65.24, inboard edge 2.94, lowest point Z 64.29, 9.29 over a Shelf 2 CRATE.  The outer bottom face
+  centre is 6.165 outboard at Z 65.15.
 
 Mast reading (§2.4 Support, (ref)): the mast is "rising from the tower top plate within 4.0 in of
 its shelf-face edge and leaning outward to the tube's closed bottom", with nothing outside the
@@ -549,8 +548,8 @@ def run(f):
                 bore = s_rim - s_floor
                 prot = CELL_L - bore
                 near("%s seated 14.0 O2 CELL protrudes 7.0 proud of the rim (DESIGN-SPEC §3)" % A, prot, CELL_PROTRUDE, TOL,
-                     " — bore depth rim->floor %.4f (DESIGN-SPEC governs: FCP §2.4's 6.19 / 65.24 / ~64.4 take the 7.0 "
-                     "to the outer bottom, which would leave the CELL 7.09 proud)" % bore)
+                     " — bore depth rim->floor %.4f (a 7.0 taken to the outer bottom would leave the CELL 7.09 proud)"
+                     % bore)
                 bot_l = F.to_local(p_axis_w + axis_w * s_bot)
                 flo_l = F.to_local(p_axis_w + axis_w * s_floor)
                 near("%s Summit Socket floor (seat) centre outboard of the face (6.19)" % A, flo_l[0] - HALF,
@@ -565,9 +564,9 @@ def run(f):
                     near("%s Summit Socket bore radius %.1f below the rim" % (A, dd), d, SOCK_ID / 2, 0.0625)
         tb_l = f.bbox(tube, F)
         near("%s Summit Socket inboard edge outboard of the face (free air)" % A, tb_l[0] - HALF,
-             SUM_STANDOFF - SOCK_OVERALL * S15 - RO * C15, TOL, " (§2.4 prints 2.96, taken at the 7.0 seat)")
+             SUM_STANDOFF - SOCK_OVERALL * S15 - RO * C15, TOL, " (§2.4: 2.94)")
         near("%s Summit Socket lowest point Z" % A, tb_l[2], SUM_Z - SOCK_OVERALL * C15 - RO * S15, TOL,
-             " (§2.4 prints ~64.4, taken at the 7.0 seat)")
+             " (§2.4: Z 64.29)")
         bad = offenders(f.solids(tube), exclude_ids={r["id"] for r in tube + mast})
         ck("%s Summit Socket interferes with nothing" % A, not bad, ", ".join(bad) or "none")
 
@@ -721,7 +720,7 @@ def run(f):
         near("%s Shelf 2 centre-slot overhead clearance is the published 5.0" % A, worst_m, 5.0, 0.02)
         near("%s Shelf 2 CRATE clearance under the Summit Socket tube" % A, tb_l[2] - (SHELF_TOP[1] + CRATE_ENV),
              SUM_Z - SOCK_OVERALL * C15 - RO * S15 - (SHELF_TOP[1] + CRATE_ENV), TOL,
-             " (§2.4 prints ~9.4, taken at the 7.0 seat)")
+             " (§2.4: 9.29)")
         ck("%s Shelf 2 CRATE anywhere in a slot clears the tube by >= 9.3" % A, worst_t >= 9.3, "min %.4f" % worst_t)
 
         # ---- clear volumes ---------------------------------------------------------------------------

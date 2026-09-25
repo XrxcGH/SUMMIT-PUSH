@@ -12,12 +12,12 @@ Every expected value below is taken from the package documents, never from src/:
                      §2.3 every row (rims 30/54, lateral +/-14 with Low on the shelf-face side,
                           8.0 standoff normal to the face, 30 deg outward tilt, ID 6.50 +/- 0.125,
                           7.0 tube with closed bottom, wall 0.09) and both clearance paragraphs
-                          (4.50 / 1.61 / Z 22.27 / 7.0 protrusion / 6.06 / 1.67 / 4.39; robot
+                          (4.50 / 1.56 / Z 22.19 / 7.0 protrusion / 6.06 / 1.67 / 4.39; robot
                           standoff 16.75 / 19.75 / 11.75 / 5.0) and the attachment rule
                      §2.6/§8 tier rings 1.0 wide, centred on 30 and 54, band 77-78 for the 78 ring
                      §3   BASE DEPOT corner arm (16 x 16 along each SOCKET FACE), lip 0.75,
                           open-to-sky figures (X 306.7-313.3 x Y 265.6-274.9, clear columns
-                          6.66 / 2.66 / 5.11 / 1.61), crowned CRATE in the tray to Z 13.25 (§7)
+                          6.66 / 2.66 / 5.11 / 1.56), crowned CRATE in the tray to Z 13.25 (§7)
                      §7   tag table (8/9 +Y, 10/11 -Y Blue; Red = Blue + 13), panel 9.0, target
                           8.125, centre Z 17.5, occlusion budget
                      §9.2 O2 CELL 5.0 dia x 14.0, 1.5-in domes
@@ -29,16 +29,13 @@ Every expected value below is taken from the package documents, never from src/:
                      §5.2 camera bands (primary 10-20 in, optional second camera 24-36 in),
                      §6.6 (Low above tag 8/10/21/23, Mid above 9/11/22/24)
 
-Socket depth (the documents disagree by the bottom-plate thickness; DESIGN-SPEC governs):
-  DESIGN-SPEC §3 gives "tube length 7.0 in along the axis, closed bottom" and "a seated 14.0-in O2
-  CELL therefore stands 7.0 in proud of the rim", and FIELD-CAD-PACKAGE §2.3 says the 7.0 length
-  "sets the 7.0-in protrusion"; §9.2 calls it the "7.0-in socket tube depth".  Both DESIGN-SPEC
-  numbers hold only if the 7.0 runs from the rim plane to the floor the CELL seats on, so the 0.09
-  closed bottom (§2.3 wall, ref) lies beyond it and the tube is 7.09 overall.  The §2.3 / §7 /
-  VISION-GUIDE §1.3 clearance figures put the 7.0 at the OUTER bottom instead (4.50 is right for the
-  floor centre, but the inboard edge 1.61 and the lowest point Z 22.27 ignore the plate): measured
-  to the outer bottom they are 1.56 and 22.19, and every conclusion drawn from them still holds
-  (22.19 clears the 21.56 target top by 0.63).  This module tests the DESIGN-SPEC reading.
+Socket depth: DESIGN-SPEC §3 gives "tube length 7.0 in along the axis, closed bottom" and "a seated
+  14.0-in O2 CELL therefore stands 7.0 in proud of the rim", and FIELD-CAD-PACKAGE §2.3 says the 7.0
+  length "sets the 7.0-in protrusion"; §9.2 calls it the "7.0-in socket tube depth".  Both
+  DESIGN-SPEC numbers hold only if the 7.0 runs from the rim plane to the floor the CELL seats on,
+  so the 0.09 closed bottom (§2.3 wall, ref) lies beyond it and the tube is 7.09 overall.  The §2.3 /
+  §7 / VISION-GUIDE §1.3 clearance figures are computed that way: floor centre 4.50 outboard,
+  inboard edge 1.56, lowest point Z 22.19 (0.63 above the 21.56 target top).
 
 Construction reading (naming only): each tube and bracket is its own part, "<A> CRAG <Low|Mid>
 Socket (guardrail side)" / "(centre side)" and "... Socket bracket (...)", the guardrail side being
@@ -80,10 +77,10 @@ S30, C30 = math.sin(math.radians(TILT)), math.cos(math.radians(TILT))
 # the closed bottom beyond the 7.0 seat (see the docstring)
 BOTTOM_OUT = STANDOFF - LEN * S30                            # 4.50, the floor (seat) centre
 BOTTOM_FACE_OUT = STANDOFF - OVERALL * S30                   # 4.455, the outer bottom face centre
-INBOARD_EDGE = BOTTOM_FACE_OUT - RO * C30                    # 1.5625 (§2.3 prints 1.61 at the seat)
+INBOARD_EDGE = BOTTOM_FACE_OUT - RO * C30                    # 1.5625 (§2.3: 1.56)
 OUTBOARD_EDGE = STANDOFF + RO * C30                          # 10.89 (VISION-GUIDE §1.3)
-LOWEST_BELOW_RIM = OVERALL * C30 + RO * S30                  # 30 - 22.19 (§2.3 prints 22.27 at the seat)
-DOC_INBOARD_EDGE, DOC_LOWEST_LOW = 1.61, 22.27               # the printed figures, for the detail strings
+LOWEST_BELOW_RIM = OVERALL * C30 + RO * S30                  # 30 - 22.19 (§2.3: Z 22.19)
+DOC_INBOARD_EDGE, DOC_LOWEST_LOW = 1.56, 22.19               # the printed figures, for the detail strings
 UPHILL_LIP = RO * S30                                        # 1.67
 DOC_PROTRUSION = 7.0                                         # §2.3 / DESIGN-SPEC §3
 DOC_APEX_ABOVE_RIM = 6.06                                    # §2.3 (7.0 cos 30)
@@ -100,7 +97,7 @@ ARM, LIP_T = 16.0, 0.75                                      # §3
 FRAME_BEHIND_BUMPER, REACH_LIMIT = 3.0, 18.0                 # §2.3 robot standoff paragraph
 LOW_REACH, MID_REACH = 11.75, 5.0                            # §2.3
 CRATE_TOP_IN_TRAY = 13.25                                    # §7
-ARM_CLEAR_COLUMNS = sorted([INBOARD_EDGE, 2.66, 5.11, 6.66])  # §3 open-to-sky (prints 1.61 for the first)
+ARM_CLEAR_COLUMNS = sorted([INBOARD_EDGE, 2.66, 5.11, 6.66])  # §3 open-to-sky (prints 1.56 for the first)
 
 # §7 / VISION-GUIDE §3: tag under each socket (Low above the alliance-wall-side tag)
 TAGS = {("BLUE", +1): {"Low": 8, "Mid": 9}, ("BLUE", -1): {"Low": 10, "Mid": 11},
@@ -417,10 +414,10 @@ def run(f):
         inb = (wb[1] - face_meas) if S.ny > 0 else (face_meas - wb[4])
         outb = (wb[4] - face_meas) if S.ny > 0 else (face_meas - wb[1])
         near(L + ": inboard edge outboard of the face = 4.455 - 3.34 cos30", inb, INBOARD_EDGE, TOL,
-             " (§2.3 prints %.2f, taken at the 7.0 seat without the 0.09 bottom plate)" % DOC_INBOARD_EDGE)
+             " (§2.3 prints %.2f)" % DOC_INBOARD_EDGE)
         near(L + ": outboard extent = 10.89 (VISION-GUIDE §1.3)", outb, OUTBOARD_EDGE, TOL)
         near(L + ": lowest point Z = rim - (7.09 cos30 + 3.34 sin30)", wb[2], S.zr - LOWEST_BELOW_RIM, TOL,
-             (" (§2.3 / §7 print %.2f, taken at the 7.0 seat without the 0.09 bottom plate)" % DOC_LOWEST_LOW)
+             (" (§2.3 / §7 print %.2f)" % DOC_LOWEST_LOW)
              if S.kind == "Low" else "")
         near(L + ": uphill lip = rim + 1.67", wb[5], S.zr + UPHILL_LIP, TOL)
         near(L + ": lateral silhouette +/-3.34 about the station", (wb[0] + wb[3]) / 2, S.lat_x, TOL,
@@ -502,8 +499,7 @@ def run(f):
             cols = sorted([wb[0] - arm_x[0], arm_x[1] - wb[3], wb[1] - arm_y[0], arm_y[1] - wb[4]])
             add(L + ": clear sky columns in the arm = %.2f / 2.66 / 5.11 / 6.66 (§3)" % INBOARD_EDGE,
                 max(abs(a - b) for a, b in zip(cols, ARM_CLEAR_COLUMNS)) < 0.01,
-                "measured %s (§3 prints 1.61 for the column at the face: the inboard edge at the 7.0 seat, "
-                "without the 0.09 bottom plate)" % _fmt(cols))
+                "measured %s (§3 prints 1.56 for the column at the face, the tube's inboard edge)" % _fmt(cols))
             lb = f.bbox(depot_lip[S.side])
             lip_out = (lb[4] - S.face_y) if S.ny > 0 else (S.face_y - lb[1])
             near(L + ": DEPOT lip outer face along the SOCKET FACE = 16.75", lip_out, ARM + LIP_T, 1e-3)

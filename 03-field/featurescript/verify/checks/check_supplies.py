@@ -22,7 +22,7 @@ Every expected value below comes from the package documents, never from src/:
           Shelf 1: above Z 19.0).
     §2.3  socket rims 30 / 54 at +/-14 (Low on the shelf-face side), 8.0 standoff, 30 deg outward
     §2.4  Summit Socket rim 72, on the centreline, 8.0 off the SHELF FACE, 15 deg outward; tube
-          lowest point Z ~64.4 (9.4 over a crowned crate on Shelf 2 at 55.0); mast from Z 60 =>
+          lowest point Z 64.29 (9.29 over a crowned crate on Shelf 2 at 55.0); mast from Z 60 =>
           5.0 in of overhead clearance; the socket and mast stand over Shelf 2's centre slot (no
           vertical drop there); the outer Shelf 2 slots stay open to the sky.
     §2.5  pegs: Low/Mid roots at +/-14, Z 30 / 54 on the PEG FACE; High roots at +/-7, Z 78 on
@@ -50,12 +50,11 @@ Every expected value below comes from the package documents, never from src/:
   Manual §3.6 / §3.6.1 counts and staging; VISION-GUIDE §1.3 upright CELL: top Z 14.25, full
           diameter to Z 12.47 on the tray floor.
 
-Socket depth (the documents disagree by the socket's bottom-plate thickness; DESIGN-SPEC governs):
-  DESIGN-SPEC §3 "tube length 7.0 in along the axis, closed bottom ... A seated 14.0-in O2 CELL
-  therefore stands 7.0 in proud of the rim" holds only with the 7.0 measured from the rim plane to
-  the floor the CELL seats on (§9.2 says "7.0-in socket tube depth"), so the 0.09 closed bottom lies
-  beyond it.  §2.4's "lowest point Z ~64.4, 9.4 over a crowned crate on Shelf 2" takes the 7.0 to
-  the outer bottom; with the plate the Summit Socket tube is 9.29 above that crate.
+Socket depth: DESIGN-SPEC §3 "tube length 7.0 in along the axis, closed bottom ... A seated 14.0-in
+  O2 CELL therefore stands 7.0 in proud of the rim" holds only with the 7.0 measured from the rim
+  plane to the floor the CELL seats on (§9.2 says "7.0-in socket tube depth"), so the 0.09 closed
+  bottom lies beyond it.  §2.4 computes the Summit Socket tube's lowest point (Z 64.29, 9.29 over a
+  crowned crate on Shelf 2) the same way.
 
 Construction reading (naming only): pegs and side sockets are named "... (guardrail side)" /
 "... (centre side)"; the lookups below take both.
@@ -117,8 +116,8 @@ SHELF_Z, SLOT_LAT, SLOT_OUT = (24.0, 42.0), (-15.5, 0.0, 15.5), 7.0
 SHELF2_GUSSET_FLOOR, SHELF1_GUSSET_FLOOR = 38.0, 19.0
 SOCK_STANDOFF, SOCK_LEN, SOCK_ID, SOCK_TOL = 8.0, 7.0, 6.50, 0.125
 SOCK_WALL = 0.09                                 # §2.3 (ref) wall; the closed bottom lies beyond the 7.0 seat
-# §2.4: rim 72, 15 deg; lowest point = 72 - 7.09 cos15 - 3.34 sin15 (prints ~64.4 -> 9.4 over a
-# crowned crate on Shelf 2, taking the 7.0 to the outer bottom; see the docstring)
+# §2.4: rim 72, 15 deg; lowest point = 72 - 7.09 cos15 - 3.34 sin15 = 64.29, 9.29 over a crowned
+# crate on Shelf 2 (see the docstring)
 MAST_CLR = 5.0
 SUMMIT_TUBE_CLR = (72.0 - (SOCK_LEN + SOCK_WALL) * math.cos(math.radians(15))
                    - (SOCK_ID / 2 + SOCK_WALL) * math.sin(math.radians(15)) - (42.0 + 13.0))
@@ -882,7 +881,7 @@ def sec_shelves(f, C, add):
         add("%s CRAG: CRATE-to-fence clearance at the fence top 0.78 each side, every slot (§9.1)" % side, okg,
             "%s" % [(g[0], g[1], None if g[2] is None else round(g[2], 4), None if g[3] is None else round(g[3], 4))
                     for g in gaps])
-        # Shelf 2 centre slot: >= 5.0 overhead (mast from Z 60), socket 9.4 above, and not loadable by a drop
+        # Shelf 2 centre slot: >= 5.0 overhead (mast from Z 60), socket 9.29 above, and not loadable by a drop
         mast = f.find("%s CRAG Summit Socket mast" % side)
         sock = f.find("%s CRAG Summit Socket" % side)
         up = _moved(over[0.0], np.zeros(3), np.eye(3), (MAST_CLR - 0.01) * Z)
@@ -892,8 +891,7 @@ def sec_shelves(f, C, add):
         up2 = _moved(over[0.0], np.zeros(3), np.eye(3), (SUMMIT_TUBE_CLR - 0.01) * Z)
         hs = sum(_clash(up2, s, True) for s in f.solids(sock))
         add("%s CRAG: Summit Socket tube >= %.2f in above a CRATE on Shelf 2 (§2.4)" % (side, SUMMIT_TUBE_CLR), hs < 1e-6,
-            "raised %.2f: common %.5f (§2.4 prints ~9.4, the tube taken to the 7.0 seat without the 0.09 closed "
-            "bottom)" % (SUMMIT_TUBE_CLR - 0.01, hs))
+            "raised %.2f: common %.5f (§2.4 prints 9.29)" % (SUMMIT_TUBE_CLR - 0.01, hs))
         drop = _moved(over[0.0], np.zeros(3), np.eye(3), 30.0 * Z)
         hd = sum(_clash(drop, s, True) for s in f.solids(mast) + f.solids(sock))
         add("%s CRAG: Shelf 2 centre slot is overhung by the Summit Socket/mast (no vertical drop) (§2.4)" % side,

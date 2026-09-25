@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SUMMIT PUSH stage</title>
+<style>html,body{margin:0;background:#03050a;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js",
+               "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<script type="module">
+// Reveal-style stage for the off-line build: dark venue, truss spots, alliance-coloured rim light,
+// haze and bloom.  Driven from render.mjs through window.stage(...); field coordinates are inches,
+// Z up, converted here to glTF metres, Y up.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const IN = 0.0254;
+const P = (x, y, z) => new THREE.Vector3(x * IN, z * IN, -y * IN);
+
+let renderer, scene, camera, composer, bloom, loaded = {};
+
+function lights(opts) {
+  const g = new THREE.Group();
+  g.name = 'stage lights';
+  const hemi = new THREE.HemisphereLight(0x2a3550, 0x0a0a0c, opts.ambient ?? 0.55);
+  g.add(hemi);
+  const spot = (pos, tgt, color, intensity, angle, shadow) => {
+    const s = new THREE.SpotLight(color, intensity, 0, angle, 0.55, 0);
+    s.position.copy(pos);
+    s.target.position.copy(tgt);
+    s.castShadow = !!shadow;
+    if (shadow) {
+      s.shadow.mapSize.set(2048, 2048);
+      s.shadow.bias = -0.00015;
+      s.shadow.normalBias = 0.02;
+      s.shadow.camera.near = 1;
+      s.shadow.camera.far = 60;
+    }
+    g.add(s, s.target);
+    return s;
+  };
+  // overhead truss: three warm-white spots per long side, two casting shadows
+  for (const [i, x] of [108, 324, 540].entries()) {
+    spot(P(x, -150, 330), P(x, 150, 0), 0xfff4e6, opts.key ?? 1.3, 0.62, i === 1);
+    spot(P(x, 474, 330), P(x, 174, 0), 0xf2f5ff, (opts.key ?? 1.3) * 0.8, 0.62, i === 1 && opts.shadows2);
+  }
+  // alliance rim light from each end
+  spot(P(-200, 162, 140), P(60, 162, 20), 0x3b78ff, opts.rim ?? 2.2, 0.38, false);
+  spot(P(848, 162, 140), P(588, 162, 20), 0xff3b3b, opts.rim ?? 2.2, 0.38, false);
+  // top light on the CRAGs
+  spot(P(324, 162, 420), P(324, 162, 40), 0xffffff, opts.top ?? 0.7, 0.5, true);
+  return g;
+}
+
+async function load(url) {
+  if (loaded[url]) return loaded[url];
+  const gltf = await new GLTFLoader().loadAsync(url);
+  gltf.scene.traverse(o => {
+    if (o.isMesh) {
+      o.castShadow = true;
+      o.receiveShadow = true;
+      const m = o.material;
+      if (m.emissive && (m.emissive.r + m.emissive.g + m.emissive.b) > 0) m.emissiveIntensity = 2.4;
+      if (m.transparent) { m.depthWrite = false; o.castShadow = false; }
+    }
+  });
+  loaded[url] = gltf.scene;
+  return gltf.scene;
+}
+
+window.stage = async function (opts) {
+  const W = opts.width || 1600, H = opts.height || 900;
+  if (!renderer) {
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(1);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.body.appendChild(renderer.domElement);
+  }
+  renderer.setSize(W, H);
+  renderer.toneMappingExposure = opts.exposure ?? 0.95;
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(opts.background ?? 0x03050a);
+  if (opts.fog !== false) scene.fog = new THREE.FogExp2(0x05070d, opts.fogDensity ?? 0.012);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = opts.env ?? 0.22;
+  scene.add(lights(opts));
+  if (opts.floor !== false) {
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200),
+      new THREE.MeshStandardMaterial({ color: 0x0b0c10, roughness: 0.38, metalness: 0.25 }));
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = (opts.floorZ ?? -0.3) * IN;
+    floor.receiveShadow = true;
+    scene.add(floor);
+  }
+  for (const url of opts.models) scene.add((await load(url)).clone());
+  // per-node overrides for animation frames: {name: {position:[x,y,z] (in), quaternion:[x,y,z,w]}}
+  camera = new THREE.PerspectiveCamera(opts.fov ?? 35, W / H, 0.05, 400);
+  camera.position.copy(P(...opts.eye));
+  camera.up.set(0, 1, 0);
+  camera.lookAt(P(...opts.target));
+  composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  bloom = new UnrealBloomPass(new THREE.Vector2(W, H), opts.bloom ?? 0.55, 0.4, opts.bloomThreshold ?? 0.97);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
+  composer.setSize(W, H);
+  composer.render();
+  composer.render();
+  return { triangles: renderer.info.render.triangles, calls: renderer.info.render.calls };
+};
+window.ready = true;
+</script>
+</body>
+</html>

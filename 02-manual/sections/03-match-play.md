@@ -10,7 +10,7 @@ A MATCH is 2 minutes 30 seconds long and consists of two periods played back-to-
 
 | Period | Duration | Notes |
 |---|---|---|
-| AUTO | 0:15 | ROBOTS operate autonomously. DRIVERS may not touch OPERATOR CONSOLE controls. |
+| AUTO | 0:15 | ROBOTS operate autonomously. DRIVE TEAM members may not touch OPERATOR CONSOLE controls. |
 | TELEOP | 2:15 | Driver control. The final 0:30 of TELEOP is the ENDGAME period, during which HEADWALL protection (§4.5.4) is active. |
 
 Scores are assessed with settle windows:
@@ -40,7 +40,7 @@ Sixty-three (63) SUPPLIES (21 CACHE CRATES, 21 O2 CELLS, and 21 ROPE COILS) are 
 
 ### 4.2.2 Preloads and Starting Configuration
 
-Each ROBOT may begin the MATCH with up to one preloaded SUPPLY of any type, drawn from the ALLIANCE's OUTFITTER stock during setup. The preload must be fully supported by the ROBOT and must not cause the ROBOT to exceed its starting configuration limits (no more than 42 in tall and within the FRAME PERIMETER; see **R104**). A team may choose not to preload.
+Each ROBOT may begin the MATCH with up to one preloaded SUPPLY of any type, drawn from the ALLIANCE's OUTFITTER stock during setup. The preload must be fully supported by the ROBOT and must not cause the ROBOT to exceed its STARTING CONFIGURATION limits (no more than 42 in tall and within the FRAME PERIMETER; see **R104**). A team may choose not to preload.
 
 ROBOTS must start the MATCH (**G302**):
 
@@ -71,7 +71,7 @@ Procedure:
 3. Declared ROUTES latch at the "field ready" signal and cannot be changed after it. Each ALLIANCE's declared ROUTE is displayed on the FIELD LEDs at MATCH start and shown on the audience screen.
 4. ROUTE DECLARATION is per ALLIANCE and per MATCH. The two ALLIANCES declare independently and may declare the same ROUTE or different ROUTES.
 
-> *Commentary:* Declaring a ROUTE does not limit where an ALLIANCE may score. An ALLIANCE that declares HIGH ROUTE may still score at every level of both lower tiers; it has chosen which CAMP bonus pays its declared value, and its EXPEDITION RP depends on reaching that altitude. The uplifts over base (+12, +14, +20) differ because the three CAMPS are not equally likely to be completed. At completion rates typical of a strong ALLIANCE, the three declarations are worth within a couple of points of each other, so the best declaration is the one the ALLIANCE can reliably complete. Each team's ROUTE history is worth scouting, because it shows which tier its ALLIANCES tend to work first.
+> *Commentary:* Declaring a ROUTE does not limit where an ALLIANCE may score. An ALLIANCE that declares HIGH ROUTE may still score on both lower tiers; it has chosen which CAMP bonus pays its declared value, and its EXPEDITION RP depends on reaching that altitude. The uplifts over base (+12, +14, +20) differ because the three CAMPS are not equally likely to be completed. At completion rates typical of a strong ALLIANCE, LOW and MID are worth within a point of each other and HIGH falls well behind (§4.7), so the best declaration is the one the ALLIANCE can reliably complete. Each team's ROUTE history is worth scouting, because it shows which tier its ALLIANCES tend to work first.
 
 ## 4.3 AUTO (0:15)
 
@@ -95,12 +95,12 @@ Each PRIORITY SUPPLY that becomes SCORED before the end of the AUTO settle, and 
 
 1. Before each MATCH, the HEAD REFEREE (or a designated FIELD STAFF member) holds a deck of exactly three cards labeled `W`, `I`, and `G`, shuffles it face-down, and draws one card during the setup period. The drawn card is not revealed to any DRIVE TEAM before AUTO begins.
 2. At T=0 of AUTO, the card is revealed to both ALLIANCES at once: the FIELD STAFF member sets the white FIELD LEDs to the corresponding pattern (or, on fields without controllable LEDs, raises a placard visible from all six driver stations and announces the FORECAST over the sound system).
-3. A ROBOT without game data may read the FORECAST from a driver-station dashboard entry made by a DRIVER/OPERATOR at the reveal, or by vision on the LEDs or placard, or it may run a fixed-assumption AUTO. **G401** otherwise bars every DRIVE TEAM member from touching the OPERATOR CONSOLE during AUTO, and the DRIVE COACH may never touch it. The single dashboard selection described here is a stated exception to **G401** for one DRIVER/OPERATOR at fallback events and is not "operating the ROBOT." The permitted entry is limited to selecting exactly one of the three FORECAST values (`W`, `I`, or `G`); any other dashboard input during AUTO is operating the ROBOT.
+3. A ROBOT without game data may read the FORECAST from a driver-station dashboard entry made by a DRIVER/OPERATOR at the reveal, or by vision on the LEDs or placard, or it may run a fixed-assumption AUTO. **G401** otherwise bars every DRIVE TEAM member from touching the OPERATOR CONSOLE during AUTO, and the DRIVE COACH may not touch it at any time during a MATCH. The single dashboard selection described here is a stated exception to **G401** for one DRIVER/OPERATOR at fallback events and is not "operating the ROBOT." The permitted entry is limited to selecting exactly one of the three FORECAST values (`W`, `I`, or `G`); any other dashboard input during AUTO is operating the ROBOT.
 4. The drawn card is returned and the deck reshuffled for every MATCH.
 
 ### 4.3.2 LEAVE
 
-A ROBOT earns LEAVE (3 points) if, at any time during AUTO, its BUMPERS have fully exited its ALLIANCE's BASECAMP zone, meaning that no part of its BUMPERS intersects the vertical projection of the BASECAMP tape. LEAVE latches once earned; a ROBOT that exits and returns to BASECAMP keeps its LEAVE points.
+A ROBOT earns LEAVE (3 points) if, at any time during AUTO, its BUMPERS have fully exited its ALLIANCE's BASECAMP zone, meaning that no part of its BUMPERS intersects the vertical projection of the BASECAMP zone, tape included. LEAVE latches once earned; a ROBOT that exits and returns to BASECAMP keeps its LEAVE points.
 
 ### 4.3.3 AUTO Scoring
 
@@ -115,7 +115,7 @@ An ALLIANCE earns ROPED UP (+10) if, during AUTO (assessed at the end of the AUT
 
 ROPED UP is a count of SUPPLIES; their point values do not matter.
 
-> *Commentary:* Four of the five required SUPPLIES are fixed by type (two of the PRIORITY SUPPLY plus one of each other type), and the fifth may be any type. The PRIORITY SUPPLY is not known until T = 0, so an ALLIANCE that wants the bonus must prepare three routines and agree in the queue on which ROBOT covers the PRIORITY SUPPLY in each case. With the 2-SUPPLY possession limit and a 15-second AUTO, no single ROBOT can earn it alone.
+> *Commentary:* Four of the five required SUPPLIES are fixed by type (two of the PRIORITY SUPPLY plus one of each other type), and the fifth may be any type. The PRIORITY SUPPLY is not known until T=0, so an ALLIANCE that wants the bonus must prepare three routines and agree in the queue on which ROBOT covers the PRIORITY SUPPLY in each case. With the 2-SUPPLY possession limit and a 15-second AUTO, no single ROBOT can earn it alone.
 
 ### 4.3.5 AUTO Distances
 
@@ -146,7 +146,7 @@ A SUPPLY is SCORED in a scoring location when all of the following are true:
 
 1. it is at rest,
 2. it is directly and fully supported by the scoring element (support transmitted through another SUPPLY does not qualify), and
-3. it is not in contact with any ROBOT of the ALLIANCE for whom it would score.
+3. it is not in contact with any ROBOT of the ALLIANCE for which it would score.
 
 Additional location-specific conditions:
 
@@ -228,7 +228,7 @@ At climb assessment (Section 4.5.3), each ROBOT earns exactly one of the followi
 | **SUMMIT RUNG climb** | ROBOT supported solely by the SUMMIT RUNG (directly or via its own mechanisms), BUMPERS not in contact with the carpet | **30** |
 | **CAMP RUNG climb** | As above, for the CAMP RUNG | **20** |
 | **LEDGE RUNG climb** | As above, for the LEDGE RUNG | **12** |
-| **PARK** | ROBOT's BUMPERS fully contained within the vertical projection of its ALLIANCE's BASECAMP zone; ROBOT not fully supported by a rung. Contact with HEADWALL structure other than a rung is permitted (see **G416**) | **3** |
+| **PARK** | ROBOT's BUMPERS fully contained within the vertical projection of its ALLIANCE's BASECAMP zone; ROBOT not supported solely by a rung. Contact with HEADWALL structure other than a rung is permitted; rung contact from the carpet is governed by **G416** | **3** |
 
 "Supported solely by" a rung means that the rung, through the ROBOT's own mechanisms, bears the ROBOT's entire weight, with no contact with the carpet, a partner ROBOT, or any other FIELD element that transfers support. Incidental, non-supporting contact with the HEADWALL truss (for example, a swing-damping roller or a guide wheel riding the diagonal) is permitted. A ROBOT supported in any part by a partner ROBOT is not supported solely by a rung and earns no rung credit. Partner support is legal (**G413**), but there are no buddy climbs in SUMMIT PUSH.
 
@@ -244,7 +244,7 @@ ENDGAME states are assessed after the final buzzer, at the instant all ROBOTS ha
 
 ### 4.5.4 HEADWALL Protection
 
-From the start of the ENDGAME period until climb assessment is complete, the HEADWALL ZONE (each ALLIANCE's taped BASECAMP area) is protected. An opponent ROBOT may not contact a ROBOT whose BUMPERS are wholly or partly within its own ALLIANCE's HEADWALL ZONE, and may not contact a ROBOT that is supported by its own ALLIANCE's HEADWALL, wherever that ROBOT's BUMPERS project. During that window, a ROBOT may not position its BUMPERS within the opponent's HEADWALL ZONE at all. This is a line call on the contacted ROBOT's position and does not depend on intent (**G412**).
+From the start of the ENDGAME period until climb assessment is complete, the HEADWALL ZONE (each ALLIANCE's taped BASECAMP area) is protected. An opponent ROBOT may not contact a ROBOT whose BUMPERS are wholly or partly within its own ALLIANCE's HEADWALL ZONE, and may not contact a ROBOT that is supported by its own ALLIANCE's HEADWALL, wherever that ROBOT's BUMPERS project. During that window, a ROBOT may not position its BUMPERS within the opponent's HEADWALL ZONE at all. This is a line call on the contacted ROBOT's position and does not depend on intent (**G412**). Contact that the protected ROBOT initiates is not a violation (**G205**).
 
 **Blocked and displaced climbs.** A ROBOT prevented from attaining a rung by a violation of **G412** or **G413** is credited at the LEDGE RUNG value (12), unless it was already supported by a higher rung when the violation occurred, in which case that rung's value applies. Points awarded under this paragraph are ENDGAME points and count toward the ASCENT RP.
 
@@ -283,7 +283,7 @@ A CRAG filled to capacity in TELEOP is worth 107 placement points (28 low + 49 m
 
 ## 4.7 RANKING POINTS
 
-In qualification MATCHES, ALLIANCES earn RANKING POINTS (RP): Win = 3 RP, Tie = 1 RP, Loss = 0 RP, plus up to three bonus RPs (maximum 6 RP per MATCH). Bonus RPs are earned independently of the MATCH outcome. Their thresholds increase with event tier:
+In Qualification MATCHES, ALLIANCES earn RANKING POINTS (RP): Win = 3 RP, Tie = 1 RP, Loss = 0 RP, plus up to three bonus RPs (maximum 6 RP per MATCH). Bonus RPs are earned independently of the MATCH outcome. Their thresholds increase with event tier:
 
 **Table 4-10: Bonus RANKING POINT thresholds**
 
@@ -293,7 +293,7 @@ In qualification MATCHES, ALLIANCES earn RANKING POINTS (RP): Win = 3 RP, Tie = 
 | **EXPEDITION RP** | CAMPS established | 2 CAMPS, including the CAMP matching the ALLIANCE's declared ROUTE | All 3 CAMPS | All 3 CAMPS and the declared ROUTE's tier at full capacity |
 | **ASCENT RP** | ALLIANCE ENDGAME points (climbs + PARKS) | ≥32 | ≥52 | ≥60 |
 
-**SUPPLY LINE count.** The SUPPLY LINE RP counts the SUPPLIES in a SCORED state (Section 4.4.1) at the close of the final match settle. Any SUPPLY then awaiting a **G504** restoration (Section 4.4.4) is counted in the scoring position it occupied when it was displaced. Each physical SUPPLY counts at most once: a SUPPLY scored, dislodged, and re-scored is one SUPPLY.
+**SUPPLY LINE count.** The SUPPLY LINE RP counts the SUPPLIES in a SCORED state (Section 4.4.1) at the close of the match settle. Any SUPPLY then awaiting a **G504** restoration (Section 4.4.4) is counted in the scoring position it occupied when it was displaced. Each physical SUPPLY counts at most once: a SUPPLY scored, dislodged, and re-scored is one SUPPLY.
 
 **Full capacity** (Championship EXPEDITION RP) is seven SCORED positions for every ROUTE:
 
@@ -307,7 +307,7 @@ In qualification MATCHES, ALLIANCES earn RANKING POINTS (RP): Win = 3 RP, Tie = 
 
 Full capacity is assessed at the end of the match settle; it does not latch when first reached. The HIGH set reaches down into the mid tier because the CRAG has only three positions above 54 in. Adding the four hardest mid-tier positions keeps the count at seven for every ROUTE.
 
-All three CAMPS are also required, so the three ROUTES differ only in what they add beyond the CAMPS. LOW adds four low-tier positions (24–30 in), MID adds four mid-tier positions (42–54 in), and HIGH adds three: the second High Peg at 78 in, the second Mid Socket, and the second Mid Peg. HIGH requires one fewer position but carries the largest bonus, because the second High Peg is the hardest position on the CRAG.
+All three CAMPS are also required, so the three ROUTES differ only in what they add beyond the CAMPS. LOW adds four low-tier positions (24–30 in), MID adds four mid-tier positions (42–54 in), and HIGH adds three: the second High Peg at 78 in, the second Mid Socket, and the second Mid Peg. HIGH requires one fewer position because one of its three, the second High Peg, is the hardest position on the CRAG.
 
 **Design-challenge note:** design entries are judged against the Championship column. A Championship-caliber design contributes toward ≥23 SCORED SUPPLIES, all three CAMPS with the declared ROUTE tier at full capacity, and a ≥60-point ENDGAME.
 
@@ -321,13 +321,13 @@ All three CAMPS are also required, so the three ROUTES differ only in what they 
 > | strong | .92 / .90 / .55 | 50.8 | **51.6** | 40.8 | MID |
 > | good | .95 / .85 / .50 | **51.6** | 49.9 | 38.5 | LOW |
 > | developing | .90 / .70 / .30 | **50.2** | 44.8 | 29.5 | LOW |
-> | rookie | .70 / .35 / .05 | **44.6** | 32.9 | 18.2 | LOW |
+> | rookie | .70 / .35 / .05 | **44.6** | 32.9 | 18.3 | LOW |
 >
 > The declaration is therefore a bet on the ALLIANCE's demonstrated capability. Because it is public on the FIELD LEDs at MATCH start (**G304**), opponents can read it and defend the tier it names.
 
 **Ranking order.** Teams are ranked by:
 
-1. RANKING SCORE: average RP per qualification MATCH played (Section 8.2);
+1. RANKING SCORE: average RP per Qualification MATCH played (Section 8.2);
 2. cumulative MATCH points (fouls included);
 3. cumulative AUTO points;
 4. cumulative ENDGAME points;
@@ -346,8 +346,8 @@ Every rule violation that carries an in-MATCH penalty uses the following taxonom
 | **VERBAL WARNING** | No points. Issued for first-instance, low-impact infractions where the rule so provides. Warnings persist for the team for the remainder of the event. |
 | **MINOR FOUL** | +3 points credited to the opposing ALLIANCE's MATCH score. |
 | **MAJOR FOUL** | +8 points credited to the opposing ALLIANCE's MATCH score. |
-| **YELLOW CARD** | Formal warning for egregious ROBOT or team-member behavior. A second YELLOW CARD in the same tournament phase automatically becomes a RED CARD. YELLOW CARDS reset between the qualification and playoff phases. |
-| **RED CARD** | Disqualification for the MATCH: the team earns 0 MATCH points and 0 RP in a qualification MATCH; in playoffs, a RED CARD disqualifies the ALLIANCE for that MATCH. |
+| **YELLOW CARD** | Formal warning for egregious ROBOT or team-member behavior, or for specific listed violations. A second YELLOW CARD in the same tournament phase automatically becomes a RED CARD. YELLOW CARDS reset between the qualification and playoff phases. |
+| **RED CARD** | Disqualification for the MATCH: the team earns 0 MATCH points and 0 RP in a Qualification MATCH; in Playoffs, a RED CARD disqualifies the ALLIANCE for that MATCH. |
 
 Foul points are added to the opponent's score. They count toward the MATCH outcome and toward every points-based threshold except the bonus-RP thresholds, which are computed only from the earning ALLIANCE's own SCORED SUPPLIES, CAMPS, and ENDGAME points.
 
@@ -355,11 +355,11 @@ Foul points are added to the opponent's score. They count toward the MATCH outco
 
 ## 4.9 Score Finality and the Question Box
 
-Referees record SCORED SUPPLIES, latched CAMP and SUMMIT BEACON states, ENDGAME states, and FOULS; the FMS totals them. The HEAD REFEREE approves the MATCH score.
+Referees record SCORED SUPPLIES, latched CAMP and SUMMIT BEACON states, ENDGAME states, and fouls; the FMS totals them. The HEAD REFEREE approves the MATCH score.
 
 A MATCH score becomes FINAL when the HEAD REFEREE approves it. If approval has not been given sooner, the score becomes FINAL at the start of the next MATCH played on that FIELD. For the last MATCH of a tournament phase, of a day, or of the event, where there is no next MATCH, it becomes FINAL 10 minutes after the final buzzer if it has not been approved sooner. The HEAD REFEREE may extend that 10-minute window once, by announcement, while a question box conversation or a **G504** restoration is still open. All **G504** restorations (Section 4.4.4) are completed and accounted for before approval.
 
-**Question box.** One student DRIVE TEAM member per ALLIANCE may present a question to the HEAD REFEREE at the question box before the score is FINAL (**G204**). Only SCORING ERRORS can be corrected: a miscounted or misattributed SUPPLY, an unrecorded CAMP or SUMMIT BEACON latch, a mis-entered ENDGAME state, or a FOUL credited to the wrong ALLIANCE. A disagreement with a referee's judgment about whether a violation occurred is not a SCORING ERROR and is never reviewable; referee judgment is final per **G204**.
+**Question box.** One student DRIVE TEAM member per ALLIANCE may present a question to the HEAD REFEREE at the question box before the score is FINAL (**G204**). Only SCORING ERRORS can be corrected: a miscounted or misattributed SUPPLY, an unrecorded CAMP or SUMMIT BEACON latch, a mis-entered ENDGAME state, or a foul credited to the wrong ALLIANCE. A disagreement with a referee's judgment about whether a violation occurred is not a SCORING ERROR and is never reviewable; referee judgment is final per **G204**.
 
 Once FINAL, a MATCH score may not be changed.
 
@@ -376,4 +376,4 @@ SUMMIT PUSH rewards ALLIANCES built from complementary ROBOTS. Four ALLIANCE ROL
 | **RING ALPINIST** | Low, Mid, and High Pegs | The High Pegs, which no other role can supply, and therefore HIGH CAMP and the HIGH ROUTE's full capacity. Hook or spear end effector plus a 78-in reach. |
 | **HYBRID** | Two tiers across two piece types, plus a strong climb | Flexibility in the draft, cover for a partner's failure, and usually the ALLIANCE's ASCENT contribution. |
 
-Placement values depend only on tier. In TELEOP, a CRATE FREIGHTER filling six shelf slots scores 33 placement points, an O2 SURGEON filling five sockets scores 32, and a RING ALPINIST filling six pegs scores 42. Within a tier, every position pays the same for every piece; the totals differ because each piece reaches different tiers. The CRAG has no crate position above 42 in, so a CACHE CRATE's best TELEOP placement is worth 7 points, while a ROPE COIL's is worth 10. The roles are therefore drafted as complements.
+Placement values depend only on tier. In TELEOP, a CRATE FREIGHTER filling six shelf slots scores 33 placement points, an O2 SURGEON filling five sockets scores 32, and a RING ALPINIST filling six pegs scores 42. Within a tier, every position pays the same for every piece; the totals differ because each piece has a different number of positions on each tier. The CRAG has no crate position above 42 in, so a CACHE CRATE's best TELEOP placement is worth 7 points, while a ROPE COIL's is worth 10. The roles are therefore drafted as complements.

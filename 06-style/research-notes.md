@@ -169,27 +169,27 @@ The reference documents use a specific corporate palette (black `#231F20`, red `
 
 | Token | Hex | RGB | Role | Contrast on `--paper` |
 |---|---|---|---|---|
-| `--ink` | `#1A1D21` | 26, 29, 33 | Body text, H1, H3, rule numbers | 16.1:1 ✅ |
+| `--ink` | `#1A1D21` | 26, 29, 33 | Body text, H1, H3, rule numbers | 16.9:1 ✅ |
 | `--paper` | `#FFFFFF` | 255, 255, 255 | Page ground | — |
 | `--paper-dim` | `#F4F5F7` | 244, 245, 247 | Zebra row fill, subtle panels | — |
-| `--accent` | `#1F4E79` | 31, 78, 121 | Primary heading color (H2), table header fill, box border, glossary rules | 9.4:1 ✅ |
+| `--accent` | `#1F4E79` | 31, 78, 121 | Primary heading color (H2), table header fill, box border, glossary rules | 8.7:1 ✅ |
 | `--accent-bright` | `#2E6FA8` | 46, 111, 168 | Header band divider rule and decorative rules only; never body text | 5.3:1 ⚠️ large text only |
-| `--accent-deep` | `#16385A` | 22, 56, 90 | Section-opener wash, cover band | 12.2:1 ✅ |
-| `--stable` | `#1E7A4C` | 30, 122, 76 | Persistent-rule headlines (bold, asterisk-prefixed) | 5.1:1 ✅ at bold 11 pt |
-| `--seasonal` | `#1F4E79` | 31, 78, 121 | Season-specific rule headlines (bold); the same as `--accent` by design | 9.4:1 ✅ |
-| `--muted` | `#6E7378` | 110, 115, 120 | Violation lines (italic), captions' secondary text, TOC leaders | 4.9:1 ✅ |
+| `--accent-deep` | `#16385A` | 22, 56, 90 | Section-opener wash, cover band | 12.0:1 ✅ |
+| `--stable` | `#1E7A4C` | 30, 122, 76 | Persistent-rule headlines (bold, asterisk-prefixed) | 5.3:1 ✅ at bold 11 pt |
+| `--seasonal` | `#1F4E79` | 31, 78, 121 | Season-specific rule headlines (bold); the same as `--accent` by design | 8.7:1 ✅ |
+| `--muted` | `#6E7378` | 110, 115, 120 | Violation lines (italic), captions' secondary text, TOC leaders | 4.8:1 ✅ |
 | `--rule-line` | `#C8CCD1` | 200, 204, 209 | Table body rules, thin dividers, hairlines | — |
 | `--rule-line-strong` | `#8A9199` | 138, 145, 153 | Table outer border, section dividers | — |
-| `--box-fill` | `#DCE6F1` | 220, 230, 241 | Commentary box tint (tint of `--accent`) | ink on it: 13.9:1 ✅ |
+| `--box-fill` | `#DCE6F1` | 220, 230, 241 | Commentary box tint (tint of `--accent`) | ink on it: 13.4:1 ✅ |
 | `--box-border` | `#1F4E79` | 31, 78, 121 | Commentary box 1.5 pt border (= `--accent`) | — |
-| `--warn-fill` | `#FBEBD2` | 251, 235, 210 | Caution box tint | ink on it: 14.5:1 ✅ |
-| `--warn-border` | `#B26A12` | 178, 106, 18 | Caution box border, caution icon | 4.6:1 ✅ |
-| `--danger-fill` | `#F7DEDE` | 247, 222, 222 | Warning box tint (safety-critical only) | ink on it: 13.8:1 ✅ |
-| `--danger-border` | `#A32A2A` | 163, 42, 42 | Warning box border | 7.1:1 ✅ |
+| `--warn-fill` | `#FBEBD2` | 251, 235, 210 | Caution box tint | ink on it: 14.4:1 ✅ |
+| `--warn-border` | `#B26A12` | 178, 106, 18 | Caution box border, caution icon | 4.2:1 ⚠️ large text only |
+| `--danger-fill` | `#F7DEDE` | 247, 222, 222 | Warning box tint (safety-critical only) | ink on it: 13.3:1 ✅ |
+| `--danger-border` | `#A32A2A` | 163, 42, 42 | Warning box border | 7.2:1 ✅ |
 | `--change-add` | `#FFF3A8` | 255, 243, 168 | Revision-note addition highlight | — |
 | `--change-del` | `#6E7378` | 110, 115, 120 | Revision-note deletion (strikethrough, muted) | — |
-| `--link` | `#245C9E` | 36, 92, 158 | Cross-references and URLs, underlined | 7.0:1 ✅ |
-| `--table-head-fill` | `#1F4E79` | 31, 78, 121 | Table header band (= `--accent`) | white on it: 9.4:1 ✅ |
+| `--link` | `#245C9E` | 36, 92, 158 | Cross-references and URLs, underlined | 6.8:1 ✅ |
+| `--table-head-fill` | `#1F4E79` | 31, 78, 121 | Table header band (= `--accent`) | white on it: 8.7:1 ✅ |
 | `--table-head-text` | `#FFFFFF` | 255, 255, 255 | Reversed table header type | — |
 | `--table-group-fill` | `#E4E9EF` | 228, 233, 239 | Sub-header / row-group band | — |
 
@@ -225,7 +225,7 @@ The reference documents publish no official hex for alliance red or blue. Field 
 2. **Rule numbers are never colored.** Bold `--ink`, always, including for persistent rules. The color lives on the *headline* that follows. (The reference manuals' own prose gets this wrong and claims the number is colored; their actual typesetting does not. We follow the typesetting.)
 3. **Three semantic colors, three meanings, no overlap:** `--stable` = rule persists across seasons; `--seasonal` = rule is specific to this game; `--muted` = this text is a consequence or a caption, subordinate to the rule.
 4. **Never encode meaning in color alone.** Persistent rules carry a literal leading asterisk in addition to the green. Violation lines carry the literal word "Violation:" in addition to the gray italic. Print the manual in grayscale as an acceptance test; every distinction must survive.
-5. **Minimum contrast: 4.5:1** for all body-size text, 3:1 for ≥14 pt bold. `--accent-bright` fails body text and is banned from it.
+5. **Minimum contrast: 4.5:1** for all body-size text, 3:1 for ≥14 pt bold. `--accent-bright` is reserved for decorative rules and banned from body text.
 
 ---
 
@@ -233,16 +233,16 @@ The reference documents publish no official hex for alliance red or blue. Field 
 
 ### 4.1 Typeface selection
 
-All faces below are free, open-licensed (SIL OFL or Apache 2.0) and redistributable. Vendor them into `assets/fonts/` and embed them in the PDF. Never rely on a system font being present.
+All faces below are free, open-licensed (SIL OFL 1.1) and redistributable. Vendor them into `assets/fonts/` and embed them in the PDF. Never rely on a system font being present.
 
 | Role | Family | License | Weights needed |
 |---|---|---|---|
-| **Body, headings, tables (primary)** | Roboto | Apache 2.0 | Regular 400, Italic 400, Medium 500, Bold 700, Bold Italic 700 |
-| **Condensed (header band, tight table cells, drawing sheets)** | Roboto Condensed | Apache 2.0 | Regular 400, Bold 700 |
+| **Body, headings, tables (primary)** | Roboto | OFL 1.1 | Regular 400, Italic 400, Medium 500, Bold 700, Bold Italic 700 |
+| **Condensed (header band, tight table cells, drawing sheets)** | Roboto Condensed | OFL 1.1 | Regular 400, Bold 700 |
 | **Monospace (code, coordinates, part numbers)** | JetBrains Mono | OFL 1.1 | Regular 400, Bold 700 |
 | **Numeric tabular fallback** | Roboto has tabular figures via `font-feature-settings: "tnum"` | — | — |
 
-Roboto is used because it is the correct genre signal, is Apache-2.0 licensed, and is free for any use, including commercial use; using it raises no trademark issue. A typeface choice is not a brand asset.
+Roboto is used because it is the correct genre signal, is licensed under the SIL OFL 1.1, and is free for any use, including commercial use; using it raises no trademark issue. A typeface choice is not a brand asset.
 
 **Full CSS stacks:**
 
@@ -874,9 +874,9 @@ summit-push/
 │  └─ header-band.svg           # authored, not borrowed
 ├─ style/
 │  ├─ tokens.yml                # single source of truth for §3 colors
-│  ├─ manual.typ               # Typst template
-│  ├─ manual.tex               # LaTeX fallback template
-│  └─ print.css                # Paged.js / HTML preview
+│  ├─ manual.typ                # Typst template
+│  ├─ manual.tex                # LaTeX fallback template
+│  └─ print.css                 # Paged.js / HTML preview
 ├─ build/
 │  ├─ filters/
 │  │  ├─ rules.lua              # rule divs → numbered blocks
@@ -1198,7 +1198,7 @@ Do not place any of the following in the manual, the drawings, the file metadata
 - Any sponsor name appearing in a real manual, including in a "presented by" construction, which is the construction that implies sponsorship.
 - Any real organization's name in a way that implies endorsement, affiliation, origin, or approval.
 
-Published text does not describe SUMMIT PUSH as "FRC-style". The shipped manual describes it as a fictional competitive-robotics game.
+Published text does not describe SUMMIT PUSH as "FRC-style". The shipped manual describes it as an original game for competitive-robotics design training.
 
 ### 10.2 Artwork and assets
 
@@ -1227,7 +1227,7 @@ A single color is rarely protectable on its own, but a *palette* deployed in the
 
 1. **Use our own name throughout.** SUMMIT PUSH, its own wordmark set as type, its own part-number prefix (`SP-`).
 2. **Use our own palette** (§3.3), a different hue family from any real program.
-3. **Use freely licensed fonts only** (Roboto, Roboto Condensed and JetBrains Mono, under Apache 2.0 and OFL). Typeface choice is not a trademark issue; a typeface is a tool.
+3. **Use freely licensed fonts only** (Roboto, Roboto Condensed and JetBrains Mono, all under the SIL OFL 1.1). Typeface choice is not a trademark issue; a typeface is a tool.
 4. **Author every figure.** SVG or original render, made for this manual.
 5. **Write every rule, definition, and disclaimer from scratch.**
 6. **Carry a disclaimer on the cover verso or the last page**, in plain original prose, to this effect:

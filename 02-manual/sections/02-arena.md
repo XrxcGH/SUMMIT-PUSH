@@ -2,11 +2,11 @@
 
 The SUMMIT PUSH ARENA includes all elements of the game infrastructure required to play a MATCH: the FIELD, two CRAGS, two HEADWALLS, four OUTFITTERS, 63 SUPPLIES, and the equipment for scorekeeping, field control, and MATCH lighting. This section is the authoritative physical description of the ARENA. Where an illustration in any other document disagrees with a dimension given here, this section governs.
 
-> *Commentary:* The ARENA is illustrated throughout this manual with nominal dimensions. Fields are built by hand, so teams should expect variation of up to ±1 in and ±1° on non-critical dimensions and design accordingly. Dimensions flagged as toleranced (the O2 socket inside diameter, §3.3.2) are held to the stated tolerance on every official field. Every element is fully dimensioned for CAD reproduction in the FIELD CAD PACKAGE (`03-field/FIELD-CAD-PACKAGE.md`), and its appearance is specified in `03-field/MATERIALS-AND-COLORS.md`.
+> *Commentary:* The ARENA is illustrated throughout this manual with nominal dimensions. Fields are built by hand, so teams should expect variation of up to ±1 in and ±1° on non-critical dimensions and design accordingly. Dimensions flagged as toleranced (the O2 socket inside diameter, §3.3.2, and the CRAG tag center height, §3.7) are held to the stated tolerance on every official field. Every element is fully dimensioned for CAD reproduction in the FIELD CAD PACKAGE (`03-field/FIELD-CAD-PACKAGE.md`), and its appearance is specified in `03-field/MATERIALS-AND-COLORS.md`.
 
 ## 3.1 The FIELD
 
-The FIELD is a 54 ft × 27 ft (648 in × 324 in) carpeted area bounded by guardrails and alliance walls. The guardrail is a 20-in-tall barrier along the long sides and parts of the short sides of the FIELD. Each short end of the FIELD is closed by an alliance wall: a solid barrier containing three standard driver stations, one per team on the ALLIANCE. Each driver station provides a shelf, a clear polycarbonate window, the standard FMS connection point for the OPERATOR CONSOLE, and FIELD-provided **E-STOP** and **A-STOP** buttons. The E-STOP renders that team's ROBOT inoperable for the remainder of the MATCH. The A-STOP ends that ROBOT's AUTO immediately; the ROBOT may then be enabled normally at the start of TELEOP. Any DRIVE TEAM member may press either button at any time (see **G401**). Each alliance wall has two OUTFITTER chute openings near its corners (Section 3.5).
+The FIELD is a 54 ft × 27 ft (648 in × 324 in) carpeted area bounded by guardrails and alliance walls. The guardrail is a 20-in-tall barrier along the long sides of the FIELD. Each short end of the FIELD is closed by an alliance wall: a solid barrier containing three standard driver stations, one per team on the ALLIANCE. Each driver station provides a shelf, a clear polycarbonate window, the standard FMS connection point for the OPERATOR CONSOLE, and FIELD-provided **E-STOP** and **A-STOP** buttons. The E-STOP renders that team's ROBOT inoperable for the remainder of the MATCH. The A-STOP ends that ROBOT's AUTO immediately; the ROBOT may then be enabled normally at the start of TELEOP. Any DRIVE TEAM member may press either button at any time (see **G401**). Each alliance wall has two OUTFITTER chute openings near its corners (Section 3.5).
 
 *Figure 3-1. FIELD layout in plan view, Blue alliance wall at left. Dimensioned drawing: Plate 1 of the field drawing set.*
 
@@ -28,7 +28,7 @@ The FIELD centerline is the line X = 324. The FIELD center is (324, 162). Height
 Each long-side guardrail (Y = 0 and Y = 324) carries a continuous 1.0-in-wide LED band set into its top rail, with a frosted lens facing inward and the lens center 19.0 in above the carpet. Each band is divided at the FIELD centerline into two 324-in ALLIANCE segments, so each ALLIANCE has two segments, one on each side of the FIELD. Segment states:
 
 - **Green:** the FIELD is safe for team members to enter or reach over (**G101**).
-- **White:** the FORECAST, displayed in both ALLIANCES' segments at T = 0 of AUTO (Section 4.3.1). One lit block means WHITEOUT, two ICEFALL, three GALE.
+- **White:** the FORECAST, displayed in both ALLIANCES' segments at T=0 of AUTO (Section 4.3.1). One lit block means WHITEOUT, two ICEFALL, three GALE.
 - **ALLIANCE color:** that ALLIANCE's declared ROUTE, from the "field ready" signal through MATCH start (Section 4.2.3, **G304**). One lit block means LOW ROUTE, two MID ROUTE, three HIGH ROUTE.
 - **Dark:** at all other times.
 
@@ -55,7 +55,7 @@ All zone boundaries are marked with tape on the carpet. ALLIANCE-specific zones 
 | **Alliance staging marks** | Blue | 3 taped marks at X = 144; Y = 108, 162, 216 | 12 ft from the Blue alliance wall |
 | | Red | X = 504; Y = 108, 162, 216 | mirror |
 
-BASECAMP is the taped area between each alliance wall and its HEADWALL. ROBOTS begin every MATCH in their BASECAMP (Section 3.2.1). The same taped area is also the HEADWALL ZONE: during the ENDGAME period and the climb assessment that follows it, opponent contact with a ROBOT in this zone is penalized (**G412**). The two names refer to the same taped area. BASECAMP describes its starting and parking role, and HEADWALL ZONE its ENDGAME protection role.
+BASECAMP is the taped area between each alliance wall and its HEADWALL. ROBOTS begin every MATCH in their BASECAMP (Section 3.2.1). The same taped area is also the HEADWALL ZONE: during the ENDGAME period and the climb assessment that follows it, opponent contact with a ROBOT in this zone is penalized (**G412**). BASECAMP describes its starting and parking role, and HEADWALL ZONE its ENDGAME protection role.
 
 OUTFITTER LANES are protected loading corridors: opponents may not enter them or contact ROBOTS in them (**G410**). The CRAG APRON is a line-call placement protection at each ALLIANCE's own CRAG: a ROBOT whose BUMPERS intersect its own ALLIANCE's APRON may not be contacted by an opponent (**G407**). The APRON does not restrict an opponent's movement through the area when no protected ROBOT is present.
 
@@ -103,10 +103,10 @@ Shelves are 14.0 in deep and accept CACHE CRATES only, placed flat. A CACHE CRAT
 
 ### 3.3.2 SOCKET FACES and the Summit Socket
 
-Each of the two SOCKET FACES carries two open-topped cylindrical sockets, loaded from above. Every socket's rim center stands 8.0 in out from its face plane, measured normal to the face, on a bracket beneath the tube:
+Each of the two SOCKET FACES carries two open-topped cylindrical sockets, loaded from above. Every socket's rim center stands 8.0 in out from its face plane, measured normal to the face, on a support beneath the tube:
 
-- **Low Socket:** rim at 30 in, ±14.0 in lateral on the shelf-face side of the face centerline, tube tilted 30° from vertical, tilting outward toward the approaching ROBOT. One per SOCKET FACE (2 per CRAG).
-- **Mid Socket:** rim at 54 in, ±14.0 in lateral on the peg-face side, tube tilted 30° from vertical. One per SOCKET FACE (2 per CRAG).
+- **Low Socket:** rim at 30 in, 14.0 in lateral on the shelf-face side of the face centerline, tube tilted 30° from vertical, tilting outward toward the approaching ROBOT. One per SOCKET FACE (2 per CRAG).
+- **Mid Socket:** rim at 54 in, 14.0 in lateral on the peg-face side, tube tilted 30° from vertical. One per SOCKET FACE (2 per CRAG).
 - **Summit Socket:** one per CRAG, on the SHELF FACE, on the CRAG's centerline, rim at 72 in, tube tilted 15° from vertical, tilting outward toward the owning ALLIANCE. A SCORED O2 CELL leans out of it toward the owning ALLIANCE's driver stations.
 
 Sockets accept O2 CELLS only. Each socket SCORES at most one SUPPLY; extra SUPPLIES resting in or on an occupied socket are not SCORED and satisfy no requirement. The tube is 7.0 in long along its axis with a closed bottom, so a seated 14.0-in O2 CELL stands 7.0 in proud of the rim along the axis, where it is visible from the driver stations and the referee positions.
@@ -127,23 +127,23 @@ The PEG FACE carries four pegs, and the spire carries two more:
 
 All pegs are 1.5 in OD, angled 45° upward from the face, with 10.0 in exposed and a fully rounded tip. Pegs accept ROPE COILS only, hung over the peg. Each peg SCORES at most one SUPPLY; extra SUPPLIES resting in or on an occupied peg are not SCORED and satisfy no requirement. Peg heights are measured to the peg root at the face.
 
-A ROPE COIL dropped over a peg settles into a near-vertical plane parallel to the CRAG face and wedges there. The 5.0-in hole over a 1.5-in peg permits at most about 48° (47.9°) of tilt away from perpendicular, and a vertical hang requires 45°, so a SCORED ROPE COIL is held captive rather than balanced. Its center comes to rest roughly 1 in above the peg root.
+A ROPE COIL dropped over a peg settles into a near-vertical plane parallel to the CRAG face and wedges there. The 5.0-in hole over a 1.5-in peg permits at most about 48° (47.9°) of tilt away from perpendicular to the peg, and a vertical hang requires 45°, so a SCORED ROPE COIL is held captive rather than balanced. Its center comes to rest roughly 1 in above the peg root.
 
 ### 3.3.4 BASE DEPOT
 
-The BASE DEPOT is a floor tray running along the base of the SHELF FACE and wrapping 16.0 in around both of that face's corners onto the SOCKET FACES. Its floor sits 0.25 in above the carpet, and its lip top is 4.0 in above the carpet. The channel is 16.0 in deep, measured from the CRAG face. In plan it is a continuous open-topped U: a 16 × 80 in outer leg parallel to the SHELF FACE, closed at both ends by the corner squares, with a 16 × 16 in arm running back along each SOCKET FACE.
+The BASE DEPOT is a floor tray running along the base of the SHELF FACE and wrapping 16.0 in around both of that face's corners onto the SOCKET FACES. Its floor sits 0.25 in above the carpet, and its lip top is 4.0 in above the carpet. The channel is 16.0 in deep, measured from the CRAG face. In plan it is a continuous open-topped U: a 16 × 80 in outer run parallel to the SHELF FACE (the 16 × 48 in shelf-face leg plus a 16 × 16 in corner square at each end), with a 16 × 16 in corner arm running back along each SOCKET FACE.
 
-The shelves overhang 14.0 in of the channel and span only the 48-in width of the SHELF FACE. From above, the outer 2.0 in of the shelf-face leg is open, as are both outer corner squares and part of each corner arm. Each arm is overhung by its Low Socket tube, so only the corner squares are wide enough to drop a CACHE CRATE or a ROPE COIL straight in. The rest of the shelf-face leg is loaded by pushing SUPPLIES in over the lip; there is at least 19.0 in of clearance beneath Shelf 1 and its gussets, against a crowned CACHE CRATE's 13.0 in.
+The shelves overhang 14.0 in of the channel and span only the 48-in width of the SHELF FACE. From above, the outer 2.0 in of the shelf-face leg is open, as are both outer corner squares and part of each corner arm. Each arm is overhung by its Low Socket tube, so only the corner squares are wide enough to drop a CACHE CRATE or a ROPE COIL straight in. The rest of the shelf-face leg is loaded by pushing SUPPLIES in over the lip; Shelf 1 and its gussets stay above Z = 19.0, clear of a crowned CACHE CRATE standing on the tray floor (top at Z = 13.25).
 
 The DEPOT accepts any SUPPLY in any orientation, whether pushed, dropped, or placed. Because a SUPPLY resting on another is not SCORED (Section 4.4.1), capacity is a single-layer packing limit: roughly 8 CACHE CRATES, or about 12 SUPPLIES in a mixed load.
 
-A SUPPLY is SCORED in the BASE DEPOT when it is at rest, its only support is the tray floor, and it lies entirely within the vertical projection of the DEPOT channel. A SUPPLY supported by the lip, by the carpet outside the tray, or by another SUPPLY is not SCORED. A SUPPLY that stands taller than the 4-in lip is SCORED as long as the tray floor alone supports it. FIELD STAFF may level heaped SUPPLIES during MATCH stoppages; they do not otherwise adjust DEPOT contents during a MATCH.
+A SUPPLY is SCORED in the BASE DEPOT when it is at rest, its only support is the tray floor, and it lies entirely within the vertical projection of the DEPOT channel. A SUPPLY supported by the lip, by the carpet outside the tray, or by another SUPPLY is not SCORED. A SUPPLY that stands taller than the 4-in lip is SCORED as long as the tray floor alone supports it. FIELD STAFF may level heaped SUPPLIES during MATCH stoppages; they do not otherwise adjust DEPOT contents during a MATCH, except to restore a SUPPLY under **G504**.
 
 > *Example:* A ROPE COIL lands draped over the DEPOT lip, half in and half out. It is not SCORED, because the lip carries part of its weight. A second ROPE COIL thrown onto a full tray comes to rest on other ROPE COILS rather than on the tray floor, so it is not SCORED either. A CACHE CRATE standing on the tray floor rises well above the lip and is SCORED.
 
 ### 3.3.5 Tier LED Rings and SUMMIT BEACON
 
-Each CRAG carries three LED tier rings around the structure at 30 in, 54 in, and 78 in, and a SUMMIT BEACON: the top 12 in of the spire (Z 78 to 90) is a translucent lantern with its luminous center at 84 in.
+Each CRAG carries three LED tier rings around the structure at 30 in, 54 in, and 78 in, and a SUMMIT BEACON: the top 12 in of the spire (Z 78–90) is a translucent lantern with its luminous center at 84 in.
 
 - A tier ring lights in the owning ALLIANCE's color when the corresponding CAMP is established (30 in → CAMP I, 54 in → CAMP II, 78 in → HIGH CAMP). Tier rings latch: once lit, a ring stays lit for the remainder of the MATCH, even if SUPPLIES are later dislodged.
 - The SUMMIT BEACON lights when all three CAMPS are established.
@@ -175,7 +175,7 @@ Each lane carries three rungs of 1.5 in OD and 20.0 in length, with their center
 | **CAMP RUNG** | 54 in | +12.0 in |
 | **SUMMIT RUNG** | 78 in | −12.0 in |
 
-Because of the 15° lean, each rung sits approximately 6.4 in horizontally behind (toward the alliance wall from) the rung below it. The lateral stagger is the same in every lane: LEDGE −12, CAMP +12, SUMMIT −12. Successive rungs within a lane are therefore 24.0 in apart center-to-center, while rungs at the same height in adjacent lanes stay 48.0 in apart (28.0 in end to end, which leaves room for three ROBOTS to hang side by side).
+Because of the 15° lean, each rung sits approximately 6.4 in horizontally behind (toward the alliance wall from) the rung below it. The lateral stagger is the same in every lane: LEDGE −12, CAMP +12, SUMMIT −12. Successive rungs within a lane are therefore 24.0 in apart laterally, center to center, while rungs at the same height in adjacent lanes stay 48.0 in apart (28.0 in end to end, which leaves room for three ROBOTS to hang side by side).
 
 A 20.0-in rung centered 12.0 in off the lane centerline leaves no lateral position that engages two successive rungs: the LEDGE RUNG spans lane-centerline −22 to −2 while the CAMP RUNG spans +2 to +22. A climber therefore cannot follow the rung line with one fixed hook pair. Only two non-overlapping lateral positions fit a 20.0-in rung in a 48-in lane, so the stagger alternates with period two, and the LEDGE and SUMMIT RUNGS share the −12.0 offset while the CAMP RUNG sits at +12.0.
 
@@ -188,7 +188,7 @@ The direct route replaces all the lateral motion with twice the vertical reach i
 
 All truss structure lies at least 4.0 in behind PLANE P, measured normal to PLANE P, except the two end brackets of each rung, which may enter that band within 2.0 in of the rung end. Hook wrap is therefore clear over the middle 16.0 in of every 20.0-in rung, and a hook must engage inside that band.
 
-The taped HEADWALL ZONE (coincident with BASECAMP, Section 3.2) lies beneath and behind the HEADWALL, between the truss base and the alliance wall. From the start of the ENDGAME period until climb assessment is complete, an opponent that contacts a ROBOT in this zone commits a MAJOR FOUL, and an additional MAJOR FOUL and a YELLOW CARD if the contact blocks or displaces a climb, as when a hanging ROBOT falls (**G412**). Climbing is legal at any time in the MATCH; the zone protection applies only in that window. A ROBOT may not contact a rung while any part of its BUMPERS is on the alliance-wall side of the CLIMB LINE (X = 48 in for Blue, X = 600 in for Red) unless it is then supported solely by rungs, or is still touching a rung it took hold of while so supported within the preceding 5 seconds (**G416**).
+The taped HEADWALL ZONE (coincident with BASECAMP, Section 3.2) lies beneath and behind the HEADWALL, between the truss base and the alliance wall. From the start of the ENDGAME period until climb assessment is complete, an opponent that contacts a ROBOT in this zone commits a MAJOR FOUL, and an additional MAJOR FOUL and a YELLOW CARD if the contact blocks or displaces a climb, as when a hanging ROBOT falls (**G412**). Contact that the protected ROBOT initiates is not a violation (**G205**). Climbing is legal at any time in the MATCH; the zone protection applies only in that window. A ROBOT may not contact a rung while any part of its BUMPERS is on the alliance-wall side of the CLIMB LINE (X = 48 in for Blue, X = 600 in for Red) unless it is then supported solely by rungs, or is still touching a rung it took hold of while so supported within the preceding 5 seconds (**G416**).
 
 > *Commentary:* The three-lane design lets all three ROBOTS of an ALLIANCE climb at the same time without traffic conflict. The difficulty comes from the 15° lean and the 24-in lateral alternation. **G416** exists because the truss leans back over BASECAMP: without it, a ROBOT could park under the SUMMIT RUNG and reach it with a purely vertical mast, and the traversal would be unnecessary.
 
@@ -203,7 +203,7 @@ Each ALLIANCE has two OUTFITTERS, one at each corner of its alliance wall. Each 
 - **Chute opening:** 30 in wide × 16 in tall, with the sill (bottom edge) at 24 in above the carpet, so the opening spans Z 24–40. Blue chutes are centered at (0, 30) and (0, 294); Red chutes at (648, 294) and (648, 30). The 16-in height clears the 12.0-in CACHE CRATE, whose pillowed faces give it a 13.0-in maximum envelope, with 3.0 in to spare.
 - **Human players:** exactly one HUMAN PLAYER is stationed at each OUTFITTER, two per ALLIANCE. They may come from any of the ALLIANCE's three DRIVE TEAMS and are assigned before the "field ready" signal (**G307**). HUMAN PLAYERS feed SUPPLIES through the chute onto the FIELD. A SUPPLY may be slid, dropped, or rolled through the chute. HUMAN PLAYERS may break the plane of the chute opening with their hands, and no further (**G102**).
 - **Stock:** all SUPPLIES not staged on the FIELD or preloaded (Section 3.6.1) begin the MATCH stocked at the ALLIANCE's two OUTFITTERS, divided between them at the ALLIANCE's discretion.
-- **Restocking:** FIELD STAFF return any SUPPLY that leaves the FIELD, at the next safe opportunity, to the nearest OUTFITTER chute: the chute of the ALLIANCE on that side of the FIELD, which may be the opposing ALLIANCE's chute (**G507**). The SUPPLY re-enters play through normal human-player feeding. SUPPLIES are never re-staged to FIELD marks during a MATCH.
+- **Restocking:** FIELD STAFF return any SUPPLY that leaves the FIELD, at the next safe opportunity, to the nearest OUTFITTER chute: the chute of the ALLIANCE on that side of the FIELD, which may be the opposing ALLIANCE's chute (**G507**). The SUPPLY re-enters play through normal human-player feeding. Returned SUPPLIES are never re-staged to FIELD marks during a MATCH.
 
 The OUTFITTER LANE (36 in wide × 48 in deep, Section 3.2) in front of each chute is a no-defense zone: opponents may not enter it or contact ROBOTS within it (**G410**).
 
@@ -233,10 +233,10 @@ At the start of each MATCH, SUPPLIES are staged as follows:
 
 | Location | Supplies | Detail |
 |---|---|---|
-| CENTER CACHE (neutral) | 3 CRATES, 3 O2 CELLS, 3 ROPE COILS | one SUPPLY per white mark of the 3 × 3 grid (§3.2), arranged so that each type appears once per row and once per column; the assignment is published in the FIELD SETUP CHART (`03-field/FIELD-CAD-PACKAGE.md` §6) |
-| Alliance staging marks (per alliance) | 2 CRATES, 2 O2 CELLS, 2 ROPE COILS | at the three taped marks at X = 144 (Blue) / X = 504 (Red), Y = 108/162/216; two SUPPLIES of one type per mark |
+| CENTER CACHE (neutral) | 3 CACHE CRATES, 3 O2 CELLS, 3 ROPE COILS | one SUPPLY per white mark of the 3 × 3 grid (§3.2), arranged so that each type appears once per row and once per column; the assignment is published in the FIELD SETUP CHART (`03-field/FIELD-CAD-PACKAGE.md` §6) |
+| Alliance staging marks (per alliance) | 2 CACHE CRATES, 2 O2 CELLS, 2 ROPE COILS | at the three taped marks at X = 144 (Blue) / X = 504 (Red), Y = 108/162/216; two SUPPLIES of one type per mark |
 | Robot preloads (per alliance) | up to 1 per ROBOT, any type | in contact with the ROBOT in its starting position |
-| OUTFITTERS (per alliance) | 7 CRATES, 7 O2 CELLS, 7 ROPE COILS | divided between the ALLIANCE's two chutes at its discretion; preloads are drawn from this stock |
+| OUTFITTERS (per alliance) | 7 CACHE CRATES, 7 O2 CELLS, 7 ROPE COILS | divided between the ALLIANCE's two chutes at its discretion; preloads are drawn from this stock |
 
 Accounting per SUPPLY type: of each type's 21 SUPPLIES, 3 begin neutral in the CENTER CACHE, 2 begin on each ALLIANCE's staging marks (4 total), and 7 begin in each ALLIANCE's OUTFITTER stock (14 total). Preloads are drawn from an ALLIANCE's OUTFITTER stock during setup; preloads not taken remain at the OUTFITTERS.
 
@@ -250,9 +250,9 @@ The CENTER CACHE arrangement places one SUPPLY of each type in each row of the g
 
 The ARENA carries 26 AprilTags from the 36h11 family for ROBOT pose estimation and target alignment.
 
-**Panel construction.** Each tag image is 6.5 in square (the 36h11 data body), printed on an 8.125-in-square target that includes its white border, and mounted on a 9.0-in-square panel. The table below gives tag centers; "Z center" is the height of the tag center above the carpet.
+**Panel construction.** Each tag image is 6.5 in square (the 36h11 data body), printed on an 8.125-in-square target that includes its white border, and mounted on a 9.0-in-square panel. Table 3-6 gives tag centers; "Z center" is the height of the tag center above the carpet.
 
-**Mounting heights.** Close-range tags are mounted low: the eight on each CRAG at a 17.5-in center height, and the three on each HEADWALL at 12 in. Both heights are in the frame of a single camera mounted 10–20 in above the carpet, which serves every precision approach on the FIELD. Each CRAG face carries a pair of tags centered ±14 in from the face centerline. The 17.5-in CRAG tag height is set against the tallest objects that can stand in front of a tag. A CACHE CRATE standing in the BASE DEPOT reaches 13.25 in (the tray floor's 0.25 plus 13.0 to its crowned apex) and tops out 0.19 in below the tag target, and the underside of Shelf 1 sits 1.25 in above the panel. One SUPPLY does reach into the target band: an O2 CELL standing on end in the DEPOT, at 14.0 in against a 13.44-in target bottom. `04-vision/VISION-GUIDE.md` §1.3 covers that case and the camera height it implies.
+**Mounting heights.** Close-range tags are mounted low: the eight on each CRAG at a 17.5-in center height (held to ±0.15 in at field setup), and the three on each HEADWALL at 12 in. Both heights are in the frame of a single camera mounted 10–20 in above the carpet, which serves every precision approach on the FIELD. Each CRAG face carries a pair of tags centered ±14 in from the face centerline. The 17.5-in CRAG tag height is set against the tallest objects that can stand in front of a tag. A CACHE CRATE standing in the BASE DEPOT reaches 13.25 in (the tray floor's 0.25 plus 13.0 to its crowned apex) and tops out 0.19 in below the tag target, and the underside of Shelf 1 sits 1.25 in above the panel. One SUPPLY does reach into the target band: an O2 CELL standing on end in the DEPOT, its top at 14.25 in (the tray floor's 0.25 plus 14.0) against a 13.44-in target bottom. `04-vision/VISION-GUIDE.md` §1.3 covers that case and the camera height it implies.
 
 **Table 3-6: AprilTag positions**
 
@@ -287,6 +287,6 @@ The ARENA carries 26 AprilTags from the 36h11 family for ROBOT pose estimation a
 
 Red tag positions are the Blue positions rotated 180° about the FIELD center. The layout is one fixed map in the single always-blue-origin frame, and Red ID = Blue ID + 13. OUTFITTER tags are mounted on the alliance wall, centered above each chute. HEADWALL tags are mounted plumb on the lane centerline of the truss lower crossbeam, at tag plane X = 39 (Blue) / X = 609 (Red). That plane is behind PLANE P at every point of the panel, so nothing intrudes into the climbing volume. CRAG tags face outward, perpendicular to their face.
 
-> *Commentary:* Every scoring approach on the FIELD has a tag pair, or a single tag square-on to it, at close range. Shelf placements, socket insertions, peg hangs, chute pickups, and lane alignment for the ENDGAME climb can all be vision-assisted without full-field pose. Full-field pose estimation is required only for contested CENTER CACHE autos. Because every close-range tag sits between 12 and 17.5 in, one camera mounted 10–20 in above the carpet serves all of them. If it is the ROBOT's only camera, it belongs toward the upper end of that band: an O2 CELL standing on end in the DEPOT is the one SUPPLY that reaches into a tag's target band, and its domed cap clips a low camera's view of the tag's bottom edge (vision guide §1.3).
+> *Commentary:* Every scoring approach on the FIELD has a tag pair, or a single tag square-on to it, at close range. Shelf placements, socket insertions, peg hangs, chute pickups, and lane alignment for the ENDGAME climb can all be vision-assisted without full-field pose. Full-field pose estimation is required only for contested CENTER CACHE AUTO routines. Because every close-range tag sits between 12 and 17.5 in, one camera mounted 10–20 in above the carpet serves all of them. If it is the ROBOT's only camera, it belongs toward the upper end of that band: an O2 CELL standing on end in the DEPOT is the one SUPPLY that reaches into a tag's target band, and its domed cap clips a low camera's view of the tag's bottom edge (vision guide §1.3).
 
-A machine-readable layout in WPILib AprilTag field schema (meters, always-blue-origin NWU) is published at `04-vision/apriltag-field-layout.json`. Mounting details, calibration guidance, and simulation setup are in the VISION GUIDE (`04-vision/VISION-GUIDE.md`).
+A machine-readable layout in WPILib AprilTag field schema (meters, always-blue-origin NWU) is published at `04-vision/apriltag-field-layout.json`. Mounting details, calibration guidance, and simulation setup are in the vision guide (`04-vision/VISION-GUIDE.md`).

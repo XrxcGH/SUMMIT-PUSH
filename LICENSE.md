@@ -46,7 +46,7 @@ These components are not covered by this license. Each keeps its own license:
 
 - The Roboto, Roboto Condensed, JetBrains Mono and Noto Sans Math fonts in the PDF build's `fonts/` folder, under the SIL Open Font License 1.1. Their license files are in the same folder.
 - The AprilTag 36h11 tag family patterns, from the AprilTag project of the University of Michigan, under the BSD 2-Clause License. Its notice is reproduced in `THIRD-PARTY-NOTICES.md`.
-- Packages the build tools install (the npm packages listed in each `package-lock.json`, and Python packages such as `markdown-it-py`, `pypdf`, `cadquery-ocp` and `numpy`), under their own licenses.
+- Packages the build tools install (the npm packages listed in each `package-lock.json`, and Python packages such as `markdown-it-py`, `pypdf`, `Pillow`, `cadquery-ocp` and `numpy`), under their own licenses.
 
 ## 7. Ending the permission
 

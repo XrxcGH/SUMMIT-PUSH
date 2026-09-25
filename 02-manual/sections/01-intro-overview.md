@@ -5,7 +5,7 @@
 SUMMIT PUSH is an original offseason game, published as a design-training release for competitive robotics programs. This manual defines the game, the ARENA, the rules of play, the ROBOT construction rules, and the tournament structure. SUMMIT PUSH has no physical competition field. Every dimension, rule, and scoring value is nonetheless written for one, so that teams can design ROBOTS against it as they would for a competition season.
 
 - **Authority.** Where any other document in the SUMMIT PUSH package (CAD packages, drawings, the vision guide) appears to conflict with this manual, this manual governs, with one exception. The design specification (`01-design/DESIGN-SPEC.md`) is the source document from which this manual was written; any discrepancy found between the two is reported to the event organizer and resolved in the specification's favor.
-- **Defined terms.** Words in ALL CAPITAL LETTERS (e.g., CRAG, SCORED, MATCH) are defined terms. Each is defined at first use and collected in the Glossary (Section 9). When a rule uses a defined term, the definition governs over the everyday meaning of the word. Feature names that are not defined terms, such as Low Socket, Shelf 1, and slot fence, appear in title case.
+- **Defined terms.** Words in ALL CAPITAL LETTERS (e.g., CRAG, SCORED, MATCH) are defined terms. Each is collected, with its definition, in the Glossary (Section 9). When a rule uses a defined term, the definition governs over the everyday meaning of the word. Feature names that are not defined terms, such as Low Socket, Shelf 1, and slot fence, appear in title case.
 - **Rule numbers.** Game rules carry G numbers and robot construction rules carry R numbers. Section 1.4 gives the numbering scheme.
 - **Interpretation.** Referees, and in a design challenge the judges, enforce the rules as written. Teams raise ambiguities through the Q&A process rather than exploiting them (see Section 1.3).
 
@@ -15,9 +15,9 @@ The rules follow from four design decisions. They are stated here so that teams 
 
 **Three GAME PIECE shapes.** A cube, a cylinder, and a torus each pose a different manipulation problem. The CACHE CRATE needs a wide, compliant intake and flat placement. The O2 CELL needs ground pickup of a rolling body, reorientation, and insertion. The ROPE COIL needs precise hanging on an inclined peg. No single end effector handles all three well, so ALLIANCES specialize and cooperate.
 
-**Uniform values by tier.** Every scoring position at a given height tier is worth the same, whatever the piece type. Placement value depends only on height, so no piece type or ROBOT archetype is penalized.
+**Uniform values by tier.** Every scoring position at a given height tier is worth the same, whatever the piece type. Placement value depends only on tier, so no piece type or ROBOT archetype is penalized.
 
-**FORECAST and ROUTE DECLARATION.** The FORECAST is random and applies only during AUTO. It is worth preparing for because ROPED UP requires two of the PRIORITY SUPPLY: four of the five required SUPPLIES are fixed by type, and the doubled type is not known until T = 0. The ROUTE DECLARATION is a strategic choice, made before the MATCH and public, so opponents can scout and counter it. The three ROUTE uplifts are scaled to tier difficulty so that no declaration is always best; the right choice depends on what the ALLIANCE can reliably complete.
+**FORECAST and ROUTE DECLARATION.** The FORECAST is random and applies only during AUTO. It is worth preparing for because ROPED UP requires two of the PRIORITY SUPPLY: four of the five required SUPPLIES are fixed by type, and the doubled type is not known until T=0. The ROUTE DECLARATION is a strategic choice, made before the MATCH and public, so opponents can scout and counter it. The three ROUTE uplifts are scaled to tier difficulty so that no declaration is always best; the right choice depends on what the ALLIANCE can reliably complete.
 
 **ENDGAME weighting.** HEADWALL climbs are worth enough to decide a close MATCH, but not enough to outweigh two minutes of cycling. Climbing is legal throughout the MATCH. Contact protection applies only during the final 30 seconds and the climb assessment that follows.
 
@@ -27,7 +27,7 @@ Everyone taking part in SUMMIT PUSH is bound by the MOUNTAIN ETHIC, the game's c
 
 **Respect for opponents and partners.** Teams play to win within the rules and their spirit, and do not look for loopholes in the wording to use against other teams. Teams offer help to any ALLIANCE partner or opponent whose ROBOT is down, and treat everyone at the event with respect.
 
-**Integrity toward referees.** Referees enforce the rules under time pressure and without replay. Teams accept their calls, including close ones. Disagreements go through the question box (Section 4.9) and the Q&A process; teams do not argue calls at the FIELD.
+**Integrity toward referees.** Referees enforce the rules under time pressure and without video review. Teams accept their calls, including close ones. Disagreements go through the question box (Section 4.9) and the Q&A process; teams do not argue calls at the FIELD.
 
 **Safety first.** No point value in this manual is worth an injury. Where competitive advantage conflicts with the safety of people, ROBOTS, or the FIELD, safety takes priority.
 
@@ -45,13 +45,13 @@ SUMMIT PUSH includes defense, contested space, and a protected ENDGAME, so compe
 |---|---|
 | **G1xx** | Personal safety |
 | **G2xx** | Conduct |
-| **G3xx** | Pre-MATCH (setup, starting configuration, ROUTE DECLARATION) |
+| **G3xx** | Pre-MATCH (setup, STARTING CONFIGURATION, ROUTE DECLARATION) |
 | **G4xx** | In-MATCH robot rules (movement, contact, zones, ENDGAME) |
-| **G5xx** | Game piece rules (possession, scoring, de-scoring) |
-| **R1xx** | Robot size and weight |
+| **G5xx** | SUPPLY rules (possession, scoring, de-scoring) |
+| **R1xx** | Robot size, weight, and extension |
 | **R2xx** | Safety and materials |
 | **R3xx** | Budget and fabrication |
-| **R4xx** | Bumpers |
+| **R4xx** | BUMPERS |
 | **R5xx** | Motors and actuators |
 | **R6xx** | Power distribution |
 | **R7xx** | Control system |
@@ -111,7 +111,7 @@ A ROBOT may possess at most 2 SUPPLIES at a time. Each CRAG also has a floor-lev
 
 **ROUTE DECLARATION.** During setup, each ALLIANCE declares its ROUTE: LOW ROUTE, MID ROUTE, or HIGH ROUTE. An ALLIANCE that makes no declaration is assigned LOW ROUTE. The CAMP bonus matching the declared ROUTE pays its declared value for the entire MATCH (CAMP I +6→+18, CAMP II +10→+24, HIGH CAMP +15→+35). The declared ROUTE is shown on the FIELD LEDs at MATCH start, so opponents can scout it.
 
-**The FORECAST.** When AUTO begins, the Field Management System (FMS) broadcasts one character of game data, `W` (WHITEOUT), `I` (ICEFALL), or `G` (GALE), and the FIELD LEDs display it in white. The FORECAST names the MATCH's PRIORITY SUPPLY (WHITEOUT = CACHE CRATES, ICEFALL = O2 CELLS, GALE = ROPE COILS). Placement points for the PRIORITY SUPPLY are doubled during AUTO, and ROPED UP requires two of it. AUTO routines must read the game data and branch between at least three prepared routines. Events without FMS game data use the card-draw fallback in Section 4.3.1.
+**The FORECAST.** When AUTO begins, the Field Management System (FMS) broadcasts one character of game data, `W` (WHITEOUT), `I` (ICEFALL), or `G` (GALE), and the FIELD LEDs display it in white. The FORECAST names the MATCH's PRIORITY SUPPLY (WHITEOUT = CACHE CRATES, ICEFALL = O2 CELLS, GALE = ROPE COILS). Placement points for the PRIORITY SUPPLY are doubled during AUTO, and ROPED UP requires two of it. To take advantage of it, AUTO routines must read the game data and branch between at least three prepared routines. Events without FMS game data use the card-draw fallback in Section 4.3.1.
 
 **AUTO.** Each ROBOT earns 3 points for LEAVE (fully exiting BASECAMP). SUPPLIES score at AUTO values, doubled for the PRIORITY SUPPLY. An ALLIANCE earns the ROPED UP bonus (+10) if all three ROBOTS LEAVE and it scores at least 5 SUPPLIES, including at least two of the PRIORITY SUPPLY and at least one of each other type. AUTO scores are assessed after a 3-second settle window at the end of the period.
 

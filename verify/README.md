@@ -43,7 +43,7 @@ The five scripts report failures in their output, not in their exit status: each
 
 Most `verify.py` checks recompute a published figure from inputs written into the script, so a change to one of those figures means updating the script as well as the documents. The tag positions and the two rung tables are parsed from the documents themselves.
 
-`consist.py` scans every Markdown file, every SVG sheet, and `generate_drawings.py`, except `REVISION-LOG.md` and the `00-concepts/` and `00-research/` archives. The glossary check counts singular, plural and possessive forms, and a short allow-list in the script covers acronyms and names that are not defined terms.
+`consist.py` scans every Markdown file, every SVG sheet, and `generate_drawings.py`, except `REVISION-LOG.md`, the `00-concepts/` and `00-research/` archives, and any `node_modules/` folder. The glossary check counts singular, plural and possessive forms, and a short allow-list in the script covers acronyms and names that are not defined terms.
 
 ## The restatement check
 

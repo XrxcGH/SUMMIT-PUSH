@@ -11,14 +11,14 @@ root="$(cd "$here/.." && pwd)"
 cd "$root"
 
 bash 02-manual/build.sh
-python 03-field/renderings/generate_drawings.py
+python3 03-field/renderings/generate_drawings.py
 
 fail=0
 for f in verify.py consist.py crossdoc.py svg_collide.py svg_geom.py; do
   printf '\n================ %s ================\n' "$f"
-  python "verify/$f" || fail=1
+  python3 "verify/$f" || fail=1
 done
 printf '\n================ 04-vision/make_layout.py --check ================\n'
-python 04-vision/make_layout.py --check || fail=1
+python3 04-vision/make_layout.py --check || fail=1
 printf '\n'
 [ $fail -eq 0 ] && echo "all checks ran to completion; read each summary above for failures" || echo "a check exited non-zero (it stopped with an error, or the layout JSON differs; see its output above)"

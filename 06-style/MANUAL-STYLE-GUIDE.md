@@ -112,7 +112,7 @@ The manual palette is distinct from any real organization's: a deep slate-indigo
 | `--rule-line-strong` | `#8A9199` | Table outer border, section dividers | — |
 | `--box-fill` | `#DCE6F1` | Commentary and Example box tint | ink 13.4 : 1 |
 | `--box-border` | `#1F4E79` | Box 1.5 pt border | — |
-| `--warn-fill` / `--warn-border` | `#FBEBD2` / `#B26A12` | Caution box | ink 14.4 : 1 |
+| `--warn-fill` / `--warn-border` | `#FBEBD2` / `#8A520D` | Caution box | ink 14.4 : 1 |
 | `--danger-fill` / `--danger-border` | `#F7DEDE` / `#A32A2A` | Safety-critical warning box | ink 13.3 : 1 |
 | `--change-add` | `#FFF3A8` | Team Update addition highlight (`<ins>` in the source) | — |
 | `--link` | `#245C9E` | Cross-references and URLs; not underlined in print | 6.8 : 1 |
@@ -123,17 +123,17 @@ The alliance hues match the drawing set and `03-field/MATERIALS-AND-COLORS.md`. 
 
 | Token | Hex | Role |
 |---|---|---|
-| `--alliance-blue` | `#1D63C8` | Blue alliance fills, keylines, callout boxes |
+| `--alliance-blue` | `#1D63C8` | Blue alliance fills and keylines |
 | `--alliance-blue-dark` | `#0E3F86` | Blue outlines, shaded faces |
 | `--alliance-blue-tint` | `#D9E4F5` | Table cell tint |
-| `--alliance-red` | `#CC3333` | Red alliance fills, keylines, callout boxes |
+| `--alliance-red` | `#CC3333` | Red alliance fills and keylines |
 | `--alliance-red-dark` | `#8E2020` | Red outlines, shaded faces |
 | `--alliance-red-tint` | `#F6DADA` | Table cell tint |
 | `--neutral-wash` | `rgba(214, 178, 42, 0.35)` | Neutral zone overlay |
 | `--carpet` | `#6E6A63` | Field carpet in renders |
 | `--callout-leader` | `#E100E1` | Leader lines and arrowheads in figures — **reserved, never used elsewhere** |
 
-One token differs from the drawing set by design: `--carpet` is `#6E6A63`, the physical carpet in `03-field/MATERIALS-AND-COLORS.md`, while `03-field/renderings/_drawlib.py` draws the carpet as `#F4F2EE` so that linework stays readable as ink on paper. The four alliance hues and `--callout-leader` are identical in the drawing set; the tints and `--neutral-wash` belong to the manual only.
+One token differs from the drawing set by design: `--carpet` is `#6E6A63`, the physical carpet in `03-field/MATERIALS-AND-COLORS.md`, while `03-field/renderings/_drawlib.py` draws the carpet as `#F4F2EE` so that linework stays readable as ink on paper. The drawing set also uses `--callout-leader`; the tints and `--neutral-wash` belong to the manual only.
 
 On the drawing sheets a zone is a light wash of the alliance hue (10% opacity on the FIELD top view) inside a dashed 1.5 pt keyline in the dark alliance hue, so the boundary stays crisp over the light carpet.
 
@@ -186,7 +186,7 @@ Roboto has no arrows, so the build also vendors the arrows block (U+2190–21FF)
 | Table header | Roboto Bold | 10 pt | 1.25 | — | `--paper` on `--accent` | |
 | Footer | Roboto Bold | 10 pt | 1.20 | — | `--ink` | three tab cells |
 | Header wordmark | Roboto Condensed Bold | 14 pt | 1.00 | — | `--paper` | caps, +0.5 pt tracking |
-| Inline code | JetBrains Mono | 9.5 pt | 1.35 | — | `--ink` | `--paper-dim` ground |
+| Inline code | JetBrains Mono | 9.5 pt | 1.35 | — | `--ink` | `--paper-dim` ground; 8.5 pt in table cells |
 | Code block | JetBrains Mono | 9 pt | 1.40 | 6 pt | `--ink` | `--paper-dim` ground, 1 pt border |
 | Glossary term | Roboto Bold | 10 pt | 1.30 | — | `--ink` | ALL CAPS |
 
@@ -270,7 +270,7 @@ A **Caution** box (`--warn-fill` / `--warn-border`) is reserved for procedural w
 
 ## 6. Tables
 
-- Every table has a numbered caption above it, `Table <section>-<sequence>`, set like a figure caption (§4.1, §7.1). A table inside an Example or Commentary box belongs to the box and has no caption.
+- Every table has a numbered caption above it, `Table <section>-<sequence>`, set like a figure caption (§4.1, §7.1). A table inside an Example or Commentary box belongs to the box and has no caption; it is set at 9.5 pt with 5 pt side padding to fit the box.
 - Header row: `--accent` fill, `--paper` bold 10 pt type, no vertical rules.
 - Body rows: 10 pt, 0.5 pt `--rule-line` horizontal rules only; zebra fill `--paper-dim` on even rows for tables over 8 rows.
 - Outer border: 1 pt `--rule-line-strong`.
@@ -291,7 +291,6 @@ Figures are numbered `Figure <section>-<sequence>` and captioned above the image
 ### 7.2 Field renders
 
 - Drawn plan views (the drawing sheets) use the drawing set's light carpet (`#F4F2EE`), light alliance zone washes inside keylines (§3.1), and white neutral marks. The rendered figures in the body are views of the CAD model and show the field as built: tape lines on carpet, CRAGS in their physical tan.
-- Isometric renders use lit and shaded variants of the alliance colors on angled faces.
 - A drawn plan view may tint the CRAGS in alliance color for legibility; the physical CRAG is tan (`03-field/MATERIALS-AND-COLORS.md` §3, rule 2). The sheet says so in a note; a figure says so in its caption.
 - Every plan view carries a coordinate compass: origin marker, +X arrow, +Y arrow, and the words "always-blue-origin NWU".
 
@@ -305,7 +304,7 @@ The six sheets in `03-field/renderings/` are reproduced on dedicated landscape A
 
 The sheets cannot run at the 7.00-in body measure. `crag.svg` is 1960 user units wide, so at 504 pt its smallest text (about 9.7 units) prints at 2.5 pt and its largest at about 5.4 pt. The other five sheets fall in the same range, with smallest type of 2.5 to 3.0 pt at body width, and a 6-pt floor needs 13.9 in (`apriltag-map`) to 16.8 in (`crag`, `headwall`) of image width. That rules out an 11 × 17 plate: at 15 in, three of the six sheets would still fall below 6 pt, and a 16.8-in image leaves no margin on a 17-in tabloid sheet. At 21 in the smallest text on any sheet prints at 7.5 pt; `verify/svg_collide.py` holds every sheet to 7 pt at that width, and 8 pt for dimension values and bold labels.
 
-A thumbnail may appear inline in the body, cross-referenced to the full-size plate. Each sheet carries its own title block, so a plate has no figure caption. It carries a label line above the sheet, `Plate N` followed by the sheet name (the form in which the manual's figure captions cite the plates), and a three-cell footer like the one in §2.3.
+A thumbnail may appear inline in the body, cross-referenced to the full-size plate. Each sheet carries its own title block, so a plate has no figure caption. It carries a label line above the sheet, `Plate N` (the form in which the manual's figure captions cite the plates) followed by the sheet name, and a three-cell footer like the one in §2.3.
 
 Sheet conventions:
 

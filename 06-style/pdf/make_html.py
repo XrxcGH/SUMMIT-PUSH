@@ -16,6 +16,7 @@ The Markdown conventions it relies on are the ones in the style guide (§9.3):
     > *Example:* / > *Commentary:*     binding example / non-binding commentary box
     # 5 Game Rules (G)                 a section (number, title, optional rule letter)
     *Figure 3-1. Caption.*             a figure caption, directly above ![alt](image)
+    **Table 6-2: Title**               a table caption, directly above the table
 
 build.sh runs this twice: the first pass counts the manual's pages, the second writes the
 final "N of TOTAL" footers and the plate page numbers.
@@ -481,7 +482,7 @@ def front_matter(info, revs):
   <p>Dimensions are in inches, weights in pounds and times in minutes and seconds. Imperial values govern.</p>
   <h2 class="front-h2">Independence</h2>
   <p>SUMMIT PUSH is an original game written for robotics design training. It is not affiliated with,
-  sponsored by or endorsed by any robotics competition organization. Version %s.</p>
+  sponsored by or endorsed by any robotics competition organization. This is Version %s of the manual.</p>
 </section>""" % (trs, info["version"])
 
 
@@ -494,7 +495,7 @@ def appendix_page(appendix, first_plate):
     return """<section class="chapter appendix" id="%s">
   <div class="opener"><span class="opener-num">A</span><h1><span class="footer-title">A  Field Drawing Plates</span>Field Drawing Plates</h1></div>
   <p>The six drawing sheets of the field drawing set follow this page, each on its own landscape ANSI C
-  (22 &times; 17 in) plate so that no dimension or note prints smaller than 6 pt. Every sheet carries its
+  (22&nbsp;&times;&nbsp;17 in) plate so that no dimension or note prints smaller than 6 pt. Every sheet carries its
   own title block. The sheets are generated from the master dimension ledger in
   <code>03-field/FIELD-CAD-PACKAGE.md</code> Section 10; where a sheet and the ledger disagree, the
   ledger governs.</p>

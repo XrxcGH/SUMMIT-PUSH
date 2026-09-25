@@ -1,6 +1,6 @@
 # Authoring guide — SUMMIT PUSH FeatureScript generator
 
-How the generator is organised and the rules every source file follows. Read this before
+How the generator is organized and the rules every source file follows. Read this before
 editing anything under `src/`.
 
 ## Layout
@@ -88,13 +88,13 @@ Booleans and finishing
 - `shellHollow(ctx, id, bodies, t)`.
 - `filletAt(ctx, id, bodies, F, pts, r)`: fillet the edges through the local points;
   `softFilletAt(..., label)` warns instead of failing (use it for decoration).
-- `copyBody(ctx, id, src, F)`: copy a body modelled about the world origin into frame F.
+- `copyBody(ctx, id, src, F)`: copy a body modeled about the world origin into frame F.
 
 Appearance and properties
 
 - `paint(ctx, bodies, name, paletteToken, alpha, materialKey)`, `paintRGB(...)` (in `30_util.fs`);
   `styleBody(...)`; `nameBody(...)`.
-- `styleFacesAt(ctx, bodies, F, pts, rgb, alpha)`: colour individual faces.
+- `styleFacesAt(ctx, bodies, F, pts, rgb, alpha)`: color individual faces.
 - `tagDecal(ctx, id, bodies, F, pl, black, cells, s, rgb)`: split the panel face on plane `pl` with
   `cells + 1` planes each way and paint the black cells of an AprilTag; the geometry stays coplanar.
 - `massBody(ctx, bodies, materialName, massLb)`: set the density so that the body weighs exactly `massLb`.
@@ -110,10 +110,10 @@ Measurement (used by the self-check): `measureBox(ctx, bodies, F)`, `measureVolu
 
 ## Conventions every element follows
 
-- **Every body is named, coloured and given a material.** Names read as
+- **Every body is named, colored and given a material.** Names read as
   `<ALLIANCE> <ELEMENT> <part>`, e.g. `BLUE CRAG Mid Socket (centre side)`. Parts that come in
   pairs on either side of a CRAG say which side they are on ("guardrail side" is the side farther
-  from the field's long centreline Y = 162).
+  from the field's long centerline Y = 162).
 - **CRITICAL dimensions are never touched by decoration.** Robot-interaction surfaces (shelf
   tops, socket bores and rims, pegs, rungs, lip, tags) keep their exact geometry. The CRAG's rock
   finish is an appearance, never geometry (MATERIALS-AND-COLORS §3 rule 1): no relief on CRAG faces.

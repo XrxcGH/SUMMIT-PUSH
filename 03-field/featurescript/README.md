@@ -2,12 +2,12 @@
 
 `SummitPushField.fs` is a single Onshape Feature Studio that builds the SUMMIT PUSH field: every
 field element, tape line, AprilTag panel and SUPPLY, in the package's always-blue-origin NWU
-frame, with the names, colours, materials and densities of `03-field/MATERIALS-AND-COLORS.md`.
+frame, with the names, colors, materials and densities of `03-field/MATERIALS-AND-COLORS.md`.
 Its dimensions are the constants in `src/20_ledger.fs`, taken from `03-field/FIELD-CAD-PACKAGE.md`;
 after building, the feature measures the geometry and compares it with those constants.
 
 `SummitPushField.fs` is generated from `src/*.fs` by `build.py`. `AUTHORING.md` explains how the
-sources are organised, the rules they follow, and the off-line OpenCascade build used to verify
+sources are organized, the rules they follow, and the off-line OpenCascade build used to verify
 them.
 
 ## Install and use
@@ -39,15 +39,15 @@ No Onshape API calls are needed: pasting code into a Feature Studio is ordinary 
 | AprilTag panels / 36h11 decals | on / on | 26 panels at their published poses; the decal option paints each panel's 36h11 pattern onto its face, split into cells |
 | Staging: CENTER CACHE and staging marks with their SUPPLIES | on | the 9 CENTER CACHE marks and 6 alliance staging marks, with 9 CENTER CACHE pieces (Latin square) and 12 pieces on the alliance marks |
 | OUTFITTER stock | on | 7 of each type per alliance behind the walls (42 pieces) |
-| CRAG tier rings and SUMMIT BEACON | Unlit | *Lit* paints every tier ring and beacon in alliance colour (all CAMPS established) |
+| CRAG tier rings and SUMMIT BEACON | Unlit | *Lit* paints every tier ring and beacon in alliance color (all CAMPS established) |
 | Cosmetics layer (tier rings) | on | off leaves out the tier rings; the tower and spire faces stay flush |
-| FIELD LED state | Dark | Green, White (FORECAST: WHITEOUT / ICEFALL / GALE light 1 / 2 / 3 blocks) or Alliance colour (each alliance's declared ROUTE: LOW / MID / HIGH light 1 / 2 / 3 blocks) |
-| Pieces on each alliance staging mark | Side by side | *Stacked* puts both pieces on the mark centre |
+| FIELD LED state | Dark | Green, White (FORECAST: WHITEOUT / ICEFALL / GALE light 1 / 2 / 3 blocks) or Alliance color (each alliance's declared ROUTE: LOW / MID / HIGH light 1 / 2 / 3 blocks) |
+| Pieces on each alliance staging mark | Side by side | *Stacked* puts both pieces on the mark center |
 | Group each element into a composite part | on | one open composite part per element, so the parts list reads as the element list; SUPPLIES stay individual parts |
 | Run dimension self-check | on | the measurement pass described above |
 
 **SUMMIT PUSH Game Piece** places one CACHE CRATE, O2 CELL or ROPE COIL at the origin, optionally
-resting on the Top plane, with its official colour and weight, for use in robot Part Studios.
+resting on the Top plane, with its official color and weight, for use in robot Part Studios.
 
 Parts are named `<ALLIANCE> <ELEMENT> <part>`, for example `BLUE CRAG Low Peg (guardrail side)`;
 where several parts share a name they are numbered ` 1`, ` 2`, … in creation order.
@@ -55,9 +55,9 @@ where several parts share a name they are numbered ` 1`, ` 2`, … in creation o
 ## Materials and mass
 
 Every body carries a material. Structure uses a nominal density for the material that
-MATERIALS-AND-COLORS §2 names. Tubes modelled as solid bars use an *effective* density, scaled by
+MATERIALS-AND-COLORS §2 names. Tubes modeled as solid bars use an *effective* density, scaled by
 the tube's wall-area fraction, so that their mass is right. Each SUPPLY gets the density that
-makes it weigh exactly its published weight, computed from its modelled volume during
+makes it weigh exactly its published weight, computed from its modeled volume during
 regeneration.
 
 | Material key | Name in Onshape | Density (kg/m³) | Used for |
@@ -83,4 +83,4 @@ regeneration.
 | O2 CELL | 248.7 in³ | 166.9 kg/m³ | 1.500 lb |
 | ROPE COIL | 115.7 in³ | 239.3 kg/m³ | 1.000 lb |
 
-The modelled field weighs about 3,960 lb, of which the 63 SUPPLIES are 94.5 lb.
+The modeled field weighs about 3,960 lb, of which the 63 SUPPLIES are 94.5 lb.

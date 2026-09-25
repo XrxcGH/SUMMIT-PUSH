@@ -372,8 +372,7 @@
   <line x1="1154.35" y1="908.93" x2="1225.40" y2="837.88" stroke="#C02020" stroke-width="1.10"/>
   <rect x="1159.71" y="868.89" width="76.97" height="14.72" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-45.00 1198.19 865.09)"/>
   <text x="1198.19" y="879.93" font-size="11.15" fill="#C02020" text-anchor="middle" transform="rotate(-45.00 1198.19 865.09)">10.0 exposed</text>
-  <circle cx="1032.00" cy="906.00" r="50.00" fill="none" stroke="#2E8B57" stroke-width="2.20"/>
-  <circle cx="1032.00" cy="906.00" r="25.00" fill="none" stroke="#2E8B57" stroke-width="1.40"/>
+  <rect x="1032.50" y="856.00" width="25.00" height="100.00" fill="none" stroke="#2E8B57" stroke-width="2.20" rx="12.50"/>
   <text x="1010.00" y="842.00" font-size="11.02" fill="#1F6B40" text-anchor="end">REST POSE A</text>
   <g transform="rotate(-45 1094.00 842.00)">
   <ellipse cx="1094.00" cy="842.00" rx="12.50" ry="50.00" fill="none" stroke="#6E7378" stroke-width="1.40"/>
@@ -463,15 +462,15 @@
   <text x="1500.00" y="1250.30" font-size="9.72" fill="#1A1D21">FRAME PERIMETER 19.75; a shelf slot center is 12.75 of extension.</text>
   <rect x="8.00" y="1263.30" width="1944.00" height="68.70" fill="#FFFFFF" stroke="#8A9199" stroke-width="1.00"/>
   <line x1="8.00" y1="1286.69" x2="1952.00" y2="1286.69" stroke="#C8CCD1" stroke-width="0.80"/>
-  <line x1="1687.58" y1="1263.30" x2="1687.58" y2="1332.00" stroke="#C8CCD1" stroke-width="0.80"/>
+  <line x1="1684.98" y1="1263.30" x2="1684.98" y2="1332.00" stroke="#C8CCD1" stroke-width="0.80"/>
   <text x="16.00" y="1279.43" font-size="12.31" fill="#1F4E79" font-weight="bold">SUMMIT PUSH — FIELD DRAWING SET</text>
   <text x="278.72" y="1279.43" font-size="12.31" fill="#1A1D21" font-weight="bold">DRAWING 2 OF 6 - CRAG (x2 PER FIELD)</text>
   <text x="16.00" y="1296.61" font-size="9.72" fill="#6E7378">All dimensions in INCHES. Heights are to the robot-interaction surface (shelf top, socket rim center, peg root, rung top, tag center).</text>
   <text x="16.00" y="1309.44" font-size="9.72" fill="#6E7378">Boxed values are CRITICAL - hold exactly. Values suffixed (ref) may float +/-0.25 in. Every angle on the field is 15, 30 or 45 degrees.</text>
   <text x="16.00" y="1322.28" font-size="9.72" fill="#6E7378">Coordinate frame: always-blue-origin NWU. Origin at the right corner of the Blue alliance wall; +X toward Red, +Y left, +Z up. Blue half shown; Red = 180 deg rotation about (324, 162).</text>
-  <text x="1695.58" y="1279.43" font-size="12.31" fill="#1A1D21" font-weight="bold">SHEET 2 OF 6</text>
-  <text x="1695.58" y="1296.61" font-size="9.72" fill="#6E7378">Units: INCHES   |   Scale: as noted per view</text>
-  <text x="1695.58" y="1309.44" font-size="9.72" fill="#6E7378">Geometry authority: 03-field/FIELD-CAD-PACKAGE.md</text>
-  <text x="1695.58" y="1322.28" font-size="9.72" fill="#6E7378">Spec: 01-design/DESIGN-SPEC.md v2.2</text>
+  <text x="1692.98" y="1279.43" font-size="12.31" fill="#1A1D21" font-weight="bold">SHEET 2 OF 6</text>
+  <text x="1692.98" y="1296.61" font-size="9.72" fill="#6E7378">Units: INCHES   |   Scale: as noted per view</text>
+  <text x="1692.98" y="1309.44" font-size="9.72" fill="#6E7378">Geometry authority: 03-field/FIELD-CAD-PACKAGE.md</text>
+  <text x="1692.98" y="1322.28" font-size="9.72" fill="#6E7378">© 2026 Eric Dean. SUMMIT PUSH Training Use License</text>
   <text x="1944.00" y="1279.43" font-size="12.31" fill="#1A1D21" text-anchor="end" font-weight="bold">REV 2.2</text>
 </svg>

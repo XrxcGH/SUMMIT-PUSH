@@ -30,7 +30,7 @@ This document defines the complete AprilTag layout for the SUMMIT PUSH field (**
 - Each tag is centered on its **9.0-in panel**. The panel is fastened flush to the field structure with its face in the plane specified in §3 (fasteners outside the 8.125-in target).
 - **Tag center height (Z)** is measured from the carpet to the center of the 6.5-in black square.
 - Tags are mounted **plumb** (tag plane vertical, ±1°) and **square** to their stated facing direction (±1°). Every tag on the field is plumb, so every rotation in the layout file is a pure yaw.
-- Field build tolerance on tag centers: **±0.25 in** in position. The CAD model has no such allowance: the model and `apriltag-field-layout.json` must agree **exactly**, because MultiTag pose estimation is only as good as the layout's agreement with the JSON.
+- Field build tolerance on tag centers: **±0.25 in** in position, except CRAG tag panel height, which is held to **±0.15 in** (§1.3). The CAD model has no such allowance: the model and `apriltag-field-layout.json` must agree **exactly**, because MultiTag pose estimation is only as good as the layout's agreement with the JSON.
 - CRAG tags sit at a **17.5-in center height**, HEADWALL lane tags at **12 in**, and OUTFITTER tags at **52 in** on the alliance wall above each chute.
 
 ### 1.3 CRAG tag height and occlusion
@@ -39,7 +39,7 @@ The CRAG tag height is set by occlusion. A 9.0-in panel centered at 17.5 in span
 
 | Potential obstruction | Extent | Result |
 |---|---|---|
-| CACHE CRATE standing in the BASE DEPOT | crowned apex at Z = **13.25** (tray floor 0.25 + 0.5 bottom crown + 12.0 cube + 0.5 top crown) | **0.19 in** below the target; clear, but inside the panel's own build tolerance |
+| CACHE CRATE standing in the BASE DEPOT | crowned apex at Z = **13.25** (tray floor 0.25 + 0.5 bottom crown + 12.0 cube + 0.5 top crown) | **0.19 in** below the target; clear, with the CRAG panel height held to ±0.15 in (below) |
 | ROPE COIL on edge in the BASE DEPOT | top at Z = 10.25 | 3.19 in below the target; clear |
 | O2 CELL lying in the BASE DEPOT | top at Z = 5.25 | clear |
 | **O2 CELL stood on end in the BASE DEPOT** | **top at Z = 14.25** | **0.81 in into the target band; the only case that is not clear (see below)** |
@@ -49,26 +49,18 @@ The CRAG tag height is set by occlusion. A 9.0-in panel centered at 17.5 in span
 
 At a 12-in center height, the shelf-face and inner-socket-face pairs would be blocked by any CACHE CRATE standing in the BASE DEPOT, which is a routine game state. HEADWALL lane tags stay at 12 in because that band is clear of every rung and keeps the whole panel at least 4.4 in behind the climbing plane.
 
-> **Open decision: the CACHE CRATE margin is 0.19 in.** The as-built BASE DEPOT tray floor
-> sits 0.25 in above the carpet, so a crowned CRATE standing in the DEPOT reaches Z = 13.25
-> against a target bottom of 13.4375. That is clear, but by less than the panel's own build
-> tolerance, so a field built 0.2 in low would let a CRATE clip the bottom of tags 6/7 and
-> 19/20. The 9.0-in panel cannot be raised to compensate: a center of 17.75 puts its top edge
-> at 22.25, above the Low Socket tube's lowest point at 22.19, so the two would overlap. This is a design
-> decision rather than a defect, and there are two options:
+> **CACHE CRATE margin: 0.19 in, held by a ±0.15-in height tolerance.** The as-built BASE
+> DEPOT tray floor sits 0.25 in above the carpet, so a crowned CRATE standing in the DEPOT
+> reaches Z = 13.25 against a target bottom of 13.4375. That margin is smaller than the
+> ±0.25-in position tolerance in §1.2, so the CRAG tag panels carry a tighter **height**
+> tolerance of **±0.15 in**, checked at field setup alongside the socket bore. Even a panel
+> built 0.25 in low would let a CRATE reach only the bottom of the target's white border: the
+> black square, which is what a detector finds, starts 0.81 in higher, at Z = 14.25.
 >
-> 1. **Shrink the panel to 8.5 in and raise its center to 17.75.** The panel then spans
->    13.50–22.00. The top edge is unchanged, so the socket-tube and Shelf 1 clearances stay
->    as they are, and the target moves to 13.6875–21.8125, restoring **0.44 in** of CRATE
->    margin. The cost is the white surround outside the target, which drops from 0.4375 to
->    0.1875 in per side. This option changes a CRITICAL vision dimension and the tag layout
->    JSON.
-> 2. **Keep the 9.0-in panel at 17.5 and hold the build.** State the panel height tolerance
->    as **±0.15 in** rather than the ±0.25 assumed elsewhere, and check it at field setup
->    alongside the socket bore.
->
-> Until the decision is made, the package publishes the option 2 numbers, because they are
-> what the current geometry gives.
+> The panel is not moved or shrunk instead. Raising a 9.0-in panel to a 17.75 center puts its
+> top edge at 22.25, above the Low Socket tube's lowest point at 22.19. An 8.5-in panel at
+> 17.75 would restore 0.44 in of margin, but it cuts the white surround outside the target
+> from 0.4375 to 0.1875 in per side and changes a CRITICAL vision dimension and the tag layout.
 
 **The upright-CELL case and the camera-height rule.** An O2 CELL is 14.0 in long, so a CELL stood on its end on the BASE DEPOT tray floor reaches Z = 14.25, 0.81 in above the bottom edge of a CRAG tag target. It is the only SUPPLY in the game that can. This affects four of each CRAG's eight tags (the two on the SHELF FACE and the alliance-wall-side tag on each SOCKET FACE), because those are the three faces the DEPOT tray runs along. The other four (both PEG FACE tags and the peg-face-side SOCKET FACE tag on each side) have no tray in front of them at any height.
 

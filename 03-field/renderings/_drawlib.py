@@ -451,7 +451,7 @@ class Sheet(object):
         hh = 1.9 * H
         right = ("Units: INCHES   |   Scale: as noted per view",
                  "Geometry authority: 03-field/FIELD-CAD-PACKAGE.md",
-                 "Spec: 01-design/DESIGN-SPEC.md v%s" % self.rev)
+                 "© 2026 Eric Dean. SUMMIT PUSH Training Use License")
         rw = max(250.0, max(text_width(t, N) for t in right) + 24,
                  text_width("SHEET 6 OF 6    REV 2.2", H, True) + 36)
         self.rect(bx, by, bw, bh, fill="#FFFFFF", stroke=RULE_S, sw=1.0)

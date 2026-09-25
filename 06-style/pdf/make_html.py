@@ -469,6 +469,11 @@ def front_matter(info, revs):
   amends the manual from the date it is published. Where this manual and the SUMMIT PUSH design
   specification (<code>01-design/DESIGN-SPEC.md</code>) disagree, the design specification governs, and the
   discrepancy is corrected in the next Team Update.</p>
+  <h2 class="front-h2">Copyright and license</h2>
+  <p>&copy; 2026 Eric Dean. All rights reserved. This manual may be copied, printed and shared unmodified
+  for training and educational use, with credit, under the SUMMIT PUSH Training Use License
+  (<code>LICENSE.md</code> at https://github.com/XrxcGH/SUMMIT-PUSH). Commercial use, modified versions
+  and machine-learning use need the copyright holder's written permission.</p>
   <h2 class="front-h2">Units</h2>
   <p>Dimensions are in inches, weights in pounds and times in minutes and seconds. Imperial values govern.</p>
   <h2 class="front-h2">Independence</h2>

@@ -10,7 +10,7 @@ The log is divided into lettered sections by revision:
 | J | v2.1 | Corrections from a self-review of v2.0. |
 | K, L | v2.1 | The adversarial re-audit of v2.0: the blockers and first findings (K), then the remaining findings (L). |
 | M | v2.2 | A third pass that audited the v2.1 fixes, with its late findings, a completeness review, a closing sweep, findings from the first CAD build, and deferred style-guide fixes. |
-| N | v2.2, TU-00 | The public release: the editorial pass, corrected derived figures, the PDF edition, and the Onshape generator fixes. |
+| N | v2.2, TU-00 | The public release: the editorial pass, four rules corrections, corrected derived figures, the PDF edition, the Onshape generator fixes, and the license. |
 
 Each change has an ID (section letter plus number, such as K12), which other documents and code comments cite. Many entries also name the files they touched, so that a single change can be reviewed or reverted on its own. In those file lists, *spec* is `01-design/DESIGN-SPEC.md`; *sections 01–06* are the manual source files in `02-manual/sections/`, with the glossary in section 06; *CAD package* is `03-field/FIELD-CAD-PACKAGE.md`; *vision guide* is `04-vision/VISION-GUIDE.md`; *brief* is `05-cadathon/CADATHON-BRIEF.md`; and *generator* is `03-field/renderings/generate_drawings.py`.
 
@@ -534,9 +534,11 @@ measure where their type sets at 2 pt.
 
 ## N. Public release (Version 2.2, Team Update TU-00)
 
-The release pass edited every document for publication and added the typeset PDF. The game
-itself is unchanged: no rule was added, removed or renumbered, and no scoring value changed.
-The geometry corrections below fix derived figures that did not follow from the specification.
+The release pass edited every document for publication and added the typeset PDF. Four rules
+(G406, G407, G412, G501) were corrected where a penalty or its wording contradicted another rule
+or the rule's own example (N17–N20). No rule was added, removed or renumbered, and no scoring
+value changed. The geometry corrections below fix derived figures that did not follow from the
+specification.
 
 ### Editorial and structure
 
@@ -556,6 +558,23 @@ The geometry corrections below fix derived figures that did not follow from the 
 | N7 | §3.3.6 names every rule that uses the CRAG APRON (**G402**, **G403**, **G407**, **G501**, **G502**); §3.2 puts the 3.5-in end clearance on the 68-in corridor, where the arithmetic holds; §3.5 follows **G102** on HUMAN PLAYERS' hands at the chute; §4.10 no longer calls the Summit Socket the single highest-value placement (the High Pegs pay the same). | Each statement contradicted a rule or its own numbers. |
 | N8 | The **G416** commentary gives the CAMP RUNG wrap reach as 18.02 in (the CAD package value), not 18.0, which is inside the 18-in limit and contradicted the commentary's own point. A misplaced commentary box moved from **G407** to **G415**, which it explains. | Accuracy. |
 | N9 | VISION-GUIDE figures that predated the 0.25-in DEPOT tray floor corrected (crowned CRATE apex 13.25 and 0.19-in margin; upright CELL 14.25 and 0.81 in; bare-dome shoulder 12.75; simulation occluder on the tray floor), and the tag-map sheet's note to match. | They restated superseded geometry (M44). |
+
+### Rules corrections
+
+| # | Change | Why |
+|---|---|---|
+| N17 | **G501:** a violation during AUTO, or a ROBOT's second in the MATCH, also draws a YELLOW CARD, and a single violation draws at most one. The commentary now says which placements a MAJOR FOUL outprices. | The commentary claimed that at 8 points per extra SUPPLY "nothing in the game is worth carrying", but its own figure, 26 points for a third PRIORITY SUPPLY in the Summit Socket in AUTO, exceeds a MAJOR FOUL, and so does a TELEOP High-tier placement (10). K5 fixed the Mid Socket case and left these open. |
+| N18 | **G407** and **G412 (a):** contact that the protected ROBOT initiates is not a violation (**G205**). The G407 example now gives no foul when Blue backs into a stationary defender. | Both rules made the contact a violation "regardless of which ROBOT initiated it", and the G407 example assessed a MAJOR FOUL when the protected ROBOT backed into the defender, while **G205** (a) defines exactly that contact as foul-baiting and assigns no foul. |
+| N19 | **G412:** blocking or displacing a climb, including contact that makes a supported ROBOT fall, is one additional MAJOR FOUL and one YELLOW CARD; the separate fall clause is folded into it. The example now counts the additional MAJOR FOUL and totals the foul points. | A contact that dropped a hanging ROBOT met both YELLOW CARD clauses, and two YELLOW CARDS make a RED CARD. The example showed one YELLOW CARD and left out the additional MAJOR FOUL. |
+| N20 | **G406** now follows **G405**: MAJOR FOUL; MAJOR FOUL and YELLOW CARD if the opponent stays tipped or unable to drive for about 20 seconds or the rest of the MATCH; RED CARD as before. The example's high-speed hit is a RED CARD. | The rule said the violation "escalates" without naming a tier, and the base penalty was already a MAJOR FOUL and a YELLOW CARD. The example gave MAJOR FOUL and YELLOW CARD for a charge into a raised elevator, which the Violation line makes a RED CARD. |
+
+### Decisions and drawing fixes
+
+| # | Change | Files |
+|---|---|---|
+| N21 | **M45 closed:** the 9.0-in CRAG tag panel stays centered at 17.5 in, and its center height is held to **±0.15 in** at field setup. A CRATE at the limit reaches only the target's white border; the black square starts 0.81 in higher. | `04-vision/VISION-GUIDE.md` §1.2–1.3, `03-field/FIELD-CAD-PACKAGE.md` §7 |
+| N22 | ROPE COIL rest pose A drawn edge-on (its plane is parallel to the face) in CRAG View D3 and pieces study 4, where it was drawn face-on across the face line. Study 4's face line moved to the peg root; it was 4.25 in behind it. | `03-field/renderings/` |
+| N23 | `LICENSE.md` (SUMMIT PUSH Training Use License). The PDF front matter, the Feature Studio header and every drawing title block carry the copyright and license notice; the title block's spec line gives way to it. | `LICENSE.md`, `06-style/pdf/make_html.py`, `03-field/featurescript/src/00_header.fs`, `03-field/renderings/_drawlib.py` |
 
 ### Geometry corrections
 

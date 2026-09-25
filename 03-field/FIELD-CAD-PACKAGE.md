@@ -328,7 +328,7 @@ There is no structure here, only tape and game pieces. Model the marks anyway so
 
 ## 7. AprilTag panels (×26)
 
-Family **36h11**, **26 tags**. Panel geometry (all CRITICAL for vision): **tag body 6.5 in** square on an **8.125-in** printed target, centered on a **9.0-in** square panel, panel thickness 0.25 in (ref). All panels are plumb (tag plane vertical, ±1°) and square to their stated facing (±1°). Mounting:
+Family **36h11**, **26 tags**. Panel geometry (all CRITICAL for vision): **tag body 6.5 in** square on an **8.125-in** printed target, centered on a **9.0-in** square panel, panel thickness 0.25 in (ref). All panels are plumb (tag plane vertical, ±1°) and square to their stated facing (±1°), and CRAG panel center heights are held to ±0.15 in (occlusion budget below). Mounting:
 
 | IDs | Location | Z center | Facing |
 |---|---|---|---|
@@ -341,7 +341,7 @@ Family **36h11**, **26 tags**. Panel geometry (all CRITICAL for vision): **tag b
 
 **Occlusion budget (this sets the 17.5-in CRAG tag height).** A 9.0-in panel centered at 17.5 in spans Z 13.00–22.00, and its 8.125-in target spans Z 13.44–21.56. Against that band:
 
-- A CACHE CRATE standing on the BASE DEPOT tray floor tops out at **13.25 in** (the tray floor's 0.25 plus 13.0 across its crown: 0.5 bottom crown + 12.0 cube + 0.5 top crown), **0.19 in** below the target. This is the tightest margin in the package, and it is inside the panel's own build tolerance; VISION-GUIDE §1.3 records it as an open decision.
+- A CACHE CRATE standing on the BASE DEPOT tray floor tops out at **13.25 in** (the tray floor's 0.25 plus 13.0 across its crown: 0.5 bottom crown + 12.0 cube + 0.5 top crown), **0.19 in** below the target. This is the tightest margin in the package, so the CRAG tag panel center height is held to **±0.15 in** at field setup, against ±0.25 in for tag position elsewhere (VISION-GUIDE §1.3).
 - The underside of Shelf 1 sits at 23.25 in, 1.25 in above the panel.
 - The lowest point of a Low Socket tube is at Z 22.19, 0.63 in above the target's top edge, and lies 1.56 to 10.89 in outboard of the face, clear of every sightline from a camera 10–20 in high. A camera 24–36 in high looks down past the tube, which can hide part of the target of the tag beneath it (tags 8, 10, 21 and 23), and most of it from close range.
 

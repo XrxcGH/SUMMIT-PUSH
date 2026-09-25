@@ -867,8 +867,10 @@ def sheet_crag():
             anchor="start")
     # exposed length: dimension line clear of both COIL poses, value carried out past the tip
     s.dim_a(root, tip, "10.0 exposed", off=90, critical=True, shift=112)
-    s.circle(root[0] + 12, root[1] - 10, F * COIL_OD / 2, fill="none", stroke=GHOST, sw=2.2)
-    s.circle(root[0] + 12, root[1] - 10, F * COIL_ID / 2, fill="none", stroke=GHOST, sw=1.4)
+    # pose A: the COIL's plane is parallel to the face, so this side view shows it edge-on,
+    # inner face 1.25 outboard of the face, center about 1 in above the peg root
+    s.rect(root[0] + F * 1.25, root[1] - F * (1.0 + COIL_OD / 2), F * COIL_TUBE, F * COIL_OD,
+           fill="none", stroke=GHOST, sw=2.2, rx=F * COIL_TUBE / 2)
     s.text(root[0] - 10, root[1] - 74, "REST POSE A", size=L, fill=GHOST_T, anchor="end")
     s.add('<g transform="rotate(-45 %.2f %.2f)">' % (root[0] + 74, root[1] - 74))
     s.ellipse(root[0] + 74, root[1] - 74, F * COIL_TUBE / 2, F * COIL_OD / 2, fill="none",
@@ -1486,14 +1488,15 @@ def sheet_pieces():
     x4, y4 = 1290.0, 512.0
     s.view_label(x4, 428, "4 - COIL ON PEG", "8.0 px/in")
     root = (x4 - 60, y4 + 120)
-    s.line(root[0] - 34, root[1] - 130, root[0] - 34, root[1] + 40, stroke=CRAG_EDGE, sw=3)
-    s.text(root[0] - 40, root[1] + 32, "face", size=8.5, fill=INK, anchor="end")
+    s.line(root[0], root[1] - 130, root[0], root[1] + 40, stroke=CRAG_EDGE, sw=3)
+    s.text(root[0] - 6, root[1] + 32, "face", size=8.5, fill=INK, anchor="end")
     s.add('<g transform="rotate(-45 %.1f %.1f)">' % root)
     s.rect(root[0], root[1] - E * PEG_OD / 2, E * PEG_EXP, E * PEG_OD, fill="#999999",
            stroke="#333333", sw=1.6, rx=E * PEG_OD / 2)
     s.add('</g>')
-    s.circle(root[0] + 10, root[1] - 8, E * COIL_OD / 2, fill="none", stroke=COIL_D, sw=2.2)
-    s.circle(root[0] + 10, root[1] - 8, E * COIL_ID / 2, fill="none", stroke=COIL_D, sw=1.6)
+    # settled pose, edge-on: plane parallel to the face, inner face 1.25 outboard of it
+    s.rect(root[0] + E * 1.25, root[1] - E * (1.0 + COIL_OD / 2), E * COIL_TUBE, E * COIL_OD,
+           fill="none", stroke=COIL_D, sw=2.2, rx=E * COIL_TUBE / 2)
     s.line(root[0], root[1], root[0] + 60, root[1], stroke=MUTED, sw=0.9, dash="6 3")
     s.angle(root[0], root[1], 46, 0, -45, "45 deg", lx=root[0] + 52, ly=root[1] - 20,
             anchor="start")
@@ -1502,7 +1505,8 @@ def sheet_pieces():
         "Max tilt from perpendicular-to-peg is about 48 deg;",
         "a vertical hang needs 45 deg, so the COIL wedges",
         "near-vertical and is captured, not balanced.",
-        "Center rests about 1 in above the peg root."])
+        "Center rests about 1 in above the peg root.",
+        "Drawn edge-on: its plane is parallel to the face."])
 
     N, H = s.NOTE, s.HEAD
     tx, top = 90, 830

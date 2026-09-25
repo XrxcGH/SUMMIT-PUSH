@@ -4,6 +4,11 @@ import(path : "onshape/std/geometry.fs", version : "2960.0");
 // =====================================================================================
 // SUMMIT PUSH — field generator (Onshape FeatureScript)
 //
+// Copyright © 2026 Eric Dean. All rights reserved. Shared under the SUMMIT PUSH Training Use
+// License (LICENSE.md, https://github.com/XrxcGH/SUMMIT-PUSH): free for training and
+// educational use with credit; commercial use, modified redistribution and machine-learning
+// use need written permission.
+//
 // Builds the complete SUMMIT PUSH field from the locked design package: carpet, guardrails
 // and FIELD LEDs, alliance walls with driver stations, four OUTFITTER chutes, both CRAGS with
 // every scoring position and their BASE DEPOTS, both HEADWALLS, all tape, 26 AprilTag panels

@@ -163,13 +163,12 @@
   <text x="780.00" y="778.88" font-size="8.50" fill="#6E7378">The seated CG sits below the rim, so it cannot tip out.</text>
   <text x="1290.00" y="428.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">4 - COIL ON PEG</text>
   <text x="1290.00" y="440.05" font-size="9.00" fill="#6E7378" text-anchor="middle">8.0 px/in</text>
-  <line x1="1196.00" y1="502.00" x2="1196.00" y2="672.00" stroke="#4A3B22" stroke-width="3.00"/>
-  <text x="1190.00" y="664.00" font-size="8.50" fill="#1A1D21" text-anchor="end">face</text>
+  <line x1="1230.00" y1="502.00" x2="1230.00" y2="672.00" stroke="#4A3B22" stroke-width="3.00"/>
+  <text x="1224.00" y="664.00" font-size="8.50" fill="#1A1D21" text-anchor="end">face</text>
   <g transform="rotate(-45 1230.0 632.0)">
   <rect x="1230.00" y="626.00" width="80.00" height="12.00" fill="#999999" stroke="#333333" stroke-width="1.60" rx="6.00"/>
   </g>
-  <circle cx="1240.00" cy="624.00" r="40.00" fill="none" stroke="#8A6414" stroke-width="2.20"/>
-  <circle cx="1240.00" cy="624.00" r="20.00" fill="none" stroke="#8A6414" stroke-width="1.60"/>
+  <rect x="1240.00" y="584.00" width="20.00" height="80.00" fill="none" stroke="#8A6414" stroke-width="2.20" rx="10.00"/>
   <line x1="1230.00" y1="632.00" x2="1290.00" y2="632.00" stroke="#6E7378" stroke-width="0.90" stroke-dasharray="6 3"/>
   <path d="M 1275.87 628.60 A 46.00 46.00 0 0 0 1264.84 601.97" fill="none" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1262.53 599.47 L 1267.92 602.98 L 1265.28 605.29 Z" fill="#C02020" stroke="none"/>
@@ -180,6 +179,7 @@
   <text x="1140.00" y="744.44" font-size="8.50" fill="#6E7378">a vertical hang needs 45 deg, so the COIL wedges</text>
   <text x="1140.00" y="755.66" font-size="8.50" fill="#6E7378">near-vertical and is captured, not balanced.</text>
   <text x="1140.00" y="766.88" font-size="8.50" fill="#6E7378">Center rests about 1 in above the peg root.</text>
+  <text x="1140.00" y="778.10" font-size="8.50" fill="#6E7378">Drawn edge-on: its plane is parallel to the face.</text>
   <rect x="90.00" y="830.00" width="1380.00" height="92.45" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
   <text x="98.00" y="845.03" font-size="9.50" fill="#1F4E79" font-weight="bold">SUPPLY SUMMARY</text>
   <text x="98.00" y="862.11" font-size="8.50" fill="#1F4E79" font-weight="bold">SUPPLY</text>
@@ -223,6 +223,6 @@
   <text x="1310.00" y="986.49" font-size="10.00" fill="#1A1D21" font-weight="bold">SHEET 5 OF 6</text>
   <text x="1310.00" y="1001.06" font-size="8.50" fill="#6E7378">Units: INCHES   |   Scale: as noted per view</text>
   <text x="1310.00" y="1012.28" font-size="8.50" fill="#6E7378">Geometry authority: 03-field/FIELD-CAD-PACKAGE.md</text>
-  <text x="1310.00" y="1023.50" font-size="8.50" fill="#6E7378">Spec: 01-design/DESIGN-SPEC.md v2.2</text>
+  <text x="1310.00" y="1023.50" font-size="8.50" fill="#6E7378">© 2026 Eric Dean. SUMMIT PUSH Training Use License</text>
   <text x="1544.00" y="986.49" font-size="10.00" fill="#1A1D21" text-anchor="end" font-weight="bold">REV 2.2</text>
 </svg>

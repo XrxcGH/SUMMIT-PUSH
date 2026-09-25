@@ -9,7 +9,8 @@ stage), trims the white margin, scales it to at most 2100 px wide (7 in at 300 d
 <out dir>/<name>.png.  Shots with "callouts" also get <out dir>/<name>.callouts.json: each
 callout's anchor, a point in field coordinates (inches, Z up), projected through the same
 camera the stage used, and its label position: the anchor moved by "offset" [dx, dy], given as
-fractions of the finished image's width.
+fractions of the finished image's width, or the first nearby position that passes the layout
+checks in layout().
 make_html.py draws the callouts over the image as vector leaders and labels.
 """
 import json
@@ -49,7 +50,7 @@ def project(shot, p):
 
 
 # Callouts as printed: the figure spans the 7.00-in (504-pt) column; labels are 8.5-pt Roboto
-# Medium in a white box, leaders 1.5 pt with a 3-pt arrowhead (MANUAL-STYLE-GUIDE.md §7.3).
+# Medium in a white box, leaders 1.5 pt with a 3-pt arrowhead (MANUAL-STYLE-GUIDE.md §7.3, §9.2).
 COLUMN_PT = 504.0
 LABEL_PT = 8.5
 LEADER_PT = 1.5

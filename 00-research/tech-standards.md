@@ -16,7 +16,7 @@
 
 ## Sources
 
-This research draws on the official FIRST game manuals (firstfrc.blob.core.windows.net mirrors), FRCManual.com (an accurate HTML mirror of the official manuals), WPILib documentation and Chief Delphi discussion. All rule numbers below were checked against the 2025 and/or 2026 manual text.
+This research draws on the official FIRST game manuals (hosted at firstfrc.blob.core.windows.net), FRCManual.com (an accurate HTML mirror of the official manuals), WPILib documentation and Chief Delphi discussion. All rule numbers below were checked against the 2025 and/or 2026 manual text.
 
 ## 1. Legal control system components (R-rules)
 

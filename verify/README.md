@@ -6,7 +6,7 @@ The verification suite is five scripts that check the SUMMIT PUSH documents, dra
 bash verify/run-all.sh
 ```
 
-`run-all.sh` first rebuilds `02-manual/GAME-MANUAL.md` (with `02-manual/build.sh`) and the six drawing sheets (with `03-field/renderings/generate_drawings.py`), then runs `verify.py`, `consist.py`, `crossdoc.py`, `svg_collide.py` and `svg_geom.py`, in that order. Each script can also be run on its own, from any directory, because it locates the package relative to its own path:
+`run-all.sh` first rebuilds `02-manual/GAME-MANUAL.md` (with `02-manual/build.sh`) and the six drawing sheets (with `03-field/renderings/generate_drawings.py`), then runs `verify.py`, `consist.py`, `crossdoc.py`, `svg_collide.py` and `svg_geom.py`, in that order. Last, it runs `04-vision/make_layout.py --check`, which confirms that `04-vision/apriltag-field-layout.json` matches the tag table in `04-vision/VISION-GUIDE.md` §3. Each script can also be run on its own, from any directory, because it locates the package relative to its own path:
 
 ```bash
 python verify/verify.py
@@ -18,7 +18,7 @@ The FeatureScript field generator in `03-field/featurescript/` has its own build
 
 ## Reading the results
 
-The scripts report failures in their output, not in their exit status: each one exits 0 whether its checks pass or fail, and exits non-zero only if it stops with an error. The last line of `run-all.sh` ("all checks ran ..." or "a check exited non-zero ...") therefore says only whether every script ran to completion. Read each script's summary:
+The five scripts report failures in their output, not in their exit status: each one exits 0 whether its checks pass or fail, and exits non-zero only if it stops with an error. The layout check is the exception: it exits 1 when the JSON differs from the tag table. The last line of `run-all.sh` ("all checks ran ..." or "a check exited non-zero ...") therefore says only whether every script ran to completion and the JSON matched. Read each script's summary:
 
 | Script | Clean result | What a failure looks like |
 |---|---|---|
@@ -27,6 +27,7 @@ The scripts report failures in their output, not in their exit status: each one 
 | `crossdoc.py` | `RESULT: 0 failure(s)` | A `FAIL` line naming the documents that lack the value or still carry the stale wording. |
 | `svg_collide.py` | `TOTAL layout issues: 0` | `OVERLAP`, `OFF-SHEET`, `HIDDEN`, `CROSSES`, `SMALL`, `LEADER` or `ARROWHEAD` lines under the sheet's summary line. |
 | `svg_geom.py` | `RESULT: 0 failure(s)` | A `FAIL` line with the decoded values. |
+| `make_layout.py --check` | `apriltag-field-layout.json matches VISION-GUIDE.md §3` | `... DIFFERS FROM VISION-GUIDE.md §3`; regenerate the JSON with `python 04-vision/make_layout.py`. |
 
 `consist.py` also writes its report to `verify/consist.txt`.
 

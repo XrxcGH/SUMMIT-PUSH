@@ -8,7 +8,7 @@ editing anything under `src/`.
 | File | Role | Language |
 |---|---|---|
 | `src/00_header.fs` | version header, import, banner | FeatureScript |
-| `src/10_kernel.fs` | the **only** code that calls the Onshape standard library | FeatureScript |
+| `src/10_kernel.fs` | the **only** code that calls the Onshape standard library's geometry, query and property functions | FeatureScript |
 | `src/20_ledger.fs` | every dimension, the palette, the materials | part-code dialect |
 | `src/30_util.fs` | shared helpers (planes, boxes, frames, painting) | part-code dialect |
 | `src/40_field.fs` … `src/45_pieces.fs` | the field elements | part-code dialect |
@@ -111,7 +111,7 @@ Measurement (used by the self-check): `measureBox(ctx, bodies, F)`, `measureVolu
 ## Conventions every element follows
 
 - **Every body is named, colored and given a material.** Names read as
-  `<ALLIANCE> <ELEMENT> <part>`, e.g. `BLUE CRAG Mid Socket (centre side)`. Parts that come in
+  `<ALLIANCE> <ELEMENT> <part>`, e.g. `BLUE CRAG Mid Socket (center side)`. Parts that come in
   pairs on either side of a CRAG say which side they are on ("guardrail side" is the side farther
   from the field's long centerline Y = 162).
 - **CRITICAL dimensions are never touched by decoration.** Robot-interaction surfaces (shelf

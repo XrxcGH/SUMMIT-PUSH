@@ -294,7 +294,7 @@ def sheet_field():
             ("FIELD CENTERLINE  2-in white at X = 324 - G402 / G502 line call", MUTED, "10 6"),
             ("CENTER CACHE band + nine white marks", MUTED, "7 4")]
     symbols = ["socket (LOW, MID; SUMMIT on the shelf face)", "Low / Mid Peg",
-               "High Peg (on the spire)", "BASE DEPOT tray", "staging mark (alliance tape)",
+               "High Peg (on the spire)", "BASE DEPOT tray", "staging mark (white, alliance border)",
                "HEADWALL truss, lanes L1-L3"]
     cache_notes = ["Each type appears once per row and once per column.",
                    "Aggregate haul distance is identical for both alliances (725.0 in each)."]
@@ -447,7 +447,7 @@ def sheet_tags():
     ly = fy(0) + 24
     nx, ny = tag_symbol(fx(0) + 6, ly, 0)
     s.text(fx(0) + 40, ly + 0.36 * N,
-           "Arrows show the tag FACE NORMAL (the direction a camera must look FROM to see it head-on is the opposite)",
+           "Arrows show the tag FACE NORMAL; a camera sees the tag head-on when it looks in the opposite direction.",
            size=N, fill=INK)
 
     # table of heights
@@ -504,7 +504,7 @@ def sheet_tags():
     yy = s.lines(nx0, dy + 0.74 * N, ["Vision software wants the BODY size:",
                                       "6.5 in = 0.1651 m. Never enter 8.125 or 9.0."], size=N, fill=INK)
     yy = s.lines(nx0, yy + 0.3 * N, ["Panels plumb +/-1 deg, square to facing +/-1 deg.",
-                                     "Field build tolerance +/-0.25 in on tag centers;",
+                                     "Build tolerance +/-0.25 in (CRAG height +/-0.15);",
                                      "the CAD model must match the JSON exactly."], size=N, fill=MUTED)
     yy = s.lines(nx0, yy + 0.3 * N, ["Matte, non-glare finish. Keep the white border clear."],
                  size=N, fill=MUTED)
@@ -512,7 +512,7 @@ def sheet_tags():
                      s.tw("Panels plumb +/-1 deg, square to facing +/-1 deg.", N)) < s.w - 16
     assert top + th <= s.tb_top - 6 and p2 + 6 <= s.tb_top - 10
 
-    s.titleblock(["Poses must match 04-vision/apriltag-field-layout.json exactly; the JSON is generated from this table and drives every simulation.",
+    s.titleblock(["Poses must match 04-vision/apriltag-field-layout.json exactly; the JSON is generated from the VISION-GUIDE tag table and drives every simulation.",
                   NOTES[1], NOTES[2]])
     return s
 
@@ -604,7 +604,7 @@ def sheet_crag():
     _notes(s, 60, NY, [
         "Shelf 1 top 24.0, Shelf 2 top 42.0; 3 slots of 14.0 with four 1.5 x 2.0 fences.",
         "Slot centers -15.5 / 0 / +15.5 from the face centerline.",
-        "Summit Socket rim Z = 72.0, on the crag centerline, 8.0 out from THIS face.",
+        "Summit Socket rim Z = 72.0, on the CRAG centerline, 8.0 out from THIS face.",
         "Tags 6 / 7 (Blue): ctr Z = 17.5, +/-14.0 from the face centerline.",
         "BASE DEPOT lip 4.0 runs this face and wraps 16.0 onto both socket faces.",
         "(Dashed red lines: LED tier rings at 30 / 54 / 78, see VIEW C.)",
@@ -807,7 +807,7 @@ def sheet_crag():
 
     # ---- D2 summit socket ----
     d2x, d2y = 700.0, 806.0 + R2 + DD
-    s.view_label(d2x, VY2, "D2 - SUMMIT SOCKET", "9.0 px/in", "on the SHELF FACE, on the crag centerline")
+    s.view_label(d2x, VY2, "D2 - SUMMIT SOCKET", "9.0 px/in", "on the SHELF FACE, on the CRAG centerline")
     s.line(d2x + 90, d2y - 90, d2x + 90, d2y + 190, stroke=CRAG_EDGE, sw=3)
     rx2, ry2 = d2x + 90 - E * SOCK_STANDOFF, d2y
     s.add('<g transform="rotate(%g %.2f %.2f)">' % (-SUM_TILT, rx2, ry2))
@@ -833,7 +833,7 @@ def sheet_crag():
     s.leader(rx2 - 12, ry2 - 52, rx2 - 96, ry2 - 72, "seated O2 CELL (dashed)", anchor="end",
              fill=GHOST_T)
     _notes(s, 520, DNY, [
-        "Rim ctr Z = 72.0, on the crag centerline, 8.0 OUT from the SHELF FACE.",
+        "Rim ctr Z = 72.0, on the CRAG centerline, 8.0 OUT from the SHELF FACE.",
         "Tube 7.0 along the axis at 15 deg from vertical, tilting outward.",
         "Floor center 6.19 out from the face at Z = 65.24; inboard edge 2.94",
         "out - free air outboard of the tower, no pocket required.",
@@ -885,8 +885,8 @@ def sheet_crag():
         "most about 48 deg (47.9) of tilt (2.5 tan t + 1.5 / cos t <= 5.0);",
         "a vertical hang needs 45 deg, so a SCORED COIL is captured, not balanced.",
         "The coil center rests about 1 in above the peg root, its inner face",
-        "about 1.25 in outboard of the crag face.",
-        "POSE B (as dropped, dashed): perpendicular to the peg; it settles to A.",
+        "about 1.25 in outboard of the CRAG face.",
+        "POSE B (as dropped, grey): perpendicular to the peg; it settles to A.",
     ], title="D3 NOTES", w=COLW + 30)
 
     # ---- D4 shelf + depot ----
@@ -908,8 +908,10 @@ def sheet_crag():
                fill=SHELF, stroke=CRAG_EDGE, sw=1.4)
         s.rect(d4x - G * SHELF_DEPTH, zz4(szv + FENCE_H), G * FENCE_W, G * FENCE_H,
                fill=SHELF, stroke=CRAG_EDGE, sw=1.0)
+        # (ref) gusset: 3.0-in legs under the shelf, above the FIELD-CAD-PACKAGE 2.2 floors
+        gz = szv - 0.75
         s.path("M %.2f %.2f L %.2f %.2f L %.2f %.2f Z" %
-               (d4x, zz4(szv), d4x - G * 6, zz4(szv), d4x, zz4(szv - 6)),
+               (d4x, zz4(gz), d4x - G * 3, zz4(gz), d4x, zz4(gz - 3)),
                fill="#D9CDB2", stroke=CRAG_EDGE, sw=0.9)
     s.rect(d4x - G * (SHELF_DEPTH - 1), zz4(SHELF1 + CRATE_S), G * CRATE_S, G * CRATE_S,
            fill="none", stroke=GHOST, sw=1.8, rx=G * 0.8, dash="5 3")
@@ -940,7 +942,7 @@ def sheet_crag():
         "only 0.19 below the CRAG tag target at 13.44. See VISION-GUIDE 1.3.",
         "A CRATE stands proud of the lip and is SCORED so long as the tray",
         "floor alone supports it.",
-        "Robot standoff: bumper face 16.75 from the crag face,",
+        "Robot standoff: bumper face 16.75 from the CRAG face,",
         "FRAME PERIMETER 19.75; a shelf slot center is 12.75 of extension.",
     ], title="D4 NOTES", w=s.w - 16 - 1500)
 
@@ -1456,7 +1458,7 @@ def sheet_pieces():
             ext_from=x2 + C * CHUTE_W / 2 + 6, size=9, critical=True, side="right")
     note_col(x2 - 150, y2 + 62, [
         "13.0 crowned envelope vs a 16.0 opening: 3.0 in clear.",
-        "The tightest piece/aperture pair on the FIELD.",
+        "Vertical is the binding direction: 1.5 in above and below.",
         "A cube's minimum width is its edge, so tilting does not help."])
 
     # 3 - cell in socket
@@ -1482,7 +1484,7 @@ def sheet_pieces():
         "per side (1.50 on diameter).",
         "Tube 7.0 deep, so a 14.0 CELL protrudes 7.0 along the axis",
         "and stands 4.39 in above the rim's uphill lip.",
-        "The seated CG sits below the rim, so it cannot tip out."])
+        "Half the CELL is in the tube: its CG sits at the rim center."])
 
     # 4 - coil on peg
     x4, y4 = 1290.0, 512.0

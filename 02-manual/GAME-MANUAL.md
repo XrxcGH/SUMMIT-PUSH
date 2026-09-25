@@ -942,7 +942,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 *Violation:* The team is BYPASSED for the MATCH. Deliberate use of an uninspected configuration: RED CARD.
 
-**G302** *Start in BASECAMP, in STARTING CONFIGURATION.* At MATCH start, each ROBOT must be fully within its ALLIANCE's BASECAMP zone with its BUMPERS touching its alliance wall, must be in its STARTING CONFIGURATION (no part outside the FRAME PERIMETER or above 42 in, per **R104**), and must not be in contact with any other ROBOT or with any SUPPLY other than its preload (**G303**).
+**G302** *Start in BASECAMP, in STARTING CONFIGURATION.* At MATCH start, each ROBOT must be fully within its ALLIANCE's BASECAMP zone with its BUMPERS touching its alliance wall, must be in its STARTING CONFIGURATION (no part other than its BUMPERS outside the FRAME PERIMETER, and no part above 42 in, per **R104**), and must not be in contact with any other ROBOT or with any SUPPLY other than its preload (**G303**).
 
 *Violation:* The MATCH will not start until the ROBOT is corrected. If discovered after the MATCH begins: MAJOR FOUL, and no LEAVE credit for that ROBOT.
 
@@ -950,7 +950,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 **G303** *One preload per ROBOT.* Each ROBOT may begin the MATCH with up to 1 SUPPLY of any type, drawn from its ALLIANCE's OUTFITTER stock during setup (Section 4.2.2). The preload must be fully and solely supported by that ROBOT. A preload may not be taken from a CENTER CACHE mark or an alliance staging mark.
 
-*Violation:* Extra, unsupported, or wrongly sourced SUPPLIES are removed and re-staged before the MATCH starts. If discovered after the MATCH begins: MAJOR FOUL per extra SUPPLY, and MINOR FOUL per SUPPLY preloaded from a CENTER CACHE or alliance staging mark, which FIELD STAFF restore to its mark at the next safe opportunity. No SUPPLY that entered the MATCH as an undeclared extra preload is SCORED or counts toward any CAMP, ROPED UP, or RANKING POINT requirement.
+*Violation:* Extra, unsupported, or wrongly sourced SUPPLIES are removed and re-staged before the MATCH starts. If discovered after the MATCH begins: MAJOR FOUL per extra SUPPLY, and MINOR FOUL per SUPPLY preloaded from a CENTER CACHE or alliance staging mark, which FIELD STAFF restore to its mark at the next safe opportunity. No SUPPLY that entered the MATCH as an extra preload is SCORED or counts toward any CAMP, ROPED UP, or RANKING POINT requirement.
 
 > *Commentary:* A MINOR FOUL would not deter an extra preload. Two preloads sit inside the two-SUPPLY limit of **G501**, so G501 does not apply and G303 alone governs. A second PRIORITY SUPPLY placed in a Mid Socket during AUTO is worth 20 points, or 26 in the Summit Socket, against a 3-point foul. It also supplies a fifth SUPPLY toward ROPED UP, which foul points cannot offset (Section 4.8). **G501** is priced at a MAJOR FOUL for the same reason.
 
@@ -996,7 +996,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 *Violation:* MAJOR FOUL. If the contacted ROBOT's AUTO routine is disrupted (it fails to LEAVE, or drops or fails to score a SUPPLY it possessed): additional MAJOR FOUL. Deliberate interference: YELLOW CARD.
 
-> *Commentary:* Clause (b) exists because a ROBOT scoring on its own CRAG's inner SOCKET FACE sits on the opponent's side of the centerline. Without it, an approach that a ROBOT must make from across the line would have no AUTO protection at all.
+> *Commentary:* Clause (b) exists because a ROBOT scoring on its own CRAG's PEG FACE sits entirely on the opponent's side of the centerline. Without it, an approach that a ROBOT must make from across the line would have no AUTO protection at all.
 
 ### Extension and contact
 
@@ -1076,11 +1076,11 @@ A ROBOT whose BUMPERS are within the opponent's HEADWALL ZONE solely because an 
 
 *Violation:* The ROBOT earns no ENDGAME rung credit for that MATCH; deliberate or repeated use to gain advantage: MINOR FOUL in addition. A ROBOT that earns only PARK is not penalized under this rule.
 
-> *Commentary:* The HEADWALL leans back over the ALLIANCE's own half of the FIELD, so the SUMMIT RUNG hangs 20.7 in behind the CLIMB LINE. Without this rule, a ROBOT could park beneath that rung and reach it straight up on a vertical mast, and the two-handoff traversal the HEADWALL is built around would be optional. With the rule, the climb starts from the FIELD side, and the FIELD CAD PACKAGE (`03-field/FIELD-CAD-PACKAGE.md` §4.1) publishes the reach arithmetic. A ROBOT with its BUMPERS on the CLIMB LINE engages the LEDGE RUNG with about 11.6 in of extension, well inside the **G404** limit, and cannot reach either rung above it: wrapping the CAMP RUNG needs 18.02 in, just over the 18-in limit, and the SUMMIT RUNG needs 24.5 in, both measured past the far face of the rung. Every rung above the LEDGE RUNG is therefore reached from a hang, which is the traversal the HEADWALL is designed to require.
+> *Commentary:* The HEADWALL leans back over the ALLIANCE's own half of the FIELD, so the SUMMIT RUNG hangs 20.7 in behind the CLIMB LINE. Without this rule, a ROBOT could park beneath that rung and reach it straight up on a vertical mast without ever hanging from a lower rung. With the rule, the climb starts from the FIELD side, and the FIELD CAD PACKAGE (`03-field/FIELD-CAD-PACKAGE.md` §4.1) publishes the reach arithmetic. A ROBOT with its BUMPERS on the CLIMB LINE engages the LEDGE RUNG with about 11.6 in of extension, well inside the **G404** limit, and cannot reach either rung above it: wrapping the CAMP RUNG needs 18.02 in, just over the 18-in limit, and the SUMMIT RUNG needs 24.5 in, both measured past the far face of the rung. Every rung above the LEDGE RUNG is therefore reached from a hang, which is what the HEADWALL is designed to require.
 
-> *Commentary:* Two details of the wording matter. First, the test is a plane across the whole FIELD. A BASECAMP zone test would leave a gap: BASECAMP spans only Y 90–234, and lane 1's SUMMIT RUNG reaches Y 92, so a ROBOT parked beside BASECAMP at Y ≈ 75 would have every BUMPER outside the zone while sitting directly beneath that rung. Second, the exemption covers only current support, and the 5-second tail applies only to the rung already in hand.
+> *Commentary:* Two details of the wording matter. First, the test is a plane across the whole FIELD. A BASECAMP zone test would leave a gap: BASECAMP spans only Y 90–234, and lane 1's SUMMIT RUNG reaches Y 92, so a ROBOT parked beside BASECAMP at Y ≈ 75 would have every BUMPER outside the zone while sitting just beyond the end of that rung. Second, the exemption covers only current support, and the 5-second tail applies only to the rung already in hand.
 
-> *Commentary:* An exemption for support held at any earlier point in the MATCH would fail: one brief unweighting on the LEDGE RUNG would earn it, after which a vertical mast could return to the SUMMIT RUNG legally. A 5-second tail conditioned on not driving would also fail. Hanging from the LEDGE RUNG settles the chassis under the hook at X = 40.16, so a ROBOT at the 120-in FRAME PERIMETER limit already spans X 25.16–55.16, which contains the SUMMIT RUNG at X = 27.30. That ROBOT never has to drive. It unweights for an instant, lets the hang center it, lowers straight down, and masts up with zero horizontal extension.
+> *Commentary:* An exemption for support held at any earlier point in the MATCH would fail: one brief unweighting on the LEDGE RUNG would earn it, after which a vertical mast could take the SUMMIT RUNG legally. A 5-second tail conditioned on not driving would also fail. Hanging from the LEDGE RUNG settles the chassis under the hook at X = 40.16, so a ROBOT at the 120-in FRAME PERIMETER limit already spans X 25.16–55.16, which contains the SUMMIT RUNG at X = 27.30. That ROBOT never has to drive. It unweights for an instant, lets the hang center it, lowers straight down, and masts up with zero horizontal extension.
 
 > *Commentary:* Tying the tail to the rung closes that gap. A ROBOT that falls or lowers mid-traversal is still touching a rung it had hold of while hanging, so the exemption covers it. A ROBOT that releases the LEDGE RUNG, returns to the carpet, and reaches for the SUMMIT RUNG is contacting a rung it never touched while supported, so the exemption does not apply. A ROBOT that can take the SUMMIT RUNG while still hanging from the LEDGE RUNG is making the direct climb described in §3.4, which is legal.
 
@@ -1094,7 +1094,7 @@ A ROBOT whose BUMPERS are within the opponent's HEADWALL ZONE solely because an 
 
 > *Example:* During TELEOP, a ROBOT carrying a CACHE CRATE and an O2 CELL drives through a cluster of three loose ROPE COILS and scatters them forward. That is plowing, and there is no violation. The same ROBOT then backs up, pivots, and sweeps one of those ROPE COILS toward its OUTFITTER corner. It is now herding a third SUPPLY: MAJOR FOUL. A ROBOT that gathers eight loose SUPPLIES into a line and bulldozes them toward its own BASE DEPOT is in CONTROL of six too many as a group: six MAJOR FOULS plus one more (and a YELLOW CARD) for the group herd, 56 points to the opponent, against the 16 points the SUPPLIES would have been worth.
 
-> *Commentary:* The two-SUPPLY limit makes serializers worth building and keeps one ROBOT from collecting the whole CENTER CACHE at T=0. Because of the plowing carve-out, referees count deliberate transport and ignore incidental traffic. The penalty is a MAJOR FOUL from the first extra SUPPLY because foul points cannot reach a bonus-RP threshold (Section 4.8), so a cheaper penalty would simply be paid. A third piece carried to a Mid Socket in TELEOP is worth 7 points, more than a MINOR FOUL's 3, so at that price a three-piece hopper would pay for itself every cycle. The 8-point MAJOR FOUL outprices every TELEOP placement except the High tier's 10. It does not outprice AUTO, where a third PRIORITY SUPPLY in the Summit Socket is worth 26, or a hopper that feeds the High tier all MATCH. That is why a violation in AUTO, or a second one in the same MATCH, also draws a YELLOW CARD, and a second YELLOW CARD is a RED CARD. The call needs no tracking of individual SUPPLIES: the referee counts what the ROBOT is holding at the moment of the call.
+> *Commentary:* The two-SUPPLY limit makes serializers worth building and keeps one ROBOT from collecting the whole CENTER CACHE at T=0. Because of the plowing carve-out, referees count deliberate transport and ignore incidental traffic. The penalty is a MAJOR FOUL from the first extra SUPPLY because foul points cannot reach a bonus-RP threshold (Section 4.8), so a cheaper penalty would simply be paid. A third piece carried to a Mid Socket in TELEOP is worth 7 points, more than a MINOR FOUL's 3, so at that price a three-piece hopper would pay for itself every cycle. The 8-point MAJOR FOUL outprices every TELEOP placement except the High tier's 10. It does not outprice AUTO, where a third PRIORITY SUPPLY in the Summit Socket is worth 26, or a hopper that feeds the High tier all MATCH. That is why a violation in AUTO, or a second one in the same MATCH, also draws a YELLOW CARD, and a second YELLOW CARD in the same tournament phase is a RED CARD. The call needs no tracking of individual SUPPLIES: the referee counts what the ROBOT is holding at the moment of the call.
 
 **G502** *Launch only into your own BASE DEPOT.* A ROBOT may not LAUNCH a SUPPLY (shoot, throw, kick, or otherwise propel it so that it travels through the air under impetus imparted by the ROBOT after release), with one exception: a ROBOT may LAUNCH SUPPLIES into its own BASE DEPOT while any part of its BUMPERS intersects the portion of its own ALLIANCE's CRAG APRON that lies on the same side of the FIELD centerline as its own SHELF FACE. The exception applies only if the LAUNCHED SUPPLY comes to rest within the BASE DEPOT tray. A LAUNCHED SUPPLY that comes to rest anywhere else is a violation.
 
@@ -1102,15 +1102,15 @@ Releasing a SUPPLY from rest (dropping, placing, or rolling it out of an intake 
 
 *Violation:* MINOR FOUL per SUPPLY. If a LAUNCHED SUPPLY contacts an opponent ROBOT, enters a protected zone other than the LAUNCHING ALLIANCE's own CRAG APRON, or disturbs any SCORED SUPPLY outside the LAUNCHING ALLIANCE's own BASE DEPOT: MAJOR FOUL. Repeated: YELLOW CARD.
 
-> *Commentary:* The exception is drawn from two lines the FIELD already carries: the APRON tape and the centerline. Both CRAGS straddle X = 324, so the half of a ROBOT's own APRON on its SHELF FACE side of the centerline is X < 324 for Blue and X > 324 for Red. That half contains the SHELF FACE and the whole tray. Outside it, any airborne SUPPLY is a violation, and referees need no trajectory judgment. Inside it, flicking a SUPPLY over the 4-in DEPOT lip is legal and intended. Shelf, socket, and peg scoring must be by placement, because testing placement is the purpose of those scoring positions. The exception stops at the centerline because, from the PEG FACE, the tray is on the far side of a 90-in spire.
+> *Commentary:* The exception is drawn from two lines the FIELD already carries: the APRON tape and the centerline. Both CRAGS straddle X = 324, so the half of a ROBOT's own APRON on its SHELF FACE side of the centerline is X < 324 for Blue and X > 324 for Red. That half contains the SHELF FACE and the whole tray. Outside it, any LAUNCHED SUPPLY is a violation, and referees need no trajectory judgment. Inside it, flicking a SUPPLY over the 4-in DEPOT lip is legal and intended. Shelf, socket, and peg scoring must be by placement, because testing placement is the purpose of those scoring positions. The exception stops at the centerline because, from the PEG FACE, the tray is on the far side of a 90-in spire.
 
 **G503** *No de-scoring.* A ROBOT may not remove a SCORED SUPPLY from either ALLIANCE's CRAG (including either BASE DEPOT), and may not contact a SCORED SUPPLY in a way that removes it from its scoring position. A SUPPLY dislodged by ROBOT contact with the CRAG, rather than with the SUPPLY itself, is a no-fault knock-off under **G504** and does not violate this rule. Deliberately striking or shaking a CRAG to dislodge SCORED SUPPLIES violates **G202**. Any SUPPLY SCORED on a CRAG counts for that CRAG's ALLIANCE regardless of which ROBOT placed it, so removing a SUPPLY that an opponent placed is also de-scoring.
 
 *Violation:* MAJOR FOUL per SUPPLY, and the SUPPLY is restored per **G504**; any latched CAMP or SUMMIT BEACON state is unaffected in all cases (latches never unlight). Strategic or repeated de-scoring, including repeated removal from one's own ALLIANCE's CRAG: YELLOW CARD.
 
-> *Example:* A Red ROBOT playing defense near the Blue CRAG (legally, outside the APRON) reaches over the DEPOT lip and hooks out a CACHE CRATE: MAJOR FOUL, and FIELD STAFF return the CACHE CRATE to the DEPOT. A Red ROBOT places an O2 CELL in a Blue Low Socket, hoping to waste it: it scores 4 points for Blue.
+> *Example:* A Red ROBOT playing defense near the Blue CRAG (legally, outside the APRON) reaches over the DEPOT lip and hooks out a CACHE CRATE: MAJOR FOUL, and FIELD STAFF return the CACHE CRATE to the DEPOT. During TELEOP, a Red ROBOT places an O2 CELL in a Blue Low Socket, hoping to waste it: it scores 4 points for Blue.
 
-**G504** *No-fault knock-offs are restored.* If a SUPPLY leaves its scoring position without direct ROBOT contact on that SUPPLY (for example from vibration, a bumped CRAG, another SUPPLY settling, or an errant partner placement), it is an ARENA event and not a violation. Referees make no causation attribution. FIELD STAFF restore the SUPPLY to its scoring position at the next safe opportunity (during a stoppage, or after the MATCH before the score is FINAL), and any latched CAMP or SUMMIT BEACON state is unaffected (latches never unlight). A SUPPLY dislodged by direct ROBOT contact on the SUPPLY is governed by **G503**.
+**G504** *No-fault knock-offs are restored.* If a SUPPLY leaves its scoring position without direct ROBOT contact on that SUPPLY (for example from vibration, a bumped CRAG, another SUPPLY settling, or an errant partner placement), it is a no-fault knock-off and not a violation. Referees make no causation attribution. FIELD STAFF restore the SUPPLY to its scoring position at the next safe opportunity (during a stoppage, or after the MATCH before the score is FINAL), and any latched CAMP or SUMMIT BEACON state is unaffected (latches never unlight). A SUPPLY dislodged by direct ROBOT contact on the SUPPLY is governed by **G503**.
 
 *Violation:* None. This rule defines a restoration procedure; only direct-contact removal is penalized, under **G503**.
 
@@ -1140,7 +1140,7 @@ Releasing a SUPPLY from rest (dropping, placing, or rolling it out of an intake 
 
 The rules in this section govern the design and construction of every ROBOT competing in SUMMIT PUSH. A ROBOT is the electromechanical assembly, including all BUMPERS and all attached COMPONENTS and MECHANISMS, that a team places on the FIELD to play the game. Unless a rule states otherwise, compliance is assessed at INSPECTION and must be maintained for the duration of the event.
 
-> *Commentary:* These rules follow the construction conventions most varsity robotics teams already build to. Where SUMMIT PUSH departs from those conventions, most notably by having no in-match height limit, the rule says so. The commentary explains why each rule exists, which is the quickest way to understand what it does and does not prohibit.
+> *Commentary:* These rules follow the construction conventions most competitive robotics teams already build to. Where SUMMIT PUSH departs from those conventions, most notably by having no in-match height limit, the rule says so. Commentary explains why a rule exists, which is the quickest way to understand what it does and does not prohibit.
 
 ## 6.1 Size, Weight, and Extension (R1xx)
 
@@ -1158,7 +1158,7 @@ The rules in this section govern the design and construction of every ROBOT comp
 
 > *Commentary:* With the string-wrap method, concave features cost nothing because the string bridges them, but every convex feature counts. A 30 in × 30 in square and a 27 in × 33 in long chassis each measure 120 in, the maximum.
 
-**R104** *Start inside the FRAME PERIMETER, at most 42 in tall.* In its STARTING CONFIGURATION (the physical state of the ROBOT at the start of a MATCH), no part of the ROBOT may extend beyond the vertical projection of the FRAME PERIMETER, except minor protrusions per **R103**, and the ROBOT's height must not exceed 42 in (106.7 cm).
+**R104** *Start inside the FRAME PERIMETER, at most 42 in tall.* In its STARTING CONFIGURATION (the physical state of the ROBOT at the start of a MATCH), no part of the ROBOT may extend beyond the vertical projection of the FRAME PERIMETER, except its BUMPERS and minor protrusions per **R103**, and the ROBOT's height must not exceed 42 in (106.7 cm).
 
 *Violation:* ROBOT will not pass INSPECTION. If discovered at the start of a MATCH, the ROBOT will not be permitted to start until it is compliant.
 
@@ -1396,7 +1396,7 @@ ELECTRIC SOLENOID ACTUATORS and non-actuator custom circuits and loads (LEDs, se
 
 *Violation:* ROBOT will not pass INSPECTION. If the modification is used in a MATCH, the team may be referred to the HEAD REFEREE for a RED CARD.
 
-**R706** *Fit one ROBOT SIGNAL LIGHT.* The ROBOT must include exactly one ROBOT SIGNAL LIGHT (RSL): a COTS solid-state amber indicator wired to the roboRIO's RSL port and powered only from that port. It must be mounted upright on the main ROBOT structure, not on an articulating MECHANISM, and must be visible from any horizontal direction at 30 ft with the ROBOT in its STARTING CONFIGURATION, unobstructed by BUMPERS or by any MECHANISM in any configuration the ROBOT will use, including a HEADWALL hang. The RSL must blink when the ROBOT is disabled or not connected to the FMS, and must be continuously lit when the ROBOT is enabled.
+**R706** *Fit one ROBOT SIGNAL LIGHT.* The ROBOT must include exactly one ROBOT SIGNAL LIGHT (RSL): a COTS solid-state amber indicator wired to the roboRIO's RSL port and powered only from that port. It must be mounted upright on the main ROBOT structure, not on an articulating MECHANISM, and must be visible from any horizontal direction at 30 ft with the ROBOT in its STARTING CONFIGURATION, unobstructed by BUMPERS or by any MECHANISM in any configuration the ROBOT will use, including a HEADWALL hang. The RSL must be continuously lit when the ROBOT is powered on and disabled, including when it is not connected to the FMS, and must blink when the ROBOT is enabled.
 
 *Violation:* ROBOT will not pass INSPECTION.
 
@@ -1416,7 +1416,7 @@ ELECTRIC SOLENOID ACTUATORS and non-actuator custom circuits and loads (LEDs, se
 
 *Violation:* ROBOT will not pass INSPECTION.
 
-**R803** *Pressure limits.* Stored pressure must not exceed 120 psi (827 kPa). Working pressure (everything downstream of the primary regulator) must not exceed 60 psi (413 kPa).
+**R803** *Pressure limits.* Stored pressure must not exceed 120 psi (827 kPa). Working pressure (everything downstream of the primary regulator) must not exceed 60 psi (414 kPa).
 
 *Violation:* ROBOT will not pass INSPECTION.
 
@@ -1594,7 +1594,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 |---|---|
 | **ALLIANCE** | A group of three (3) teams that play a MATCH together as Red or Blue. |
 | **ALLIANCE ROLE** | One of the four recurring ROBOT archetypes described in Section 4.10: CRATE FREIGHTER, O2 SURGEON, RING ALPINIST, or HYBRID. ALLIANCE ROLES are descriptive and impose no rules. |
-| **APRON** (CRAG APRON) | A taped band extending 36 in out from a CRAG's SHELF FACE and PEG FACE and 20 in out from each SOCKET FACE, with 20-in-radius corner arcs. An opponent may not contact a ROBOT whose BUMPERS intersect its own ALLIANCE's APRON (**G407**). |
+| **APRON** (CRAG APRON) | A taped band extending 36 in out from a CRAG's SHELF FACE and PEG FACE and 20 in out from each SOCKET FACE, with 20-in-radius corner arcs. An opponent may not contact a ROBOT whose BUMPERS intersect its own ALLIANCE's APRON, unless that ROBOT initiated the contact (**G407**). |
 | **ARENA** | All elements of the game infrastructure required to play SUMMIT PUSH: the FIELD, the CRAGS, the HEADWALLS, SUPPLIES, and all supporting hardware and control equipment. |
 | **ARENA FAULT** | A failure of the FIELD, FMS, FIELD network, scoring system, or FIELD-provided equipment that affects play or scoring. It is the only basis for replaying a Qualification MATCH (§8.6). |
 | **ASCENT RP** | The bonus RANKING POINT awarded when an ALLIANCE's total ENDGAME points meet or exceed the tier threshold (Section 4.7). |
@@ -1626,7 +1626,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **ELECTRIC SOLENOID ACTUATOR** | A COTS linear electric actuator of ≤1 in stroke and ≤10 W, legal under Table 6-2 and powered per **R505** and **R703**. |
 | **ENDGAME** | The final 0:30 of TELEOP, during which HEADWALL ZONE protection is active; the protection continues through climb assessment. ENDGAME climb points are assessed after the final buzzer, with ROBOTS at rest or at T+5 s, whichever comes first. |
 | **E-STOP** | The FIELD-provided driver-station button that renders a ROBOT inoperable for the remainder of the MATCH (§3.1). |
-| **EXPEDITION RP** | The bonus RANKING POINT awarded for establishing the tier-threshold set of CAMPS (Section 4.7). |
+| **EXPEDITION RP** | The bonus RANKING POINT awarded for establishing the tier-threshold set of CAMPS, and at Championship tier for also filling the declared ROUTE's tier to full capacity (Section 4.7). |
 | **FABRICATED ITEM** | Any COMPONENT or MECHANISM altered, built, cast, printed, or assembled by or for a team into its final form (**R302**). |
 | **FIELD** | The 648 in × 324 in carpeted playing surface bounded by the guardrails and the two alliance walls, together with the FIELD elements standing on it. The FIELD is the part of the ARENA on which the MATCH is played. |
 | **FIELD LEDs** | The two guardrail-mounted LED bands, each split at the centerline into two ALLIANCE segments, that display FIELD-safe (green), the FORECAST (white), and each ALLIANCE's declared ROUTE (§3.1.2). They are indicators only and are never the scoring or safety authority. |
@@ -1638,7 +1638,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **GAME PIECE** | Synonymous with **SUPPLY**: the CACHE CRATE, the O2 CELL, or the ROPE COIL. A rule stated in either term applies equally to the other. |
 | **HEAD REFEREE** | The referee with final authority over rule interpretation, penalties, MATCH stoppages, and score approval at an event. |
 | **HEADWALL** | An ALLIANCE's 144-in-wide climbing truss, leaned 15° from vertical and divided into three independent 48-in lanes, each carrying a LEDGE RUNG, a CAMP RUNG, and a SUMMIT RUNG. One ROBOT per lane. |
-| **HEADWALL ZONE** | The taped BASECAMP area beneath an ALLIANCE's HEADWALL. From the start of ENDGAME through climb assessment, an opponent that contacts a ROBOT in this zone, or a ROBOT supported by that HEADWALL, commits a MAJOR FOUL (**G412**). |
+| **HEADWALL ZONE** | The taped BASECAMP area beneath an ALLIANCE's HEADWALL. From the start of ENDGAME through climb assessment, an opponent that contacts a ROBOT in this zone, or a ROBOT supported by that HEADWALL, commits a MAJOR FOUL unless the protected ROBOT initiated the contact (**G412**). |
 | **HIGH CAMP** | The high-tier CAMP: an O2 CELL in the Summit Socket and a ROPE COIL on at least one High Peg, simultaneously SCORED (+15; +35 under a HIGH ROUTE declaration). |
 | **HUMAN PLAYER** | A DRIVE TEAM member assigned to one of the ALLIANCE's two OUTFITTER stations, who introduces SUPPLIES onto the FIELD only through the chute opening (**G506**). Each ALLIANCE fields exactly two, one per station, drawn from any of its three DRIVE TEAMS (**G307**). |
 | **INSPECTION** | The pre-MATCH verification that a ROBOT complies with every R-rule in the configuration it will play (Section 7). |
@@ -1673,7 +1673,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **SCORING ERROR** | A correctable mistake in the recorded score: a miscounted or misattributed SUPPLY, an unrecorded CAMP or SUMMIT BEACON latch, a mis-entered ENDGAME state, or a FOUL credited to the wrong ALLIANCE (§4.9). Referee judgment about whether a violation occurred is never a SCORING ERROR. |
 | **SHELF FACE** | The CRAG face that faces the owning ALLIANCE's wall, carrying Shelf 1, Shelf 2, the Summit Socket, and the BASE DEPOT. |
 | **SOCKET FACE** | Either of the two CRAG faces perpendicular to the FIELD centerline, each carrying one Low Socket and one Mid Socket. |
-| **STARTING CONFIGURATION** | The ROBOT's pre-MATCH state: no more than 42 in tall and entirely within its FRAME PERIMETER (**R104**). |
+| **STARTING CONFIGURATION** | The ROBOT's pre-MATCH state: no more than 42 in tall and, apart from its BUMPERS, entirely within its FRAME PERIMETER (**R104**). |
 | **SUMMIT BEACON** | The translucent lantern forming the top 12 in of each CRAG's spire (Z 78–90, luminous center 84 in). It lights when all three CAMPS are established and banks a latched +10. |
 | **SUMMIT RUNG** | The highest HEADWALL rung, 78 in above the carpet. A ROBOT supported solely by it at climb assessment earns 30 points. |
 | **SUPPLY** (pl. **SUPPLIES**) | The collective term for the three GAME PIECES: the CACHE CRATE, the O2 CELL, and the ROPE COIL. |
@@ -1683,6 +1683,6 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **TIMEOUT** | A 6-minute break: one per ALLIANCE for the Playoff bracket, plus one more for the Finals (§8.6). |
 | **VENDOR** | A source from which a COTS item is generally available to all teams at published pricing (**R301**, **R303**). |
 | **VERBAL WARNING** | A no-points penalty for a first-instance, low-impact infraction. A VERBAL WARNING is recorded and persists for the team for the remainder of the event. |
-| **YELLOW CARD** | A warning for unsafe or uncivil behavior or egregious rule violations. A second YELLOW CARD in the same tournament phase escalates to a RED CARD. |
+| **YELLOW CARD** | A warning for unsafe or uncivil behavior, egregious rule violations, or the specific violations for which a rule lists one. A second YELLOW CARD in the same tournament phase escalates to a RED CARD. |
 
 > *Commentary:* LED tier rings and the SUMMIT BEACON confirm latched CAMP states; they are never the scoring authority. If a lighting fault occurs, referees score CAMPS from the SUPPLY states at the moment of completion, per the definitions above.

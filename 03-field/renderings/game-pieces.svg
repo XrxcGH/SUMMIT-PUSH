@@ -135,7 +135,7 @@
   <rect x="681.19" y="533.60" width="25.61" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 694.00 532.00)"/>
   <text x="694.00" y="542.51" font-size="9.00" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 694.00 532.00)">16.0</text>
   <text x="420.00" y="642.00" font-size="8.50" fill="#1A1D21">13.0 crowned envelope vs a 16.0 opening: 3.0 in clear.</text>
-  <text x="420.00" y="653.22" font-size="8.50" fill="#1A1D21">The tightest piece/aperture pair on the FIELD.</text>
+  <text x="420.00" y="653.22" font-size="8.50" fill="#1A1D21">Vertical is the binding direction: 1.5 in above and below.</text>
   <text x="420.00" y="664.44" font-size="8.50" fill="#6E7378">A cube's minimum width is its edge, so tilting does not help.</text>
   <text x="930.00" y="428.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">3 - CELL IN SOCKET</text>
   <text x="930.00" y="440.05" font-size="9.00" fill="#6E7378" text-anchor="middle">8.0 px/in</text>
@@ -160,7 +160,7 @@
   <text x="780.00" y="745.22" font-size="8.50" fill="#1A1D21">per side (1.50 on diameter).</text>
   <text x="780.00" y="756.44" font-size="8.50" fill="#6E7378">Tube 7.0 deep, so a 14.0 CELL protrudes 7.0 along the axis</text>
   <text x="780.00" y="767.66" font-size="8.50" fill="#6E7378">and stands 4.39 in above the rim's uphill lip.</text>
-  <text x="780.00" y="778.88" font-size="8.50" fill="#6E7378">The seated CG sits below the rim, so it cannot tip out.</text>
+  <text x="780.00" y="778.88" font-size="8.50" fill="#6E7378">Half the CELL is in the tube: its CG sits at the rim center.</text>
   <text x="1290.00" y="428.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">4 - COIL ON PEG</text>
   <text x="1290.00" y="440.05" font-size="9.00" fill="#6E7378" text-anchor="middle">8.0 px/in</text>
   <line x1="1230.00" y1="502.00" x2="1230.00" y2="672.00" stroke="#4A3B22" stroke-width="3.00"/>

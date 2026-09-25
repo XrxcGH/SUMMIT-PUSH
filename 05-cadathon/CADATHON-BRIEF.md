@@ -12,7 +12,7 @@ The SUMMIT PUSH design challenge is a nine-day design sprint run in the style of
 
 The event is a training exercise first and a competition second. It targets four outcomes:
 
-1. **Strategy-first design.** In community design challenges, strategy analysis has consistently counted for more than CAD polish, and winning entries are cited for their points modeling and decision rationale. Squads derive the robot from the game (points-per-cycle arithmetic, RP analysis against the Championship column, and a justified archetype choice) before opening a part studio.
+1. **Strategy-first design.** In community design challenges, strategy analysis has consistently counted for more than CAD polish, and winning entries are cited for their points modeling and decision rationale. Squads derive the robot from the game (points-per-cycle arithmetic, RP analysis against the Championship column, and a justified archetype choice) before opening a Part Studio.
 2. **CAD fluency under a deadline.** A real build season is requirements-driven design against a clock. Nine days forces scoping decisions: what to model in detail, what to block out, and what to cut. Squads practice a top-down Onshape workflow (master sketches, then high-fidelity block CAD before detail work).
 3. **Documentation.** A design decision is not complete until the designer can explain it. The technical binder is weighted as heavily as the CAD because writing the rationale is the design review.
 4. **Presentation.** The 3–5 minute video is a communication exercise: explain a robot to a stranger, on camera, in the length of a pit interview.
@@ -30,9 +30,9 @@ The event runs **nine days across two weekends**: two full weekends of work on e
 | **Day −7 to −1** | week before | **Announcement.** Event announced, squads register, rookies paired (§3). Theme teaser only, with no game details. Release nothing design-relevant early: criteria are withheld until kickoff so that design starts from the released requirements. |
 | **Day 0 (Sat)** | morning | **Kickoff show.** Live game reveal: animation/slides, Game Manual walkthrough, field CAD and drawings released, AprilTag layout JSON released, this brief and the judging rubric (§5) published in full. Q&A desk opens (§6). Afternoon: squads read the manual and start strategy work. |
 | **Day 1 (Sun)** | all day | Strategy day. Points-per-cycle modeling, RP arithmetic against the Championship column, ALLIANCE ROLE selection, BASECAMP BOT benchmark (Appendix A). The mentor runs an optional "how to read a game manual" session for rookies in the morning. |
-| **Day 2 (Mon)** | evening | **Strategy deadline (recommended, not enforced).** Each squad posts a one-page strategy summary to the event channel: chosen archetype, target score, RP plan. It is not graded, but squads that skip it tend to fall behind in Week 2. The mentor replies to every posted summary with a short written check within 24 h. |
+| **Day 2 (Mon)** | evening | **Strategy deadline (recommended, not enforced).** Each squad posts a one-page strategy summary to the event channel: chosen archetype, target score, RP plan. It is not graded, but squads that skip it tend to fall behind by the second weekend. The mentor replies to every posted summary with a short written check within 24 h. |
 | **Day 3 (Tue)** | evening | Office hours #1 (§2.1). Prototyping by sketch, intake geometry, elevator-versus-arm questions. |
-| **Day 4 (Wed)** | evening | **Team Update 01 slot.** All accumulated Q&A rulings are issued as a formal Team Update (§6). Office hours #2. |
+| **Day 4 (Wed)** | evening | **Team Update 01 slot.** Q&A rulings so far that change or clarify the manual text are issued as a formal Team Update (§6). Office hours #2. |
 | **Day 5 (Thu)** | evening | **Team Update 02 slot** (if needed; otherwise a "no changes" update is still posted on time, so that squads can stop watching for one). **Mid-event design review checkpoint:** each squad gets a 15-minute slot to walk the mentor through its in-progress CAD and get advice (§3.2 rules apply). |
 | **Day 6 (Fri)** | evening | Office hours #3. Last call for rules questions with guaranteed answers (§6). |
 | **Day 7 (Sat)** | all day | Crunch day. The mentor is available on the event channel but hands-off. Binder and video production should be underway; squads that start the binder on Day 8 submit a weaker robot and a weaker binder. |
@@ -66,7 +66,7 @@ Three scheduled evening sessions (Days 3, 4, 6), about 90 minutes each, drop-in.
 ### 3.3 Rookie pairing
 
 - Avoid all-rookie and all-veteran squads where possible. Target **at least one student with a build season of experience and at least one rookie per squad.**
-- Rookies get first claim on the well-scaffolded scope. The BASECAMP BOT path (Appendix A) and its graduation ladder are designed to be a complete entry for a rookie squad. Under this rubric, a clean, fully documented BASECAMP BOT with a wrist scores higher than a veteran squad's half-finished complex robot.
+- Rookies get first claim on the well-scaffolded scope. The BASECAMP BOT path (Appendix A) and its graduation ladder are designed to be a complete entry for a rookie squad. Under this rubric, a clean, fully documented BASECAMP BOT plus one graduation rung scores higher than a veteran squad's half-finished complex robot.
 - Veterans on mixed squads are teachers first. A veteran who does 90% of the CAD produces one robot and no trained designers.
 
 ---
@@ -82,7 +82,7 @@ A complete robot designed to be **legal under the R-rules** of the SUMMIT PUSH G
 - **Full power train**: drivetrain fully modeled, including modules or gearboxes, motors (from the approved motor list, R5xx), wheels, and frame. The propulsion cap applies: ≤ 4 motors delivering torque to carpet-contacting elements (steering/azimuth motors exempt).
 - **Every scoring mechanism the strategy claims, modeled.** If the binder claims that O2 CELLS are SCORED in the Summit Socket, the CAD must show the mechanism that does it, through its full range of motion, reaching the 72-in rim from the 19.75-in standoff the BASE DEPOT imposes. "It would be refined in a real build season" belongs in a risk register; it does not substitute for geometry.
 - **Bumpers** modeled to the R4xx requirements (full perimeter, 2.25 in foam, 4.5 in tall, BUMPER ZONE 2.5–5.75 in floor-referenced).
-- **Realistic COTS parts**: real vendor components (or faithful stand-ins) for motors, controllers, gearboxes, bearings, and structure. Approved electronics per R7xx: roboRIO, VH-109 radio, legal PD hardware, legal motor controllers. A robot built from nonexistent extrusions and undefined "custom gearbox" blocks scores poorly on Design Feasibility.
+- **Realistic COTS parts**: real vendor components (or faithful stand-ins) for motors, controllers, gearboxes, bearings, and structure. Approved electronics per R6xx and R7xx: roboRIO, VH-109 radio, legal PD hardware, legal motor controllers. A robot built from nonexistent extrusions and undefined "custom gearbox" blocks scores poorly on Design Feasibility.
 - **Mass properties within the R-rules**, demonstrated with a weight-budget table (also reproduced in the binder):
 
 | Subsystem | Estimated mass (lb) | Basis (CAD mass props / vendor spec / allowance) |
@@ -96,7 +96,7 @@ A complete robot designed to be **legal under the R-rules** of the SUMMIT PUSH G
 | **Total (must be ≤ 115 lb)** | | *excl. bumpers + battery* |
 | Bumpers (≤ 20 lb, separate) | | |
 
-Also state the frame perimeter (≤ 120 in), starting configuration height (≤ 42 in), and maximum horizontal extension (≤ 18 in beyond the FRAME PERIMETER), each with the CAD measurement that proves it.
+Also state the FRAME PERIMETER (≤ 120 in), starting configuration height (≤ 42 in), and maximum horizontal extension (≤ 18 in beyond the FRAME PERIMETER), each with the CAD measurement that proves it.
 
 - **Legality checks the judges will run:** starting configuration inside a 42-in-tall envelope within the FRAME PERIMETER; every MECHANISM at its commanded maximum reach within the 18-in limit; total modeled plus allowed mass ≤ 115 lb; one ROBOT SIGNAL LIGHT sited where it stays visible during a HEADWALL hang. Budget realistically: a "112 lb" robot with no wiring allowance is a 125 lb robot.
 
@@ -162,7 +162,7 @@ Research on community design events that failed identifies unnamed judges, vague
 Ambiguous rules wording is a common failure in events like this; in one community design challenge, a single badly worded ownership rule briefly implied a 20–30 point exploit. A formal Q&A system with published, authoritative answers prevents this:
 
 - **How to ask:** students post rules questions to the designated event channel (or a shared Q&A form, at the mentor's choice; answers must be public either way). Questions cite the rule number in question (e.g., "Does G501's possession limit count a piece bridging the DEPOT lip?"). Private direct-message answers are prohibited, because an answer that one squad hears and another does not is unfair.
-- **Turnaround:** the mentor (acting as the game authority) answers within 24 hours on weekdays, and the same day on the Day 0 and Day 7–8 weekends. Questions asked after the Day 6 last call are answered on a best-effort basis; questions asked on Day 8 may go unanswered, so plan ahead.
+- **Turnaround:** the mentor (acting as the game authority) answers within 24 hours on weekdays, and the same day on the Day 0–1 weekend. Questions asked after the Day 6 last call are answered on a best-effort basis, the same day where possible; questions asked on Day 8 may go unanswered, so plan ahead.
 - **Authority:** the published Q&A answer sheet is authoritative and cumulative. Answers interpret the Game Manual; they do not change it.
 - **Team Updates:** rule *changes*, and clarifications that alter the manual text, are issued only as numbered **Team Updates** (Update 01 in the Day 4 slot, Update 02 in the Day 5 slot, emergency updates any time before Day 6). Each uses the same format: rule number, old text struck, new text, and a one-line rationale. If no changes are needed, a "no changes" update is still posted on schedule. The manual is not changed after Day 6 except to close a game-breaking exploit.
 - **Spirit clause:** rules are to be read as intended. A reading that produces absurd scoring (e.g., infinite foul loops) is wrong even if it is grammatically defensible; ask before exploiting it. Judges score strategy built on Q&A-confirmed readings; strategy built on an unconfirmed exploit reading is scored as if the exploit did not exist.
@@ -193,22 +193,22 @@ This appendix is the published BASECAMP BOT reference design, included in full s
 
 - **Drivetrain:** standard kit chassis, 4-motor tank drive (at the propulsion cap), no modifications.
 - **Manipulator:** a fixed-height roller claw that handles only **CACHE CRATES**: ground intake, hold one, eject forward. No wrist, no elevator, no extension.
-- **Scoring without a lift:** the robot does not lift the CRATE over the DEPOT's 4-in lip; it tips it over the lip. Gripping near mid-height and driving forward rotates the CRATE about the lip edge. The force needed is roughly three times the CRATE's weight, which any legal drivetrain can supply. Pushing at drive speed is not LAUNCHING under **G502**, so this is legal everywhere on the FIELD, not only from the APRON.
+- **Scoring without a lift:** the robot does not lift the CACHE CRATE over the DEPOT's 4-in lip; it tips it over the lip. Gripping near mid-height and driving forward rotates the CACHE CRATE about the lip edge. The force needed is roughly three times the CACHE CRATE's weight, which any legal drivetrain can supply. Pushing at drive speed is not LAUNCHING under **G502**, so this is legal everywhere on the FIELD, not only from the APRON.
 
 ### A.2 What it scores
 
 | Phase | Action | Points |
 |---|---|---|
 | AUTO | LEAVE BASECAMP | 3 |
-| AUTO | Score preloaded CRATE in the BASE DEPOT | 4 (8 if WHITEOUT makes CACHE CRATES the PRIORITY SUPPLY) |
-| TELEOP | Crate cycles into the BASE DEPOT | 2 each |
+| AUTO | Score the preloaded CACHE CRATE in the BASE DEPOT | 4 (8 if WHITEOUT makes CACHE CRATES the PRIORITY SUPPLY) |
+| TELEOP | CACHE CRATE cycles into the BASE DEPOT | 2 each |
 | ENDGAME | PARK in BASECAMP | 3 |
 
-Every SUPPLY it scores counts toward **SUPPLY LINE**. At Regional tier, four SCORED DEPOT CRATES satisfy **CAMP I**'s crate slot under the substitution in Manual §4.4.3, so a ROBOT that never touches a shelf can still unlock a CAMP for its ALLIANCE. Across a full MATCH this ROBOT contributes roughly 25–35 points plus RP-relevant volume, which makes it a useful ALLIANCE partner.
+Every SUPPLY it scores counts toward **SUPPLY LINE**. At Regional tier, four CACHE CRATES SCORED in the DEPOT satisfy **CAMP I**'s crate slot under the substitution in Manual §4.4.3, so a ROBOT that never touches a shelf can still unlock a CAMP for its ALLIANCE. Across a full MATCH this ROBOT contributes roughly 25–35 points plus RP-relevant volume, which makes it a useful ALLIANCE partner.
 
 ### A.3 The graduation ladder
 
-The BASECAMP BOT is a starting point. Each rung of the ladder adds one subsystem, in ascending order of difficulty:
+The BASECAMP BOT is a starting point. Each rung of the ladder adds one capability, in ascending order of difficulty:
 
 1. **Add a wrist, a 30-in lift, and about 12 in of extension** → unlocks O2 CELL insertion at the Low Sockets (rim 30 in, standing 8.0 in off the face). A wrist alone is not enough, and squads often miss the standoff: the BASE DEPOT's corner arm runs under the Low Socket, so BUMPERS stop 16.75 in off the SOCKET FACE and the rim is **11.75 in** of extension away, compared with the 5.0 in the Mid Socket allows (FIELD-CAD-PACKAGE §2.3). The 6.50 ± 0.125 in socket ID gives 0.75 in of radial clearance per side, so the insertion itself is easier than it looks.
 2. **Add an elevator** → unlocks Shelf 2 (42 in) and the mid tier (Mid Sockets and Mid Pegs at 54 in), and brings in the elevator-versus-arm analysis that §4.2 requires in any case.

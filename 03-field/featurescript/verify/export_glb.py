@@ -7,8 +7,8 @@ Export an off-line build to binary glTF 2.0 (.glb), for verify/webrender or any 
 One glTF node per body (named with the body's part name), one primitive per face colour.
 Coordinates are converted from the field frame (inches, Z up) to glTF (metres, Y up):
     (x, y, z) field  ->  (x, z, -y) * 0.0254
-Face-colour overrides and AprilTag cells are carried over; the tag cells become thin coplanar
-quads 0.02 in proud of their face.  Materials are PBR: metals get metalness,
+Face-colour overrides and AprilTag cells are carried over; the tag cells become quads 0.02 in
+proud of their face.  Materials are PBR: metals get metalness,
 glazing and the lantern keep their alpha, lit FIELD LED blocks and the lit beacon are emissive.
 
 export(ctx, path, extras=None, keys=None) is importable; verify/animate.py uses the _Glb writer.

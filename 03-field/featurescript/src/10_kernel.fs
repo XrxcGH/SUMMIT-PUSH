@@ -1,7 +1,8 @@
 // =====================================================================================
-// KERNEL — the only code in this Feature Studio that talks to the Onshape standard
-// library.  Everything else (the part code in src/2x-4x and the features in 90) is written in plain
-// numbers — inches and degrees — and calls these helpers, which add the units.
+// KERNEL — the only code in this Feature Studio that calls the Onshape standard library's
+// geometry, query, property and measurement functions.  Everything else (the part code in
+// src/2x-4x and the features in 90) is written in plain numbers — inches and degrees — and calls
+// these helpers, which add the units.
 //
 // Every helper here has a twin in verify/kernel_occ.py with identical semantics, so the
 // part code can be executed off-line against an OpenCascade kernel and measured.

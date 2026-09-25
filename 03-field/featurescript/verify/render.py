@@ -5,8 +5,9 @@ Render the off-line build to PNG so the geometry can be inspected by eye.
     python 03-field/featurescript/verify/render.py [--out DIR] [--lit]
 
 Views: whole field, Blue CRAG from the shelf/socket and peg sides, Blue HEADWALL, a Blue
-OUTFITTER, the three SUPPLIES, and a 2-D sheet of all 26 AprilTag decals.  Bodies are drawn in
-their assigned appearance (face overrides included), with simple Lambert shading.
+OUTFITTER, the CENTER CACHE, and a 2-D sheet of all 26 AprilTag decals (the last two only without
+--lit).  Bodies are drawn in their assigned appearance (face overrides included), with simple
+Lambert shading.
 Requires matplotlib in addition to cadquery-ocp.
 """
 import argparse

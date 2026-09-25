@@ -1,7 +1,8 @@
 /* =====================================================================================
    SUMMIT PUSH Game Manual: print stylesheet (Paged.js)
-   Every value comes from 06-style/MANUAL-STYLE-GUIDE.md; the section numbers below point
-   at the rule each block implements.
+   Implements 06-style/MANUAL-STYLE-GUIDE.md; the section numbers below point at the rule
+   each block implements. Layout the guide leaves open (cover art, section openers, the
+   contents page) is set here.
    ===================================================================================== */
 
 /* §3 palette, §4 font stacks */
@@ -106,13 +107,6 @@
 .band-title {
   position: absolute;
   right: calc(var(--bleed) + 0.75in);
-  top: calc(var(--bleed) + 0.50in);
-  font: 400 9pt/1 var(--font-sans);
-  color: var(--paper-dim);
-}
-.band-section {
-  position: absolute;
-  left: calc(var(--bleed) + 2.60in + 12pt);
   top: calc(var(--bleed) + 0.50in);
   font: 400 9pt/1 var(--font-sans);
   color: var(--paper-dim);

@@ -35,7 +35,7 @@ The model is the genre convention of a modern competitive-robotics rulebook: a s
 | Property | Value |
 |---|---|
 | Page size | **US Letter, 8.5 × 11 in (612 × 792 pt)**, portrait throughout |
-| Bleed | **0.125 in on every page.** The header band and its rule bleed on all four page types, so body pages need it too; a full-bleed element on a page without bleed trims to a white hairline. |
+| Bleed | **0.125 in on every page.** The header band and its rule bleed on every page except the cover, which has its own full-bleed band, so body pages need bleed too; a full-bleed element on a page without bleed trims to a white hairline. |
 | Color space | sRGB |
 | Margins (body pages) | top **1.30 in**, bottom **0.85 in**, left/right **0.75 in** |
 | Live measure | **7.00 in (504 pt)** — about 95–100 characters at 11 pt |
@@ -52,7 +52,7 @@ Below the headings, indentation alone carries hierarchy. Do not use columns or c
 | Level | Left indent | Hanging | Used for |
 |---|---|---|---|
 | 0 | 0.00 in | — | Body paragraphs |
-| 1 | 0.50 in | −0.50 in | Rule numbers (the number hangs into the margin) |
+| 1 | 0.50 in | −0.50 in | Rule numbers (the number hangs to the left edge of the measure) |
 | 1c | 0.50 in | 0 | Rule continuation paragraphs, `Violation:` lines |
 | 2 | 1.00 in | −0.25 in | Lettered sub-clauses (a., b., c.); reserved, as no current rule has them |
 | 3 | 1.25 in | −0.25 in | Bullets inside sub-clauses; reserved |
@@ -103,11 +103,11 @@ The manual palette is distinct from any real organization's: a deep slate-indigo
 |---|---|---|---|
 | `--ink` | `#1A1D21` | Body text, H1, H3–H6, rule numbers | 16.9 : 1 |
 | `--paper` | `#FFFFFF` | Page ground | — |
-| `--paper-dim` | `#F4F5F7` | Zebra row fill, code ground | — |
-| `--accent` | `#1F4E79` | **H2 headings**, table header fill, box border, rule headlines | 8.7 : 1 |
+| `--paper-dim` | `#F4F5F7` | Zebra row fill, code ground, plain note box ground, header title | — |
+| `--accent` | `#1F4E79` | **H2 headings**, table header fill, box labels, rule headlines | 8.7 : 1 |
 | `--accent-bright` | `#2E6FA8` | Decorative rules only — **never body text** | 5.3 : 1 (large only) |
 | `--accent-deep` | `#16385A` | Header band, cover band, section-opener wash | 12.0 : 1 |
-| `--muted` | `#6E7378` | `Violation:` lines, caption secondary text, TOC leaders | 4.8 : 1 |
+| `--muted` | `#6E7378` | `Violation:` lines, cover subtitle, deleted text, TOC leaders | 4.8 : 1 |
 | `--rule-line` | `#C8CCD1` | Table body rules, hairlines | — |
 | `--rule-line-strong` | `#8A9199` | Table outer border, section dividers | — |
 | `--box-fill` | `#DCE6F1` | Commentary and Example box tint | ink 13.4 : 1 |
@@ -119,7 +119,7 @@ The manual palette is distinct from any real organization's: a deep slate-indigo
 
 ### 3.1 Alliance colors
 
-These match the drawing set and `03-field/MATERIALS-AND-COLORS.md`. Do not introduce a second alliance palette for the manual.
+The alliance hues match the drawing set and `03-field/MATERIALS-AND-COLORS.md`. Do not introduce a second alliance palette for the manual.
 
 | Token | Hex | Role |
 |---|---|---|
@@ -133,9 +133,9 @@ These match the drawing set and `03-field/MATERIALS-AND-COLORS.md`. Do not intro
 | `--carpet` | `#6E6A63` | Field carpet in renders |
 | `--callout-leader` | `#E100E1` | Leader lines and arrowheads in figures — **reserved, never used elsewhere** |
 
-One token differs from the drawing set by design: `--carpet` is `#6E6A63`, the physical carpet, while `03-field/renderings/_drawlib.py` draws the carpet as `#F4F2EE` so that linework stays readable as ink on paper. Every other token in this table is identical in both.
+One token differs from the drawing set by design: `--carpet` is `#6E6A63`, the physical carpet in `03-field/MATERIALS-AND-COLORS.md`, while `03-field/renderings/_drawlib.py` draws the carpet as `#F4F2EE` so that linework stays readable as ink on paper. The four alliance hues and `--callout-leader` are identical in the drawing set; the tints and `--neutral-wash` belong to the manual only.
 
-Zone washes are composited as the alliance hue at 38% opacity over `--carpet`, with a 1.5 pt keyline in the saturated hue so the boundary stays crisp.
+On the drawing sheets a zone is a light wash of the alliance hue (10% opacity on the FIELD top view) inside a dashed 1.5 pt keyline in the dark alliance hue, so the boundary stays crisp over the light carpet.
 
 ### 3.2 Color usage rules
 
@@ -157,8 +157,8 @@ All faces are licensed under the SIL Open Font License 1.1, vendored in `06-styl
 | Monospace (code, coordinates, part numbers) | **JetBrains Mono** (400, 700) | OFL 1.1 |
 
 ```css
---font-sans: "Roboto", "Arimo", "Liberation Sans", Arial, sans-serif;
---font-cond: "Roboto Condensed", "Liberation Sans Narrow", "Arial Narrow", sans-serif;
+--font-sans: "Roboto", "Noto Sans Math", "Arimo", "Liberation Sans", Arial, sans-serif;
+--font-cond: "Roboto Condensed", "Noto Sans Math", "Liberation Sans Narrow", "Arial Narrow", sans-serif;
 --font-mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
 ```
 
@@ -181,7 +181,7 @@ Roboto has no arrows, so the build also vendors the arrows block (U+2190–21FF)
 | **Violation line** | Roboto Italic | 11 pt | 1.38 | 6 pt | **`--muted`** | indent 0.50 in, whole line italic |
 | Lettered sub-clause | Roboto Regular | 11 pt | 1.38 | 6 pt | `--ink` | indent 1.00 in, hanging −0.25 in |
 | Box body | Roboto Regular | 11 pt | 1.38 | 6 pt | `--ink` | inset 1.00 in both sides |
-| Figure / table caption | Roboto Italic | **9 pt** | 1.30 | 6 pt (4–6 pt after) | `--ink` | **above** the object; label Bold Italic |
+| Figure / table caption | Roboto Italic | **9 pt** | 1.30 | 8–10 pt (4–6 pt after) | `--ink` | **above** the object; label Bold Italic |
 | Table body | Roboto Regular | **10 pt** | 1.30 | — | `--ink` | tabular figures on |
 | Table header | Roboto Bold | 10 pt | 1.25 | — | `--paper` on `--accent` | |
 | Footer | Roboto Bold | 10 pt | 1.20 | — | `--ink` | three tab cells |
@@ -192,7 +192,7 @@ Roboto has no arrows, so the build also vendors the arrows block (U+2190–21FF)
 
 ### 4.2 Paragraph spacing
 
-Space before only: every style except captions has zero space after. A paragraph carries 6 pt above and 0 below, so spacing never doubles at a paragraph boundary, and a rule, its sub-clauses and its violation line stack at an even 6 pt rhythm. Headings carry a larger space before (10–12 pt) and almost none after, so a heading sits close to the text it introduces and apart from the text above it. Captions are the one exception: 6 pt above, 10 pt below.
+Space before only: apart from captions and the 2 pt under H2, no style has space after. A paragraph carries 6 pt above and 0 below, so spacing never doubles at a paragraph boundary, and a rule, its sub-clauses and its violation line stack at an even 6 pt rhythm. Headings carry a larger space before (8–12 pt) and almost none after, and the first paragraph under a heading takes 3 pt instead of 6 pt, so a heading sits close to the text it introduces and apart from the text above it. Captions are the one exception: a table caption has 8 pt above and 4 pt below, a figure caption 10 pt above and 6 pt below.
 
 ### 4.3 Hierarchy below H2
 
@@ -234,14 +234,14 @@ The PDF edition adds Appendix A, Field Drawing Plates, after Section 9 (§8).
 A rule is one paragraph: a hanging rule number, then a headline sentence (italic in the Markdown source, set bold in `--accent` in the PDF; §4.1, §9.3), then the rule body. An indented `Violation:` line in `--muted` italic follows as a separate paragraph.
 
 ```
-G412   The HEADWALL ZONE is protected during ENDGAME — line call.
+G412   The HEADWALL ZONE is protected during ENDGAME (line call).
        From the start of the ENDGAME period until climb assessment is
        complete (Section 4.5.3), a ROBOT may not …
 
        Violation: MAJOR FOUL per instance. …
 ```
 
-- The **number** is Roboto Bold 11 pt `--ink`, hanging 0.50 in into the margin.
+- The **number** is Roboto Bold 11 pt `--ink`, hanging 0.50 in left of the rule text, at the left edge of the measure.
 - The **headline** is a short imperative or descriptive sentence, bold, `--accent`, ending in a period, on the same line as the number.
 - The **body** is regular weight, `--ink`, and starts on the same line as the headline.
 - The **`Violation:` line** is a separate paragraph, indented 0.50 in, set entirely in `--muted` italic, and begins with the literal word "Violation:".
@@ -259,7 +259,7 @@ Defined terms are hard-typed in capitals in the source (`ROBOT`, `SCORED`, `CRAG
 
 ### 5.5 Boxes
 
-Two box types, both inset 1.00 in on each side (5.00 in measure), with a 1.5 pt `--box-border` border, `--box-fill` ground and 8 pt internal padding:
+Two box types, both inset 1.00 in on each side (5.00 in measure), with a 1.5 pt `--box-border` border, `--box-fill` ground, 8 pt internal padding and 8 pt of space above:
 
 - **Example:** a binding interpretation. The label is Roboto Bold Italic 10 pt `--accent`, followed by the text.
 - **Commentary:** non-binding design rationale, set the same way. Only the label differs.
@@ -286,11 +286,11 @@ A **Caution** box (`--warn-fill` / `--warn-border`) is reserved for procedural w
 
 ### 7.1 Numbering and captions
 
-Figures are numbered `Figure <section>-<sequence>` and captioned above the image in Roboto Italic 9 pt, with 6 pt above and 6 pt below; the `Figure N-M` label is Bold Italic. Every figure has a caption; an image that needs no caption is not set as a figure.
+Figures are numbered `Figure <section>-<sequence>` and captioned above the image in Roboto Italic 9 pt, with 10 pt above and 6 pt below; the `Figure N-M` label is Bold Italic. Every figure has a caption; an image that needs no caption is not set as a figure.
 
 ### 7.2 Field renders
 
-- Drawn plan views (the drawing sheets) use `--carpet` ground, alliance zone washes at 38% opacity with saturated keylines, and white neutral marks. The rendered figures in the body are views of the CAD model and show the field as built: tape lines on carpet, CRAGS in their physical tan.
+- Drawn plan views (the drawing sheets) use the drawing set's light carpet (`#F4F2EE`), light alliance zone washes inside keylines (§3.1), and white neutral marks. The rendered figures in the body are views of the CAD model and show the field as built: tape lines on carpet, CRAGS in their physical tan.
 - Isometric renders use lit and shaded variants of the alliance colors on angled faces.
 - A drawn plan view may tint the CRAGS in alliance color for legibility; the physical CRAG is tan (`03-field/MATERIALS-AND-COLORS.md` §3, rule 2). The sheet says so in a note; a figure says so in its caption.
 - Every plan view carries a coordinate compass: origin marker, +X arrow, +Y arrow, and the words "always-blue-origin NWU".
@@ -327,7 +327,7 @@ Sheet conventions:
 | Version precedence | One paragraph stating that the manual plus all Team Updates is the current ruleset, and that the design specification governs any discrepancy. |
 | Glossary | Section 9. Two-column table, terms in Roboto Bold 10 pt ALL CAPS, definitions 10 pt regular, alphabetical. |
 
-The revision stamp and the revision-history rows come from `06-style/pdf/revisions.json`; add a row for each Team Update. The build follows the version-precedence paragraph with two short statements, one on units and one on independence from any competition organization. After Section 9 it sets Appendix A, Field Drawing Plates, which lists the six plates with their source files and page numbers (Table A-1); the plates themselves follow (§7.4). The PDF also carries a two-level bookmark outline.
+The revision stamp and the revision-history rows come from `06-style/pdf/revisions.json`; add a row for each Team Update. The build follows the version-precedence paragraph with three short statements: copyright and license, units, and independence from any competition organization. After Section 9 it sets Appendix A, Field Drawing Plates, which lists the six plates with their source files and page numbers (Table A-1); the plates themselves follow (§7.4). The PDF also carries a two-level bookmark outline.
 
 There is no index. A 100-page manual with thorough cross-references and a hyperlinked table of contents does not need one, and a poor index is worse than none. The PDF edition runs to about 95 Letter pages plus the six drawing plates.
 
@@ -355,11 +355,11 @@ bash 06-style/pdf/render_figures.sh   # -> 02-manual/figures/*.png (after a geom
 
 Every Letter page of the PDF carries 0.125 in of bleed. The MediaBox and BleedBox include it; the TrimBox and CropBox are set to the Letter page, so screen viewers and office printers show the trimmed page and a print shop still receives the bleed. The drawing plates have no bleed.
 
-The alternatives considered were LaTeX (`lualatex` with a custom class) and Typst. Maintain one route only.
+The alternatives considered were LaTeX (Pandoc with `xelatex`) and Typst (research notes §9.1). Maintain one route only.
 
 ### 9.2 Figure callouts
 
-Rendered figures carry vector callouts drawn over the image: 8.5-pt Roboto Medium labels in white boxes with a 0.75-pt `--callout-leader` outline, and 1.5-pt `--callout-leader` leaders that end in a 3-pt arrowhead at the feature. `figures.py` places the callouts and rejects a figure if a label leaves the image, two labels overlap, a label covers another callout's anchor, a leader runs through a label, or two leaders cross. Plan views also get the §7.2 coordinate compass.
+Rendered figures carry vector callouts drawn over the image: 8.5-pt Roboto Medium labels in white boxes with a 0.75-pt `--callout-leader` outline, and 1.5-pt `--callout-leader` leaders that end in a 3-pt arrowhead at the feature. `figures.py` places the callouts, keeping every label inside the image, and rejects a figure if an anchor falls outside the image, two labels overlap, a label covers another callout's anchor, a leader runs through a label, or two leaders cross. Plan views also get the §7.2 coordinate compass.
 
 ### 9.3 Source conventions
 

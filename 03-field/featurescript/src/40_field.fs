@@ -277,9 +277,10 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     }
 }
 
-// OUTFITTER chute behind the wall: a 2.0-in-deep throat liner that carries the opening through
-// the full wall, a 30-degree ramp from the back of the throat, plumb cheeks on the ramp edges,
-// 45-degree funnel wings opening to 36 in at the loading end, and a leg (all (ref), §5).
+// OUTFITTER chute behind the wall: a throat liner behind the panel and glazing that carries the
+// opening through the full 2.0-in wall, a 30-degree ramp from the back of the throat, plumb cheeks
+// on the ramp edges, 45-degree funnel wings opening to 36 in at the loading end, and a leg (all
+// (ref), §5).
 function buildOutfitterRamp(context is Context, id is Id, F, c, name)
 {
     const s30 = sind(RAMP_ANGLE);

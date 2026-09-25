@@ -125,7 +125,7 @@ function failures(checks)
     return out;
 }
 
-// Frame for a tube whose mouth centre is r (crag-local), axis a (unit, toward the mouth).
+// Checks of a socket tube whose mouth centre is r (crag-local), axis a (unit, toward the mouth).
 function ckSocket(context is Context, checks, label, F, bodies, r, a, radial)
 {
     const T = frameIn(F, r, radial, a);
@@ -149,7 +149,7 @@ function selfCheck(context is Context, id is Id, opts)
         {
             ch = ck(ch, msg([r, " top rail height"]), measureBox(context, [id + r + "top"], W)[5], GUARD_H, 0.001);
             const led = measureBox(context, [id + r + "ledBLUE0", id + r + "ledBLUE1", id + r + "ledBLUE2", id + r + "ledRED0", id + r + "ledRED1", id + r + "ledRED2"], W);
-            ch = ck(ch, msg([r, " FIELD LED lens centre"]), (led[2] + led[5]) / 2, LED_Z, 0.001);
+            ch = ck(ch, msg([r, " FIELD LED lens center"]), (led[2] + led[5]) / 2, LED_Z, 0.001);
             ch = ck(ch, msg([r, " FIELD LED blocks span the rail"]), led[3] - led[0], FIELD_L, 0.001);
         }
     }
@@ -218,7 +218,7 @@ function selfCheck(context is Context, id is Id, opts)
                     const lo = measureBox(context, [grp + nm("fence", j)], F)[4];
                     const hi = measureBox(context, [grp + nm("fence", j + 1)], F)[1];
                     ch = ck(ch, msg([A, " Shelf ", i + 1, " slot ", j + 1, " width"]), hi - lo, SLOT_W, 0.001);
-                    ch = ck(ch, msg([A, " Shelf ", i + 1, " slot ", j + 1, " centre"]), (hi + lo) / 2, SLOT_CTRS[j], 0.001);
+                    ch = ck(ch, msg([A, " Shelf ", i + 1, " slot ", j + 1, " center"]), (hi + lo) / 2, SLOT_CTRS[j], 0.001);
                 }
                 for (var j = 0; j < size(GUSSET_Y); j += 1)
                 {
@@ -238,7 +238,7 @@ function selfCheck(context is Context, id is Id, opts)
                 const fk = (sgn + 1) / 2;
                 ch = ckSocket(context, ch, msg([A, " Low Socket y", sgn]), F, [cid + nm("sockLow", fk)], [SOCK_LAT, sgn * (h + SOCK_STANDOFF), LOW_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
                 ch = ckSocket(context, ch, msg([A, " Mid Socket y", sgn]), F, [cid + nm("sockMid", fk)], [-SOCK_LAT, sgn * (h + SOCK_STANDOFF), MID_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
-                // FIELD-CAD-PACKAGE §2.3 prints 22.27, computed at the 7.0 seat without the 0.09 bottom
+                // FIELD-CAD-PACKAGE §2.3: Z 22.19, the 7.0 bore plus the 0.09 closed bottom beyond it
                 ch = ck(ch, msg([A, " Low Socket y", sgn, " lowest point"]), measureBox(context, [cid + nm("sockLow", fk)], F)[2],
                         LOW_SOCK_Z - (SOCK_LEN + SOCK_WALL) * c30 - (SOCK_ID / 2 + SOCK_WALL) * s30, 0.001);
                 for (var q in [["Low", LOW_SOCK_Z], ["Mid", MID_SOCK_Z]])
@@ -253,7 +253,7 @@ function selfCheck(context is Context, id is Id, opts)
             ch = ckSocket(context, ch, msg([A, " Summit Socket"]), F, [cid + "sockSummit"], [h + SOCK_STANDOFF, 0, SUM_SOCK_Z], [sind(SUM_TILT), 0, cosd(SUM_TILT)], [0, 1, 0]);
             const mb = measureBox(context, [cid + "mastArm", cid + "mastPost"], F);
             ch = ck(ch, msg([A, " Summit mast base on the top plate"]), mb[2], CRAG_H, 0.001);
-            ch = ck(ch, msg([A, " Summit mast base within 4.0 of the shelf-face edge"]), max(h - mb[0], 4) , 4, 0.0001);
+            ch = ck(ch, msg([A, " Summit mast base within 4.0 of the shelf-face edge"]), max(h - mb[0], 4), 4, 0.0001);
             const u = [-cosd(PEG_ANG), 0, sind(PEG_ANG)];
             const pr = PEG_OD / 2;
             for (var zi = 0; zi < 2; zi += 1)

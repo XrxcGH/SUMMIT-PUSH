@@ -29,8 +29,8 @@ There have been two WCP CADathons so far:
 | Phase | DunkTank 2024 | Hero Heist 2025 |
 |---|---|---|
 | Announcement/theme reveal | 9/30/24 | 11/1/25 |
-| Game reveal (start) | 10/4/24, 12pm PST | 11/10/25, ~1–2pm PT |
-| Submission deadline | 10/13/24, 11:59pm PST | 11/17/25, 11:59pm PST |
+| Game reveal (start) | 10/4/24, 12pm PT | 11/10/25, ~1–2pm PT |
+| Submission deadline | 10/13/24, 11:59pm PT | 11/17/25, 11:59pm PST |
 | Results (scheduled) | 11/1/24 | 12/3/25 |
 | Results (actual) | ~11/22/24 | 1/6/26 (delayed) |
 
@@ -83,7 +83,7 @@ Process: 2024 used named judges (6 listed, including Andrew Lawrence) and sent i
 
 ## 6. Other FRC offseason design challenges
 
-- **F4 CADathon (2017–2022, ~12 events):** the community original. It normally ran for 3 days (extended to 1 week from 2020), twice a year, free and open to all ages. It had formal Q&A forms, Team Updates, GrabCAD submission, a live Twitch results show with feedback for each team, and prizes sponsored by WCP. Its live feedback show is still the benchmark for transparent judging ([2020 Spring Special results](https://www.chiefdelphi.com/t/2020-spring-special-f4-cadathon-results-posted/383527)).
+- **F4 CADathon (2017–2022, 12+ events):** the community original. It normally ran for 3 days (extended to 1 week from 2020), twice a year, free and open to all ages. It had formal Q&A forms, Team Updates, GrabCAD submission, a live Twitch results show with feedback for each team, and prizes sponsored by WCP. Its live feedback show is still the benchmark for transparent judging ([2020 Spring Special results](https://www.chiefdelphi.com/t/2020-spring-special-f4-cadathon-results-posted/383527)).
 - **WRRF WaterWorks CADathon (2020):** a first attempt by a regional organization, with 1 week of design + 1 week of judging, teams of ≤3, and CAD + PDF documentation judged on "function, aesthetic, feasibility, and documentation" with category awards scored by points. It is remembered mostly for the public criticism it received over vague judging details (see §7) ([WRRF WaterWorks CADathon](https://www.chiefdelphi.com/t/wrrf-waterworks-cadathon/388027)).
 - **Robot in 3 Days (Ri3D):** the physical-build counterpart. Collegiate teams build a working robot in 72 hours after the real FRC kickoff and document everything to help teams start their season. It is a demonstration and educational sprint without judging; CADathons are its offseason, design-only counterpart, with fictional games and judged rankings ([Ri3D category on CD](https://www.chiefdelphi.com/c/other/robot-in-3-days-ri3d/79); [AndyMark Ri3D](https://andymark.com/pages/meet-the-ri3d-teams)).
 - **Behind the Bumpers (FUN Robotics Network):** an in-season robot-interview video series (with short "Pit Stop" companions) and not a challenge. It is relevant as the design-communication genre that CADathon tech binders imitate, and FUN historically hosted F4's results shows ([Behind the Bumpers thread](https://www.chiefdelphi.com/t/behind-the-bumpers-pit-stop-interviews-frc-rebuilt/515918)).

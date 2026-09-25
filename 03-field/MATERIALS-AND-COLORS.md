@@ -83,13 +83,13 @@ Every ARENA element appears in this table once, grouped by assembly. "CAD §" po
 | High Peg root boss | §2.5 | Steel plate let into the spire | `crag-accent` | satin | 0.25 in, spanning Z 74–80 behind an opaque-backed lantern edge |
 | LED tier ring | §2.6, §8 | Frosted acrylic channel over an LED strip | alliance color when lit, dark when unlit | frosted, self-illuminated | 1.0 in wide |
 | BASE DEPOT lip | §3 | Painted plywood | `depot` | matte, R0.25 top edge | 0.75 in |
-| BASE DEPOT floor | §3 | Painted plywood, shimmed flush | `depot` | matte, low friction | 0.25 in |
+| BASE DEPOT floor | §3 | Painted plywood, laid on the carpet (top at Z = 0.25) | `depot` | matte, low friction | 0.25 in |
 | DEPOT entry chamfer | §3 | Painted plywood strip | `depot` | matte | 45°, 1.0 in |
 | HEADWALL chord / upright | §4.1 | Steel square tube | `truss` | satin powder | 2 × 2 in |
 | HEADWALL rung | §4.1 | Steel round bar | `rung` | satin, no knurl | ⌀1.5 in |
 | HEADWALL rung bracket | §4.2 | Steel plate | `truss-dark` | satin | 0.25 in |
 | HEADWALL lower crossbeam | §4.1 | Steel square tube | `truss` | satin | 2 × 2 in |
-| HEADWALL tag wedge bracket | §4.1 | Aluminum plate | `truss-dark` | satin | 15° wedge, 0.25 in |
+| HEADWALL tag wedge bracket | §4.1 | Solid aluminum | `truss-dark` | satin | 15° wedge, 9.0 in wide, 2.06–2.58 in thick |
 | OUTFITTER chute ramp | §5 | UHMW-faced plywood | `wall` | low friction | 0.5 in |
 | OUTFITTER cheek funnel | §5 | Painted plywood | `wall` | matte | 0.5 in |
 | AprilTag panel | §7 | Printed vinyl on rigid backer | `neutral-white` + tag black `#111111` | **matte, non-glare** | 9.0 in sq × 0.25 in |

@@ -77,7 +77,7 @@ regeneration.
 | steel-tube-2x2 | Steel 2 x 2 x 0.120 tube (effective solid) | 1771 | HEADWALL lane frames and lower crossbeam, Summit Socket mast |
 | steel-frame | Steel 2 x 1.25 x 0.083 tube (effective solid) | 1608 | alliance-wall frame |
 
-| SUPPLY | Modelled volume | Density set | Mass |
+| SUPPLY | Modeled volume | Density set | Mass |
 |---|---|---|---|
 | CACHE CRATE | 1901.8 in³ | 29.1 kg/m³ | 2.000 lb |
 | O2 CELL | 248.7 in³ | 166.9 kg/m³ | 1.500 lb |

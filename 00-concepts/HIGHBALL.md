@@ -1,6 +1,6 @@
 # HIGHBALL
 
-> This is a design-phase document kept for reference. The current game is defined by `01-design/DESIGN-SPEC.md` and the Game Manual (`02-manual/GAME-MANUAL.md`).
+> Design-phase archive. This document was written before the design specification (`01-design/DESIGN-SPEC.md`), which supersedes the geometry and scoring it describes. The current game is defined by that specification and the Game Manual (`02-manual/GAME-MANUAL.md`).
 
 **Theme:** Transcontinental railroading in its golden age. Two rival freight lines race to load their trains, run the mail, and get their crews aboard before the departure whistle.
 
@@ -9,7 +9,7 @@
 ## Game Pieces
 ### CARGO CRATE
 - Shape/dims: Cube, 11 in x 11 in x 11 in, slightly crowned faces, ~2.0 lb
-- Material: Molded EPP foam core with a ballistic-nylon/vinyl cover and cross-stitched seams (the POWER UP cube construction, which is proven durable and cheap to replicate with a foam block + fabric cover)
+- Material: Molded EPP foam core with a ballistic-nylon/vinyl cover and cross-stitched seams (the Power Up cube construction, which has proven durable and is cheap to replicate with a foam block + fabric cover)
 - Handling challenge: Flat-faced and grippy, so it is easy to hold but awkward to orient. It forces a wide compliant claw or a wheeled top-down intake, plus a wrist to seat it flat on decks and through the 18-in stock car door. The 'looks hard but is easy' entry piece.
 - Count/staging: 20 total: 6 in each alliance DEPOT (preloads drawn from this allotment, 1 per robot, any piece type), 6 contested at the midfield JUNCTION, 1 staged dockside at each train
 - Scoring role: Volume currency. Accepted by the Caboose (1), Flatcar (2) and Stock Car (5). Drives the Freight RP piece count and the cheap full-car bonuses.

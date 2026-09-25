@@ -1,6 +1,6 @@
 # SUMMIT SIGNAL
 
-> This is a design-phase document kept for reference. The current game is defined by `01-design/DESIGN-SPEC.md` and the Game Manual (`02-manual/GAME-MANUAL.md`).
+> Design-phase archive. This document was written before the design specification (`01-design/DESIGN-SPEC.md`), which supersedes the geometry and scoring it describes. The current game is defined by that specification and the Game Manual (`02-manual/GAME-MANUAL.md`).
 
 **Theme:** High-altitude expedition crews race an incoming storm to rebuild and relight a dormant network of mountain signal beacons before nightfall.
 
@@ -9,7 +9,7 @@
 ## Game Pieces
 ### CACHE RING
 - Shape/dims: Torus (ring): 14 in outside diameter, 4 in cross-section, 6 in inner hole. Weight ~1.3 lb.
-- Material: Die-cut laminated EVA foam ring with a tear-resistant spiral fabric wrap (designed to be more durable than a 2024 Note). Team version: two 2.5-in pool noodles coiled and gaffer-taped into a 14-in torus.
+- Material: Die-cut laminated EVA foam ring with a tear-resistant spiral fabric wrap (designed to be more durable than a 2024 note). Team version: two 2.5-in pool noodles coiled and gaffer-taped into a 14-in torus.
 - Handling challenge: It lies flat on the carpet, which forces an over-bumper ground intake and a reorientation path from horizontal (floor) to horizontal above a post (drop-on) or vertical (hang on 30-degree Signal Hooks). The 6-in hole over a 1.9-in post is forgiving, but stacking cleanly at 76 in demands elevator + wrist control.
 - Count/staging: 14 per alliance in Supply Station stock, 4 staged on centerline marks, available as preload. The highest-count piece in the game.
 - Scoring role: Volume currency. The cheapest piece (3-8 pts by height). Rings drive the Signal RP piece count and form the base layers of every beacon. They are the main cycle piece for low-floor and high-ceiling teams alike.

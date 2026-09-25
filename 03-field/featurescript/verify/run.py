@@ -2,17 +2,18 @@
 """
 Build the SUMMIT PUSH field off-line and verify it.
 
-    python 03-field/featurescript/verify/run.py [--quick] [--only crags,tags,...] [--step out.step]
+    python 03-field/featurescript/verify/run.py [--quick] [--only crags,tags,...] [--lit] [--stacked]
 
 Transpiles the part code in src/2x-4x_*.fs to Python (fs2py), runs it against the
 OpenCascade twin of the FeatureScript kernel (kernel_occ), then checks:
 
   * build      — every element builds with no kernel error; every body valid, named, styled
   * self-check — the same selfCheck() the Onshape feature runs (CRITICAL ledger dimensions)
-  * interference — no two bodies share volume (contact is fine)
-  * supplies   — 63 pieces, 21 per type, each weighing its published weight
+  * grouping   — groupField() puts every element body in exactly one composite part
+  * palette    — every palette value matches the hex in MATERIALS-AND-COLORS.md
   * tags       — all 26 panels match 04-vision/apriltag-field-layout.json exactly
-  * colours    — every palette value matches the hex in MATERIALS-AND-COLORS.md
+  * supplies   — 63 pieces, 21 per type, each weighing its published weight
+  * interference — no two bodies share volume (contact is fine; --quick skips it)
 
 Writes verify/report.json and prints a summary.  Exit status non-zero on any failure.
 Requires: pip install cadquery-ocp numpy

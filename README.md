@@ -15,7 +15,7 @@ During MATCH setup each ALLIANCE makes a ROUTE DECLARATION, which raises one CAM
 | **Placement** | Every position in a tier is worth the same, whatever the SUPPLY type. TELEOP: Low tier (24 / 30 / 30 in) 4 pts, Mid tier (42 / 54 / 54 in) 7 pts, High tier (72 / 78 in) 10 pts, BASE DEPOT 2 pts. AUTO: 7 / 10 / 13 / 4. |
 | **CAMP bonuses** | CAMP I +6, CAMP II +10, HIGH CAMP +15; the declared ROUTE's CAMP pays +18 / +24 / +35 instead. Each CAMP needs one SCORED SUPPLY of every type its tier accepts. SUMMIT BEACON +10 when all three CAMPS are established. |
 | **AUTO extras** | LEAVE 3 per ROBOT. The FORECAST doubles the PRIORITY SUPPLY's AUTO placement value. ROPED UP +10. |
-| **ENDGAME** | HEADWALL climb: PARK 3, LEDGE RUNG 12, CAMP RUNG 20, SUMMIT RUNG 30. Three independent lanes per ALLIANCE. |
+| **ENDGAME** | PARK in BASECAMP 3; HEADWALL climb to the LEDGE RUNG 12, CAMP RUNG 20, SUMMIT RUNG 30. Three independent lanes per ALLIANCE. |
 | **Fouls** | MINOR FOUL +3, MAJOR FOUL +8, to the opposing ALLIANCE. |
 | **Bonus RPs** | SUPPLY LINE (SUPPLIES SCORED), EXPEDITION (CAMPS established), ASCENT (ENDGAME points). Thresholds rise with tournament tier (manual Section 4.7). |
 
@@ -24,7 +24,8 @@ During MATCH setup each ALLIANCE makes a ROUTE DECLARATION, which raises one CAM
 | Path | Contents |
 |---|---|
 | `README.md` | This file: overview, repository map, and organizer's guide. |
-| `REVISION-LOG.md` | Every change from v1.0 through v2.2, with the reasoning and the arithmetic behind it. Sections A–I cover v1.0 to v2.0, J a self-review of v2.0, K and L the adversarial re-audit that produced v2.1, and M the third pass that produced v2.2. |
+| `LICENSE.md` | The SUMMIT PUSH Training Use License: what the package may be used for, the credit line, and the third-party components it excludes. |
+| `REVISION-LOG.md` | Every change from v1.0 through v2.2, with the reasoning and the arithmetic behind it. Sections A–I cover v1.0 to v2.0, J a self-review of v2.0, K and L the adversarial re-audit that produced v2.1, M the third pass that produced v2.2, and N the public release (Team Update TU-00). |
 | `01-design/DESIGN-SPEC.md` | The locked design specification. Every number, name and rule decision in the package comes from it. Where another document disagrees with it, the specification governs. |
 | `02-manual/SUMMIT-PUSH-Game-Manual.pdf` | The typeset game manual (Letter, with the six drawing sheets as ANSI C plates in Appendix A). Built by `06-style/pdf/build.sh`. |
 | `02-manual/GAME-MANUAL.md` | The compiled game manual: introduction, game overview, ARENA, MATCH play and scoring, game rules (G), robot rules (R), inspection, tournament, and glossary. Generated; do not edit it directly. |
@@ -77,7 +78,7 @@ Work from `03-field/FIELD-CAD-PACKAGE.md` (the geometry specification and master
 When modeling by hand:
 
 - Use the package's coordinate frame, always-blue-origin NWU: origin at the right corner of the Blue alliance wall, +X toward Red. The specification and the AprilTag JSON both use this frame, so vision simulation runs against the model without changes.
-- Hold the O2 socket ID of 6.50 ± 0.125 in, the one strictly toleranced dimension. Most other robot-critical dimensions are whole or half inches, and the angles are 15°, 30° and 45°, so the field models quickly.
+- Hold the O2 socket ID of 6.50 ± 0.125 in, the tightest tolerance on the field. Most other robot-critical dimensions are whole or half inches, and the angles are 15°, 30° and 45°, so the field models quickly.
 - Model the Blue half once, then pattern it 180° about field center for Red. Do not model the Red CRAG or HEADWALL separately.
 - Check the finished model: run interference and clearance checks against the toleranced dimensions, and drive WPILib or PhotonVision simulation with `04-vision/apriltag-field-layout.json` to confirm that the tag poses match the model.
 
@@ -100,7 +101,7 @@ The manual build, the drawing generator and the verification suite need only bas
 bash verify/run-all.sh
 ```
 
-This rebuilds `02-manual/GAME-MANUAL.md` and the six drawing sheets, then runs the five checks described in `verify/README.md`: the numbers, cross-references and superseded values, cross-document agreement, drawing layout, and drawing geometry. On a clean run every check reports zero failures: `RESULT: 0 failure(s)` from `verify.py`, `crossdoc.py` and `svg_geom.py`, `TOTAL layout issues: 0` from `svg_collide.py`, and, in the `consist.py` report, no dangling references, no missing glossary entries, every restated rule `ok` and every `STALE` line `CLEAN`. The script's last line says only whether every check ran to completion, so read each check's summary.
+This rebuilds `02-manual/GAME-MANUAL.md` and the six drawing sheets, then runs the five checks described in `verify/README.md` (the numbers, cross-references and superseded values, cross-document agreement, drawing layout, and drawing geometry) and confirms that `04-vision/apriltag-field-layout.json` matches the vision guide's tag table. On a clean run every check reports zero failures: `RESULT: 0 failure(s)` from `verify.py`, `crossdoc.py` and `svg_geom.py`, `TOTAL layout issues: 0` from `svg_collide.py`, and, in the `consist.py` report, no dangling references, no missing glossary entries, every restated rule `ok` and every `STALE` line `CLEAN`; the layout check prints `apriltag-field-layout.json matches VISION-GUIDE.md §3`. The script's last line says only whether every check ran to completion (the layout check alone also exits non-zero when the JSON differs), so read each check's summary.
 
 To rebuild without checking:
 
@@ -109,7 +110,7 @@ bash 02-manual/build.sh                           # compile the manual from 02-m
 python 03-field/renderings/generate_drawings.py   # regenerate the six drawing sheets
 ```
 
-To rebuild the PDF edition (Python 3 with `markdown-it-py` and `pypdf`, Node 18 or later, and Chromium; see `06-style/pdf/README.md`):
+To rebuild the PDF edition (Python 3 with `markdown-it-py` and `pypdf`, Node 18 or later, and Chromium; the figure renderer also needs `cadquery-ocp` and `numpy`; see `06-style/pdf/README.md`):
 
 ```bash
 bash 06-style/pdf/build.sh                        # -> 02-manual/SUMMIT-PUSH-Game-Manual.pdf
@@ -133,8 +134,8 @@ Take a geometry change through the documents in order of authority:
 3. The manual section that states the value.
 4. The constant in `03-field/renderings/generate_drawings.py`; then regenerate the drawings.
 5. The constant in `03-field/featurescript/src/20_ledger.fs`; then rebuild and check the generator.
-6. If a tag pose moved: `04-vision/VISION-GUIDE.md` and `04-vision/apriltag-field-layout.json`.
-7. Rebuild the manual, run `bash verify/run-all.sh`, and record the change in `REVISION-LOG.md`.
+6. If a tag pose moved: the tag table in `04-vision/VISION-GUIDE.md` §3, then regenerate `04-vision/apriltag-field-layout.json` with `python 04-vision/make_layout.py`.
+7. Rebuild the manual, run `bash verify/run-all.sh`, re-render the figures and rebuild the PDF, and record the change in `REVISION-LOG.md`.
 
 Reports and change requests are easiest to act on when they cite a rule number (G412), a manual section (Section 4.5.4), a glossary term, a ledger row in `03-field/FIELD-CAD-PACKAGE.md` §10, or a constant in `generate_drawings.py`.
 
@@ -158,4 +159,4 @@ SUMMIT PUSH is an original work produced independently as a student training exe
 
 ## License
 
-Copyright © 2026 Eric Dean. All rights reserved. The package may be used, printed and shared unmodified for training and educational purposes, including running or entering the CADathon, with credit to the author, under the SUMMIT PUSH Training Use License in [`LICENSE.md`](LICENSE.md). Commercial use, distributing modified versions, and machine-learning use need written permission. The vendored fonts keep their own SIL Open Font License.
+Copyright © 2026 Eric Dean. All rights reserved. The package may be used, printed and shared unmodified for training and educational purposes, including running or entering the CADathon, with credit to the author, under the SUMMIT PUSH Training Use License in [`LICENSE.md`](LICENSE.md). Commercial use, distributing modified versions, and machine-learning use need written permission. Third-party components (the vendored fonts, the AprilTag 36h11 patterns, and packages the build tools download) keep their own licenses, listed in section 6 of `LICENSE.md`.

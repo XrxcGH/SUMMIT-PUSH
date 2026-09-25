@@ -6,7 +6,7 @@
 # Builds the field off-line with the OpenCascade twin of the Onshape generator, exports it
 # to glTF (03-field/featurescript/verify/export_glb.py) and renders the views in
 # figure-shots.json with the headless three.js stage in 03-field/featurescript/verify/webrender.
-# Needs cadquery-ocp, numpy, Node 18+ and Chromium (CHROMIUM=path, or the Playwright install).
+# Needs cadquery-ocp, numpy, Pillow, Node 18+ and Chromium (CHROMIUM=path, or the Playwright install).
 # Run it after any change to the field geometry; the PDF build only reads the PNGs.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

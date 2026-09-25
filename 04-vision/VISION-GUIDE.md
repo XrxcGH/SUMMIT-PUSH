@@ -47,7 +47,7 @@ The CRAG tag height is set by occlusion. A 9.0-in panel centered at 17.5 in span
 | Low Socket tube, lowest point | Z = 22.19, the tube spanning 1.56–10.89 in outboard of the face | 0.63 in above the target; clear from a camera 10–20 in high (item 3 below covers a higher camera) |
 | ROPE COIL on a Low Peg | spans Z ≈ 26–36 | above the panel; clear |
 
-At a 12-in center height, the shelf-face and inner-socket-face pairs would be blocked by any CACHE CRATE standing in the BASE DEPOT, which is a routine game state. HEADWALL lane tags stay at 12 in because that band is clear of every rung and keeps the whole panel at least 4.4 in behind the climbing plane.
+At a 12-in center height, the SHELF FACE pair and the alliance-wall-side tag on each SOCKET FACE would be blocked by any CACHE CRATE standing in the BASE DEPOT, which is a routine game state. HEADWALL lane tags stay at 12 in because that band is clear of every rung and keeps the whole panel at least 4.4 in behind the climbing plane.
 
 > **CACHE CRATE margin: 0.19 in, held by a ±0.15-in height tolerance.** The as-built BASE
 > DEPOT tray floor sits 0.25 in above the carpet, so a crowned CRATE standing in the DEPOT
@@ -55,7 +55,8 @@ At a 12-in center height, the shelf-face and inner-socket-face pairs would be bl
 > ±0.25-in position tolerance in §1.2, so the CRAG tag panels carry a tighter **height**
 > tolerance of **±0.15 in**, checked at field setup alongside the socket bore. Even a panel
 > built 0.25 in low would let a CRATE reach only the bottom of the target's white border: the
-> black square, which is what a detector finds, starts 0.81 in higher, at Z = 14.25.
+> black square, which is what a detector finds, starts 0.81 in above the target's bottom edge,
+> so on that panel it still clears the CRATE by 0.75 in.
 >
 > The panel is not moved or shrunk instead. Raising a 9.0-in panel to a 17.75 center puts its
 > top edge at 22.25, above the Low Socket tube's lowest point at 22.19. An 8.5-in panel at
@@ -81,12 +82,12 @@ For a quick check in the field, `h ≥ 13.44 + 0.81·D/2.5` is the apex-only for
 
 Four consequences follow, none of which changes the low-camera architecture of Section 5:
 
-1. **Final approach is unaffected for a camera near the top of the recommended band.** At 20 in, the whole target is visible from 15 in out, which covers close-range alignment only. The as-built tray floor stands every SUPPLY 0.25 in higher than the carpet, which costs about a third of every range in this table. Below about 16 in, a single camera sees the bottom edge clipped from almost any useful range whenever a CELL is stood on end in front of that face, so a design committed to one low camera should place it at **18 in or higher** and treat anything beyond about 10 in of range as localization only.
+1. **Final approach is unaffected for a camera near the top of the recommended band.** At 20 in, the whole target is visible within 15 in, which covers close-range alignment only. The as-built tray floor stands every SUPPLY 0.25 in higher than the carpet, which costs about a third of every range in this table. Below about 16 in, a single camera sees the bottom edge clipped from almost any useful range whenever a CELL is stood on end in front of that face, so a design committed to one low camera should place it at **18 in or higher** and treat anything beyond about 10 in of range as localization only.
 2. **Long range is already handled.** Section 5.2 treats long-range CRAG detections as localization input only, never as final-approach truth. That guidance exists for midfield traffic, and it covers this case as well.
-3. **Never rely on a single CRAG tag.** Every face carries a pair, and MultiTag (§6.4) over both, or over one CRAG face plus a HEADWALL or OUTFITTER tag, degrades gracefully when one tag is partly hidden. The optional second camera at 24–36 in (§5.2) clears the upright CELL out to 4 ft on its own, but from that height the Low Socket tube can hide part of the tag beneath it (tags 8, 10, 21 and 23), and most of it from close range. Use it alongside the primary camera, not instead of it, on those tags.
+3. **Never rely on a single CRAG tag.** Every face carries a pair, and MultiTag (§6.4) over both, or over one CRAG face plus a HEADWALL or OUTFITTER tag, degrades gracefully when one tag is partly hidden. The optional second camera at 24–36 in (§5.2) clears the upright CELL out to 25–53 in on its own, but from that height the Low Socket tube can hide part of the tag beneath it (tags 8, 10, 21 and 23), and most of it from close range. Use it alongside the primary camera, not instead of it, on those tags.
 4. **Simulate it.** Add a 5 × 14 in occluder standing at the DEPOT in front of one SHELF FACE tag (§6.8) and confirm that the pose solution survives on the remaining tags.
 
-A tag height that cleared an upright CELL outright would need its target bottom above 14.25 in (about 18.5 in center), but a panel that high runs into the Low Socket tube at 22.27 in and the Shelf 1 underside at 23.25 in. At 17.5 in the panel clears both of those with margin, and it clears every SUPPLY except an O2 CELL balanced on its end.
+A tag height that cleared an upright CELL outright would need its target bottom above 14.25 in (a center above 18.3 in), but a 9.0-in panel that high has its top edge above 22.8 in: above the Low Socket tube's lowest point at 22.19 in and within 0.5 in of the Shelf 1 underside at 23.25 in. At 17.5 in the panel clears both of those with margin, and it clears every SUPPLY except an O2 CELL balanced on its end.
 
 ---
 
@@ -135,14 +136,14 @@ Coordinates are **tag centers in inches**, field frame per §2. Yaw is the facin
 | 16 | Red HEADWALL | Lane 1 center, lower crossbeam | 609 | 210 | 12 | 180 |
 | 17 | Red HEADWALL | Lane 2 (center), lower crossbeam | 609 | 162 | 12 | 180 |
 | 18 | Red HEADWALL | Lane 3 center, lower crossbeam | 609 | 114 | 12 | 180 |
-| 19 | Red CRAG | SHELF FACE (+X face) | 348 | 98 | 17.5 | 0 |
-| 20 | Red CRAG | SHELF FACE (+X face) | 348 | 70 | 17.5 | 0 |
+| 19 | Red CRAG | SHELF FACE (+X face), +Y side of the face centerline | 348 | 98 | 17.5 | 0 |
+| 20 | Red CRAG | SHELF FACE (+X face), −Y side of the face centerline | 348 | 70 | 17.5 | 0 |
 | 21 | Red CRAG | −Y SOCKET FACE, alliance-wall side | 338 | 60 | 17.5 | 270 |
 | 22 | Red CRAG | −Y SOCKET FACE, peg-face side | 310 | 60 | 17.5 | 270 |
 | 23 | Red CRAG | +Y SOCKET FACE, alliance-wall side | 338 | 108 | 17.5 | 90 |
 | 24 | Red CRAG | +Y SOCKET FACE, peg-face side | 310 | 108 | 17.5 | 90 |
-| 25 | Red CRAG | PEG FACE (−X face) | 300 | 98 | 17.5 | 180 |
-| 26 | Red CRAG | PEG FACE (−X face) | 300 | 70 | 17.5 | 180 |
+| 25 | Red CRAG | PEG FACE (−X face), +Y side | 300 | 98 | 17.5 | 180 |
+| 26 | Red CRAG | PEG FACE (−X face), −Y side | 300 | 70 | 17.5 | 180 |
 
 > *Example:* A Blue robot auto-aligning an O2 CELL insertion on the Blue CRAG's −Y SOCKET FACE should expect tags **10** and **11** (yaw 270°, face normal −Y: the face pointing into the inter-CRAG corridor, toward field center). Tag 10 (X = 310) sits under the **Low Socket**; tag 11 (X = 338) sits under the **Mid Socket** (§6.6). Detecting tags 23/24 instead means the camera is looking at the **Red** CRAG; abort and re-localize.
 
@@ -335,7 +336,7 @@ A peg's tip is 7.07 in farther out and 7.07 in higher than its root (10.0 in exp
 | CAMP (top 54 in) | **+5.3** | +41.25 | **+12.0** |
 | SUMMIT (top 78 in) | **+11.7** | +65.25 | **−12.0** |
 
-The lateral column is the same in **every lane** (the stagger alternates by rung, never by lane; FIELD-CAD-PACKAGE §4.1), so one set of offsets serves all three lanes on both ALLIANCES, with +Y to the left of the lane center from the approaching ROBOT's point of view. Red is the 180° rotation about field center and carries the same signs relative to its own lane centers.
+The lateral column is the same in **every lane** (the stagger alternates by rung, never by lane; FIELD-CAD-PACKAGE §4.1), so one set of offsets serves all three lanes on both ALLIANCES, with +Y to the right of the lane center from the approaching ROBOT's point of view (the left as seen from that alliance's driver stations). Red is the 180° rotation about field center and carries the same signs relative to its own lane centers.
 
 **OUTFITTER** (tags 1/2, 14/15; tag centered above the chute): the chute opening is 30 in wide × 16 in tall with its sill at 24 in, so its center sits **20 in directly below the tag center**. This is useful for auto-driving to the human-player feed station inside the OUTFITTER LANE.
 

@@ -57,7 +57,7 @@ Socket depth: DESIGN-SPEC §3 "tube length 7.0 in along the axis, closed bottom 
   crowned crate on Shelf 2) the same way.
 
 Construction reading (naming only): pegs and side sockets are named "... (guardrail side)" /
-"... (centre side)"; the lookups below take both.
+"... (center side)"; the lookups below take both.
 """
 import math
 import os
@@ -970,9 +970,9 @@ def sec_depot(f, C, add):
 
 def _find_parts(f, base):
     """Bodies named `base`, or, for the sided parts (pegs, side sockets), both
-    base + " (guardrail side)" and base + " (centre side)"."""
+    base + " (guardrail side)" and base + " (center side)"."""
     out = []
-    for suf in ("", " (guardrail side)", " (centre side)"):
+    for suf in ("", " (guardrail side)", " (center side)"):
         try:
             out += f.find(base + suf)
         except KeyError:

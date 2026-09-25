@@ -6,11 +6,11 @@ Expected values come from the package documents only (never from src/20_ledger.f
 
   FIELD-CAD-PACKAGE §0   always-blue-origin NWU; Red = Blue rotated 180 deg about (324, 162);
                          field 648 x 324; (ref) may float +/-0.25 in.
-  FIELD-CAD-PACKAGE §1.3 "Alliance walls: full-width, 78 in tall and 2.0 in thick throughout (ref);
-                         solid to Z = 39, glazed 39 -> 78.  Three driver stations per wall, 96 in wide
-                         on 108-in centers (Y = 54 / 162 / 270), each with a 0.75-in shelf topping out
-                         at 36 in, its window in the glazed band, and an E-STOP and an A-STOP button
-                         (ref); OUTFITTER chutes penetrate the wall at the coordinates above."
+  FIELD-CAD-PACKAGE §1.3 "Alliance walls: full width, 78 in tall and 2.0 in thick throughout (ref);
+                         solid to Z = 39, glazed 39 -> 78.  Each wall has three driver stations, 96 in
+                         wide on 108-in centers (Y = 54 / 162 / 270), each with a 0.75-in shelf topping
+                         out at 36 in, a window in the glazed band, and an E-STOP and an A-STOP button
+                         (ref).  The OUTFITTER chutes penetrate the wall at the coordinates above."
   FIELD-CAD-PACKAGE §1.1/§5  chutes Blue (0, 30), (0, 294); Red (648, 294), (648, 30); opening
                          30 W x 16 H, sill 24 (Z 24-40); "Alliance wall thickness at the chute 2.0 in
                          (ref)"; sill edge radius 0.5 (ref); ramp 30 deg (ref).

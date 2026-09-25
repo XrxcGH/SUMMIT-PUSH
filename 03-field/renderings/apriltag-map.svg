@@ -150,7 +150,7 @@
   <rect x="98.40" y="673.60" width="7.20" height="7.20" fill="#111111" stroke="none" stroke-width="0.00"/>
   <line x1="109.00" y1="677.20" x2="122.90" y2="677.20" stroke="#C02020" stroke-width="1.30"/>
   <path d="M 126.00 677.20 L 120.37 678.80 L 120.37 675.60 Z" fill="#C02020" stroke="none"/>
-  <text x="136.00" y="680.26" font-size="8.50" fill="#1A1D21">Arrows show the tag FACE NORMAL (the direction a camera must look FROM to see it head-on is the opposite)</text>
+  <text x="136.00" y="680.26" font-size="8.50" fill="#1A1D21">Arrows show the tag FACE NORMAL; a camera sees the tag head-on when it looks in the opposite direction.</text>
   <rect x="96.00" y="699.20" width="523.04" height="120.50" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
   <text x="104.00" y="714.23" font-size="9.50" fill="#1F4E79" font-weight="bold">TAG HEIGHTS AND PLANES</text>
   <text x="104.00" y="730.88" font-size="8.50" fill="#1F4E79" font-weight="bold">IDs</text>
@@ -206,7 +206,7 @@
   <text x="800.04" y="742.41" font-size="8.50" fill="#1A1D21">Vision software wants the BODY size:</text>
   <text x="800.04" y="753.63" font-size="8.50" fill="#1A1D21">6.5 in = 0.1651 m. Never enter 8.125 or 9.0.</text>
   <text x="800.04" y="767.40" font-size="8.50" fill="#6E7378">Panels plumb +/-1 deg, square to facing +/-1 deg.</text>
-  <text x="800.04" y="778.62" font-size="8.50" fill="#6E7378">Field build tolerance +/-0.25 in on tag centers;</text>
+  <text x="800.04" y="778.62" font-size="8.50" fill="#6E7378">Build tolerance +/-0.25 in (CRAG height +/-0.15);</text>
   <text x="800.04" y="789.84" font-size="8.50" fill="#6E7378">the CAD model must match the JSON exactly.</text>
   <text x="800.04" y="803.61" font-size="8.50" fill="#6E7378">Matte, non-glare finish. Keep the white border clear.</text>
   <rect x="8.00" y="893.39" width="1404.00" height="58.61" fill="#FFFFFF" stroke="#8A9199" stroke-width="1.00"/>
@@ -214,7 +214,7 @@
   <line x1="1162.00" y1="893.39" x2="1162.00" y2="952.00" stroke="#C8CCD1" stroke-width="0.80"/>
   <text x="16.00" y="906.49" font-size="10.00" fill="#1F4E79" font-weight="bold">SUMMIT PUSH — FIELD DRAWING SET</text>
   <text x="229.34" y="906.49" font-size="10.00" fill="#1A1D21" font-weight="bold">DRAWING 6 OF 6 - APRILTAG MAP</text>
-  <text x="16.00" y="921.06" font-size="8.50" fill="#6E7378">Poses must match 04-vision/apriltag-field-layout.json exactly; the JSON is generated from this table and drives every simulation.</text>
+  <text x="16.00" y="921.06" font-size="8.50" fill="#6E7378">Poses must match 04-vision/apriltag-field-layout.json exactly; the JSON is generated from the VISION-GUIDE tag table and drives every simulation.</text>
   <text x="16.00" y="932.28" font-size="8.50" fill="#6E7378">Boxed values are CRITICAL - hold exactly. Values suffixed (ref) may float +/-0.25 in. Every angle on the field is 15, 30 or 45 degrees.</text>
   <text x="16.00" y="943.50" font-size="8.50" fill="#6E7378">Coordinate frame: always-blue-origin NWU. Origin at the right corner of the Blue alliance wall; +X toward Red, +Y left, +Z up. Blue half shown; Red = 180 deg rotation about (324, 162).</text>
   <text x="1170.00" y="906.49" font-size="10.00" fill="#1A1D21" font-weight="bold">SHEET 6 OF 6</text>

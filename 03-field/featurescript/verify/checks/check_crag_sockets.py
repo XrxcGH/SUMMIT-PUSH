@@ -38,7 +38,7 @@ Socket depth: DESIGN-SPEC §3 gives "tube length 7.0 in along the axis, closed b
   inboard edge 1.56, lowest point Z 22.19 (0.63 above the 21.56 target top).
 
 Construction reading (naming only): each tube and bracket is its own part, "<A> CRAG <Low|Mid>
-Socket (guardrail side)" / "(centre side)" and "... Socket bracket (...)", the guardrail side being
+Socket (guardrail side)" / "(center side)" and "... Socket bracket (...)", the guardrail side being
 the one farther from the field's long centreline Y = 162.
 """
 import json
@@ -73,7 +73,7 @@ RO = ID_NOM / 2 + WALL                                       # 3.34 — the pack
 RI = ID_NOM / 2
 S30, C30 = math.sin(math.radians(TILT)), math.cos(math.radians(TILT))
 
-# §2.3 clearance paragraph (and VISION-GUIDE §1.3), derived as the package derives them but with
+# §2.3 clearance paragraph (and VISION-GUIDE §1.3), derived as the package derives them, with
 # the closed bottom beyond the 7.0 seat (see the docstring)
 BOTTOM_OUT = STANDOFF - LEN * S30                            # 4.50, the floor (seat) centre
 BOTTOM_FACE_OUT = STANDOFF - OVERALL * S30                   # 4.455, the outer bottom face centre
@@ -161,9 +161,9 @@ def _fmt(v):
 
 
 def _sided(f, base):
-    """Both parts named base + " (guardrail side)" / " (centre side)" ([] if neither exists)."""
+    """Both parts named base + " (guardrail side)" / " (center side)" ([] if neither exists)."""
     out = []
-    for suf in (" (guardrail side)", " (centre side)"):
+    for suf in (" (guardrail side)", " (center side)"):
         try:
             out += f.find(base + suf)
         except KeyError:
@@ -173,7 +173,7 @@ def _sided(f, base):
 
 def _side_suffix(face_y):
     """Name suffix for a SOCKET FACE at world Y face_y: guardrail side = farther from Y 162."""
-    return " (guardrail side)" if abs(face_y - 162.0) > 162.0 - 84.0 else " (centre side)"
+    return " (guardrail side)" if abs(face_y - 162.0) > 162.0 - 84.0 else " (center side)"
 
 
 _CACHE = {}

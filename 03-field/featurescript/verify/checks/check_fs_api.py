@@ -174,6 +174,7 @@ def top_level_names(files):
 
 def scope_analyse(path, known):
     """Return (unresolved, redeclared, const_assign) lists of strings for one file."""
+    import onshape_lint
     toks = tokenize(_read(path))
     fn = os.path.basename(path)
     unresolved, redecl, const_assign = [], [], []
@@ -207,7 +208,8 @@ def scope_analyse(path, known):
 
     def pop_headers(i):
         # after a block closes: pop for/catch headers, and function headers unless another block follows
-        while frames and frames[-1]["kind"] in ("for", "catch", "func"):
+        # (a header whose body is a single statement is popped at that statement's end instead)
+        while frames and frames[-1]["kind"] in ("for", "catch", "func") and "end" not in frames[-1]:
             nxt = toks[i + 1][1] if i + 1 < len(toks) else ""
             if frames[-1]["kind"] == "func" and nxt in ("{",):
                 break
@@ -268,6 +270,10 @@ def scope_analyse(path, known):
             continue
         if k == "id" and v == "for" and toks[i + 1][1] == "(":
             fr = {"kind": "for", "names": {}}
+            e = _match(toks, i + 1, "(", ")")
+            if e + 1 < n and toks[e + 1][1] != "{":
+                # a single-statement body: the loop variable goes out of scope at its end
+                fr["end"] = onshape_lint._stmt_end(toks, e + 1)
             frames.append(fr)
             if toks[i + 2][1] == "var":
                 declare(toks[i + 3][1], "loopvar", toks[i + 3][2], target=fr)
@@ -316,6 +322,8 @@ def scope_analyse(path, known):
                             const_assign.append("%s:%d element assignment to const '%s'" % (fn, ln, v))
                 elif v not in known:
                     unresolved.append("%s:%d '%s'" % (fn, ln, v))
+        while frames and frames[-1].get("end") == i:
+            frames.pop()
         prev = (k, v, ln)
         i += 1
     return unresolved, redecl, const_assign

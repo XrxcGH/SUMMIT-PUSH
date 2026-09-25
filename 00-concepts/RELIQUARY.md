@@ -1,6 +1,6 @@
 # RELIQUARY
 
-> This is a design-phase document kept for reference. The current game is defined by `01-design/DESIGN-SPEC.md` and the Game Manual (`02-manual/GAME-MANUAL.md`).
+> Design-phase archive. This document was written before the design specification (`01-design/DESIGN-SPEC.md`), which supersedes the geometry and scoring it describes. The current game is defined by that specification and the Game Manual (`02-manual/GAME-MANUAL.md`).
 
 **Theme:** The world's great lost artifacts have been recovered, and alliances of robotic curators race to restore, catalog and display them in the Grand Rotunda before the museum's opening gala.
 
@@ -12,11 +12,11 @@
 - Material: Molded cross-linked EVA foam ring (density similar to a pool exercise ring), ~0.4 lb, dyed bronze with a molded laurel emboss. Team version: stacked 3/4 in EVA floor-mat circles cut with a hole saw and glued, or off-the-shelf 6 in foam rings (~$3 each).
 - Handling challenge: Small and plentiful. It rewards a fast touch-it-own-it roller intake and internal indexing for multi-piece capacity. The center hole must be located and oriented to hang on a peg (a wrist and vision problem), but the medallion can also be slid along the carpet into the floor-level Vault slot with a plow (no orientation needed). The easy-looking task is easy; the 66 in high peg looks hard and is hard.
 - Count/staging: 20 per alliance per match: 4 staged in the alliance Dig Site, 6 staged in the neutral midfield Excavation Zone (shared, contested), and up to 10 fed by the Archivist human player through the Archive Window at the FAR end of the field. Any robot may preload 1 artifact of any type.
-- Scoring role: The volume currency. Vault slide = 2 pts (the kitbot's main job), low peg (30 in) = 3, high peg (66 in) = 5 (7/5/3 in auto; see the scoring table). Medallions drive the Collection RP count and fill the visible Vault coin column that spectators read at a glance.
+- Scoring role: The volume currency. Vault slide = 2 pts (the kitbot's main job), low peg (30 in) = 3, high peg (66 in) = 5 (3/5/7 in auto; see the scoring table). Medallions drive the Collection RP count and fill the visible Vault coin column that spectators read at a glance.
 
 ### TABLET
 - Shape/dims: Flat rectangular slab: 12 in x 9 in x 2 in, with a 3/4 in deep x 1.5 in wide finger groove routed around the 12 in edges
-- Material: Rigid polyethylene foam core with a fiber-reinforced textured TPU skin (durability of a CHARGED UP cube), ~1.2 lb, sandstone color with engraved-glyph print. Team version: two laminated layers of 1 in XPS insulation board wrapped in duct or gaffer tape, with the groove cut on a table saw, under $4 each.
+- Material: Rigid polyethylene foam core with a fiber-reinforced textured TPU skin (durability of a Charged Up cube), ~1.2 lb, sandstone color with engraved-glyph print. Team version: two laminated layers of 1 in XPS insulation board wrapped in duct or gaffer tape, with the groove cut on a table saw, under $4 each.
 - Handling challenge: A flat slab lying on carpet is awkward to ground-intake; the edge groove is the designed 'way in' (pinch rollers or a tilting scoop). The tablet must then be reoriented ~75 degrees to slide into the 15-degree-tilted display easel rails at 48 in, which is the game's core teaching problem for elevator or arm plus wrist. It looks like a two-degree-of-freedom problem, and it is one.
 - Count/staging: 8 per alliance: 3 in the alliance Dig Site, 2 in the neutral Excavation Zone, up to 3 fed through the far-end Archive Window.
 - Scoring role: The mid-value cycle piece: 4 pts flat on the 24 in gallery shelf, 6 pts slotted in the 48 in easel (6/9 in auto). Tablets are the backbone of a scoring cycle for a second-year team and are required to complete an Exhibit Face (Masterpiece RP).

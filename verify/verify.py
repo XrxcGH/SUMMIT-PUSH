@@ -93,7 +93,8 @@ chk("upright O2 CELL is the only SUPPLY reaching the target band",
 # not a bare dome: 14.0 overall on a 5.0 body, cap arc struck through the pole and the
 # equator, and a 1.0-in fillet blending each cap to the wall. The cap meets the wall at
 # a 28.1-degree tangent break, so the fillet is structural to the shape, and it drops
-# the shoulder to Z = 12.22 where the CELL touches the face rather than 12.5.
+# the shoulder where the CELL touches the face to 12.22 in above its base rather than
+# 12.5 (Z = 12.47 on the 0.25-in tray floor, the value checked below).
 _TB = 13.4375                                  # tag target bottom edge
 _RCAP, _YCAP = 2.8333333333333335, 4.166666666666667
 _RF, _FCX, _FCY, _RTAN = 1.0, 1.5, 5.2212, 2.3183

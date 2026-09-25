@@ -81,7 +81,7 @@
   <text x="60.00" y="550.00" font-size="11.67" fill="#1F4E79" font-weight="bold">VIEW A NOTES</text>
   <text x="60.00" y="565.75" font-size="9.72" fill="#1A1D21">Shelf 1 top 24.0, Shelf 2 top 42.0; 3 slots of 14.0 with four 1.5 x 2.0 fences.</text>
   <text x="60.00" y="578.58" font-size="9.72" fill="#1A1D21">Slot centers -15.5 / 0 / +15.5 from the face centerline.</text>
-  <text x="60.00" y="591.42" font-size="9.72" fill="#1A1D21">Summit Socket rim Z = 72.0, on the crag centerline, 8.0 out from THIS face.</text>
+  <text x="60.00" y="591.42" font-size="9.72" fill="#1A1D21">Summit Socket rim Z = 72.0, on the CRAG centerline, 8.0 out from THIS face.</text>
   <text x="60.00" y="604.25" font-size="9.72" fill="#1A1D21">Tags 6 / 7 (Blue): ctr Z = 17.5, +/-14.0 from the face centerline.</text>
   <text x="60.00" y="617.08" font-size="9.72" fill="#1A1D21">BASE DEPOT lip 4.0 runs this face and wraps 16.0 onto both socket faces.</text>
   <text x="60.00" y="629.92" font-size="9.72" fill="#6E7378">(Dashed red lines: LED tier rings at 30 / 54 / 78, see VIEW C.)</text>
@@ -310,7 +310,7 @@
   <text x="60.00" y="1188.42" font-size="9.72" fill="#1A1D21">the rim plane (geometry otherwise free, ref).</text>
   <text x="700.00" y="694.00" font-size="14.26" fill="#1F4E79" text-anchor="middle" font-weight="bold">D2 - SUMMIT SOCKET</text>
   <text x="700.00" y="707.74" font-size="10.37" fill="#6E7378" text-anchor="middle">9.0 px/in</text>
-  <text x="700.00" y="720.70" font-size="10.37" fill="#6E7378" text-anchor="middle">on the SHELF FACE, on the crag centerline</text>
+  <text x="700.00" y="720.70" font-size="10.37" fill="#6E7378" text-anchor="middle">on the SHELF FACE, on the CRAG centerline</text>
   <line x1="790.00" y1="782.00" x2="790.00" y2="1062.00" stroke="#4A3B22" stroke-width="3.00"/>
   <g transform="rotate(-15 718.00 872.00)">
   <rect x="687.94" y="872.00" width="60.12" height="63.00" fill="#9DB8D6" stroke="#0E3F86" stroke-width="2.00"/>
@@ -337,7 +337,7 @@
   <path d="M 706.00 820.00 L 696.54 820.55 L 697.80 815.25 Z" fill="#E100E1" stroke="none"/>
   <text x="618.76" y="803.75" font-size="11.02" fill="#1F6B40" text-anchor="end">seated O2 CELL (dashed)</text>
   <text x="520.00" y="1070.00" font-size="11.67" fill="#1F4E79" font-weight="bold">D2 NOTES</text>
-  <text x="520.00" y="1085.75" font-size="9.72" fill="#1A1D21">Rim ctr Z = 72.0, on the crag centerline, 8.0 OUT from the SHELF FACE.</text>
+  <text x="520.00" y="1085.75" font-size="9.72" fill="#1A1D21">Rim ctr Z = 72.0, on the CRAG centerline, 8.0 OUT from the SHELF FACE.</text>
   <text x="520.00" y="1098.58" font-size="9.72" fill="#1A1D21">Tube 7.0 along the axis at 15 deg from vertical, tilting outward.</text>
   <text x="520.00" y="1111.42" font-size="9.72" fill="#1A1D21">Floor center 6.19 out from the face at Z = 65.24; inboard edge 2.94</text>
   <text x="520.00" y="1124.25" font-size="9.72" fill="#1A1D21">out - free air outboard of the tower, no pocket required.</text>
@@ -386,8 +386,8 @@
   <text x="1010.00" y="1137.08" font-size="9.72" fill="#1A1D21">most about 48 deg (47.9) of tilt (2.5 tan t + 1.5 / cos t &lt;= 5.0);</text>
   <text x="1010.00" y="1149.92" font-size="9.72" fill="#1A1D21">a vertical hang needs 45 deg, so a SCORED COIL is captured, not balanced.</text>
   <text x="1010.00" y="1162.75" font-size="9.72" fill="#1A1D21">The coil center rests about 1 in above the peg root, its inner face</text>
-  <text x="1010.00" y="1175.58" font-size="9.72" fill="#1A1D21">about 1.25 in outboard of the crag face.</text>
-  <text x="1010.00" y="1188.42" font-size="9.72" fill="#1A1D21">POSE B (as dropped, dashed): perpendicular to the peg; it settles to A.</text>
+  <text x="1010.00" y="1175.58" font-size="9.72" fill="#1A1D21">about 1.25 in outboard of the CRAG face.</text>
+  <text x="1010.00" y="1188.42" font-size="9.72" fill="#1A1D21">POSE B (as dropped, grey): perpendicular to the peg; it settles to A.</text>
   <text x="1580.00" y="694.00" font-size="14.26" fill="#1F4E79" text-anchor="middle" font-weight="bold">D4 - SHELF AND DEPOT SECTION</text>
   <text x="1580.00" y="707.74" font-size="10.37" fill="#6E7378" text-anchor="middle">6.2 px/in</text>
   <text x="1580.00" y="720.70" font-size="10.37" fill="#6E7378" text-anchor="middle">section normal to the SHELF FACE</text>
@@ -398,10 +398,10 @@
   <text x="1607.20" y="803.57" font-size="11.02" fill="#1A1D21" text-anchor="end">Shelf 2</text>
   <rect x="1613.20" y="911.20" width="86.80" height="4.65" fill="#8A6D3B" stroke="#4A3B22" stroke-width="1.40"/>
   <rect x="1613.20" y="898.80" width="9.30" height="12.40" fill="#8A6D3B" stroke="#4A3B22" stroke-width="1.00"/>
-  <path d="M 1700.00 911.20 L 1662.80 911.20 L 1700.00 948.40 Z" fill="#D9CDB2" stroke="#4A3B22" stroke-width="0.90"/>
+  <path d="M 1700.00 915.85 L 1681.40 915.85 L 1700.00 934.45 Z" fill="#D9CDB2" stroke="#4A3B22" stroke-width="0.90"/>
   <rect x="1613.20" y="799.60" width="86.80" height="4.65" fill="#8A6D3B" stroke="#4A3B22" stroke-width="1.40"/>
   <rect x="1613.20" y="787.20" width="9.30" height="12.40" fill="#8A6D3B" stroke="#4A3B22" stroke-width="1.00"/>
-  <path d="M 1700.00 799.60 L 1662.80 799.60 L 1700.00 836.80 Z" fill="#D9CDB2" stroke="#4A3B22" stroke-width="0.90"/>
+  <path d="M 1700.00 804.25 L 1681.40 804.25 L 1700.00 822.85 Z" fill="#D9CDB2" stroke="#4A3B22" stroke-width="0.90"/>
   <rect x="1619.40" y="836.80" width="74.40" height="74.40" fill="none" stroke="#2E8B57" stroke-width="1.80" rx="4.96" stroke-dasharray="5 3"/>
   <text x="1656.60" y="871.25" font-size="11.02" fill="#1F6B40" text-anchor="middle">CRATE</text>
   <text x="1656.60" y="884.47" font-size="11.02" fill="#1F6B40" text-anchor="middle">on Shelf 1</text>
@@ -458,7 +458,7 @@
   <text x="1500.00" y="1198.97" font-size="9.72" fill="#1A1D21">only 0.19 below the CRAG tag target at 13.44. See VISION-GUIDE 1.3.</text>
   <text x="1500.00" y="1211.80" font-size="9.72" fill="#1A1D21">A CRATE stands proud of the lip and is SCORED so long as the tray</text>
   <text x="1500.00" y="1224.63" font-size="9.72" fill="#1A1D21">floor alone supports it.</text>
-  <text x="1500.00" y="1237.47" font-size="9.72" fill="#1A1D21">Robot standoff: bumper face 16.75 from the crag face,</text>
+  <text x="1500.00" y="1237.47" font-size="9.72" fill="#1A1D21">Robot standoff: bumper face 16.75 from the CRAG face,</text>
   <text x="1500.00" y="1250.30" font-size="9.72" fill="#1A1D21">FRAME PERIMETER 19.75; a shelf slot center is 12.75 of extension.</text>
   <rect x="8.00" y="1263.30" width="1944.00" height="68.70" fill="#FFFFFF" stroke="#8A9199" stroke-width="1.00"/>
   <line x1="8.00" y1="1286.69" x2="1952.00" y2="1286.69" stroke="#C8CCD1" stroke-width="0.80"/>

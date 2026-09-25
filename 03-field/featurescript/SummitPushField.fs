@@ -25,9 +25,10 @@ import(path : "onshape/std/geometry.fs", version : "2960.0");
 // ---------------------------------------------------------------- src/10_kernel.fs
 
 // =====================================================================================
-// KERNEL — the only code in this Feature Studio that talks to the Onshape standard
-// library.  Everything else (the part code in src/2x-4x and the features in 90) is written in plain
-// numbers — inches and degrees — and calls these helpers, which add the units.
+// KERNEL — the only code in this Feature Studio that calls the Onshape standard library's
+// geometry, query, property and measurement functions.  Everything else (the part code in
+// src/2x-4x and the features in 90) is written in plain numbers — inches and degrees — and calls
+// these helpers, which add the units.
 //
 // Every helper here has a twin in verify/kernel_occ.py with identical semantics, so the
 // part code can be executed off-line against an OpenCascade kernel and measured.
@@ -691,7 +692,7 @@ const TRUSS_TOP = 84;
 const TUBE_S = 2;
 const FRONT_N = [-6, -4];       // front layer: rung carriers, rails
 const BEAM_N = [-10, -8];       // (ref) lower crossbeam layer, set back so the tag wedges and panels sit in front
-const UPRIGHT_INSET = 2.5;      // (ref) upright's inner face from the lane edge
+const UPRIGHT_INSET = 2.5;      // (ref) lane edge to the upright's near face
 const BRACKET_T = 0.25;
 const BRACKET_FROM_END = 1;     // bracket plate 1.0-1.25 in from each rung end
 const BRACKET_FRONT = 0.5;      // saddle plate reaches 0.5 in in front of plane P, 0.25 behind the rung front
@@ -1174,9 +1175,10 @@ function buildAllianceWall(context is Context, id is Id, isRed)
     }
 }
 
-// OUTFITTER chute behind the wall: a 2.0-in-deep throat liner that carries the opening through
-// the full wall, a 30-degree ramp from the back of the throat, plumb cheeks on the ramp edges,
-// 45-degree funnel wings opening to 36 in at the loading end, and a leg (all (ref), §5).
+// OUTFITTER chute behind the wall: a throat liner behind the panel and glazing that carries the
+// opening through the full 2.0-in wall, a 30-degree ramp from the back of the throat, plumb cheeks
+// on the ramp edges, 45-degree funnel wings opening to 36 in at the loading end, and a leg (all
+// (ref), §5).
 function buildOutfitterRamp(context is Context, id is Id, F, c, name)
 {
     const s30 = sind(RAMP_ANGLE);
@@ -1302,8 +1304,8 @@ function buildSocketTube(context is Context, id is Id, F, b, a, r)
 }
 
 // Peg with a hemispherical tip: root point p on the face, unit axis u, unit radial r.
-// Modelled PEG_EMBED behind the root, then trimmed flush with the face by `trim`
-// (a box on the structure side of the face).
+// Modelled PEG_EMBED behind the root, then trimmed flush with the face by the box
+// trim0..trim1 (on the structure side of the face).
 function buildPeg(context is Context, id is Id, F, p, u, r, trim0, trim1)
 {
     const pr = PEG_OD / 2;
@@ -1438,7 +1440,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
         var side = "guardrail side";
         if (sgn > 0)
         {
-            side = "centre side";
+            side = "center side";
         }
         const socks = [[SOCK_LAT, LOW_SOCK_Z, "Low"], [-SOCK_LAT, MID_SOCK_Z, "Mid"]];
         for (var q in socks)
@@ -1497,7 +1499,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             pegs = append(pegs, pid);
         }
     }
-    const pegSide = [" (guardrail side)", " (centre side)"];
+    const pegSide = [" (guardrail side)", " (center side)"];
     for (var k = 0; k < 2; k += 1)
     {
         paint(context, [pegs[k]], msg([cn, " Low Peg", pegSide[k]]), "rung", 1, "steel");
@@ -2377,7 +2379,7 @@ function failures(checks)
     return out;
 }
 
-// Frame for a tube whose mouth centre is r (crag-local), axis a (unit, toward the mouth).
+// Checks of a socket tube whose mouth centre is r (crag-local), axis a (unit, toward the mouth).
 function ckSocket(context is Context, checks, label, F, bodies, r, a, radial)
 {
     const T = frameIn(F, r, radial, a);
@@ -2401,7 +2403,7 @@ function selfCheck(context is Context, id is Id, opts)
         {
             ch = ck(ch, msg([r, " top rail height"]), measureBox(context, [id + r + "top"], W)[5], GUARD_H, 0.001);
             const led = measureBox(context, [id + r + "ledBLUE0", id + r + "ledBLUE1", id + r + "ledBLUE2", id + r + "ledRED0", id + r + "ledRED1", id + r + "ledRED2"], W);
-            ch = ck(ch, msg([r, " FIELD LED lens centre"]), (led[2] + led[5]) / 2, LED_Z, 0.001);
+            ch = ck(ch, msg([r, " FIELD LED lens center"]), (led[2] + led[5]) / 2, LED_Z, 0.001);
             ch = ck(ch, msg([r, " FIELD LED blocks span the rail"]), led[3] - led[0], FIELD_L, 0.001);
         }
     }
@@ -2470,7 +2472,7 @@ function selfCheck(context is Context, id is Id, opts)
                     const lo = measureBox(context, [grp + nm("fence", j)], F)[4];
                     const hi = measureBox(context, [grp + nm("fence", j + 1)], F)[1];
                     ch = ck(ch, msg([A, " Shelf ", i + 1, " slot ", j + 1, " width"]), hi - lo, SLOT_W, 0.001);
-                    ch = ck(ch, msg([A, " Shelf ", i + 1, " slot ", j + 1, " centre"]), (hi + lo) / 2, SLOT_CTRS[j], 0.001);
+                    ch = ck(ch, msg([A, " Shelf ", i + 1, " slot ", j + 1, " center"]), (hi + lo) / 2, SLOT_CTRS[j], 0.001);
                 }
                 for (var j = 0; j < size(GUSSET_Y); j += 1)
                 {
@@ -2490,7 +2492,7 @@ function selfCheck(context is Context, id is Id, opts)
                 const fk = (sgn + 1) / 2;
                 ch = ckSocket(context, ch, msg([A, " Low Socket y", sgn]), F, [cid + nm("sockLow", fk)], [SOCK_LAT, sgn * (h + SOCK_STANDOFF), LOW_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
                 ch = ckSocket(context, ch, msg([A, " Mid Socket y", sgn]), F, [cid + nm("sockMid", fk)], [-SOCK_LAT, sgn * (h + SOCK_STANDOFF), MID_SOCK_Z], [0, sgn * s30, c30], [1, 0, 0]);
-                // FIELD-CAD-PACKAGE §2.3 prints 22.27, computed at the 7.0 seat without the 0.09 bottom
+                // FIELD-CAD-PACKAGE §2.3: Z 22.19, the 7.0 bore plus the 0.09 closed bottom beyond it
                 ch = ck(ch, msg([A, " Low Socket y", sgn, " lowest point"]), measureBox(context, [cid + nm("sockLow", fk)], F)[2],
                         LOW_SOCK_Z - (SOCK_LEN + SOCK_WALL) * c30 - (SOCK_ID / 2 + SOCK_WALL) * s30, 0.001);
                 for (var q in [["Low", LOW_SOCK_Z], ["Mid", MID_SOCK_Z]])
@@ -2505,7 +2507,7 @@ function selfCheck(context is Context, id is Id, opts)
             ch = ckSocket(context, ch, msg([A, " Summit Socket"]), F, [cid + "sockSummit"], [h + SOCK_STANDOFF, 0, SUM_SOCK_Z], [sind(SUM_TILT), 0, cosd(SUM_TILT)], [0, 1, 0]);
             const mb = measureBox(context, [cid + "mastArm", cid + "mastPost"], F);
             ch = ck(ch, msg([A, " Summit mast base on the top plate"]), mb[2], CRAG_H, 0.001);
-            ch = ck(ch, msg([A, " Summit mast base within 4.0 of the shelf-face edge"]), max(h - mb[0], 4) , 4, 0.0001);
+            ch = ck(ch, msg([A, " Summit mast base within 4.0 of the shelf-face edge"]), max(h - mb[0], 4), 4, 0.0001);
             const u = [-cosd(PEG_ANG), 0, sind(PEG_ANG)];
             const pr = PEG_OD / 2;
             for (var zi = 0; zi < 2; zi += 1)
@@ -2692,7 +2694,7 @@ export enum SpFieldLed
     GREEN,
     annotation { "Name" : "White (FORECAST)" }
     FORECAST,
-    annotation { "Name" : "Alliance colour (ROUTE)" }
+    annotation { "Name" : "Alliance color (ROUTE)" }
     ROUTE
 }
 
@@ -2786,7 +2788,7 @@ function spReport(context is Context, id is Id, checks is array)
 }
 
 annotation { "Feature Type Name" : "SUMMIT PUSH Field", "Feature Name Template" : "SUMMIT PUSH Field",
-        "Feature Type Description" : "Builds the complete SUMMIT PUSH field (always-blue-origin NWU, inches) with names, colours, materials and densities." }
+        "Feature Type Description" : "Builds the complete SUMMIT PUSH field (always-blue-origin NWU, inches) with names, colors, materials and densities." }
 export const summitPushField = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
@@ -2870,7 +2872,7 @@ export const summitPushField = defineFeature(function(context is Context, id is 
         });
 
 annotation { "Feature Type Name" : "SUMMIT PUSH Game Piece", "Feature Name Template" : "SUMMIT PUSH #kind",
-        "Feature Type Description" : "One SUMMIT PUSH SUPPLY at the origin, with its official colour and weight." }
+        "Feature Type Description" : "One SUMMIT PUSH SUPPLY at the origin, with its official color and weight." }
 export const summitPushGamePiece = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {

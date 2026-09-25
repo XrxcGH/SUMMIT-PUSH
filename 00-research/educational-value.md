@@ -15,7 +15,7 @@
 
 ## Sources
 
-This report summarizes mentor and educator opinion on which games teach the most and why, and on what makes an offseason design challenge an effective teaching tool. The sources are Chief Delphi retrospective threads (read in full), training resources published by teams (1678 Citrus Circuits, Spectrum 3847, 1114 Simbotics, 148/JVN) and FIRST-adjacent articles.
+This report summarizes mentor and educator opinion on which games teach the most and why, and on what makes an offseason design challenge an effective teaching tool. The sources are Chief Delphi retrospective threads, training resources published by teams (1678 Citrus Circuits, Spectrum 3847, 1114 Simbotics, 148/JVN) and FIRST-adjacent articles.
 
 ## 1. Games that required the widest variety of mechanisms
 
@@ -63,7 +63,7 @@ Charged Up taught arm-versus-elevator tradeoff analysis, double-jointed arm cont
 Crescendo is widely called the most strategically educational recent game. art3misfowel: "Crescendo is a mechanically simple game, with basic robot strategy, but insanely in depth game strategy." It taught on-the-fly auto-aim (the first full AprilTag season brought shoot-while-moving and pose estimation within reach of mid-tier teams), passing plays, the amp/speaker economy, and switching roles between matches. In [Thoughts on Crescendo a few weeks in](https://www.chiefdelphi.com/t/thoughts-on-crescendo-a-few-weeks-in/460982), benmoeller wrote: "Being good at both [speaker and amp] adds a ton of value," compared with earlier years in which "you can be really good at one thing and do fine." The cautionary lessons are seg9585's "The trap is a trap. Basically worthless in elims compared to its design difficulty" (a cost-benefit scoping lesson) and ChiefK33f's complaint that mid-season "meta" rebuilds made "strategic design useless" at the top.
 
 ### 2025 Reefscape: tradeoff engineering and software
-Darre: "The biggest positive for this game is the design challenge; so many teams had to make a sacrifice in one way or another. Even the top teams had to make design cuts until the optimal archetype revealed itself a la ground intake." Thor5090: "Reefscape definitely tested a team's ability to program vs. building a robot. Without the ability to incorporate vision with precision auto alignment teams were significantly at a disadvantage." No recent game pushed harder on teaching reef-relative pose control and auto-align. MrPotato noted that the meta shifted in a healthy direction: "this year L1 and algae became more important as teams got better" (unlike Charged Up, which "felt solved before Houston"). Richard_Wallace: "Iteration is the soul of innovation. This game challenged all of us to iterate right up to the end."
+Darre: "The biggest positive for this game is the design challenge; so many teams had to make a sacrifice in one way or another. Even the top teams had to make design cuts until the optimal archetype revealed itself a la ground intake." Thor5090: "Reefscape definitely tested a team's ability to program vs. building a robot. Without the ability to incorporate vision with precision auto alignment teams were significantly at a disadvantage." No recent game pushed harder on teaching reef-relative pose control and auto-align. MrPotato noted that the meta shifted in a healthy direction: "this year L1 and algae became more important as teams got better" (unlike Charged Up, which "felt 'solved' before teams even got to Houston"). Richard_Wallace: "Iteration is the soul of innovation. This game challenged all of us to iterate right up to the end."
 
 ## 4. What makes an offseason design challenge effective for teaching
 
@@ -105,7 +105,7 @@ Crescendo's open-field collisions: "We did a robot rebuild... because our robot 
 Stronghold "will be remembered as the year of fouls... the finals of Einstein were decided on a foul" ([Stronghold thread](https://www.chiefdelphi.com/t/what-will-frc-2016-stronghold-be-remembered-by/151928)). Knufire on Rapid React: "most of the gripes... are with its refereeing and not the game design."
 
 ### All-or-nothing endgames
-Steamworks' climb (nuclearnerd: "if you missed a climb the whole effort was wasted") and the 2017 fuel shooting, which was nearly impossible for average teams (Kevin_Leonard: teams "won/lost matches at random... based entirely on whether their partners climbed").
+Steamworks' climb (nuclearnerd: "if you missed a climb the whole effort was wasted"; Kevin_Leonard: teams "won/lost matches at random... based entirely on whether their partners climbed"). The 2017 fuel shooting was also nearly impossible for average teams.
 
 ## Synthesis
 

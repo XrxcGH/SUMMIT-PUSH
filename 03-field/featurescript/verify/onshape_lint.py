@@ -60,6 +60,23 @@ def _close(toks, i, open_, close):
     raise ValueError("unbalanced %s at line %d" % (open_, toks[i][2]))
 
 
+def _stmt_end(toks, j):
+    """Index of the ';' (or the closing '}') that ends the statement starting at toks[j]."""
+    d = 0
+    for m in range(j, len(toks)):
+        if toks[m][0] != "op":
+            continue
+        if toks[m][1] in "([{":
+            d += 1
+        elif toks[m][1] in ")]}":
+            d -= 1
+            if d == 0 and toks[m][1] == "}":
+                return m
+        elif toks[m][1] == ";" and d == 0:
+            return m
+    raise ValueError("unterminated statement at line %d" % toks[j][2])
+
+
 def _top_level(toks):
     """[(name, line, exported, first token, last token)] for every top-level declaration."""
     out = []
@@ -124,7 +141,8 @@ def unread_locals(toks):
                 out.append((ln, "Variable %s set but not used" % name))
 
     def pop_headers(i):
-        while frames and frames[-1]["kind"] in ("for", "catch", "func"):
+        # a header whose body is a single statement (no braces) is closed at that statement's end
+        while frames and frames[-1]["kind"] in ("for", "catch", "func") and "end" not in frames[-1]:
             if frames[-1]["kind"] == "func" and i + 1 < len(toks) and toks[i + 1][1] == "{":
                 break
             fr = frames.pop()
@@ -177,6 +195,9 @@ def unread_locals(toks):
             continue
         if k == "id" and v == "for" and nxt == "(":
             fr = {"kind": "for", "names": {}}
+            e = _close(toks, i + 1, "(", ")")
+            if e + 1 < n and toks[e + 1][1] != "{":
+                fr["end"] = _stmt_end(toks, e + 1)
             frames.append(fr)
             if toks[i + 2][1] == "var":
                 fr["names"][toks[i + 3][1]] = [toks[i + 3][2], 0]
@@ -212,6 +233,8 @@ def unread_locals(toks):
             d = lookup(v)
             if d is not None and nxt not in ASSIGN:
                 d[1] += 1
+        while frames and frames[-1].get("end") == i:
+            close(frames.pop())
         prev = (k, v, ln)
         i += 1
     return out

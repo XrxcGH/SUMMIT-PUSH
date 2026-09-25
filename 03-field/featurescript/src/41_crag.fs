@@ -50,8 +50,8 @@ function buildSocketTube(context is Context, id is Id, F, b, a, r)
 }
 
 // Peg with a hemispherical tip: root point p on the face, unit axis u, unit radial r.
-// Modelled PEG_EMBED behind the root, then trimmed flush with the face by `trim`
-// (a box on the structure side of the face).
+// Modelled PEG_EMBED behind the root, then trimmed flush with the face by the box
+// trim0..trim1 (on the structure side of the face).
 function buildPeg(context is Context, id is Id, F, p, u, r, trim0, trim1)
 {
     const pr = PEG_OD / 2;
@@ -186,7 +186,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
         var side = "guardrail side";
         if (sgn > 0)
         {
-            side = "centre side";
+            side = "center side";
         }
         const socks = [[SOCK_LAT, LOW_SOCK_Z, "Low"], [-SOCK_LAT, MID_SOCK_Z, "Mid"]];
         for (var q in socks)
@@ -245,7 +245,7 @@ function buildCrag(context is Context, id is Id, isRed, opts)
             pegs = append(pegs, pid);
         }
     }
-    const pegSide = [" (guardrail side)", " (centre side)"];
+    const pegSide = [" (guardrail side)", " (center side)"];
     for (var k = 0; k < 2; k += 1)
     {
         paint(context, [pegs[k]], msg([cn, " Low Peg", pegSide[k]]), "rung", 1, "steel");

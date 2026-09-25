@@ -6,8 +6,10 @@ Run the independent element checks in verify/checks/check_*.py against one off-l
 
 Each check module defines `run(f)` taking an inspect_field.Field and returning a list of
 (label, ok, detail) tuples.  The expected values in those modules are derived from the
-package documents (FIELD-CAD-PACKAGE.md, MATERIALS-AND-COLORS.md, the Game Manual), not from
-the part code, so they check the generator rather than restate it.
+package documents (FIELD-CAD-PACKAGE.md, MATERIALS-AND-COLORS.md, DESIGN-SPEC.md, the Game
+Manual, VISION-GUIDE.md, the AprilTag layout JSON) and the std library, not from the part code,
+so they check the generator rather than restate it.  Naming modules (headwall, tags, ...) runs
+only those.
 """
 import glob
 import importlib.util
@@ -26,6 +28,9 @@ def main():
     files = sorted(glob.glob(os.path.join(HERE, "checks", "check_*.py")))
     if want:
         files = [f for f in files if os.path.basename(f)[6:-3] in want]
+        unknown = want - {os.path.basename(f)[6:-3] for f in files}
+        if unknown:
+            sys.exit("no check module named: %s" % ", ".join(sorted(unknown)))
     t0 = time.time()
     f = Field()
     print("built field in %.1f s" % (time.time() - t0))

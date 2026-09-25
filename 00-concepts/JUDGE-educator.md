@@ -1,6 +1,6 @@
 # Judging Report: Educator
 
-> This is a design-phase document kept for reference. The current game is defined by `01-design/DESIGN-SPEC.md` and the Game Manual (`02-manual/GAME-MANUAL.md`).
+> Design-phase archive. This document was written before the design specification (`01-design/DESIGN-SPEC.md`), which supersedes the geometry and scoring it describes. The current game is defined by that specification and the Game Manual (`02-manual/GAME-MANUAL.md`).
 
 ## Scores
 | Concept | Watch | Interact | Floor/Ceil | Strategy | Auto | Endgame | Build | Teach | TOTAL |
@@ -19,7 +19,7 @@
 5. RELIQUARY
 
 ## Verdict
-Greenlight FIRST ASCENT. It is the only concept with a documented kitbot path and a real upgrade ladder. Its s-neff discipline is complete: every easy task looks easy, and the Summit looks as hard as it is. The Forecast keeps the meta rotating all season, and its field is the cheapest and cleanest to reproduce. It is the safest choice for keeping mid-tier students engaged for a full CADathon while still separating elite archetypes.
+Greenlight FIRST ASCENT. It is the only concept with a documented kitbot path and a real upgrade ladder. Its s-neff discipline is complete: every easy task looks easy, and the Summit looks as hard as it is. The Forecast keeps the meta rotating all season, and its field is among the cheapest and cleanest to reproduce. It is the safest choice for keeping mid-tier students engaged for a full CADathon while still separating elite archetypes.
 
 HIGHBALL is a close second and probably the richer pure design exercise (the floppy mailbag handle and the relay handoff are the most novel mechanism problems in the field). However, its sightline problem with the far-side train penalizes the rookies its floor claims to serve, and the relay refereeing and the five-car field build add risk that a mentor-run offseason event does not need. If possible, bring its negotiated starting-line auto and its 3/8/15 swinging-bar endgame into FIRST ASCENT.
 
@@ -68,7 +68,7 @@ MAINLINE has the best interaction model but stakes the whole game on accrual tun
 
 ### RELIQUARY
 - Strengths: The vault slot is the best rookie task in any of the five concepts: floor level, orientation-free, an 8-in target that feeds the entry RP AND the Champs stretch RP, and as trivial as it looks. The urn is the most novel piece here (tip control, neck gripping, partial credit when tipped), a real CAD problem that no recent FRC game has posed. The coin-column thermometers are good for legibility, the team version built from one face is smart, and the Curator's Bonus auto for all three pieces forces the same healthy alliance negotiation as the best concepts.
-- Concerns: Six scoring faces on one central structure make the riskiest traffic architecture in the field. All twelve robot-minutes of scoring converge on a 6-ft hexagon, and the 12-in Curation Zone will be the most protested rule at every event; this is the G415 trap that the concept claims to avoid. Per-face capacity is tight (1 pedestal, 1 plinth, 1 easel, 3/peg), so elite alliances may fill the high-value positions mid-match and the game declines into vault grinding plus the endgame. The endgame is the most generic of the five, a competent but anonymous 3-tier offset climb with no signature moment. Frustration with the urn could leave the piece largely unused in quals.
+- Concerns: Six scoring faces on one central structure make the riskiest traffic architecture in the field. All twelve robot-minutes of scoring converge on a 6-ft hexagon, and the 12-in Curation Zone will be the most protested rule at every event; this is the 2026 G415 trap that the concept claims to avoid. Per-face capacity is tight (1 pedestal, 1 plinth, 1 easel, 3/peg), so elite alliances may fill the high-value positions mid-match and the game declines into vault grinding plus the endgame. The endgame is the most generic of the five, a competent but anonymous 3-tier offset climb with no signature moment. Frustration with the urn could leave the piece largely unused in quals.
 - Fixes:
   1. Grow the rotunda to 8 ft across flats, and base the protection rule on bumper geometry (no contact with a robot whose bumpers break a taped arc) instead of a 12-in judgment call.
   2. Raise per-face capacity (2 plinth positions and pegs 4 deep) so elite teams do not exhaust the scoring surface by T-60.

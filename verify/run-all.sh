@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Rebuild the compiled manual and the six drawing sheets, run the five checks, and confirm the
 # AprilTag layout JSON matches the vision guide's tag table.
-# The checks report failures in their output (RESULT, TOTAL and CLEAN lines), not in
-# their exit status, so the last line printed here says only whether every script
-# ran to completion.
+# The five checks report failures in their output (RESULT, TOTAL and CLEAN lines), not in
+# their exit status: they exit non-zero only if they stop with an error. make_layout.py
+# --check exits 1 when the JSON differs. The last line printed here therefore says only
+# whether every command exited 0.
 set -uo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 root="$(cd "$here/.." && pwd)"
@@ -20,4 +21,4 @@ done
 printf '\n================ 04-vision/make_layout.py --check ================\n'
 python 04-vision/make_layout.py --check || fail=1
 printf '\n'
-[ $fail -eq 0 ] && echo "all checks ran to completion; read each summary above for failures" || echo "a check exited non-zero (it stopped with an error; see its output above)"
+[ $fail -eq 0 ] && echo "all checks ran to completion; read each summary above for failures" || echo "a check exited non-zero (it stopped with an error, or the layout JSON differs; see its output above)"

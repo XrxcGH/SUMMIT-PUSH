@@ -24,7 +24,7 @@ lies beyond it.  FIELD-CAD §2.3 / §7 and the VISION-GUIDE §1.3 table compute 
 lowest point Z 22.19 (0.63 above the target), span 1.56-10.89 outboard.
 
 Construction reading (naming only): pegs and side sockets are named "... (guardrail side)" /
-"... (centre side)".
+"... (center side)".
 """
 import json
 import math
@@ -46,7 +46,7 @@ MANUAL_PATH = os.path.join(REPO, "02-manual", "sections", "02-arena.md")
 VISION_PATH = os.path.join(REPO, "04-vision", "VISION-GUIDE.md")
 
 M_PER_IN = 0.0254
-SIDED = (" (guardrail side)", " (centre side)")
+SIDED = (" (guardrail side)", " (center side)")
 
 # ---- document values ------------------------------------------------------------------------
 PANEL = 9.0           # FIELD-CAD §7, §10 #14; VISION-GUIDE §1; manual §3.7

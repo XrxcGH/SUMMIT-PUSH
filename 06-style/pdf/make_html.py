@@ -148,6 +148,8 @@ def annotate(tokens, chapters, figures):
                 in_rule = False
             elif (len(ch) == 3 and ch[0].type == "em_open" and re.match(r"^(Figure|Table) \d+-\d+\.", ch[1].content)):
                 t.attrSet("class", "caption")
+            elif len(ch) == 3 and ch[0].type == "strong_open" and re.match(r"^Table \d+-\d+:", ch[1].content):
+                pass                          # a table's caption line: caption_tables() needs it unclassed
             elif in_rule and t.level == 0:
                 t.attrSet("class", "rule-cont")
         elif t.type in ("bullet_list_open", "ordered_list_open") and t.level == 0 and in_rule:
@@ -250,7 +252,7 @@ def figure_html(m, figures):
 
 def callout_svg(c):
     """Vector callouts over a rendered figure (figures.py placed and checked them): leaders in the
-    reserved callout colour with 3-pt arrowheads, labels in white boxes (MANUAL-STYLE-GUIDE.md §7.3)."""
+    reserved callout colour with 3-pt arrowheads, labels in white boxes (MANUAL-STYLE-GUIDE.md §7.3, §9.2)."""
     w, h, fs, sw = c["width"], c["height"], c["font"], c["stroke"]
     arrow = 2 * sw
     out = ['<svg class="callouts" viewBox="0 0 %s %s" preserveAspectRatio="none" aria-hidden="true">' % (w, h),
@@ -359,7 +361,8 @@ def link_refs(doc, ids):
             continue
 
         def sec(m):
-            pre = parts[k][:m.start()]
+            # include the element just before, so "<code>…PACKAGE.md</code> §6" is not linked
+            pre = re.sub(r"<[^>]+>", "", "".join(parts[max(0, k - 3):k])) + parts[k][:m.start()]
             tid = "s-" + m.group(2).replace(".", "-")
             if tid not in ids or DOC_BEFORE.search(pre[-30:]):
                 return m.group(0)

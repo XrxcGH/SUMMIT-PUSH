@@ -18,7 +18,7 @@ export enum SpFieldLed
     GREEN,
     annotation { "Name" : "White (FORECAST)" }
     FORECAST,
-    annotation { "Name" : "Alliance colour (ROUTE)" }
+    annotation { "Name" : "Alliance color (ROUTE)" }
     ROUTE
 }
 
@@ -112,7 +112,7 @@ function spReport(context is Context, id is Id, checks is array)
 }
 
 annotation { "Feature Type Name" : "SUMMIT PUSH Field", "Feature Name Template" : "SUMMIT PUSH Field",
-        "Feature Type Description" : "Builds the complete SUMMIT PUSH field (always-blue-origin NWU, inches) with names, colours, materials and densities." }
+        "Feature Type Description" : "Builds the complete SUMMIT PUSH field (always-blue-origin NWU, inches) with names, colors, materials and densities." }
 export const summitPushField = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
@@ -196,7 +196,7 @@ export const summitPushField = defineFeature(function(context is Context, id is 
         });
 
 annotation { "Feature Type Name" : "SUMMIT PUSH Game Piece", "Feature Name Template" : "SUMMIT PUSH #kind",
-        "Feature Type Description" : "One SUMMIT PUSH SUPPLY at the origin, with its official colour and weight." }
+        "Feature Type Description" : "One SUMMIT PUSH SUPPLY at the origin, with its official color and weight." }
 export const summitPushGamePiece = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {

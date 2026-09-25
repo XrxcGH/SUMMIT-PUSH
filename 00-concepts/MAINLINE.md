@@ -1,6 +1,6 @@
 # MAINLINE
 
-> This is a design-phase document kept for reference. The current game is defined by `01-design/DESIGN-SPEC.md` and the Game Manual (`02-manual/GAME-MANUAL.md`).
+> Design-phase archive. This document was written before the design specification (`01-design/DESIGN-SPEC.md`), which supersedes the geometry and scoring it describes. The current game is defined by that specification and the Game Manual (`02-manual/GAME-MANUAL.md`).
 
 **Theme:** Transcontinental rail in its golden age. Two rival railway companies race to claim junctions, light the signals, and keep freight moving down a contested mainline.
 
@@ -9,7 +9,7 @@
 ## Game Pieces
 ### FREIGHT CRATE
 - Shape/dims: Cube, 12.0 in x 12.0 in x 12.0 in, slightly compliant faces, ~2.0 lb
-- Material: Ballistic-nylon fabric skin over a laser-cut corrugated-plastic internal frame with foam corner blocks (the 2018 POWER UP cube construction, proven durable, ~$15 to fabricate; team version: cardboard box wrapped in duct tape)
+- Material: Ballistic-nylon fabric skin over a laser-cut corrugated-plastic internal frame with foam corner blocks (the 2018 Power Up cube construction, proven durable, ~$15 to fabricate; team version: cardboard box wrapped in duct tape)
 - Handling challenge: Large, with floppy faces. It forces wide claws or top-down pinchers, tuning of squeeze force, and stack placement without toppling the crates below. Stacking to Level 3 (35 in) demands an elevator or 4-bar with controlled release.
 - Count/staging: 30 total: 10 staged per alliance half (6 in a taped FREIGHT YARD zone beside the siding, 4 along the wing near midfield) plus 5 behind each alliance's Loading Dock for human-player feed. No crate preloads.
 - Scoring role: The volume currency and the low floor. Crates score fixed points on flatcar stacks (uncontested, own side) and can be pushed into Depot ground bays, where each crate adds +1 Signal Weight toward depot ownership, so a kitbot pushing crates is fighting for territory.
@@ -38,11 +38,11 @@ CENTERLINE (the "MAINLINE"): three contested structures form a chokepoint band f
 
 NEUTRAL ZONE staging: 4 neutral lanterns on the centerline, two 4 ft to each side of the Tower.
 
-ALLIANCE HALVES: each alliance has (a) a FLATCAR SIDING 10 ft from its alliance wall, parallel to the right side wall, made of three 36 in x 36 in flatcar decks at 11 in height with a 1.5 in retaining lip, accepting crate stacks up to 3 high (top of L3 = 35 in); and (b) the SIGNAL GANTRY, an overhead truss 8 ft from the alliance wall spanning 20 ft, with three physically separated CLIMB STATIONS on 6 ft centers (rung details under Endgame) and a 4 ft x 4 ft BOARDING PLATFORM (2 in raised plywood) under each station.
+ALLIANCE HALVES: each alliance has (a) a FLATCAR SIDING 10 ft from its alliance wall, parallel to the right side wall, made of three 36 in x 36 in flatcar decks at 11 in height with a 1.5 in retaining lip, accepting crate stacks up to 3 high (L3 placed at 35 in); and (b) the SIGNAL GANTRY, an overhead truss 8 ft from the alliance wall spanning 20 ft, with three physically separated CLIMB STATIONS on 6 ft centers (rung details under Endgame) and a 4 ft x 4 ft BOARDING PLATFORM (2 in raised plywood) under each station.
 
 LOADING DOCKS: each alliance's two human-player docks are in the corners of the OPPOSING alliance wall (2018-portal style), each a 14 in x 14 in delivery chute at 24 in height. This guarantees that every cycle crosses the centerline chokepoints.
 
-AprilTags (36h11): 2 per Tower face, 1 per Depot face, 1 per Loading Dock, 1 per Gantry climb station, 2 on each alliance wall (16 IDs total per standard layout).
+AprilTags (36h11): 2 per Tower face, 1 per Depot face, 1 per Loading Dock, 1 per Gantry climb station, 2 on each alliance wall.
 
 ## Scoring Locations
 | # | Location | Structure | Height | Approach angle | Pieces accepted | AUTO pts | TELEOP pts | Signal Weight |
@@ -69,17 +69,17 @@ Scoring notes and wording:
 - All fixed placement points bank permanently when scored (a visible tick on the audience display). Ownership accrual is banked every second and is never revoked retroactively.
 
 ## Match Flow
-2:30 total: 0:15 AUTO and 2:15 TELEOP, with the final 0:30 as the ENDGAME window (Gantry levers unlock at T-30). A typical cycle: collect from your Loading Dock in the OPPONENT'S corner or from staged field pieces, pass through one of the three 4.5 ft centerline chokepoints (Tower gaps or wall gaps), and place on your Depot face or Tower face, or run freight home to your siding. Because both alliances' feed points are across the field, all six robots cross paths continuously in the chokepoint band. The geometry creates contested space without forcing intake-vs-intake contact: each alliance scores on its own face of every centerline structure, so scoring robots stand back to back.
+2:30 total: 0:15 AUTO and 2:15 TELEOP, with the final 0:30 as the ENDGAME window (Gantry levers unlock at T-30). A typical cycle: collect from your Loading Dock in the OPPONENT'S corner or from staged field pieces, pass through one of the four 4.5 ft centerline chokepoints (Tower gaps or wall gaps), and place on your Depot face or Tower face, or run freight home to your siding. Because both alliances' feed points are across the field, all six robots cross paths continuously in the chokepoint band. The geometry creates contested space without forcing intake-vs-intake contact: each alliance scores on its own face of every centerline structure, so scoring robots stand back to back.
 
-Defense: a defender can camp a chokepoint or shadow the opposing lantern robot, but three lanes plus the wall gaps mean no lane can be fully sealed. The standard 5-sec pin count applies.
+Defense: a defender can camp a chokepoint or shadow the opposing lantern robot, but with two Tower gaps and two wall gaps, no defender can seal the centerline. The standard 5-sec pin count applies.
 
-Spectator legibility (the fix for the chess-match problem): the score state is displayed physically. The Headlamp glows in the owning alliance's color, both Depot semaphore paddles point at their owners, and the gantry boards turn at the endgame. A spectator can read the field at a glance: "blue lamp, two red paddles — red is bleeding points at both depots but blue holds the Tower." Momentum swings are visible as soon as a lantern or drum lands.
+Spectator legibility (the fix for the chess-match problem): the score state is displayed physically. The Headlamp glows in the owning alliance's color, both Depot semaphore paddles point at their owners, and the gantry boards turn at the endgame. A spectator can read the field at a glance: "blue lamp, two red paddles: blue is bleeding points at both depots but holds the Tower." Momentum swings are visible as soon as a lantern or drum lands.
 
 Expected scores: median alliance ~110-150; strong alliance ~230-280 (roughly 45% ownership accrual, 35% placement, 20% endgame), so the balance between territory and freight stays in play all match.
 
 ## Autonomous
 AUTO lasts 0:15 and has five elements.
-1. GAME DATA, the EXPRESS ORDER: at T=0 the FMS randomly designates Depot WEST or EAST as the EXPRESS DEPOT (its signal mast lamp strobes white, and the character "W" or "E" is delivered through the game data API). During AUTO only, placements at the Express Depot score DOUBLE fixed points and DOUBLE Signal Weight, and the alliance that owns the Express Depot when auto ends banks a +10 EARLY DISPATCH bonus. Every serious auto must branch left or right on the game data (2018 POWER UP-style software forcing), with AprilTag re-localization mid-path.
+1. GAME DATA, the EXPRESS ORDER: at T=0 the FMS randomly designates Depot WEST or EAST as the EXPRESS DEPOT (its signal mast lamp strobes white, and the character "W" or "E" is delivered through the game data API). During AUTO only, placements at the Express Depot score DOUBLE fixed points and DOUBLE Signal Weight, and the alliance that owns the Express Depot when auto ends banks a +10 EARLY DISPATCH bonus. Every serious auto must branch left or right on the game data (2018 Power Up-style software forcing), with AprilTag re-localization mid-path.
 2. CONTESTED NEUTRALS: the 4 neutral lanterns sit on the centerline, two on each side of the Tower, reachable by either alliance. They create a race for extra Tower weight. They are staged 4 ft apart with approach vectors from opposite faces, so contests are races rather than collisions.
 3. ALLIANCE COORDINATION: with three robots, one Express-Depot lane, one Tower face and a siding, alliances must negotiate lane assignments in advance. They typically run a designated "signal bot" (lantern to Tower), "express bot" (drum or crate to the strobing depot) and "freight bot" (crates to siding). The key skill is collision-free coordination of the three robots.
 4. LEAVE: each robot fully exiting its starting zone scores 3.
@@ -122,7 +122,7 @@ A kitbot chassis with a simple roller claw, or even a plywood plow, contributes 
 Perceived difficulty matches actual difficulty: pushing a box into a floor slot looks easy and is easy, and no task hides a precision requirement (unlike the 35-degree reef branches). A pure drivetrain robot can also legally camp a chokepoint lane on defense in elims. Median rookie contribution: ~30-45 points plus ownership swings, visible on the depot paddle every time.
 
 ## High Ceiling
-Elite teams chase territory math weighted by throughput, which never fully solves:
+Elite teams chase territory math weighted by throughput, which is never fully solved:
 1. The three piece geometries (floppy 12 in cube, rolling 8x12 cylinder that needs reorientation, 10 in foam ring that needs precise hangs) cannot all be handled excellently under 115 lb. A robot that handles all three gives up climb speed or drivetrain, so archetypes persist: Lantern Specialist (tall elevator + ring wrist + traversal climb), Drum/Freight Superbot (fast ground intake + reorienting wrist, mid-height only), Chokepoint Defender/Crate Flooder, and Climb-Anchor.
 2. The ownership economy has live tradeoffs. Is a 72 in lantern (8 pts + 3 weight) worth 9 seconds of cycle time, compared with two ground crates (4 pts + 2 weight) in 7 seconds? The answer changes with the match state, the opponent's composition and how full each face is. Capacity locking (16 weight max/face) creates real endgame calculations about territory, similar to bearing off in backgammon.
 3. A late-season meta shift is built in. As climbs become common, value moves from holding accrual to racing to fill faces and denying levers by speed. The Express Depot randomization keeps auto development going all season (branching multi-piece autos that also take neutral lanterns).
@@ -154,7 +154,7 @@ Nothing requires welding, CNC or purchased field electronics; a full practice fi
 - Placing a drum upright on a 15-degree back-tilted shelf may become 'looks easy, is hard' for mid-tier teams if shelf tolerances are tight. Mitigate with a 1 in retaining lip and a generous 10 in shelf depth, and validate with a kitbot-grade arm before locking dimensions.
 - Because counterplay is additive only, a filled, out-weighed Depot face becomes mathematically dead territory mid-match. If both depots lock early, the territory contest collapses into pure Tower play. A per-face capacity increase or a late-match 'second shelf row' unlock may be needed if playtests show early locking.
 - The field indicator electronics (Headlamp, mast lamps, Express strobe) are the most failure-prone field components. Every ownership state must also be readable from the physical semaphore paddles, so that a dead lamp never hides the score.
-- The traversal climb may be out of reach for median teams and make the GANTRY RP too rare at week-1 regionals (the Crescendo harmony risk in reverse). The 24-point regional threshold intentionally counts combinations of parks and low hangs, but the thresholds must be rechecked against week-1 data.
+- The traversal climb may be out of reach for median teams and make the GANTRY RP too rare at week-1 regionals (the Crescendo harmony risk in reverse). The 24-point regional threshold intentionally counts combinations that include parks and low hangs, but the thresholds must be rechecked against week-1 data.
 
 ## Spectator Hook
 The final 30 seconds: the whole field state reads in color. The Headlamp and both semaphore paddles show one alliance's color while the other alliance's robots swing from rung to rung up the gantry trusses. A robot hanging six feet in the air pulls the signal lever, and a three-foot semaphore board swings over to its color as 23 points appear on the screen. Territory lamps changing in real time, plus robots throwing large switches overhead, give the audience a clear view of the match state.

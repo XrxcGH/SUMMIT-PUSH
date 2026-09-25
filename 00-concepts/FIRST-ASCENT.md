@@ -1,6 +1,6 @@
 # FIRST ASCENT
 
-> This is a design-phase document kept for reference. The current game is defined by `01-design/DESIGN-SPEC.md` and the Game Manual (`02-manual/GAME-MANUAL.md`).
+> Design-phase archive. This document was written before the design specification (`01-design/DESIGN-SPEC.md`), which supersedes the geometry and scoring it describes. The current game is defined by that specification and the Game Manual (`02-manual/GAME-MANUAL.md`).
 
 **Theme:** High-alpine mountaineering. Two expedition alliances race up opposite flanks of the same peak, stock their high camps with supplies before a storm closes the mountain, and then make the summit push themselves.
 
@@ -11,7 +11,7 @@
 - Shape/dims: Cube, 12.0 in on each side, slightly pillowed faces, ~2.0 lb
 - Material: Sewn ripstop-nylon skin over a polyurethane foam core (the Power Up cube construction, which has proven durable; teams can sew their own or build practice versions from upholstery foam + duct tape for under $10)
 - Handling challenge: Large and compliant. It forces a wide ground intake or clamping claw and a flat, controlled placement onto shelves. It is too big to hoard more than one under a 120 in frame perimeter with other mechanisms aboard, so robots cycle one at a time.
-- Count/staging: 20 total: 3 in the neutral Center Cache on the centerline, 2 staged per alliance side at taped marks, up to 1 preloaded per robot, and the remainder (8+ per alliance) stocked at the alliance's two Outfitter chutes
+- Count/staging: 20 total: 3 in the neutral Center Cache on the centerline, 2 staged per alliance side at taped marks, up to 1 preloaded per robot, and the remainder stocked at the alliance's two Outfitter chutes
 - Scoring role: The volume piece. It has the cheapest points per second, is the backbone of the Supply Line RP, and is the required 'shelter' component of every Camp bonus. The kitbot piece.
 
 ### O2 CELL
@@ -37,7 +37,7 @@ Alliance ends: each alliance wall has three driver stations. The two wall corner
 
 Start zones: robots start in their Basecamp zone touching the alliance wall or Headwall.
 
-AprilTags (36h11): 4 per Crag (one per face, centered 48 in high), 1 above each Outfitter chute, and 3 across each Headwall crossbeam, 22 tags in total, for full-field pose coverage. Tier LED rings wrap each Crag at 30 in, 54 in and 78 in and light in the alliance color when a Camp is established; a white LED band marks the pre-announced Storm Tier.
+AprilTags (36h11): 4 per Crag (one per face, centered 48 in high), 1 above each Outfitter chute, and 3 across each Headwall crossbeam, 18 tags in total, for full-field pose coverage. Tier LED rings wrap each Crag at 30 in, 54 in and 78 in and light in the alliance color when a Camp is established; a white LED band marks the pre-announced Storm Tier.
 
 ## Scoring Locations
 All supply scoring is pick-and-place onto the alliance's own Crag (opponents cannot descore it). A piece is SCORED when it is fully supported by the scoring element and not in contact with any robot of that alliance; scores latch at the 5 s post-match settle.
@@ -63,7 +63,7 @@ CAMP BONUSES (latched once earned; the tier's LED ring lights when the Camp is e
 Notes: every height band (0 / 24-30 / 42-54 / 66-78 in) and three approach angles (horizontal shelf, 30-45 deg insertion/hang, floor push) are represented, and all values sit on whole or half-foot dimensions. The Depot gives every robot a floor-level job; the 78 in tier sits at the extension ceiling.
 
 ## Match Flow
-2:30 match = 15 s AUTO + 2:15 TELEOP (the final 30 s is the endgame window, with climb protection). A cycle is: collect at your Outfitter corner chute or from staged or loose floor pieces, drive ~20 ft to your midfield Crag, place, and return. Both alliances' cycles converge on the same central corridor between the Crags, so robots cross paths constantly. Defense is legal everywhere except in opponent Outfitter Lanes and against robots in contact with their own Headwall in the last 30 s, subject to pinning limits (5 s count). Because each Crag scores on all four faces, a single defender can delay a robot but cannot shut it out. Effective defenders shade the Center Cache and the corridor instead of camping a face, so there is no intake-vs-intake G415 trap. Spectators can read the match at a glance from the pieces accumulating on the two spires and the LED tier rings that light as Camps are established. Typical strong-alliance match: 25-35 auto, 20-28 teleop placements, 2-3 Camps (30-60 bonus), 40-65 climb; scores in the 160-220 range, with median-alliance matches near 100.
+2:30 match = 15 s AUTO + 2:15 TELEOP (the final 30 s is the endgame window, with climb protection). A cycle is: collect at your Outfitter corner chute or from staged or loose floor pieces, drive ~20 ft to your midfield Crag, place, and return. Both alliances' cycles converge on the same central corridor between the Crags, so robots cross paths constantly. Defense is legal everywhere except in opponent Outfitter Lanes and against robots in contact with their own Headwall in the last 30 s, subject to pinning limits (5 s count). Because each Crag scores on all four faces, a single defender can delay a robot but cannot shut it out. Effective defenders shade the Center Cache and the corridor instead of camping a face, so there is no intake-vs-intake trap like the 2026 G415. Spectators can read the match at a glance from the pieces accumulating on the two spires and the LED tier rings that light as Camps are established. Typical strong-alliance match: 25-35 auto, 20-28 teleop placements, 2-3 Camps (30-46 bonus), 40-65 climb; scores in the 160-220 range, with median-alliance matches near 100.
 
 ## Autonomous
 Auto lasts 15 seconds. The FORECAST: when auto begins, the FMS pushes a game-data string (WHITEOUT, ICEFALL or GALE) and the field LEDs flash it. Each forecast fixes two things for the whole match: the PRIORITY SUPPLY (Whiteout=Crates, Icefall=O2, Gale=Ropes), which scores double auto points, and the STORM TIER (Whiteout=Low, Icefall=Mid, Gale=High), whose Camp bonus pays double all match and anchors the Expedition RP. Robots must read game data and branch their autos in code (2018-style, with at least three prepared paths), which teaches software branching.
@@ -124,7 +124,7 @@ Every robot-critical dimension is a round or half-inch value (12 in cube, 5 in c
 - The Summit traversal may see <10% success in weeks 1-2 (the Steamworks climb-frustration pattern). The 12/20-point intermediate rungs relieve the pressure, but the stagger distance (12 in) and the rung diameter need physical prototyping before the numbers are locked.
 - O2 socket insertion tolerance (0.75 in per side) is designed to be forgiving, but if field-build variance shrinks it, the task changes from 'looks hard, is achievable' to the kind that s-neff described as frustrating. The socket ID must be a strictly toleranced field dimension.
 - The Forecast mechanic requires FMS game-data support. Offseason and practice-field play needs a published fallback (dice or card draw + manual LED), or the interactive auto degrades to a scripted one.
-- Hanging rings on 78 in pegs at the 78 in extension ceiling invites high-CG tip-overs during defense. A no-contact rule near the Crag faces was intentionally left out to preserve defense, so tip-over frequency must be monitored at week-zero events.
+- Hanging rings on the 78 in pegs, at the extension ceiling, invites high-CG tip-overs during defense. A no-contact rule near the Crag faces was intentionally left out to preserve defense, so tip-over frequency must be monitored at week-zero events.
 
 ## Spectator Hook
 The final 30 seconds. Both mountains show their earned Camp LEDs while six robots climb the Headwalls at once: three per alliance, side by side, swinging up staggered rungs on a leaning wall, with each rung scoring as it is reached. A 30-point Summit grab at the buzzer can decide a close match. The format is Rapid React's traversal in three parallel lanes, directly in front of the audience.

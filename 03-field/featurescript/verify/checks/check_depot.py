@@ -48,7 +48,7 @@ as the §3 overhang figures give (Y from 265.6, Z from 22.19, the 1.56 column). 
 below from the §2.3 socket numbers (rim 30, 8.0 out, 30 deg, 3.34 outer radius).
 
 Construction reading (naming only): the two Low Socket tubes of a CRAG are "<A> CRAG Low Socket
-(guardrail side)" and "(centre side)".
+(guardrail side)" and "(center side)".
 """
 import math
 
@@ -602,7 +602,7 @@ def run(f):
         for lab, (ax0, ay0, ax1, ay1), sil in (
                 ("+Y arm", ARM_P, LOW_SOCK_SIL),
                 ("-Y arm", ARM_N, (LOW_SOCK_SIL[0], 480 - LOW_SOCK_SIL[3], LOW_SOCK_SIL[2], 480 - LOW_SOCK_SIL[1]))):
-            tube = f.find(side + " CRAG Low Socket (guardrail side)") + f.find(side + " CRAG Low Socket (centre side)")
+            tube = f.find(side + " CRAG Low Socket (guardrail side)") + f.find(side + " CRAG Low Socket (center side)")
             e = ext(side, f.solids(tube), ax0, ay0, 0, ax1, ay1, SKY)
             ok = e is not None and all(abs(a - b) < 0.02 for a, b in zip((e[0], e[1], e[3], e[4]), sil)) \
                 and abs(e[2] - LOW_SOCK_ZMIN) < 0.01

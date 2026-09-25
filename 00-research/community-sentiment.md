@@ -16,7 +16,7 @@
 
 ## Sources
 
-This report summarizes community sentiment from Chief Delphi polls and discussion threads (read through the forum's Discourse API), the TBA blog's analytical game rankings, and community retrospectives, including YouTube tier lists ([Tier Ranking FRC Games 2000–2022, Part 1](https://www.youtube.com/watch?v=jT5AKLmPI9I), [Part 2](https://m.youtube.com/watch?v=0yn4Tt9lztw)). Reddit r/FRC threads could not be retrieved (Reddit blocks unauthenticated scraping, and search indexing of the subreddit was poor), so the report relies mainly on Chief Delphi, the busiest venue for this debate, and on the TBA blog.
+This report summarizes community sentiment from Chief Delphi polls and discussion threads, the TBA blog's analytical game rankings, and community retrospectives, including YouTube tier lists ([Tier Ranking FRC Games 2000–2022, Part 1](https://www.youtube.com/watch?v=jT5AKLmPI9I), [Part 2](https://www.youtube.com/watch?v=0yn4Tt9lztw)). Reddit r/FRC threads were not reviewed, so the report relies mainly on Chief Delphi, the busiest venue for this debate, and on the TBA blog.
 
 ## 1. Poll results
 

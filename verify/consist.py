@@ -2,8 +2,9 @@
 """Document consistency: rule and section cross-references, glossary coverage,
 restated-rule qualifiers, and superseded values.
 
-Scans every .md and .svg file and generate_drawings.py, except REVISION-LOG.md and the
-00-concepts/ and 00-research/ archives. Writes its report to verify/consist.txt."""
+Scans every .md and .svg file and generate_drawings.py, except REVISION-LOG.md, the
+00-concepts/ and 00-research/ archives and any node_modules/. Writes its report to
+verify/consist.txt."""
 import io, os, re, collections
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 BS = chr(92)
@@ -14,12 +15,13 @@ MD = []
 # The drawing sheets and the generator carry prose too, and a stale number there reaches
 # a CAD modeller before the Markdown does. Scan them alongside the documents.
 for root, dirs, files in os.walk('.'):
-    # 00-concepts/ and 00-research/ are archive material written before the specification.
-    dirs[:] = [d for d in dirs if d not in ('.git', '00-concepts', '00-research')]
+    # 00-concepts/ and 00-research/ are archive material written before the specification;
+    # node_modules/ holds the build tools' third-party packages.
+    dirs[:] = [d for d in dirs if d not in ('.git', '00-concepts', '00-research', 'node_modules')]
     for f in files:
         # REVISION-LOG.md quotes superseded text by design; scanning it for stale
         # values reports the log's own history and drowns real hits.
-        if (f.endswith('.md') or f.endswith('.svg') or f == 'generate_drawings.py')                 and f != 'REVISION-LOG.md':
+        if (f.endswith('.md') or f.endswith('.svg') or f == 'generate_drawings.py') and f != 'REVISION-LOG.md':
             MD.append(os.path.join(root, f).replace(BS, '/').lstrip('./'))
 
 MAN = io.open('02-manual/GAME-MANUAL.md', encoding='utf-8').read()
@@ -98,7 +100,7 @@ def _forms(term):
 
 def _covered(term):
     # exact, singular/plural, or a leading word of a defined multiword term:
-    # "LEDGE" is covered by "LEDGE RUNG", "MID SOCKET" by "SOCKET" it is not.
+    # "LEDGE" is covered by "LEDGE RUNG", but "MID SOCKET" is not covered by "SOCKET".
     if _forms(term) & gterms:
         return True
     return any(g.startswith(term + ' ') for g in gterms)

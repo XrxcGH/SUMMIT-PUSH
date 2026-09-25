@@ -6,7 +6,7 @@ Generate apriltag-field-layout.json from the tag table in VISION-GUIDE.md §3.
     python 04-vision/make_layout.py --check    exit 1 if the committed JSON differs
 
 The table (inches, degrees, always-blue-origin NWU) is the source; the JSON is the WPILib
-AprilTagFieldLayout form: metres, and each tag's yaw about +Z as a unit quaternion.
+AprilTagFieldLayout form: meters, and each tag's yaw about +Z as a unit quaternion.
 """
 import math
 import os

@@ -4,9 +4,11 @@
 The sheets print on landscape ANSI C plates with the image 21 in wide
 (06-style/pdf/plates.css), so one SVG user unit prints at 1512 / viewBox-width pt.
 For every sheet this script models each <text> element as an oriented box
-(advance widths of Arial / Liberation Sans, the face the plates are rendered
-with; rotate/translate/matrix transforms on the text and on enclosing groups are
-applied), samples the outline of every stroked or filled shape, and reports:
+(advance widths of Arial / Liberation Sans, the metrics the sheet generator lays
+out with; the plates are set in Roboto, which is narrower overall but up to about
+4% wider on some strings; rotate/translate/matrix transforms on the text and on
+enclosing groups are applied), samples the outline of every stroked or filled
+shape, and reports:
 
   OVERLAP     two text boxes overlap
   OFF-SHEET   a text box leaves the viewBox
@@ -38,7 +40,7 @@ MIN_HEAD_PT = 3.0
 DIM, LEADER = '#c02020', '#e100e1'
 NS = '{http://www.w3.org/2000/svg}'
 
-# Arial / Liberation Sans advance widths, 1/1000 em
+# Arial / Liberation Sans advance widths, 1/1000 em (the same table as _drawlib.py)
 _CH = (" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
        "abcdefghijklmnopqrstuvwxyz{|}~")
 _REG = dict(zip(_CH, [278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278]

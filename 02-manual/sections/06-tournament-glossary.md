@@ -103,7 +103,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 |---|---|
 | **ALLIANCE** | A group of three (3) teams that play a MATCH together as Red or Blue. |
 | **ALLIANCE ROLE** | One of the four recurring ROBOT archetypes described in Section 4.10: CRATE FREIGHTER, O2 SURGEON, RING ALPINIST, or HYBRID. ALLIANCE ROLES are descriptive and impose no rules. |
-| **APRON** (CRAG APRON) | A taped band extending 36 in out from a CRAG's SHELF FACE and PEG FACE and 20 in out from each SOCKET FACE, with 20-in-radius corner arcs. An opponent may not contact a ROBOT whose BUMPERS intersect its own ALLIANCE's APRON (**G407**). |
+| **APRON** (CRAG APRON) | A taped band extending 36 in out from a CRAG's SHELF FACE and PEG FACE and 20 in out from each SOCKET FACE, with 20-in-radius corner arcs. An opponent may not contact a ROBOT whose BUMPERS intersect its own ALLIANCE's APRON, unless that ROBOT initiated the contact (**G407**). |
 | **ARENA** | All elements of the game infrastructure required to play SUMMIT PUSH: the FIELD, the CRAGS, the HEADWALLS, SUPPLIES, and all supporting hardware and control equipment. |
 | **ARENA FAULT** | A failure of the FIELD, FMS, FIELD network, scoring system, or FIELD-provided equipment that affects play or scoring. It is the only basis for replaying a Qualification MATCH (§8.6). |
 | **ASCENT RP** | The bonus RANKING POINT awarded when an ALLIANCE's total ENDGAME points meet or exceed the tier threshold (Section 4.7). |
@@ -135,7 +135,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **ELECTRIC SOLENOID ACTUATOR** | A COTS linear electric actuator of ≤1 in stroke and ≤10 W, legal under Table 6-2 and powered per **R505** and **R703**. |
 | **ENDGAME** | The final 0:30 of TELEOP, during which HEADWALL ZONE protection is active; the protection continues through climb assessment. ENDGAME climb points are assessed after the final buzzer, with ROBOTS at rest or at T+5 s, whichever comes first. |
 | **E-STOP** | The FIELD-provided driver-station button that renders a ROBOT inoperable for the remainder of the MATCH (§3.1). |
-| **EXPEDITION RP** | The bonus RANKING POINT awarded for establishing the tier-threshold set of CAMPS (Section 4.7). |
+| **EXPEDITION RP** | The bonus RANKING POINT awarded for establishing the tier-threshold set of CAMPS, and at Championship tier for also filling the declared ROUTE's tier to full capacity (Section 4.7). |
 | **FABRICATED ITEM** | Any COMPONENT or MECHANISM altered, built, cast, printed, or assembled by or for a team into its final form (**R302**). |
 | **FIELD** | The 648 in × 324 in carpeted playing surface bounded by the guardrails and the two alliance walls, together with the FIELD elements standing on it. The FIELD is the part of the ARENA on which the MATCH is played. |
 | **FIELD LEDs** | The two guardrail-mounted LED bands, each split at the centerline into two ALLIANCE segments, that display FIELD-safe (green), the FORECAST (white), and each ALLIANCE's declared ROUTE (§3.1.2). They are indicators only and are never the scoring or safety authority. |
@@ -147,7 +147,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **GAME PIECE** | Synonymous with **SUPPLY**: the CACHE CRATE, the O2 CELL, or the ROPE COIL. A rule stated in either term applies equally to the other. |
 | **HEAD REFEREE** | The referee with final authority over rule interpretation, penalties, MATCH stoppages, and score approval at an event. |
 | **HEADWALL** | An ALLIANCE's 144-in-wide climbing truss, leaned 15° from vertical and divided into three independent 48-in lanes, each carrying a LEDGE RUNG, a CAMP RUNG, and a SUMMIT RUNG. One ROBOT per lane. |
-| **HEADWALL ZONE** | The taped BASECAMP area beneath an ALLIANCE's HEADWALL. From the start of ENDGAME through climb assessment, an opponent that contacts a ROBOT in this zone, or a ROBOT supported by that HEADWALL, commits a MAJOR FOUL (**G412**). |
+| **HEADWALL ZONE** | The taped BASECAMP area beneath an ALLIANCE's HEADWALL. From the start of ENDGAME through climb assessment, an opponent that contacts a ROBOT in this zone, or a ROBOT supported by that HEADWALL, commits a MAJOR FOUL unless the protected ROBOT initiated the contact (**G412**). |
 | **HIGH CAMP** | The high-tier CAMP: an O2 CELL in the Summit Socket and a ROPE COIL on at least one High Peg, simultaneously SCORED (+15; +35 under a HIGH ROUTE declaration). |
 | **HUMAN PLAYER** | A DRIVE TEAM member assigned to one of the ALLIANCE's two OUTFITTER stations, who introduces SUPPLIES onto the FIELD only through the chute opening (**G506**). Each ALLIANCE fields exactly two, one per station, drawn from any of its three DRIVE TEAMS (**G307**). |
 | **INSPECTION** | The pre-MATCH verification that a ROBOT complies with every R-rule in the configuration it will play (Section 7). |
@@ -182,7 +182,7 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **SCORING ERROR** | A correctable mistake in the recorded score: a miscounted or misattributed SUPPLY, an unrecorded CAMP or SUMMIT BEACON latch, a mis-entered ENDGAME state, or a FOUL credited to the wrong ALLIANCE (§4.9). Referee judgment about whether a violation occurred is never a SCORING ERROR. |
 | **SHELF FACE** | The CRAG face that faces the owning ALLIANCE's wall, carrying Shelf 1, Shelf 2, the Summit Socket, and the BASE DEPOT. |
 | **SOCKET FACE** | Either of the two CRAG faces perpendicular to the FIELD centerline, each carrying one Low Socket and one Mid Socket. |
-| **STARTING CONFIGURATION** | The ROBOT's pre-MATCH state: no more than 42 in tall and entirely within its FRAME PERIMETER (**R104**). |
+| **STARTING CONFIGURATION** | The ROBOT's pre-MATCH state: no more than 42 in tall and, apart from its BUMPERS, entirely within its FRAME PERIMETER (**R104**). |
 | **SUMMIT BEACON** | The translucent lantern forming the top 12 in of each CRAG's spire (Z 78–90, luminous center 84 in). It lights when all three CAMPS are established and banks a latched +10. |
 | **SUMMIT RUNG** | The highest HEADWALL rung, 78 in above the carpet. A ROBOT supported solely by it at climb assessment earns 30 points. |
 | **SUPPLY** (pl. **SUPPLIES**) | The collective term for the three GAME PIECES: the CACHE CRATE, the O2 CELL, and the ROPE COIL. |
@@ -192,6 +192,6 @@ Defined terms appear in ALL CAPS throughout this manual. Where a definition belo
 | **TIMEOUT** | A 6-minute break: one per ALLIANCE for the Playoff bracket, plus one more for the Finals (§8.6). |
 | **VENDOR** | A source from which a COTS item is generally available to all teams at published pricing (**R301**, **R303**). |
 | **VERBAL WARNING** | A no-points penalty for a first-instance, low-impact infraction. A VERBAL WARNING is recorded and persists for the team for the remainder of the event. |
-| **YELLOW CARD** | A warning for unsafe or uncivil behavior or egregious rule violations. A second YELLOW CARD in the same tournament phase escalates to a RED CARD. |
+| **YELLOW CARD** | A warning for unsafe or uncivil behavior, egregious rule violations, or the specific violations for which a rule lists one. A second YELLOW CARD in the same tournament phase escalates to a RED CARD. |
 
 > *Commentary:* LED tier rings and the SUMMIT BEACON confirm latched CAMP states; they are never the scoring authority. If a lighting fault occurs, referees score CAMPS from the SUPPLY states at the moment of completion, per the definitions above.

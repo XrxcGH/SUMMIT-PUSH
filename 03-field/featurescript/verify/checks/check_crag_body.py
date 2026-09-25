@@ -15,7 +15,7 @@ origin at the CRAG centre on the carpet, +x = SHELF FACE outward normal (Blue: w
 §1.1), +z up, +y = z x x.  So the SHELF FACE is x = +24, the PEG FACE x = -24, SOCKET FACES y = +/-24.
 
 Construction reading (naming only; the package does not name parts): each peg and side socket is
-its own part, named "<A> CRAG <Low|Mid|High> Peg (guardrail side)" / "(centre side)" (and likewise
+its own part, named "<A> CRAG <Low|Mid|High> Peg (guardrail side)" / "(center side)" (and likewise
 "<A> CRAG <Low|Mid> Socket (...)"), the guardrail side being the one farther from the field's long
 centreline Y = 162.  The lookups below find both sides and check that each name matches its side.
 """
@@ -249,20 +249,20 @@ def run(f):
             return []
 
     def sided(base):
-        """Both parts named "<base> (guardrail side)" and "<base> (centre side)"."""
-        return find(base + " (guardrail side)") + find(base + " (centre side)")
+        """Both parts named "<base> (guardrail side)" and "<base> (center side)"."""
+        return find(base + " (guardrail side)") + find(base + " (center side)")
 
     def side_names_ok(base, cy):
         """Each sided part lies on the side its name gives: guardrail side = farther from Y 162."""
-        g, c = find(base + " (guardrail side)"), find(base + " (centre side)")
+        g, c = find(base + " (guardrail side)"), find(base + " (center side)")
         if len(g) != 1 or len(c) != 1:
-            ck(base + ": one guardrail-side and one centre-side part", False, "found %d / %d" % (len(g), len(c)))
+            ck(base + ": one guardrail-side and one center-side part", False, "found %d / %d" % (len(g), len(c)))
             return
         yg = 0.5 * (f.bbox(g)[1] + f.bbox(g)[4])
         yc = 0.5 * (f.bbox(c)[1] + f.bbox(c)[4])
         ok = abs(yg - FIELD_CTR[1]) > abs(yc - FIELD_CTR[1]) and (yg - cy) * (yc - cy) < 0
-        ck(base + ": '(guardrail side)' / '(centre side)' names match the geometry", ok,
-           "guardrail-side part centre Y %.3f, centre-side part centre Y %.3f (CRAG centre Y %g)" % (yg, yc, cy))
+        ck(base + ": '(guardrail side)' / '(center side)' names match the geometry", ok,
+           "guardrail-side part centre Y %.3f, center-side part centre Y %.3f (CRAG centre Y %g)" % (yg, yc, cy))
 
     def material_ok(label, rs, key):
         m = f.material(rs)

@@ -20,7 +20,7 @@ built pegs in the §2.5 rest poses; a copy of the generator's own staged ROPE CO
 the same way so the piece and the peg are checked together.
 
 Construction reading (naming only; the package does not name parts): each peg is its own part,
-"<A> CRAG <Low|Mid|High> Peg (guardrail side)" or "(centre side)", the guardrail side being the
+"<A> CRAG <Low|Mid|High> Peg (guardrail side)" or "(center side)", the guardrail side being the
 one farther from the field's long centreline Y = 162.  Pegs are matched to their expected roots by
 geometry and the name's side is then checked against the match.
 """
@@ -55,7 +55,7 @@ LEVELS = [                                          # §2.5 table / §10 row 8
 ]
 BOSS_Z = (74.0, 80.0)                               # MATERIALS §2 "spanning Z 74-80"
 BOSS_T = 0.25                                       # MATERIALS §2 "0.25 in"
-BOSS_W = 3.0                                        # §2.5 "back the lantern's lower edge opaque over the 3.0 in of face width at each peg"
+BOSS_W = 3.0                                        # §2.5 "back the lantern's lower edge with opaque material over the 3.0 in of face width at each peg"
 LANTERN_Z0, LANTERN_Z1 = 78.0, 90.0                 # §2.1
 RING78 = (77.0, 78.0)                               # §2.6 / §8
 RING_W = 1.0                                        # §2.6 band width
@@ -175,11 +175,11 @@ class Ctx:
         return hits
 
 
-SIDE_SUFFIX = (" (guardrail side)", " (centre side)")
+SIDE_SUFFIX = (" (guardrail side)", " (center side)")
 
 
 def find_sided(f, base):
-    """Both parts named base + " (guardrail side)" / " (centre side)"; [] if there are none."""
+    """Both parts named base + " (guardrail side)" / " (center side)"; [] if there are none."""
     out = []
     for suf in SIDE_SUFFIX:
         try:
@@ -243,7 +243,7 @@ def run(f):
         for level, _, _, _ in LEVELS:
             rs = find_sided(f, "%s CRAG %s" % (side, level))
             found[level] = rs
-            add("%s %s: 2 bodies named '%s CRAG %s (guardrail side)' / '(centre side)'" % (side, level, side, level),
+            add("%s %s: 2 bodies named '%s CRAG %s (guardrail side)' / '(center side)'" % (side, level, side, level),
                 len(rs) == 2, "found %d" % len(rs))
         try:
             bosses = f.find("%s CRAG High Peg root boss" % side)

@@ -2,7 +2,7 @@
 
 The rules in this section govern the design and construction of every ROBOT competing in SUMMIT PUSH. A ROBOT is the electromechanical assembly, including all BUMPERS and all attached COMPONENTS and MECHANISMS, that a team places on the FIELD to play the game. Unless a rule states otherwise, compliance is assessed at INSPECTION and must be maintained for the duration of the event.
 
-> *Commentary:* These rules follow the construction conventions most varsity robotics teams already build to. Where SUMMIT PUSH departs from those conventions, most notably by having no in-match height limit, the rule says so. The commentary explains why each rule exists, which is the quickest way to understand what it does and does not prohibit.
+> *Commentary:* These rules follow the construction conventions most competitive robotics teams already build to. Where SUMMIT PUSH departs from those conventions, most notably by having no in-match height limit, the rule says so. Commentary explains why a rule exists, which is the quickest way to understand what it does and does not prohibit.
 
 ## 6.1 Size, Weight, and Extension (R1xx)
 
@@ -20,7 +20,7 @@ The rules in this section govern the design and construction of every ROBOT comp
 
 > *Commentary:* With the string-wrap method, concave features cost nothing because the string bridges them, but every convex feature counts. A 30 in × 30 in square and a 27 in × 33 in long chassis each measure 120 in, the maximum.
 
-**R104** *Start inside the FRAME PERIMETER, at most 42 in tall.* In its STARTING CONFIGURATION (the physical state of the ROBOT at the start of a MATCH), no part of the ROBOT may extend beyond the vertical projection of the FRAME PERIMETER, except minor protrusions per **R103**, and the ROBOT's height must not exceed 42 in (106.7 cm).
+**R104** *Start inside the FRAME PERIMETER, at most 42 in tall.* In its STARTING CONFIGURATION (the physical state of the ROBOT at the start of a MATCH), no part of the ROBOT may extend beyond the vertical projection of the FRAME PERIMETER, except its BUMPERS and minor protrusions per **R103**, and the ROBOT's height must not exceed 42 in (106.7 cm).
 
 *Violation:* ROBOT will not pass INSPECTION. If discovered at the start of a MATCH, the ROBOT will not be permitted to start until it is compliant.
 
@@ -258,7 +258,7 @@ ELECTRIC SOLENOID ACTUATORS and non-actuator custom circuits and loads (LEDs, se
 
 *Violation:* ROBOT will not pass INSPECTION. If the modification is used in a MATCH, the team may be referred to the HEAD REFEREE for a RED CARD.
 
-**R706** *Fit one ROBOT SIGNAL LIGHT.* The ROBOT must include exactly one ROBOT SIGNAL LIGHT (RSL): a COTS solid-state amber indicator wired to the roboRIO's RSL port and powered only from that port. It must be mounted upright on the main ROBOT structure, not on an articulating MECHANISM, and must be visible from any horizontal direction at 30 ft with the ROBOT in its STARTING CONFIGURATION, unobstructed by BUMPERS or by any MECHANISM in any configuration the ROBOT will use, including a HEADWALL hang. The RSL must blink when the ROBOT is disabled or not connected to the FMS, and must be continuously lit when the ROBOT is enabled.
+**R706** *Fit one ROBOT SIGNAL LIGHT.* The ROBOT must include exactly one ROBOT SIGNAL LIGHT (RSL): a COTS solid-state amber indicator wired to the roboRIO's RSL port and powered only from that port. It must be mounted upright on the main ROBOT structure, not on an articulating MECHANISM, and must be visible from any horizontal direction at 30 ft with the ROBOT in its STARTING CONFIGURATION, unobstructed by BUMPERS or by any MECHANISM in any configuration the ROBOT will use, including a HEADWALL hang. The RSL must be continuously lit when the ROBOT is powered on and disabled, including when it is not connected to the FMS, and must blink when the ROBOT is enabled.
 
 *Violation:* ROBOT will not pass INSPECTION.
 
@@ -278,7 +278,7 @@ ELECTRIC SOLENOID ACTUATORS and non-actuator custom circuits and loads (LEDs, se
 
 *Violation:* ROBOT will not pass INSPECTION.
 
-**R803** *Pressure limits.* Stored pressure must not exceed 120 psi (827 kPa). Working pressure (everything downstream of the primary regulator) must not exceed 60 psi (413 kPa).
+**R803** *Pressure limits.* Stored pressure must not exceed 120 psi (827 kPa). Working pressure (everything downstream of the primary regulator) must not exceed 60 psi (414 kPa).
 
 *Violation:* ROBOT will not pass INSPECTION.
 

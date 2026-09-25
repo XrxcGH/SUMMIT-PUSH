@@ -1,0 +1,16 @@
+# Generated files: collapsed in GitHub diffs and left out of language statistics
+participants/01-game-manual/GAME-MANUAL.md linguist-generated=true
+participants/03-field/drawings/*.svg linguist-generated=true
+participants/03-field/onshape/SummitPushField.fs linguist-generated=true
+participants/04-vision/apriltag-field-layout.json linguist-generated=true
+organizers/source/typesetting/figure-callouts/*.json linguist-generated=true
+organizers/source/typesetting/pdf/fonts.css linguist-generated=true
+organizers/source/typesetting/pdf/fonts/** linguist-vendored=true
+
+# FeatureScript is not a Linguist language; keep .fs from being counted as F#
+*.fs linguist-detectable=false
+
+# Binary deliverables
+*.pdf binary
+*.png binary
+*.woff2 binary

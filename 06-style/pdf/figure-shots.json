@@ -1,0 +1,611 @@
+[
+ {
+  "name": "field",
+  "eye": [
+   -260,
+   -330,
+   430
+  ],
+  "target": [
+   310,
+   150,
+   0
+  ],
+  "fov": 31,
+  "width": 2400,
+  "height": 1350,
+  "callouts": [
+   {
+    "text": "Blue alliance wall",
+    "at": [
+     -1,
+     215,
+     72
+    ],
+    "offset": [
+     -0.02,
+     -0.14
+    ]
+   },
+   {
+    "text": "Blue HEADWALL",
+    "at": [
+     22,
+     150,
+     84
+    ],
+    "offset": [
+     0.03,
+     -0.14
+    ]
+   },
+   {
+    "text": "Blue CRAG",
+    "at": [
+     324,
+     216,
+     74
+    ],
+    "offset": [
+     -0.03,
+     -0.13
+    ]
+   },
+   {
+    "text": "CENTER CACHE",
+    "at": [
+     330,
+     162,
+     5
+    ],
+    "offset": [
+     0.1,
+     0.12
+    ]
+   },
+   {
+    "text": "Red CRAG",
+    "at": [
+     340,
+     60,
+     62
+    ],
+    "offset": [
+     0.13,
+     0.03
+    ]
+   },
+   {
+    "text": "Red HEADWALL",
+    "at": [
+     626,
+     200,
+     84
+    ],
+    "offset": [
+     0.06,
+     0.03
+    ]
+   },
+   {
+    "text": "Red alliance wall",
+    "at": [
+     649,
+     40,
+     60
+    ],
+    "offset": [
+     0.02,
+     0.1
+    ]
+   },
+   {
+    "text": "Blue OUTFITTER",
+    "at": [
+     -1,
+     30,
+     44
+    ],
+    "offset": [
+     0.1,
+     0.04
+    ]
+   }
+  ]
+ },
+ {
+  "name": "field-plan",
+  "eye": [
+   324,
+   162,
+   1500
+  ],
+  "target": [
+   324,
+   162.01,
+   0
+  ],
+  "fov": 24,
+  "width": 2400,
+  "height": 1260,
+  "callouts": [
+   {
+    "text": "BASECAMP",
+    "at": [
+     30,
+     200,
+     0
+    ],
+    "offset": [
+     0.08,
+     -0.05
+    ]
+   },
+   {
+    "text": "CLIMB LINE",
+    "at": [
+     47,
+     70,
+     0
+    ],
+    "offset": [
+     0.07,
+     -0.06
+    ]
+   },
+   {
+    "text": "OUTFITTER LANE",
+    "at": [
+     40,
+     294,
+     0
+    ],
+    "offset": [
+     0.11,
+     0.05
+    ]
+   },
+   {
+    "text": "CRAG APRON",
+    "at": [
+     264,
+     270,
+     0
+    ],
+    "offset": [
+     -0.04,
+     -0.07
+    ]
+   },
+   {
+    "text": "CENTER CACHE",
+    "at": [
+     348,
+     162,
+     0
+    ],
+    "offset": [
+     0.1,
+     0.0
+    ]
+   },
+   {
+    "text": "FIELD centerline",
+    "at": [
+     324,
+     20,
+     0
+    ],
+    "offset": [
+     0.08,
+     -0.03
+    ]
+   },
+   {
+    "text": "Blue staging marks",
+    "at": [
+     144,
+     108,
+     0
+    ],
+    "offset": [
+     0.1,
+     0.06
+    ]
+   }
+  ],
+  "compass": {
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "length": 60
+  },
+  "pad": 120
+ },
+ {
+  "name": "crag",
+  "eye": [
+   160,
+   110,
+   118
+  ],
+  "target": [
+   318,
+   236,
+   30
+  ],
+  "fov": 40,
+  "width": 2000,
+  "height": 1400,
+  "callouts": [
+   {
+    "text": "SUMMIT BEACON",
+    "at": [
+     322,
+     240,
+     90
+    ],
+    "offset": [
+     -0.14,
+     -0.02
+    ]
+   },
+   {
+    "text": "Summit Socket",
+    "at": [
+     293,
+     240,
+     72.5
+    ],
+    "offset": [
+     -0.18,
+     0.04
+    ]
+   },
+   {
+    "text": "Shelf 2",
+    "at": [
+     290,
+     222,
+     43
+    ],
+    "offset": [
+     -0.14,
+     0.02
+    ]
+   },
+   {
+    "text": "Shelf 1",
+    "at": [
+     290,
+     222,
+     25
+    ],
+    "offset": [
+     -0.14,
+     0.04
+    ]
+   },
+   {
+    "text": "Mid Socket",
+    "at": [
+     338,
+     210,
+     55.5
+    ],
+    "offset": [
+     0.12,
+     0.02
+    ]
+   },
+   {
+    "text": "Low Socket",
+    "at": [
+     310,
+     210,
+     31
+    ],
+    "offset": [
+     0.14,
+     -0.03
+    ]
+   },
+   {
+    "text": "AprilTag",
+    "at": [
+     338,
+     216,
+     17.5
+    ],
+    "offset": [
+     0.08,
+     0.06
+    ]
+   },
+   {
+    "text": "BASE DEPOT",
+    "at": [
+     282,
+     248,
+     2
+    ],
+    "offset": [
+     -0.12,
+     0.08
+    ]
+   },
+   {
+    "text": "CRAG APRON",
+    "at": [
+     264,
+     228,
+     0
+    ],
+    "offset": [
+     -0.06,
+     0.1
+    ]
+   }
+  ]
+ },
+ {
+  "name": "headwall",
+  "eye": [
+   200,
+   30,
+   100
+  ],
+  "target": [
+   34,
+   165,
+   36
+  ],
+  "fov": 42,
+  "width": 2000,
+  "height": 1300,
+  "callouts": [
+   {
+    "text": "SUMMIT RUNG",
+    "at": [
+     27.3,
+     102,
+     77.3
+    ],
+    "offset": [
+     -0.08,
+     0.04
+    ]
+   },
+   {
+    "text": "CAMP RUNG",
+    "at": [
+     33.7,
+     126,
+     53.3
+    ],
+    "offset": [
+     -0.12,
+     0.0
+    ]
+   },
+   {
+    "text": "LEDGE RUNG",
+    "at": [
+     40,
+     102,
+     29.3
+    ],
+    "offset": [
+     -0.12,
+     0.04
+    ]
+   },
+   {
+    "text": "lane frame",
+    "at": [
+     31,
+     185,
+     70
+    ],
+    "offset": [
+     0.1,
+     -0.03
+    ]
+   },
+   {
+    "text": "AprilTag",
+    "at": [
+     39,
+     162,
+     12
+    ],
+    "offset": [
+     0.02,
+     0.08
+    ]
+   },
+   {
+    "text": "BASECAMP",
+    "at": [
+     24,
+     215,
+     0
+    ],
+    "offset": [
+     0.1,
+     0.05
+    ]
+   },
+   {
+    "text": "CLIMB LINE",
+    "at": [
+     47,
+     236,
+     0
+    ],
+    "offset": [
+     0.12,
+     0.02
+    ]
+   }
+  ]
+ },
+ {
+  "name": "outfitter",
+  "eye": [
+   -95,
+   95,
+   135
+  ],
+  "target": [
+   -16,
+   26,
+   28
+  ],
+  "fov": 38,
+  "width": 2000,
+  "height": 1300,
+  "callouts": [
+   {
+    "text": "chute throat",
+    "at": [
+     -1,
+     30,
+     40
+    ],
+    "offset": [
+     0.06,
+     -0.08
+    ]
+   },
+   {
+    "text": "ramp",
+    "at": [
+     -18,
+     30,
+     33.5
+    ],
+    "offset": [
+     0.02,
+     0.1
+    ]
+   },
+   {
+    "text": "cheek",
+    "at": [
+     -22,
+     45.5,
+     46
+    ],
+    "offset": [
+     -0.02,
+     -0.1
+    ]
+   },
+   {
+    "text": "funnel wing",
+    "at": [
+     -39,
+     12,
+     49
+    ],
+    "offset": [
+     -0.12,
+     -0.04
+    ]
+   },
+   {
+    "text": "ramp leg",
+    "at": [
+     -36.6,
+     30,
+     16
+    ],
+    "offset": [
+     -0.1,
+     0.06
+    ]
+   },
+   {
+    "text": "AprilTag (field side)",
+    "at": [
+     0,
+     30,
+     55
+    ],
+    "offset": [
+     0.1,
+     -0.06
+    ]
+   }
+  ]
+ },
+ {
+  "name": "center-cache",
+  "eye": [
+   210,
+   162,
+   85
+  ],
+  "target": [
+   324,
+   162,
+   2
+  ],
+  "fov": 36,
+  "width": 2000,
+  "height": 1200,
+  "callouts": [
+   {
+    "text": "CACHE CRATE",
+    "at": [
+     300,
+     186,
+     13
+    ],
+    "offset": [
+     -0.1,
+     -0.08
+    ]
+   },
+   {
+    "text": "ROPE COIL",
+    "at": [
+     300,
+     162,
+     2.5
+    ],
+    "offset": [
+     0.02,
+     0.1
+    ]
+   },
+   {
+    "text": "O2 CELL",
+    "at": [
+     300,
+     138,
+     5
+    ],
+    "offset": [
+     0.1,
+     0.06
+    ]
+   },
+   {
+    "text": "FIELD centerline",
+    "at": [
+     324,
+     110,
+     0
+    ],
+    "offset": [
+     0.08,
+     -0.1
+    ]
+   }
+  ]
+ }
+]

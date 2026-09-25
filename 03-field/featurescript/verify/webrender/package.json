@@ -1,0 +1,10 @@
+{
+  "name": "summit-push-webrender",
+  "private": true,
+  "description": "Headless WebGL renderer for the SUMMIT PUSH off-line build (three.js in Chromium via Playwright)",
+  "type": "module",
+  "dependencies": {
+    "playwright-core": "1.48.2",
+    "three": "0.169.0"
+  }
+}

@@ -2,9 +2,9 @@
 
 **Document:** `03-field/MATERIALS-AND-COLORS.md` · **Geometry authority:** `03-field/FIELD-CAD-PACKAGE.md` · **Spec authority:** `01-design/DESIGN-SPEC.md`
 
-This document specifies the appearance of every ARENA element so that a field model can be built, rendered, and screenshotted without inventing a single material or color. It is deliberately separate from the geometry document: **nothing here is a rule, and the geometry document governs every dimension.** Section properties appear here only where a render needs them. Where a color would change a rules outcome — alliance tape, bumper covers, piece identification — the manual governs and this document restates it.
+This document specifies the appearance of every ARENA element, so that a field model can be built, rendered, and captured in screenshots without inventing any material or color. It is kept separate from the geometry document. **Nothing here is a rule, and the geometry document governs every dimension.** Section properties appear here only where a render needs them. Where a color affects a rules outcome (alliance tape, bumper covers, piece identification), the manual governs and this document restates it.
 
-The project is virtual. Materials are named so that a CAD appearance can be assigned and a render reads correctly; they are not a fabrication specification.
+The field is built virtually. Materials are named so that a CAD appearance can be assigned and a render reads correctly; they are not a fabrication specification.
 
 ---
 
@@ -49,27 +49,26 @@ The project is virtual. Materials are named so that a CAD appearance can be assi
 | O2 CELL cap fillet | `cell-fillet` | `#4D4D4D` | the blend band at each cap/body junction |
 | ROPE COIL | `coil-amber` | `#D9A441` | |
 
-**Why these colors are locked.** No SUPPLY may be colored in or near either alliance color. A piece that reads as "blue" or "red" is a piece that a referee, a driver, or a vision pipeline can mis-attribute, and SUMMIT PUSH's anti-pollution rule (§4.4.2) already makes ownership counter-intuitive — a SUPPLY belongs to the CRAG it sits on, not to whoever placed it. Neutral, saturated, mutually distant hues remove one whole class of confusion.
+**Why these colors are locked.** No SUPPLY may be colored in or near either alliance color. A referee, a driver, or a vision pipeline can mis-attribute a piece that reads as blue or red, and the anti-pollution rule (manual §4.4.2) already makes ownership counter-intuitive: a SUPPLY belongs to the CRAG it sits on, whoever placed it. Saturated hues that are far from each other and from both alliance colors remove that source of confusion.
 
 ---
 
 ## 2. Element-by-element specification
 
-Every ARENA element appears in this table exactly once. "Finish" is what a render needs; "Section" points at the geometry.
+Every ARENA element appears in this table once, grouped by assembly. "CAD §" points to the geometry in `FIELD-CAD-PACKAGE.md`; "Finish" is what a render needs.
 
-| Element | Section | Material (modeled as) | Color | Finish | Section/thickness |
+| Element | CAD § | Material (modeled as) | Color | Finish | Thickness / section |
 |---|---|---|---|---|---|
-| Field carpet | §1.1 | Low-pile event carpet | `carpet` | matte, fine directional nap | — |
+| Field carpet | §0 | Low-pile event carpet | `carpet` | matte, fine directional nap | — |
 | Guardrail frame | §1.3 | Aluminum extrusion | `wall` | satin anodized | 2 × 1 in tube |
 | Guardrail glazing | §1.3 | Polycarbonate | `glazing` | clear, slight surface sheen | 0.25 in |
 | FIELD LED band | §1.3 | Frosted acrylic lens over an LED strip | state-dependent | frosted, self-illuminated | 1.0 in wide |
 | Alliance wall, lower | §1.3 | Painted plywood on steel frame | `wall` | matte | 0.75 in |
 | Alliance wall, upper glazing | §1.3 | Polycarbonate | `glazing` | clear | 0.25 in |
-| Summit Socket mast | §2.4 | Steel square tube | `crag-accent` | satin | 2 × 2 in |
-| High Peg root boss | §2.5 | Steel plate let into the spire | `crag-accent` | satin | 0.25 in, spanning Z 74–80 behind an opaque-backed lantern edge |
-| HEADWALL tag wedge bracket | §4.1 | Aluminium plate | `truss-dark` | satin | 15° wedge, 0.25 in |
 | Driver station shelf | §1.3 | Painted plywood | `wall` | matte | 0.75 in |
 | E-STOP / A-STOP buttons | §1.3 | Molded plastic | red `#CC2020` / blue `#1D63C8` | gloss | ⌀2 in mushroom head |
+| Zone tape | §1.2 | Gaffer tape | alliance color | matte | 2 in wide, 0.01 in |
+| Neutral marks | §1.2 | Gaffer tape | `neutral-white` | matte | 2 in wide |
 | CRAG tower faces | §2.1 | Painted plywood panel on steel frame | `crag-body` | **matte stone texture, appearance only** | 0.75 in panel |
 | CRAG spire faces | §2.1 | Painted plywood panel | `crag-spire` | matte stone texture | 0.75 in panel |
 | CRAG kick-guard | §2.1 | Aluminum angle | `crag-accent` | satin | 2 × 2 × 0.125 in |
@@ -79,40 +78,41 @@ Every ARENA element appears in this table exactly once. "Finish" is what a rende
 | Shelf gusset | §2.2 | Aluminum plate | `crag-accent` | satin | 0.125 in |
 | Socket tube | §2.3, §2.4 | Rolled aluminum tube | `socket` | satin inside and out; **no coating that reduces the bore below 6.375 in** | 0.09 in wall |
 | Socket bracket | §2.3 | Aluminum plate | `crag-accent` | satin | 0.125 in |
+| Summit Socket mast | §2.4 | Steel square tube | `crag-accent` | satin | 2 × 2 in |
 | Peg | §2.5 | Steel round bar, fully rounded tip | `rung` | satin, no knurl | ⌀1.5 in |
+| High Peg root boss | §2.5 | Steel plate let into the spire | `crag-accent` | satin | 0.25 in, spanning Z 74–80 behind an opaque-backed lantern edge |
+| LED tier ring | §2.6, §8 | Frosted acrylic channel over an LED strip | alliance color when lit, dark when unlit | frosted, self-illuminated | 1.0 in wide |
 | BASE DEPOT lip | §3 | Painted plywood | `depot` | matte, R0.25 top edge | 0.75 in |
 | BASE DEPOT floor | §3 | Painted plywood, shimmed flush | `depot` | matte, low friction | 0.25 in |
 | DEPOT entry chamfer | §3 | Painted plywood strip | `depot` | matte | 45°, 1.0 in |
-| LED tier ring | §2.6, §8 | Frosted acrylic channel over an LED strip | alliance color when lit, dark when unlit | frosted, self-illuminated | 1.0 in wide |
 | HEADWALL chord / upright | §4.1 | Steel square tube | `truss` | satin powder | 2 × 2 in |
 | HEADWALL rung | §4.1 | Steel round bar | `rung` | satin, no knurl | ⌀1.5 in |
 | HEADWALL rung bracket | §4.2 | Steel plate | `truss-dark` | satin | 0.25 in |
 | HEADWALL lower crossbeam | §4.1 | Steel square tube | `truss` | satin | 2 × 2 in |
-| AprilTag panel | §7 | Printed vinyl on rigid backer | `neutral-white` + tag black `#111111` | **matte, non-glare** | 9.0 in sq × 0.25 in |
+| HEADWALL tag wedge bracket | §4.1 | Aluminum plate | `truss-dark` | satin | 15° wedge, 0.25 in |
 | OUTFITTER chute ramp | §5 | UHMW-faced plywood | `wall` | low friction | 0.5 in |
 | OUTFITTER cheek funnel | §5 | Painted plywood | `wall` | matte | 0.5 in |
-| Zone tape | §1.2 | Gaffer tape | alliance color | matte | 2 in wide, 0.01 in |
-| Neutral marks | §1.2 | Gaffer tape | `neutral-white` | matte | 2 in wide |
+| AprilTag panel | §7 | Printed vinyl on rigid backer | `neutral-white` + tag black `#111111` | **matte, non-glare** | 9.0 in sq × 0.25 in |
 | CACHE CRATE | §9.1 | Ripstop-nylon skin over PU foam core | `crate-violet` | matte fabric, slight sheen at the seams | 12.0 in cube |
 | O2 CELL | §9.2 | Rigid tube core, EVA foam sleeve, molded caps | `cell-body` / `cell-cap`, with `cell-fillet` on the R1.0 blend band at each junction | satin foam | ⌀5.0 × 14.0 in |
 | ROPE COIL | §9.3 | Solid molded rubber/foam | `coil-amber` | matte, slightly tacky | 10.0 OD × 2.5 tube |
 
 ---
 
-## 3. Appearance rules that matter
+## 3. Appearance rules
 
-1. **Rock is a texture, never geometry.** The CRAG reads as rock through surface appearance alone — a matte stone texture on planar faces. **No sculpted relief, taper, displacement, or facets.** Every published height must be exact at every face, which a textured plane guarantees and a sculpted one does not. Keep the texture on the suppressible "cosmetics" layer with the LED rings.
-2. **Plan-view tinting is a drafting convention, not the field.** `field-top-view.svg` fills the CRAGS in alliance color for legibility. The physical CRAG is `crag-body` tan; only its tape, tier rings, and beacon carry alliance color.
-3. **AprilTag panels must be non-glare.** A gloss finish on a tag panel is a vision failure mode, not an aesthetic choice. Keep the full 8.125-in white border unobstructed as seen from the field side.
+1. **Rock is a surface texture only.** The CRAG reads as rock through surface appearance alone: a matte stone texture on planar faces, with **no sculpted relief, taper, displacement, or facets**. Every published height must be exact at every face, which a textured plane guarantees. Keep the texture on the suppressible "cosmetics" layer with the LED rings.
+2. **Plan-view tinting is a drafting convention.** `field-top-view.svg` fills the CRAGS in alliance color for legibility. The physical CRAG is `crag-body` tan; only its tape, tier rings, and beacon carry alliance color.
+3. **AprilTag panels must be non-glare.** A gloss finish on a tag panel causes vision failures. Keep the full 8.125-in white border unobstructed as seen from the field side.
 4. **Nothing on the field may be colored to imitate a game piece, a tier ring, or the SUMMIT BEACON.** The corresponding constraint on ROBOTS is **R207**.
 5. **The socket bore is a toleranced dimension.** No paint, powder, or liner may reduce the bore below the lower limit of 6.375 in.
-6. **Lit and unlit states are both modeled.** Tier rings and the beacon should be modeled with two appearance states so that renders can show a fully lit mountain — the single most useful image in the whole package for explaining the game.
+6. **Model both lit and unlit states.** Give the tier rings and the beacon two appearance states so that renders can show a fully lit mountain, which is the clearest single image for explaining the game.
 
 ---
 
 ## 4. Render checklist
 
-A field render is considered complete when it shows, and shows correctly:
+A field render is complete when it correctly shows:
 
 - [ ] Carpet, guardrails, and both alliance walls, with driver stations
 - [ ] Both CRAGS with all 17 scoring positions modeled and the BASE DEPOT trays

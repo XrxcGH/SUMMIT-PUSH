@@ -8,7 +8,8 @@ cat "$here/manual-header.md" > "$out"
 first=1
 for f in "$here"/sections/*.md; do
   if [ $first -eq 0 ]; then printf -- '\n---\n\n' >> "$out"; fi
-  cat "$f" >> "$out"
+  # figure paths are relative to sections/; the compiled file sits one level up
+  sed 's#](\.\./figures/#](figures/#g' "$f" >> "$out"
   first=0
 done
 echo "wrote $out"

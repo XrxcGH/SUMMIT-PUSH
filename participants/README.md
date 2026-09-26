@@ -8,7 +8,7 @@ Everything a squad needs for the SUMMIT PUSH CADathon: the game, the event rules
 | `02-cadathon/` | `CADATHON-BRIEF.md`: how the event runs, the two-week timeline, the deliverables, and the optional judging rubric and awards. |
 | `03-field/` | `FIELD-CAD-PACKAGE.md` (the geometry of every field element and the master dimension ledger), `MATERIALS-AND-COLORS.md` (appearance), `drawings/` (six dimensioned drawing sheets) and `onshape/` (a Feature Studio that builds the whole field in Onshape). |
 | `04-vision/` | `VISION-GUIDE.md` (the 26-tag AprilTag layout, mounting geometry, occlusion analysis and simulation guidance) and `apriltag-field-layout.json` (the layout in the WPILib `AprilTagFieldLayout` schema). |
-| `05-team-updates/` | The numbered Team Updates, each amending the manual and the kit since the kickoff release. Read every one: the manual plus all Team Updates is the current ruleset. |
+| `05-team-updates/` | The numbered Team Updates (Markdown, with a printable PDF of each), each amending the manual and the kit since the kickoff release. Read every one: the manual plus all Team Updates is the current ruleset. |
 
 ## Read order
 

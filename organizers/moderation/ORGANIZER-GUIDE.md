@@ -36,7 +36,7 @@ Run the kickoff show as the brief's timeline describes: the game reveal, a Game 
 - **Team Updates.** Issue rule changes, and clarifications that change the manual text, only as numbered Team Updates, in the slots the brief sets (§6):
   1. Number updates in sequence (Team Update 01, 02, ...) and date each one. Post a "no changes" update on schedule if nothing changed.
   2. For each change, cite the rule number ("G404 is revised as follows: ..."), show deleted text struck through and added text in bold, and give a one-line rationale.
-  3. Publish every update in the same channel, and add it to the kit as `participants/05-team-updates/TEAM-UPDATE-NN.md`. Each update amends the manual: the manual plus all updates is the current ruleset, and the most recent update governs where they conflict. The manual is not changed after Day 11 except to close a game-breaking exploit.
+  3. Publish every update in the same channel, and add it to the kit as `participants/05-team-updates/TEAM-UPDATE-NN.md`, with its PDF printed by `organizers/source/typesetting/pdf/team_updates.sh`. Each update amends the manual: the manual plus all updates is the current ruleset, and the most recent update governs where they conflict. The manual is not changed after Day 11 except to close a game-breaking exploit.
   4. To fold an update into the published documents, edit the manual sources, add a row to `organizers/source/typesetting/pdf/revisions.json`, rebuild the manual and the PDF, and record the change in `organizers/design/REVISION-LOG.md` (`organizers/README.md`, "Making a change"). The SUMMIT PUSH Training Use License lets organizers publish Team Updates for their own event.
 
 ## 5. Judging (optional, Days 15–21)

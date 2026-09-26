@@ -180,7 +180,10 @@ def sheet_field():
            weight="bold", anchor="middle", rot=90)
     # FIELD centerline: 2-in white tape, broken where the two CRAG footprints cross
     # it (the DEPOT trays stop 8 in short). G402 and G502 are line calls against it.
+    # White tape on the pale carpet tint is drawn cased: a RULE_S edge under the white
+    # stroke, or it disappears into the carpet (and into white paper when printed).
     for _y0, _y1 in ((324.0, 264.0), (216.0, 108.0), (60.0, 0.0)):
+        s.line(fx(FL / 2), fy(_y0), fx(FL / 2), fy(_y1), stroke=RULE_S, sw=5.0)
         s.line(fx(FL / 2), fy(_y0), fx(FL / 2), fy(_y1), stroke="#FFFFFF", sw=3.0)
         s.line(fx(FL / 2), fy(_y0), fx(FL / 2), fy(_y1), stroke=MUTED, sw=0.7, dash="10 6")
     s.text(fx(FL / 2) + 6, fy(FW) + 7 + 0.72 * N, "FIELD CENTERLINE X = 324 (2-in white tape)",
@@ -331,7 +334,12 @@ def sheet_field():
     lx = panel(0, "TAPE KEY")
     for i, (t, c, dsh) in enumerate(tape):
         yy = row(i)
-        s.line(lx, yy - 0.32 * N, lx + 26, yy - 0.32 * N, stroke=c, sw=1.8, dash=dsh)
+        if "white" in t:                                  # cased white tape, as on the plan
+            s.line(lx, yy - 0.32 * N, lx + 26, yy - 0.32 * N, stroke=RULE_S, sw=5.0)
+            s.line(lx, yy - 0.32 * N, lx + 26, yy - 0.32 * N, stroke="#FFFFFF", sw=3.0)
+            s.line(lx, yy - 0.32 * N, lx + 26, yy - 0.32 * N, stroke=c, sw=0.7, dash=dsh)
+        else:
+            s.line(lx, yy - 0.32 * N, lx + 26, yy - 0.32 * N, stroke=c, sw=1.8, dash=dsh)
         s.text(lx + 32, yy, t, size=N, fill=INK)
 
     # PLAN SYMBOLS: every mark on the plan that is not tape
@@ -723,7 +731,7 @@ def sheet_crag():
             pxx = dx + K * lat
             pyy = dy + sgn * (h + K * SOCK_STANDOFF)
             s.circle(pxx, pyy, rs, fill=SOCKET_L, stroke=BLUE_D, sw=1.5)
-            s.text(pxx, pyy + (rs + 1.5 + 0.72 * L if sgn > 0 else -rs - 1.5), nm, size=L,
+            s.text(pxx, pyy + (rs + 4 + 0.72 * L if sgn > 0 else -rs - 4), nm, size=L,
                    fill=INK, anchor="middle", halo=True)
     s.circle(dx - h - K * SOCK_STANDOFF, dy, rs, fill=SOCKET_L, stroke=BLUE_D, sw=1.8)
     s.leader(dx - h - K * SOCK_STANDOFF - rs, dy, dx - h - K * DEPOT_CH - 26, dy - 30,
@@ -1351,7 +1359,7 @@ def sheet_outfitter():
 # =====================================================================
 def sheet_pieces():
     s = Sheet(1560, 1040, "DRAWING 5 OF 6 - SUPPLIES (GAME PIECES)", 5, 6,
-              "21 of each per MATCH, 63 total - model rigid at nominal size - possession limit 2")
+              "21 of each per MATCH, 63 total - model rigid at nominal (uncompressed) size - possession limit 2")
     E = 8.0
 
     ax, ay = 250.0, 200.0
@@ -1370,6 +1378,8 @@ def sheet_pieces():
     s.leader(ax + hs * 0.5, ay - hs - cr, ax + hs + 34, ay - hs + 8, "face crown 0.5 (ref)")
     s.text(ax, ay + hs + 66, "Maximum envelope across the crown: 13.0 in", size=9, fill=DIM, anchor="middle")
     s.text(ax, ay + hs + 80, "edge fillets R1.0 (ref) - sewn ripstop skin over a PU foam core",
+           size=8.5, fill=MUTED, anchor="middle")
+    s.text(ax, ay + hs + 92, "COMPLIANT: 13.0 -> 11.0 across opposing faces at up to 15 lbf; recovers",
            size=8.5, fill=MUTED, anchor="middle")
 
     bx, by = 770.0, 200.0
@@ -1393,7 +1403,7 @@ def sheet_pieces():
            size=8.5, fill=MUTED, anchor="middle")
     s.text(bx, by + D / 2 + 82, "the cap arc meets the wall at a 28.1 deg break, so full 5.0 dia runs 10.44, not 11.0.",
            size=8.5, fill=MUTED, anchor="middle")
-    s.text(bx, by + D / 2 + 94, "4.0 OD rigid core, 0.5 EVA sleeve (ref). Fillet band is #4D4D4D.",
+    s.text(bx, by + D / 2 + 94, "RIGID molded ABS shell and caps, no foam: zero compression. Fillet band is #4D4D4D.",
            size=8.5, fill=MUTED, anchor="middle")
     s.text(bx, by + D / 2 + 110, "rolls when dropped - orientation control is the design problem",
            size=9, fill=INK, anchor="middle")
@@ -1412,7 +1422,9 @@ def sheet_pieces():
             cx + E * COIL_OD / 2 + 54 + E * COIL_TUBE + 28, "2.5 tube",
             ext_from=cx + E * COIL_OD / 2 + 54 + E * COIL_TUBE + 6, size=9,
             critical=True, side="right")
-    s.text(cx, cy + E * COIL_OD / 2 + 64, "solid molded rubber/foam - semi-compliant",
+    s.text(cx, cy + E * COIL_OD / 2 + 64, "solid molded rubber/foam - COMPLIANT, recovers when released:",
+           size=8.5, fill=MUTED, anchor="middle")
+    s.text(cx, cy + E * COIL_OD / 2 + 76, "tube 2.5 -> 2.0 at up to 10 lbf; OD 10.0 -> 9.0 (hole 5.0 -> 4.0) at up to 5 lbf",
            size=8.5, fill=MUTED, anchor="middle")
 
     s.line(60, 386, 1500, 386, stroke=RULE, sw=1.0)

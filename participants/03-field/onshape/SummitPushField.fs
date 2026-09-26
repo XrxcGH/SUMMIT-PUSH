@@ -2095,7 +2095,7 @@ function buildPiece(context is Context, id is Id, kind, F)
         paint(context, [id], "O2 CELL", "cell-body", 1, "plywood");
         styleFacesAt(context, [id], F, g["cap"], PAL["cell-cap"], 1);
         styleFacesAt(context, [id], F, g["fillet"], PAL["cell-fillet"], 1);
-        massBody(context, [id], "Rigid core, EVA sleeve, molded caps (O2 CELL, effective)", CELL_LB);
+        massBody(context, [id], "Rigid molded ABS shell and caps (O2 CELL, effective)", CELL_LB);
     }
     else
     {

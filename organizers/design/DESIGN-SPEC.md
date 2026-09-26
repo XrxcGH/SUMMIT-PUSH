@@ -36,10 +36,13 @@ This specification is the single source of truth for every document in the packa
 | Shape | Cube | Cylinder | Torus (ring) |
 | Dimensions | 12.0 in cube, pillowed faces (0.5 in face crown) | 5.0 in dia × 14.0 in long, domed caps, R1.0 cap/body fillets | 10.0 in OD, 2.5 in tube (5.0 in ID hole) |
 | Weight | ~2.0 lb | ~1.5 lb | ~1.0 lb |
-| Official material | Sewn ripstop-nylon skin over PU foam core | 4.0-in OD rigid tube core, 0.5-in EVA foam sleeve, molded foam caps | Solid molded rubber/foam ring |
+| Official material | Sewn ripstop-nylon skin over PU foam core | Rigid molded shell: thick-wall ABS tube with rigid molded ABS domed caps, no foam | Solid molded rubber/foam ring |
+| Compression tolerance | Compliant: compresses up to 2.0 in across any pair of opposing faces (13.0-in crowned envelope → 11.0 in) under a squeeze of up to 15 lbf, crowns first; recovers fully when released | Rigid: does not compress (zero compression tolerance) | Compliant: tube section compresses up to 0.5 in (2.5 → 2.0 in) under a pinch of up to 10 lbf; the ring ovalizes up to 1.0 in across the OD (10.0 → 9.0 in) under a diametral squeeze of up to 5 lbf; recovers fully when released |
 | Official color | Expedition violet `#7B3FA0` | Body `#F2F2F0`, caps `#2E8B57` | Amber `#D9A441` |
 | Handling problem | Wide compliant intake, flat controlled placement | Ground pickup of a roller + 90° reorientation + socket insertion | Hook/spear or pinch gripper, precise hang on a 45° peg at height |
 | Count | 21 | 21 | 21 |
+
+Every fit, clearance and envelope in the package is computed at nominal, uncompressed size: compression is margin, not budget. The compression tolerances and the rigid O2 CELL were set by Team Update 01.
 
 Piece colors are chosen far from both alliance colors (in hue, violet is 62° from alliance blue and 83° from alliance red) so that no piece can be mistaken for an alliance element in a render, a broadcast frame, or a vision pipeline.
 

@@ -84,7 +84,7 @@ Re-rendered from the unchanged field model. In Figure 3-5 (CENTER CACHE) the fig
 
 ### B1. Field CAD Package §9.1 CACHE CRATE
 
-Skinned-foam construction~~; model rigid at nominal size.~~ **, compliant: compression tolerance 2.0 in across any pair of opposing faces (13.0-in crowned envelope → 11.0 in) under a squeeze of up to 15 lbf between flat plates; the crowns flatten first, and the CRATE recovers fully when released. Model rigid at nominal size. Every fit and clearance in this package is computed uncompressed, so compression is margin, not budget: the 0.78-in slot clearance below does not count on it.**
+~~Skinned-foam construction; model rigid at nominal size.~~ **Skinned-foam construction, compliant: compression tolerance 2.0 in across any pair of opposing faces (13.0-in crowned envelope → 11.0 in) under a squeeze of up to 15 lbf between flat plates; the crowns flatten first, and the CRATE recovers fully when released. Model rigid at nominal size. Every fit and clearance in this package is computed uncompressed, so compression is margin, not budget: the 0.78-in slot clearance below does not count on it.**
 
 ### B2. Field CAD Package §9.2 O2 CELL
 

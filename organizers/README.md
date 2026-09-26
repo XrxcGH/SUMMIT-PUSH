@@ -40,6 +40,7 @@ The PDF edition needs Python 3 with `markdown-it-py`, `pypdf` and `Pillow`, Node
 ```bash
 bash organizers/source/typesetting/pdf/build.sh            # -> participants/01-game-manual/SUMMIT-PUSH-Game-Manual.pdf
 bash organizers/source/typesetting/pdf/render_figures.sh   # re-render the manual's figures after a geometry change
+bash organizers/source/typesetting/pdf/team_updates.sh     # print each Team Update to PDF beside its Markdown
 ```
 
 The Onshape field generator has its own build and off-line checks, which `run-all.sh` does not run:
@@ -52,12 +53,13 @@ python3 organizers/source/featurescript/verify/run_checks.py  # the independent 
 
 ### Generated files
 
-Everything in `participants/` except the Markdown documents in `02-cadathon/`, `03-field/` and `04-vision/` is generated. Edit the source and rebuild:
+Everything in `participants/` except the Markdown documents in `02-cadathon/`, `03-field/`, `04-vision/` and `05-team-updates/` is generated. Edit the source and rebuild:
 
 | Participant file | Source | Built by |
 |---|---|---|
 | `01-game-manual/GAME-MANUAL.md` | `source/manual/sections/*.md`, `manual-header.md` | `source/manual/build.sh` |
 | `01-game-manual/SUMMIT-PUSH-Game-Manual.pdf` | the same, plus `source/typesetting/pdf/` | `source/typesetting/pdf/build.sh` |
+| `05-team-updates/TEAM-UPDATE-NN.pdf` | the Markdown beside it | `source/typesetting/pdf/team_updates.sh` |
 | `01-game-manual/figures/*.png` | the field model and `source/typesetting/pdf/figure-shots.json` | `source/typesetting/pdf/render_figures.sh` |
 | `03-field/drawings/*.svg` | the constants in `source/drawings/generate_drawings.py` | that script |
 | `03-field/onshape/SummitPushField.fs` | `source/featurescript/src/*.fs` | `source/featurescript/build.py` |

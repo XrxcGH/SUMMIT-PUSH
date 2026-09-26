@@ -75,7 +75,7 @@ If a Playoff MATCH ends in a tie, the MATCH is replayed.
 
 SUMMIT PUSH is published as an offseason design release, and no physical tournament is played. The tournament structure above still governs the design problem:
 
-- **Entries are judged against the Championship column.** Where bonus RP thresholds escalate by tier, a judging rubric evaluates a design's credible performance against the Championship column of the Section 4.7 table. A design that can reach only the Regional thresholds is judged as a Regional-level design.
+- **Entries are designed against the Championship column.** Where bonus RP thresholds escalate by tier, a design is measured by its credible performance against the Championship column of the Section 4.7 table, as is any judging rubric an event chooses to use. A design that can reach only the Regional thresholds is a Regional-level design.
 - **Strategy sections of technical binders should model both phases.** A complete binder presents a qualification model and an elimination model. The qualification model gives expected RP per MATCH with a random partner draw, including which bonus RPs the design can secure alone and which need help. The elimination model gives cycle counts, CAMP arithmetic, and ENDGAME contribution alongside two strong partners, where bonus RPs do not apply and MATCH points alone decide.
 - **Entries should state their ALLIANCE ROLE.** Designs should state which ALLIANCE ROLE they fill (CRATE FREIGHTER, O2 SURGEON, RING ALPINIST, or HYBRID; see Section 4.10) and how that role would be valued in the serpentine draft described in Section 8.3.
 

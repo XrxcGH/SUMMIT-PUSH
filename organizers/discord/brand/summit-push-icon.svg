@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <title>SUMMIT PUSH server icon</title>
+  <desc>A stepped stone summit tower with a lit beacon, based on the CRAG scoring tower from the SUMMIT PUSH CADathon field. Original artwork, not affiliated with any robotics organization.</desc>
+
+  <!-- Full-bleed square background so both the square and Discord's circle crop look intentional -->
+  <rect x="0" y="0" width="1024" height="1024" fill="#1A1D21"/>
+
+  <!-- Datum line: a CAD baseline/extension-line reference beneath the tower -->
+  <g stroke="#2E8B57" stroke-width="16" stroke-linecap="butt">
+    <line x1="260" y1="880" x2="764" y2="880"/>
+    <line x1="260" y1="864" x2="260" y2="896"/>
+    <line x1="764" y1="864" x2="764" y2="896"/>
+  </g>
+
+  <!-- Tower: a stepped ziggurat narrowing to a spire, after the CRAG's tiered shelves. Each tier
+       is set well in from the one below it so the steps read as a silhouette, split into a lit
+       face (off-white) and a shadow face (off-white at reduced opacity over the ink background)
+       for a faceted / isometric CAD look rather than a rendered mountain. -->
+  <g>
+    <!-- Tier 1 (base): y 840 -> 700 -->
+    <polygon points="212,840 292,700 512,700 512,840" fill="#F2F2F0"/>
+    <polygon points="512,840 512,700 732,700 812,840" fill="#F2F2F0" fill-opacity="0.55"/>
+
+    <!-- Tier 2: y 700 -> 580, set well in from tier 1's top -->
+    <polygon points="372,700 402,580 512,580 512,700" fill="#F2F2F0"/>
+    <polygon points="512,700 512,580 622,580 652,700" fill="#F2F2F0" fill-opacity="0.55"/>
+
+    <!-- Tier 3: y 580 -> 460, set well in from tier 2's top -->
+    <polygon points="452,580 464,460 512,460 512,580" fill="#F2F2F0"/>
+    <polygon points="512,580 512,460 560,460 572,580" fill="#F2F2F0" fill-opacity="0.55"/>
+
+    <!-- Spire: y 460 -> apex 230, set well in from tier 3's top -->
+    <polygon points="490,460 512,230 512,460" fill="#F2F2F0"/>
+    <polygon points="512,460 512,230 534,460" fill="#F2F2F0" fill-opacity="0.55"/>
+  </g>
+
+  <!-- Tier-ring accent bands, sized to the tier above each step so the plain step itself stays
+       visible as a lit ledge -- after the CRAG's LED tier rings (CAMP I / CAMP II / HIGH CAMP) -->
+  <rect x="372" y="685" width="280" height="30" fill="#7B3FA0"/>
+  <rect x="452" y="569" width="120" height="22" fill="#D9A441"/>
+  <rect x="490" y="453" width="44" height="14" fill="#2E8B57"/>
+
+  <!-- SUMMIT BEACON, lit -->
+  <circle cx="512" cy="216" r="48" fill="#D9A441" fill-opacity="0.28"/>
+  <circle cx="512" cy="216" r="26" fill="#D9A441"/>
+</svg>

@@ -85,7 +85,7 @@ ALLIANCE-colored and white ROBOT lighting is otherwise permitted, including stat
 
 **R303** *Budget realism.* SUMMIT PUSH does not require a costed Bill of Materials. Instead, one realism standard applies: every COTS item on the ROBOT must be purchasable by a competing team (no one-off, discontinued and unobtainable, or sponsor-exclusive COMPONENTS as load-bearing elements), and no single COTS item may exceed $600 USD at published VENDOR pricing. Design-challenge entries must also satisfy the self-inspection checklist in Section 7.4, including a stated weight budget.
 
-*Violation:* An entry is penalized at judging per the published rubric; at a physical event, the ROBOT will not pass INSPECTION.
+*Violation:* In a judged design challenge, an entry is penalized per the published rubric; at a physical event, the ROBOT will not pass INSPECTION.
 
 > *Example:* A team designs a custom two-stage elevator using COTS bearing blocks, COTS motors, and waterjet-cut aluminum side plates. The plates are FABRICATED ITEMS; the bearing blocks and motors are COTS. All are legal. The same team may not specify a $2,400 industrial harmonic-drive actuator as its wrist joint, because it exceeds the **R303** single-item limit.
 
@@ -326,7 +326,7 @@ The ROBOT, in its declared STARTING CONFIGURATION and without BUMPERS, must fit 
 
 ## 7.4 Design-Entry Self-Inspection Checklist
 
-Design-challenge entries are judged from their submissions. In place of physical INSPECTION, every entry must include a self-inspection page in its submission that demonstrates the items below. Judges treat a missing or unsupported item as an inspector treats a failed check.
+Design-challenge entries are reviewed from their submissions. In place of physical INSPECTION, every entry must include a self-inspection page in its submission that demonstrates the items below. In a judged design challenge, judges treat a missing or unsupported item as an inspector treats a failed check.
 
 **Table 7-1: Design-entry self-inspection checklist**
 

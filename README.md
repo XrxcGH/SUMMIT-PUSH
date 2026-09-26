@@ -23,8 +23,8 @@ During MATCH setup each ALLIANCE makes a ROUTE DECLARATION, which raises one CAM
 
 | You are | Start here | Contents |
 |---|---|---|
-| **A squad entering the CADathon** | [`participants/`](participants/README.md) | The Game Manual (PDF and Markdown), the CADathon brief with its judging rubric, the field CAD package, drawings and Onshape field generator, and the AprilTag vision guide and layout file. |
-| **An organizer, judge or mentor running the event** | [`organizers/`](organizers/README.md) | The organizer guide (release plan, Q&A and Team Updates, judging, results), the design specification and revision log, the sources and build tools for every participant file, the verification suites, and the design-phase research and concept archive. |
+| **A squad entering the CADathon** | [`participants/`](participants/README.md) | The Game Manual (PDF and Markdown), the CADathon brief (with its optional judging rubric), the Team Updates, the field CAD package, drawings and Onshape field generator, and the AprilTag vision guide and layout file. |
+| **An organizer, judge or mentor running the event** | [`organizers/`](organizers/README.md) | The organizer guide (release plan, Q&A and Team Updates, optional judging and results), the Discord server setup, the design specification and revision log, the sources and build tools for every participant file, the verification suites, and the design-phase research and concept archive. |
 
 The participant kit is self-contained: nothing in `participants/` depends on `organizers/`.
 

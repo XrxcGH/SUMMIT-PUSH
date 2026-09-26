@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 1040" font-family="Segoe UI, Roboto, Arial, sans-serif">
   <rect width="1560" height="1040" fill="#ffffff"/>
   <text x="780" y="29.0" text-anchor="middle" font-size="21.00" font-weight="bold" fill="#1A1D21">SUMMIT PUSH — DRAWING 5 OF 6 - SUPPLIES (GAME PIECES)</text>
-  <text x="780" y="47.4" text-anchor="middle" font-size="11.50" fill="#6E7378">21 of each per MATCH, 63 total - model rigid at nominal size - possession limit 2</text>
+  <text x="780" y="47.4" text-anchor="middle" font-size="11.50" fill="#6E7378">21 of each per MATCH, 63 total - model rigid at nominal (uncompressed) size - possession limit 2</text>
   <text x="250.00" y="96.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">CACHE CRATE</text>
   <text x="250.00" y="108.05" font-size="9.00" fill="#6E7378" text-anchor="middle">8.0 px/in</text>
   <text x="250.00" y="119.30" font-size="9.00" fill="#6E7378" text-anchor="middle">cube, ~2.0 lb, expedition violet #7B3FA0</text>
@@ -27,6 +27,7 @@
   <text x="335.00" y="163.06" font-size="9.00" fill="#1A1D21">face crown 0.5 (ref)</text>
   <text x="250.00" y="314.00" font-size="9.00" fill="#C02020" text-anchor="middle">Maximum envelope across the crown: 13.0 in</text>
   <text x="250.00" y="328.00" font-size="8.50" fill="#6E7378" text-anchor="middle">edge fillets R1.0 (ref) - sewn ripstop skin over a PU foam core</text>
+  <text x="250.00" y="340.00" font-size="8.50" fill="#6E7378" text-anchor="middle">COMPLIANT: 13.0 -&gt; 11.0 across opposing faces at up to 15 lbf; recovers</text>
   <text x="770.00" y="96.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">O2 CELL</text>
   <text x="770.00" y="108.05" font-size="9.00" fill="#6E7378" text-anchor="middle">8.0 px/in</text>
   <text x="770.00" y="119.30" font-size="9.00" fill="#6E7378" text-anchor="middle">cylinder, ~1.5 lb, body #F2F2F0 with #2E8B57 caps</text>
@@ -58,7 +59,7 @@
   <text x="866.00" y="213.75" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 866.00 200.00)">5.0 dia</text>
   <text x="770.00" y="290.00" font-size="8.50" fill="#6E7378" text-anchor="middle">domes 1.5 each (ref), R1.0 fillet at each cap/body junction (ref):</text>
   <text x="770.00" y="302.00" font-size="8.50" fill="#6E7378" text-anchor="middle">the cap arc meets the wall at a 28.1 deg break, so full 5.0 dia runs 10.44, not 11.0.</text>
-  <text x="770.00" y="314.00" font-size="8.50" fill="#6E7378" text-anchor="middle">4.0 OD rigid core, 0.5 EVA sleeve (ref). Fillet band is #4D4D4D.</text>
+  <text x="770.00" y="314.00" font-size="8.50" fill="#6E7378" text-anchor="middle">RIGID molded ABS shell and caps, no foam: zero compression. Fillet band is #4D4D4D.</text>
   <text x="770.00" y="330.00" font-size="9.00" fill="#1A1D21" text-anchor="middle">rolls when dropped - orientation control is the design problem</text>
   <text x="1260.00" y="96.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">ROPE COIL</text>
   <text x="1260.00" y="108.05" font-size="9.00" fill="#6E7378" text-anchor="middle">8.0 px/in</text>
@@ -87,7 +88,8 @@
   <line x1="1402.00" y1="190.00" x2="1402.00" y2="179.69" stroke="#C02020" stroke-width="1.10"/>
   <rect x="1381.69" y="203.35" width="40.63" height="11.88" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1402.00 200.00)"/>
   <text x="1402.00" y="212.26" font-size="9.00" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1402.00 200.00)">2.5 tube</text>
-  <text x="1260.00" y="304.00" font-size="8.50" fill="#6E7378" text-anchor="middle">solid molded rubber/foam - semi-compliant</text>
+  <text x="1260.00" y="304.00" font-size="8.50" fill="#6E7378" text-anchor="middle">solid molded rubber/foam - COMPLIANT, recovers when released:</text>
+  <text x="1260.00" y="316.00" font-size="8.50" fill="#6E7378" text-anchor="middle">tube 2.5 -&gt; 2.0 at up to 10 lbf; OD 10.0 -&gt; 9.0 (hole 5.0 -&gt; 4.0) at up to 5 lbf</text>
   <line x1="60.00" y1="386.00" x2="1500.00" y2="386.00" stroke="#C8CCD1" stroke-width="1.00"/>
   <text x="780.00" y="405.00" font-size="12.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">CLEARANCE STUDIES - the four fits every mechanism is designed against</text>
   <text x="220.00" y="428.00" font-size="13.00" fill="#1F4E79" text-anchor="middle" font-weight="bold">1 - CRATE IN SHELF SLOT</text>

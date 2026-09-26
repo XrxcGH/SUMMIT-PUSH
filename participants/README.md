@@ -5,15 +5,17 @@ Everything a squad needs for the SUMMIT PUSH CADathon: the game, the event rules
 | Folder | Contents |
 |---|---|
 | `01-game-manual/` | The Game Manual: `SUMMIT-PUSH-Game-Manual.pdf` (the typeset edition, with the six drawing sheets as plates in Appendix A) and `GAME-MANUAL.md` (the same text in Markdown, with its figures in `figures/`). |
-| `02-cadathon/` | `CADATHON-BRIEF.md`: how the event runs, the timeline, the deliverables, the judging rubric and the awards. |
+| `02-cadathon/` | `CADATHON-BRIEF.md`: how the event runs, the two-week timeline, the deliverables, and the optional judging rubric and awards. |
 | `03-field/` | `FIELD-CAD-PACKAGE.md` (the geometry of every field element and the master dimension ledger), `MATERIALS-AND-COLORS.md` (appearance), `drawings/` (six dimensioned drawing sheets) and `onshape/` (a Feature Studio that builds the whole field in Onshape). |
 | `04-vision/` | `VISION-GUIDE.md` (the 26-tag AprilTag layout, mounting geometry, occlusion analysis and simulation guidance) and `apriltag-field-layout.json` (the layout in the WPILib `AprilTagFieldLayout` schema). |
+| `05-team-updates/` | The numbered Team Updates, each amending the manual and the kit since the kickoff release. Read every one: the manual plus all Team Updates is the current ruleset. |
 
 ## Read order
 
 1. **The Game Manual**, cover to cover. It is the rulebook, and where any other document seems to disagree with it, the manual governs.
-2. **The CADathon brief**, for the deadline, the deliverables and how entries are judged. Start your strategy work with the BASECAMP BOT benchmark in its Appendix A.
-3. **The field and vision folders**, when modeling and vision work begin.
+2. **The CADathon brief**, for the deadline and the deliverables (judging is optional and happens only if the organizers announce it). Start your strategy work with the BASECAMP BOT benchmark in its Appendix A.
+3. **The Team Updates** in `05-team-updates/`, which amend the manual.
+4. **The field and vision folders**, when modeling and vision work begin.
 
 ## Modeling the field
 
@@ -28,7 +30,7 @@ When modeling by hand:
 
 ## Questions and Team Updates
 
-Ask rules questions in the event's public Q&A channel, citing the rule number (brief §6). Answers are public and interpret the manual. Changes to the manual arrive only as numbered Team Updates; the manual plus every Team Update is the current ruleset.
+Ask rules questions in the event's public Q&A channel, citing the rule number (brief §6). Answers are public and interpret the manual. Changes to the manual arrive only as numbered Team Updates, posted in the event's Team Updates channel and kept in `05-team-updates/`; the manual plus every Team Update is the current ruleset.
 
 ## Credit and license
 

@@ -15,6 +15,7 @@ This folder is for the people who run a SUMMIT PUSH CADathon and maintain the ga
 | `source/verify/` | The verification suite for the documents and drawings. See its `README.md`. |
 | `archive/research/` | Design research: community opinion of past competition games, game history, educational value, technical standards, a comparable design challenge, and a gap analysis. |
 | `archive/concepts/` | The design-phase archive: five game concepts and three judges' reports, written before the specification. `FIRST-ASCENT.md` became SUMMIT PUSH. |
+| `discord/` | Discord server setup: channel structure, roles, message templates, and the server icon and banner in `brand/`. |
 
 ## Building and verifying
 

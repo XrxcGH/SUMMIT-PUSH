@@ -94,7 +94,7 @@ Every ARENA element appears in this table once, grouped by assembly. "CAD §" po
 | OUTFITTER cheek funnel | §5 | Painted plywood | `wall` | matte | 0.5 in |
 | AprilTag panel | §7 | Printed vinyl on rigid backer | `neutral-white` + tag black `#111111` | **matte, non-glare** | 9.0 in sq × 0.25 in |
 | CACHE CRATE | §9.1 | Ripstop-nylon skin over PU foam core | `crate-violet` | matte fabric, slight sheen at the seams | 12.0 in cube |
-| O2 CELL | §9.2 | Rigid tube core, EVA foam sleeve, molded caps | `cell-body` / `cell-cap`, with `cell-fillet` on the R1.0 blend band at each junction | satin foam | ⌀5.0 × 14.0 in |
+| O2 CELL | §9.2 | Rigid molded ABS shell and domed caps, no foam | `cell-body` / `cell-cap`, with `cell-fillet` on the R1.0 blend band at each junction | satin rigid plastic | ⌀5.0 × 14.0 in |
 | ROPE COIL | §9.3 | Solid molded rubber/foam | `coil-amber` | matte, slightly tacky | 10.0 OD × 2.5 tube |
 
 ---

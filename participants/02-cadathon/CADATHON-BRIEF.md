@@ -1,20 +1,22 @@
 # SUMMIT PUSH — Design Challenge Brief
 
-## Event Structure, Deliverables, and Judging
+## Event Structure, Deliverables, and Optional Judging
 
-*This brief is published to every squad at kickoff. The game itself is defined in the Game Manual (`01-game-manual/GAME-MANUAL.md`); the field is defined in the Field CAD Package (`03-field/FIELD-CAD-PACKAGE.md`). Where anything here appears to conflict with the Game Manual on a question of game rules, the Game Manual governs.*
+*This brief is published to every squad at kickoff. The game itself is defined in the Game Manual (`01-game-manual/GAME-MANUAL.md`); the field is defined in the Field CAD Package (`03-field/FIELD-CAD-PACKAGE.md`). Where anything here appears to conflict with the Game Manual on a question of game rules, the Game Manual governs. Amended by Team Update 01 (`05-team-updates/TEAM-UPDATE-01.md`).*
+
+> **There is no official judging or scoring.** The sections on judging, scoring, rankings and awards (§5, §7, and the judging and results rows of §2) are **optional**. They apply only if the organizers announce at kickoff that the event will be judged. Without that announcement, entries are not scored, ranked or awarded, and squads can use the rubric in §5 as a self-check.
 
 ---
 
 ## 1. Event Overview and Goals
 
-The SUMMIT PUSH design challenge is a nine-day design sprint run in the style of a season kickoff. Squads of two to four students receive a complete original competition game and design a full competition robot in CAD, supported by a technical binder and a short video walkthrough. The format follows practices that have worked in community design challenges: a complete release at kickoff quality, a short simulated build season, defined deliverables beyond CAD, and transparent judging with written feedback for every entrant.
+The SUMMIT PUSH design challenge is a two-week design sprint run in the style of a season kickoff. Squads of two to four students receive a complete original competition game and design a full competition robot in CAD, supported by a technical binder and a short video walkthrough. The format follows practices that have worked in community design challenges: a complete release at kickoff quality, a short simulated build season, defined deliverables beyond CAD, and public submissions that the whole community can learn from. If the organizers choose to judge the event, the judging is transparent, with written feedback for every entrant (§5).
 
 The event is a training exercise first and a competition second. It targets four outcomes:
 
 1. **Strategy-first design.** In community design challenges, strategy analysis has consistently counted for more than CAD polish, and winning entries are cited for their points modeling and decision rationale. Squads derive the robot from the game (points-per-cycle arithmetic, RP analysis against the Championship column, and a justified archetype choice) before opening a Part Studio.
-2. **CAD fluency under a deadline.** A real build season is requirements-driven design against a clock. Nine days forces scoping decisions: what to model in detail, what to block out, and what to cut. Squads practice a top-down Onshape workflow (master sketches, then high-fidelity block CAD before detail work).
-3. **Documentation.** A design decision is not complete until the designer can explain it. The technical binder is weighted as heavily as the CAD because writing the rationale is the design review.
+2. **CAD fluency under a deadline.** A real build season is requirements-driven design against a clock. Two weeks forces scoping decisions: what to model in detail, what to block out, and what to cut. Squads practice a top-down Onshape workflow (master sketches, then high-fidelity block CAD before detail work).
+3. **Documentation.** A design decision is not complete until the designer can explain it. The technical binder matters as much as the CAD, because writing the rationale is the design review.
 4. **Presentation.** The 3–5 minute video is a communication exercise: explain a robot to a stranger, on camera, in the length of a pit interview.
 
 > *Commentary:* During the event, the organizing mentor acts as the game authority, the Q&A desk, and the head referee, and takes no part in design. An adult editing a squad's CAD document defeats the purpose of the event.
@@ -23,26 +25,29 @@ The event is a training exercise first and a competition second. It targets four
 
 ## 2. Timeline
 
-The event runs **nine days across two weekends**: two full weekends of work on either side of a school week of evenings. The mentor sets the calendar dates; everything below is relative to **Day 0 (a Saturday)**.
+The event runs **two weeks**, from the kickoff on **Day 0 (a Saturday)** to the submission deadline at the end of **Day 14**, the Saturday two weeks later: two school weeks of evenings, the weekend between them, and the final Saturday. The mentor sets the calendar dates; everything below is relative to Day 0.
 
 | Day | When | What happens |
 |---|---|---|
 | **Day −7 to −1** | week before | **Announcement.** Event announced, squads register, rookies paired (§3). Theme teaser only, with no game details. |
-| **Day 0 (Sat)** | morning | **Kickoff show.** Live game reveal: animation/slides, Game Manual walkthrough, field CAD and drawings released, AprilTag layout JSON released, this brief and the judging rubric (§5) published in full. Q&A desk opens (§6). Afternoon: squads read the manual and start strategy work. |
+| **Day 0 (Sat)** | morning | **Kickoff show.** Live game reveal: animation/slides, Game Manual walkthrough, field CAD and drawings released, AprilTag layout JSON released, this brief published in full. The organizers say whether the event will be judged; if it will, the judges are named and the rubric (§5) is binding from this point. Q&A desk opens (§6). Afternoon: squads read the manual and start strategy work. |
 | **Day 1 (Sun)** | all day | Strategy day. Points-per-cycle modeling, RP arithmetic against the Championship column, ALLIANCE ROLE selection, BASECAMP BOT benchmark (Appendix A). The mentor runs an optional "how to read a game manual" session for rookies in the morning. |
-| **Day 2 (Mon)** | evening | **Strategy deadline (recommended, not enforced).** Each squad posts a one-page strategy summary to the event channel: chosen archetype, target score, RP plan. It is not graded, but squads that skip it tend to fall behind by the second weekend. The mentor replies to every posted summary with a short written check within 24 h. |
-| **Day 3 (Tue)** | evening | Office hours #1 (§2.1). Prototyping by sketch, intake geometry, elevator-versus-arm questions. |
-| **Day 4 (Wed)** | evening | **Team Update 01 slot.** Q&A rulings so far that change or clarify the manual text are issued as a formal Team Update (§6). Office hours #2. |
-| **Day 5 (Thu)** | evening | **Team Update 02 slot** (if needed; otherwise a "no changes" update is still posted on time, so that squads can stop watching for one). **Mid-event design review checkpoint:** each squad gets a 15-minute slot to walk the mentor through its in-progress CAD and get advice (§3.2 rules apply). |
-| **Day 6 (Fri)** | evening | Office hours #3. Last call for rules questions with guaranteed answers (§6). |
-| **Day 7 (Sat)** | all day | Crunch day. The mentor is available on the event channel but hands-off. Binder and video production should be underway; squads that start the binder on Day 8 submit a weaker robot and a weaker binder. |
-| **Day 8 (Sun)** | **11:59 PM local** | **Submission deadline.** Hard deadline with no extensions; working to the clock is part of the curriculum. All deliverables (§4) are posted publicly to the event thread/channel. Late entries are exhibition only (reviewed, not ranked). |
-| **Day 9–14** | judging week | Judges (named in advance, §5.3) score independently against the rubric, then reconcile. Per-squad written feedback is drafted. |
-| **Day ~15** | evening, live | **Results and feedback show.** Live event (in person or streamed): every submission shown, ranked reveal from the bottom up, verbal feedback from the judges on each entry, awards presented (§7). Written feedback is delivered to every squad the same night. |
+| **Day 3 (Tue)** | evening | **Strategy deadline (recommended, not enforced).** Each squad posts a one-page strategy summary to the event channel: chosen archetype, target score, RP plan. It is not graded, but squads that skip it tend to fall behind by the middle weekend. The mentor replies to every posted summary with a short written check within 24 h. Office hours #1 (§2.1): prototyping by sketch, intake geometry, elevator-versus-arm questions. |
+| **Day 4 (Wed)** | evening | **Team Update 01 slot.** Q&A rulings so far that change or clarify the manual text are issued as a formal Team Update (§6). |
+| **Day 5 (Thu)** | evening | Office hours #2. |
+| **Days 7–8 (Sat–Sun)** | middle weekend | **Mid-event design review checkpoint:** each squad gets a 15-minute slot to walk the mentor through its in-progress CAD and get advice (§3.2 rules apply). Otherwise a full weekend of modeling. |
+| **Day 9 (Mon)** | evening | **Team Update 02 slot** (if needed; otherwise a "no changes" update is still posted on time, so that squads can stop watching for one). |
+| **Day 10 (Tue)** | evening | Office hours #3. |
+| **Day 11 (Wed)** | evening | Last call for rules questions with guaranteed answers (§6). |
+| **Day 12 (Thu)** | evening | Office hours #4, the last one. Binder and video production should be underway; squads that start the binder on Day 14 submit a weaker robot and a weaker binder. |
+| **Day 13 (Fri)** | evening | Crunch. The mentor is available on the event channel but hands-off. |
+| **Day 14 (Sat)** | **11:59 PM local** | **Submission deadline.** Hard deadline with no extensions; working to the clock is part of the curriculum. All deliverables (§4) are posted publicly to the event thread/channel. If the event is judged, late entries are exhibition only (reviewed, not ranked). |
+| **Days 15–21** | *optional:* judging week | *Only if the organizers announced judging at kickoff.* Judges (named at kickoff, §5.3) score independently against the rubric, then reconcile. Per-squad written feedback is drafted. |
+| **Day ~22** | *optional:* evening, live | *Only if the organizers announced judging at kickoff.* **Results and feedback show.** Live event (in person or streamed): every submission shown, ranked reveal from the bottom up, verbal feedback from the judges on each entry, awards presented (§7). Written feedback is delivered to every squad the same night. Without judging, the organizers may still hold an unranked showcase of the entries. |
 
 ### 2.1 Office hours
 
-Three scheduled evening sessions (Days 3, 4, 6), about 90 minutes each, drop-in. Mentors and invited alumni answer design questions, critique sketches, and describe similar mechanisms from past seasons, under the mentor-help rules in §3.2. Office hours are also where the mentor identifies squads that are stuck and redirects them toward the BASECAMP BOT path (Appendix A) while there is still time to change course.
+Four scheduled evening sessions (Days 3, 5, 10 and 12), about 90 minutes each, drop-in. Mentors and invited alumni answer design questions, critique sketches, and describe similar mechanisms from past seasons, under the mentor-help rules in §3.2. Office hours are also where the mentor identifies squads that are stuck and redirects them toward the BASECAMP BOT path (Appendix A) while there is still time to change course.
 
 ---
 
@@ -64,14 +69,14 @@ Three scheduled evening sessions (Days 3, 4, 6), about 90 minutes each, drop-in.
 ### 3.3 Rookie pairing
 
 - Avoid all-rookie and all-veteran squads where possible. Target **at least one student with a build season of experience and at least one rookie per squad.**
-- Rookies get first claim on the well-scaffolded scope. The BASECAMP BOT path (Appendix A) and its graduation ladder are designed to be a complete entry for a rookie squad. Under this rubric, a clean, fully documented BASECAMP BOT plus one graduation rung scores higher than a veteran squad's half-finished complex robot.
+- Rookies get first claim on the well-scaffolded scope. The BASECAMP BOT path (Appendix A) and its graduation ladder are designed to be a complete entry for a rookie squad. A clean, fully documented BASECAMP BOT plus one graduation rung is a stronger entry than a veteran squad's half-finished complex robot, and it scores higher under the §5 rubric if the event is judged.
 - Veterans on mixed squads are teachers first. A veteran who does 90% of the CAD produces one robot and no trained designers.
 
 ---
 
 ## 4. Deliverables
 
-All four items are posted **publicly** to the event thread/channel by the Day 8 deadline. Public submission is intentional: the shared library of every squad's CAD and reasoning provides much of the event's educational value. A posted entry that includes the field model or other SUMMIT PUSH material carries the credit line required by the SUMMIT PUSH Training Use License (§3 of `LICENSE.md`).
+All four items are posted **publicly** to the event thread/channel by the Day 14 deadline. Public submission is intentional: the shared library of every squad's CAD and reasoning provides much of the event's educational value. A posted entry that includes the field model or other SUMMIT PUSH material carries the credit line required by the SUMMIT PUSH Training Use License (§3 of `LICENSE.md`).
 
 ### 4.1 Robot CAD (Onshape, required)
 
@@ -79,8 +84,9 @@ A complete robot designed to be **legal under the R-rules** of the SUMMIT PUSH G
 
 - **Full power train**: drivetrain fully modeled, including modules or gearboxes, motors (from the approved motor list, R5xx), wheels, and frame. The propulsion cap applies: ≤ 4 motors delivering torque to carpet-contacting elements (steering/azimuth motors exempt).
 - **Every scoring mechanism the strategy claims, modeled.** If the binder claims that O2 CELLS are SCORED in the Summit Socket, the CAD must show the mechanism that does it, through its full range of motion, reaching the 72-in rim from the 19.75-in standoff the BASE DEPOT imposes. "It would be refined in a real build season" belongs in a risk register; it does not substitute for geometry.
+- **Grippers sized to the SUPPLIES as specified.** The CACHE CRATE and ROPE COIL are compliant and the O2 CELL is rigid (Game Manual Section 3.6, as amended by Team Update 01). A mechanism may squeeze a compliant SUPPLY only within its compression tolerance, and must carry its own compliance for the O2 CELL.
 - **Bumpers** modeled to the R4xx requirements (full perimeter, 2.25 in foam, 4.5 in tall, BUMPER ZONE 2.5–5.75 in floor-referenced).
-- **Realistic COTS parts**: real vendor components (or faithful stand-ins) for motors, controllers, gearboxes, bearings, and structure. Approved electronics per R6xx and R7xx: roboRIO, VH-109 radio, legal PD hardware, legal motor controllers. A robot built from nonexistent extrusions and undefined "custom gearbox" blocks scores poorly on Design Feasibility.
+- **Realistic COTS parts**: real vendor components (or faithful stand-ins) for motors, controllers, gearboxes, bearings, and structure. Approved electronics per R6xx and R7xx: roboRIO, VH-109 radio, legal PD hardware, legal motor controllers. A robot built from nonexistent extrusions and undefined "custom gearbox" blocks is not a feasible design (and scores poorly on Design Feasibility if the event is judged).
 - **Mass properties within the R-rules**, demonstrated with a weight-budget table (also reproduced in the binder):
 
 | Subsystem | Estimated mass (lb) | Basis (CAD mass props / vendor spec / allowance) |
@@ -96,36 +102,38 @@ A complete robot designed to be **legal under the R-rules** of the SUMMIT PUSH G
 
 Also state the FRAME PERIMETER (≤ 120 in), starting configuration height (≤ 42 in), and maximum horizontal extension (≤ 18 in beyond the FRAME PERIMETER), each with the CAD measurement that proves it.
 
-- **Legality checks the judges will run:** starting configuration inside a 42-in-tall envelope within the FRAME PERIMETER; every MECHANISM at its commanded maximum reach within the 18-in limit; total modeled plus allowed mass ≤ 115 lb; one ROBOT SIGNAL LIGHT sited where it stays visible during a HEADWALL hang. Budget realistically: a "112 lb" robot with no wiring allowance is a 125 lb robot.
+- **Legality checks** (run them on your own entry; judges run the same checks if the event is judged): starting configuration inside a 42-in-tall envelope within the FRAME PERIMETER; every MECHANISM at its commanded maximum reach within the 18-in limit; total modeled plus allowed mass ≤ 115 lb; one ROBOT SIGNAL LIGHT sited where it stays visible during a HEADWALL hang. Budget realistically: a "112 lb" robot with no wiring allowance is a 125 lb robot.
 
 ### 4.2 Technical Binder (PDF)
 
 The binder is the design review in document form. Required sections, in order:
 
-1. **Strategic analysis.** A phase-by-phase match scoring plan with points-per-cycle math: cycle time estimates × piece values from the scoring table, the AUTO plan (including all three FORECAST branches and whether the ALLIANCE pursues ROPED UP), ROUTE DECLARATION reasoning, and the ENDGAME plan. State the entry's target match score and show the arithmetic. The analysis is evaluated against the Championship RP column, the standard this event judges to: SUPPLY LINE ≥ 23 SUPPLIES, EXPEDITION = all three CAMPS plus the declared ROUTE tier at full capacity (seven SCORED positions, whichever ROUTE is declared), ASCENT ≥ 60 ENDGAME points. State which RPs the design lets a plausible ALLIANCE pursue, and what partners must cover.
+1. **Strategic analysis.** A phase-by-phase match scoring plan with points-per-cycle math: cycle time estimates × piece values from the scoring table, the AUTO plan (including all three FORECAST branches and whether the ALLIANCE pursues ROPED UP), ROUTE DECLARATION reasoning, and the ENDGAME plan. State the entry's target match score and show the arithmetic. The analysis is written against the Championship RP column, the event's design standard (and the standard judges apply if the event is judged): SUPPLY LINE ≥ 23 SUPPLIES, EXPEDITION = all three CAMPS plus the declared ROUTE tier at full capacity (seven SCORED positions, whichever ROUTE is declared), ASCENT ≥ 60 ENDGAME points. State which RPs the design lets a plausible ALLIANCE pursue, and what partners must cover.
 2. **Robot architecture rationale.** Why this ALLIANCE ROLE (CRATE FREIGHTER, O2 SURGEON, RING ALPINIST, HYBRID, or a defended alternative). This section must work through the elevator-versus-arm decision explicitly. The flat shelves at 24 and 42 in favor elevators, with 0.78 in of lateral placement tolerance per side at the slot fences rather than the 1.0 the nominal cube suggests. The 30° Low and Mid Sockets and the 45° pegs favor arms. The high tier (a 15°-tilted Summit Socket rim at 72 in on the SHELF FACE, and High Pegs at 78 in on the spire) requires continuous elevators or multi-stage arms. Because placement values are uniform by tier, the choice turns on which CAMP slots the design unlocks; no piece type is worth more than another at the same tier. Show which targets were chosen and how that choice drove the superstructure, and include the drivetrain selection rationale.
 3. **Mechanism descriptions.** For each mechanism: what it does, how it works (geometry, DOF, motors/reductions chosen from the legal list), how the game piece travels from acquisition to SCORED, and what the 2-piece possession limit means for the entry's serializer/indexing.
 4. **Weight budget.** The table from §4.1, with commentary on the riskiest line items.
-5. **Risk register.** The 4–8 things most likely to make this robot fail in week 1, each with likelihood, impact, and mitigation. Candid entries score higher than confident omissions. "Summit traversal swing damping unproven; fallback is banking CAMP RUNG for 20" is the kind of entry this section is for.
+5. **Risk register.** The 4–8 things most likely to make this robot fail in week 1, each with likelihood, impact, and mitigation. Candid entries are worth more than confident omissions. "Summit traversal swing damping unproven; fallback is banking CAMP RUNG for 20" is the kind of entry this section is for.
 6. **BASECAMP BOT comparison.** Compare the entry quantitatively with the published BASECAMP BOT reference (Appendix A): the entry's projected points against its roughly 24 of its own (about 30 with the CAMP I it completes), and which additional capabilities account for the difference. If the margin is thin, say so. A simple robot executed well beats a complex one executed poorly, and a paragraph that acknowledges this in the entry's own arithmetic is worth including.
 
-There is no page limit. Judges favor concise binders: 10–20 well-organized pages score better than 40 padded ones.
+There is no page limit. Concise binders communicate better: 10–20 well-organized pages beat 40 padded ones.
 
 ### 4.3 Video walkthrough (3–5 minutes)
 
-A recorded walkthrough in any style (screen-capture CAD tour, narrated slides, on camera). It must cover the strategy in one minute, a tour of the robot showing each mechanism doing its job (animate or manipulate the CAD through a cycle and a climb), and the one decision the squad is proudest of. Hard cap 5 minutes; editing to time is part of the exercise. Production polish is not scored; communication is.
+A recorded walkthrough in any style (screen-capture CAD tour, narrated slides, on camera). It must cover the strategy in one minute, a tour of the robot showing each mechanism doing its job (animate or manipulate the CAD through a cycle and a climb), and the one decision the squad is proudest of. Hard cap 5 minutes; editing to time is part of the exercise. What matters is communication, not production polish.
 
 ### 4.4 Renders (optional)
 
-Renders, poster shots, or a reveal-style edit. Not scored directly, but eligible for People's Choice (§7).
+Renders, poster shots, or a reveal-style edit. Not scored directly, but eligible for People's Choice (§7) if the organizers hold it.
 
 ---
 
-## 5. Judging Rubric
+## 5. Judging Rubric (optional)
+
+> **Optional section.** There is no official judging or scoring. This section applies only if the organizers announce at kickoff that the event will be judged. Otherwise entries are not scored or ranked, and squads can use the rubric as a self-check on their own entry.
 
 ### 5.1 Weights and criteria
 
-All entries are judged against the Championship RP column: squads design for the highest tier of play, and their strategy arithmetic must be realistic about it. Each judge scores each criterion 1–5; weighted scores are summed.
+When the event is judged, all entries are judged against the Championship RP column: squads design for the highest tier of play, and their strategy arithmetic must be realistic about it. Each judge scores each criterion 1–5; weighted scores are summed.
 
 | Criterion | Weight | 1 (weak) | 3 (solid) | 5 (exceptional) |
 |---|---|---|---|---|
@@ -145,12 +153,12 @@ Design Feasibility is judged within the entrant's resources: "buildable" means b
 
 ### 5.3 Transparency commitments
 
-Research on community design events that failed identifies unnamed judges, vague criteria, and missing feedback as the main causes of lost trust. The following commitments are binding on the organizers:
+Research on community design events that failed identifies unnamed judges, vague criteria, and missing feedback as the main causes of lost trust. If the organizers announce judging, the following commitments are binding on them:
 
 1. **Judges are named at kickoff**, with a one-line statement of each judge's background. Target panel: 2–3 (lead mentor + alumni/mentor from another team or industry). Judges with a conflict (their own child or protégé on a squad) recuse themselves from that squad's scoring.
 2. **This rubric is final and public from Day 0.** No criteria are added, reweighted, or reinterpreted after kickoff. Scoring-relevant rules ambiguities are resolved only through Team Updates (§6), never retroactively at judging.
 3. **Every squad receives written feedback**: per-criterion scores plus at least one paragraph of narrative per squad, delivered the night of the results show. This is a required organizer deliverable, equal in status to the students' deadline.
-4. **Results are delivered at a live ranked feedback show** (§2, Day ~15): bottom-up reveal, verbal feedback on every entry, no silent rankings. The show date is committed at kickoff.
+4. **Results are delivered at a live ranked feedback show** (§2, Day ~22): bottom-up reveal, verbal feedback on every entry, no silent rankings. The show date is committed at kickoff.
 5. **All scores stand once announced.** Disputes about judging are feedback for next year's rubric, not grounds for revision.
 
 ---
@@ -160,14 +168,16 @@ Research on community design events that failed identifies unnamed judges, vague
 Ambiguous rules wording is a common failure in events like this; in one community design challenge, a single badly worded ownership rule briefly implied a 20–30 point exploit. A formal Q&A system with published, authoritative answers prevents this:
 
 - **How to ask:** students post rules questions to the designated event channel (or a shared Q&A form, at the mentor's choice; answers must be public either way). Questions cite the rule number in question (e.g., "Does G501's possession limit count a piece bridging the DEPOT lip?"). Private direct-message answers are prohibited, because an answer that one squad hears and another does not is unfair.
-- **Turnaround:** the mentor (acting as the game authority) answers within 24 hours on weekdays, and the same day on the Day 0–1 weekend. Questions asked after the Day 6 last call are answered on a best-effort basis, the same day where possible; questions asked on Day 8 may go unanswered, so plan ahead.
+- **Turnaround:** the mentor (acting as the game authority) answers within 24 hours on weekdays, and the same day on the Day 0–1 weekend. Questions asked after the Day 11 last call are answered on a best-effort basis, the same day where possible; questions asked on Day 14 may go unanswered, so plan ahead.
 - **Authority:** the published Q&A answer sheet is authoritative and cumulative. Answers interpret the Game Manual; they do not change it.
-- **Team Updates:** rule *changes*, and clarifications that alter the manual text, are issued only as numbered **Team Updates** (Update 01 in the Day 4 slot, Update 02 in the Day 5 slot, emergency updates any time through Day 6). Each uses the same format: rule number, old text struck, new text, and a one-line rationale. If no changes are needed, a "no changes" update is still posted on schedule. The manual is not changed after Day 6 except to close a game-breaking exploit.
-- **Spirit clause:** rules are to be read as intended. A reading that produces absurd scoring (e.g., infinite foul loops) is wrong even if it is grammatically defensible; ask before exploiting it. Judges score strategy built on Q&A-confirmed readings; strategy built on an unconfirmed exploit reading is scored as if the exploit did not exist.
+- **Team Updates:** rule *changes*, and clarifications that alter the manual text, are issued only as numbered **Team Updates** (Update 01 in the Day 4 slot, Update 02 in the Day 9 slot, emergency updates any time through Day 11). Each uses the same format: rule number, old text struck, new text, and a one-line rationale. Updates are posted in the event's Team Updates channel and kept in the kit as `05-team-updates/TEAM-UPDATE-NN.md`. If no changes are needed, a "no changes" update is still posted on schedule. The manual is not changed after Day 11 except to close a game-breaking exploit.
+- **Spirit clause:** rules are to be read as intended. A reading that produces absurd scoring (e.g., infinite foul loops) is wrong even if it is grammatically defensible; ask before exploiting it. Design strategy on Q&A-confirmed readings. If the event is judged, strategy built on an unconfirmed exploit reading is scored as if the exploit did not exist.
 
 ---
 
-## 7. Awards
+## 7. Awards (optional)
+
+> **Optional section.** Awards are presented only if the organizers announce judging at kickoff (§5). People's Choice, a peer vote, may be held on its own if the organizers announce it.
 
 | Award | Determined by | Recognizes |
 |---|---|---|
@@ -177,7 +187,7 @@ Ambiguous rules wording is a common failure in events like this; in one communit
 | **Best Strategy** | Judges (Strategic Analysis criterion) | The strongest game analysis, regardless of overall rank |
 | **Best Presentation** | Judges (Documentation & Communication criterion, video-weighted) | The binder-and-video package that best communicates the design |
 
-Prizes are at the mentor's discretion and within the mentor's budget (for example, team-funded gift cards, 3D-printer time, a traveling trophy, or first choice at the next shop pizza night). Every award is announced at the live show, every entry gets airtime, and the winning entries become the next year's training references. The Winner and Best Rookie Squad entries are archived in the team's design library as reference examples.
+Prizes are at the mentor's discretion and within the mentor's budget (for example, team-funded gift cards, 3D-printer time, a traveling trophy, or first choice at the next shop pizza night). When awards are given, every award is announced at the live show, every entry gets airtime, and the winning entries become the next year's training references. The Winner and Best Rookie Squad entries are archived in the team's design library as reference examples.
 
 One squad may win multiple awards. People's Choice is the only award that can be added to a judged award without discussion, because the participants decide it.
 

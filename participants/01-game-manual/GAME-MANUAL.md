@@ -30,7 +30,7 @@ SUMMIT PUSH is an original offseason game, published as a design-training releas
 - **Authority.** Where any other document in the SUMMIT PUSH package (CAD packages, drawings, the vision guide) appears to conflict with this manual, this manual governs. Report any discrepancy to the event organizer; it is resolved by Team Update (Section 1.5).
 - **Defined terms.** Words in ALL CAPITAL LETTERS (e.g., CRAG, SCORED, MATCH) are defined terms. Each is collected, with its definition, in the Glossary (Section 9). When a rule uses a defined term, the definition governs over the everyday meaning of the word. Feature names that are not defined terms, such as Low Socket and Shelf 1, appear in title case.
 - **Rule numbers.** Game rules carry G numbers and robot construction rules carry R numbers. Section 1.4 gives the numbering scheme.
-- **Interpretation.** Referees, and in a design challenge the judges, enforce the rules as written. Teams raise ambiguities through the Q&A process rather than exploiting them (see Section 1.3).
+- **Interpretation.** Referees, and in a judged design challenge the judges, enforce the rules as written. Teams raise ambiguities through the Q&A process rather than exploiting them (see Section 1.3).
 
 ## 1.2 Design Intent
 
@@ -413,12 +413,15 @@ SUMMIT PUSH is played with three SUPPLY types: 63 SUPPLIES per MATCH in total, 2
 | Shape | cube, pillowed faces | cylinder, domed caps | torus (ring) |
 | Dimensions | 12.0 in cube (13.0 in max envelope with the 0.5-in face crown) | 5.0 in dia × 14.0 in long | 10.0 in OD, 2.5 in tube (5.0 in ID hole) |
 | Weight | ~2.0 lb | ~1.5 lb | ~1.0 lb |
-| Official construction | sewn ripstop-nylon skin over PU foam core | 4.0-in OD rigid tube core, 0.5-in EVA foam sleeve, molded foam caps | solid molded rubber/foam ring |
+| Official construction | sewn ripstop-nylon skin over PU foam core | rigid molded shell: thick-wall ABS tube with rigid molded ABS domed caps, no foam | solid molded rubber/foam ring |
+| Compression tolerance | compliant: compresses up to 2.0 in across any pair of opposing faces (13.0-in crowned envelope → 11.0 in) under a squeeze of up to 15 lbf, crowns first; recovers fully when released | rigid: does not compress (zero compression tolerance) | compliant: tube section compresses up to 0.5 in (2.5 → 2.0 in) under a pinch of up to 10 lbf; the ring ovalizes up to 1.0 in across the OD (10.0 → 9.0 in) under a diametral squeeze of up to 5 lbf; recovers fully when released |
 | Official color | expedition violet `#7B3FA0` | body `#F2F2F0`, domed caps `#2E8B57` | amber `#D9A441` |
 | Scores on | Shelves, BASE DEPOT | Sockets, BASE DEPOT | Pegs, BASE DEPOT |
 | Count per MATCH | 21 | 21 | 21 |
 
-All three SUPPLY types are durable enough to be driven over. A SUPPLY damaged beyond play is removed and is not replaced during the MATCH. No SUPPLY is colored in either ALLIANCE's color, so a referee, a DRIVE TEAM, or a vision pipeline cannot mistake a SUPPLY for an ALLIANCE element.
+All three SUPPLY types are durable enough to be driven over. A SUPPLY damaged beyond play is removed and is not replaced during the MATCH.
+
+The CACHE CRATE and the ROPE COIL are compliant: a ROBOT or a HUMAN PLAYER may squeeze either one within its compression tolerance in normal handling, and it recovers its shape when released. The O2 CELL is rigid, so a mechanism that grips it must supply its own compliance. Every fit, clearance and envelope in this manual and in the Field CAD Package is computed at nominal, uncompressed size: compression is margin, not budget. No SUPPLY is colored in either ALLIANCE's color, so a referee, a DRIVE TEAM, or a vision pipeline cannot mistake a SUPPLY for an ALLIANCE element.
 
 ### 3.6.1 Staging
 
@@ -918,7 +921,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 > *Commentary:* The HEADWALL rungs are built to carry hanging ROBOTS, and hanging from a rung does not violate this rule. The rule targets wedging into socket tubes, prying pegs, dragging chute sills, and shaking a CRAG to knock SUPPLIES loose. That last case is the intent-based counterpart to the no-fault knock-off procedure in **G504**.
 
-**G203** *Do not alter SUPPLIES.* Team members may not deliberately modify, damage, mark, or alter SUPPLIES. HUMAN PLAYERS may not deform SUPPLIES to change how they feed or score, for example by pre-folding a ROPE COIL flat or denting an O2 CELL cap.
+**G203** *Do not alter SUPPLIES.* Team members may not deliberately modify, damage, mark, or alter SUPPLIES. HUMAN PLAYERS may not deform SUPPLIES to change how they feed or score, for example by pre-folding a ROPE COIL flat or crushing a CACHE CRATE beyond its compression tolerance. Squeezing a CACHE CRATE or a ROPE COIL within its compression tolerance (Section 3.6) in normal handling does not alter it.
 
 *Violation:* MINOR FOUL per SUPPLY; deliberate alteration: YELLOW CARD.
 
@@ -1225,7 +1228,7 @@ ALLIANCE-colored and white ROBOT lighting is otherwise permitted, including stat
 
 **R303** *Budget realism.* SUMMIT PUSH does not require a costed Bill of Materials. Instead, one realism standard applies: every COTS item on the ROBOT must be purchasable by a competing team (no one-off, discontinued and unobtainable, or sponsor-exclusive COMPONENTS as load-bearing elements), and no single COTS item may exceed $600 USD at published VENDOR pricing. Design-challenge entries must also satisfy the self-inspection checklist in Section 7.4, including a stated weight budget.
 
-*Violation:* An entry is penalized at judging per the published rubric; at a physical event, the ROBOT will not pass INSPECTION.
+*Violation:* In a judged design challenge, an entry is penalized per the published rubric; at a physical event, the ROBOT will not pass INSPECTION.
 
 > *Example:* A team designs a custom two-stage elevator using COTS bearing blocks, COTS motors, and waterjet-cut aluminum side plates. The plates are FABRICATED ITEMS; the bearing blocks and motors are COTS. All are legal. The same team may not specify a $2,400 industrial harmonic-drive actuator as its wrist joint, because it exceeds the **R303** single-item limit.
 
@@ -1466,7 +1469,7 @@ The ROBOT, in its declared STARTING CONFIGURATION and without BUMPERS, must fit 
 
 ## 7.4 Design-Entry Self-Inspection Checklist
 
-Design-challenge entries are judged from their submissions. In place of physical INSPECTION, every entry must include a self-inspection page in its submission that demonstrates the items below. Judges treat a missing or unsupported item as an inspector treats a failed check.
+Design-challenge entries are reviewed from their submissions. In place of physical INSPECTION, every entry must include a self-inspection page in its submission that demonstrates the items below. In a judged design challenge, judges treat a missing or unsupported item as an inspector treats a failed check.
 
 **Table 7-1: Design-entry self-inspection checklist**
 
@@ -1568,7 +1571,7 @@ If a Playoff MATCH ends in a tie, the MATCH is replayed.
 
 SUMMIT PUSH is published as an offseason design release, and no physical tournament is played. The tournament structure above still governs the design problem:
 
-- **Entries are judged against the Championship column.** Where bonus RP thresholds escalate by tier, a judging rubric evaluates a design's credible performance against the Championship column of the Section 4.7 table. A design that can reach only the Regional thresholds is judged as a Regional-level design.
+- **Entries are designed against the Championship column.** Where bonus RP thresholds escalate by tier, a design is measured by its credible performance against the Championship column of the Section 4.7 table, as is any judging rubric an event chooses to use. A design that can reach only the Regional thresholds is a Regional-level design.
 - **Strategy sections of technical binders should model both phases.** A complete binder presents a qualification model and an elimination model. The qualification model gives expected RP per MATCH with a random partner draw, including which bonus RPs the design can secure alone and which need help. The elimination model gives cycle counts, CAMP arithmetic, and ENDGAME contribution alongside two strong partners, where bonus RPs do not apply and MATCH points alone decide.
 - **Entries should state their ALLIANCE ROLE.** Designs should state which ALLIANCE ROLE they fill (CRATE FREIGHTER, O2 SURGEON, RING ALPINIST, or HYBRID; see Section 4.10) and how that role would be valued in the serpentine draft described in Section 8.3.
 

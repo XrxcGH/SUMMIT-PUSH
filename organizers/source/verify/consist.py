@@ -22,7 +22,8 @@ for root, dirs, files in os.walk('.'):
         # organizers/design/REVISION-LOG.md quotes superseded text by design; scanning it for stale
         # values reports the log's own history and drowns real hits.
         if (f.endswith('.md') or f.endswith('.svg') or f == 'generate_drawings.py') and f != 'REVISION-LOG.md':
-            MD.append(os.path.join(root, f).replace(BS, '/').lstrip('./'))
+            # relpath, not lstrip('./'): lstrip removes characters, which cut ".github" to "github"
+            MD.append(os.path.relpath(os.path.join(root, f), '.').replace(BS, '/'))
 
 MAN = io.open('participants/01-game-manual/GAME-MANUAL.md', encoding='utf-8').read()
 

@@ -46,7 +46,7 @@ Unless a rule says otherwise, contact rules are judged by outcome: what happened
 
 > *Commentary:* The HEADWALL rungs are built to carry hanging ROBOTS, and hanging from a rung does not violate this rule. The rule targets wedging into socket tubes, prying pegs, dragging chute sills, and shaking a CRAG to knock SUPPLIES loose. That last case is the intent-based counterpart to the no-fault knock-off procedure in **G504**.
 
-**G203** *Do not alter SUPPLIES.* Team members may not deliberately modify, damage, mark, or alter SUPPLIES. HUMAN PLAYERS may not deform SUPPLIES to change how they feed or score, for example by pre-folding a ROPE COIL flat or denting an O2 CELL cap.
+**G203** *Do not alter SUPPLIES.* Team members may not deliberately modify, damage, mark, or alter SUPPLIES. HUMAN PLAYERS may not deform SUPPLIES to change how they feed or score, for example by pre-folding a ROPE COIL flat or crushing a CACHE CRATE beyond its compression tolerance. Squeezing a CACHE CRATE or a ROPE COIL within its compression tolerance (Section 3.6) in normal handling does not alter it.
 
 *Violation:* MINOR FOUL per SUPPLY; deliberate alteration: YELLOW CARD.
 

@@ -19,7 +19,7 @@ import os
 import sys
 
 import numpy as np
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageDraw
 
 MAX_W = 2100
 CALLOUT_DIR = None                  # where the .callouts.json files go (default: beside the PNGs)
@@ -182,16 +182,31 @@ def layout(shot, w, h, ox, oy, s):
     return items, probs
 
 
-def finish(src, dst, shot):
-    im = Image.open(os.path.join(src, shot["name"] + ".png")).convert("RGB")
-    # tone mapping greys the stage's white background: map that flat colour back to white
+def whiten_background(im):
+    """Tone mapping greys the stage's white background: map it back to white.  Only background
+    connected to the image border changes (a flood fill from the border), and only when the
+    border's commonest colour is that light neutral grey.  A global colour match also whitened
+    any surface that rendered in the same grey: the carpet in a close-up whose border is all
+    carpet (the white tape vanished into it), and patches of the translucent wall panels."""
     a = np.asarray(im).astype(int)
     border = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]])
     colours, counts = np.unique(border, axis=0, return_counts=True)
     bg = colours[np.argmax(counts)]
-    flat = np.abs(a - bg).max(axis=2) <= 2
-    a[flat] = 255
-    im = Image.fromarray(a.astype(np.uint8))
+    if bg.min() < 200 or bg.max() - bg.min() > 4 or bg.min() == 255:
+        return im                                  # no background margin, or already white
+    h, w = a.shape[:2]
+    edge = [(x, 0) for x in range(w)] + [(x, h - 1) for x in range(w)] + \
+           [(0, y) for y in range(h)] + [(w - 1, y) for y in range(h)]
+    white = (255, 255, 255)
+    for xy in edge:
+        p = im.getpixel(xy)
+        if p != white and max(abs(p[i] - int(bg[i])) for i in range(3)) <= 2:
+            ImageDraw.floodfill(im, xy, white, thresh=6)
+    return im
+
+
+def finish(src, dst, shot):
+    im = whiten_background(Image.open(os.path.join(src, shot["name"] + ".png")).convert("RGB"))
     ox, oy = 0, 0
     box = ImageChops.difference(im, Image.new("RGB", im.size, (255, 255, 255))).point(lambda v: 255 if v > 8 else 0).getbbox()
     if box:

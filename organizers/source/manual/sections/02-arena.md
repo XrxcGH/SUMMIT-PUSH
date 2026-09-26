@@ -218,12 +218,15 @@ SUMMIT PUSH is played with three SUPPLY types: 63 SUPPLIES per MATCH in total, 2
 | Shape | cube, pillowed faces | cylinder, domed caps | torus (ring) |
 | Dimensions | 12.0 in cube (13.0 in max envelope with the 0.5-in face crown) | 5.0 in dia × 14.0 in long | 10.0 in OD, 2.5 in tube (5.0 in ID hole) |
 | Weight | ~2.0 lb | ~1.5 lb | ~1.0 lb |
-| Official construction | sewn ripstop-nylon skin over PU foam core | 4.0-in OD rigid tube core, 0.5-in EVA foam sleeve, molded foam caps | solid molded rubber/foam ring |
+| Official construction | sewn ripstop-nylon skin over PU foam core | rigid molded shell: thick-wall ABS tube with rigid molded ABS domed caps, no foam | solid molded rubber/foam ring |
+| Compression tolerance | compliant: compresses up to 2.0 in across any pair of opposing faces (13.0-in crowned envelope → 11.0 in) under a squeeze of up to 15 lbf, crowns first; recovers fully when released | rigid: does not compress (zero compression tolerance) | compliant: tube section compresses up to 0.5 in (2.5 → 2.0 in) under a pinch of up to 10 lbf; the ring ovalizes up to 1.0 in across the OD (10.0 → 9.0 in) under a diametral squeeze of up to 5 lbf; recovers fully when released |
 | Official color | expedition violet `#7B3FA0` | body `#F2F2F0`, domed caps `#2E8B57` | amber `#D9A441` |
 | Scores on | Shelves, BASE DEPOT | Sockets, BASE DEPOT | Pegs, BASE DEPOT |
 | Count per MATCH | 21 | 21 | 21 |
 
-All three SUPPLY types are durable enough to be driven over. A SUPPLY damaged beyond play is removed and is not replaced during the MATCH. No SUPPLY is colored in either ALLIANCE's color, so a referee, a DRIVE TEAM, or a vision pipeline cannot mistake a SUPPLY for an ALLIANCE element.
+All three SUPPLY types are durable enough to be driven over. A SUPPLY damaged beyond play is removed and is not replaced during the MATCH.
+
+The CACHE CRATE and the ROPE COIL are compliant: a ROBOT or a HUMAN PLAYER may squeeze either one within its compression tolerance in normal handling, and it recovers its shape when released. The O2 CELL is rigid, so a mechanism that grips it must supply its own compliance. Every fit, clearance and envelope in this manual and in the Field CAD Package is computed at nominal, uncompressed size: compression is margin, not budget. No SUPPLY is colored in either ALLIANCE's color, so a referee, a DRIVE TEAM, or a vision pipeline cannot mistake a SUPPLY for an ALLIANCE element.
 
 ### 3.6.1 Staging
 

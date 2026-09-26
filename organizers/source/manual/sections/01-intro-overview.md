@@ -7,7 +7,7 @@ SUMMIT PUSH is an original offseason game, published as a design-training releas
 - **Authority.** Where any other document in the SUMMIT PUSH package (CAD packages, drawings, the vision guide) appears to conflict with this manual, this manual governs. Report any discrepancy to the event organizer; it is resolved by Team Update (Section 1.5).
 - **Defined terms.** Words in ALL CAPITAL LETTERS (e.g., CRAG, SCORED, MATCH) are defined terms. Each is collected, with its definition, in the Glossary (Section 9). When a rule uses a defined term, the definition governs over the everyday meaning of the word. Feature names that are not defined terms, such as Low Socket and Shelf 1, appear in title case.
 - **Rule numbers.** Game rules carry G numbers and robot construction rules carry R numbers. Section 1.4 gives the numbering scheme.
-- **Interpretation.** Referees, and in a design challenge the judges, enforce the rules as written. Teams raise ambiguities through the Q&A process rather than exploiting them (see Section 1.3).
+- **Interpretation.** Referees, and in a judged design challenge the judges, enforce the rules as written. Teams raise ambiguities through the Q&A process rather than exploiting them (see Section 1.3).
 
 ## 1.2 Design Intent
 

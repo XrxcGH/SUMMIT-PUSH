@@ -9,10 +9,13 @@
   <rect x="1278.40" y="74.00" width="9.00" height="583.20" fill="#CC3333" stroke="#8E2020" stroke-width="1.20" opacity="0.30"/>
   <text x="94.00" y="365.60" font-size="10.00" fill="#0E3F86" text-anchor="middle" font-weight="bold" transform="rotate(-90.00 94.00 365.60)">BLUE ALLIANCE WALL</text>
   <text x="1300.40" y="365.60" font-size="10.00" fill="#8E2020" text-anchor="middle" font-weight="bold" transform="rotate(90.00 1300.40 365.60)">RED ALLIANCE WALL</text>
+  <line x1="695.20" y1="74.00" x2="695.20" y2="182.00" stroke="#8A9199" stroke-width="5.00"/>
   <line x1="695.20" y1="74.00" x2="695.20" y2="182.00" stroke="#FFFFFF" stroke-width="3.00"/>
   <line x1="695.20" y1="74.00" x2="695.20" y2="182.00" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="10 6"/>
+  <line x1="695.20" y1="268.40" x2="695.20" y2="462.80" stroke="#8A9199" stroke-width="5.00"/>
   <line x1="695.20" y1="268.40" x2="695.20" y2="462.80" stroke="#FFFFFF" stroke-width="3.00"/>
   <line x1="695.20" y1="268.40" x2="695.20" y2="462.80" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="10 6"/>
+  <line x1="695.20" y1="549.20" x2="695.20" y2="657.20" stroke="#8A9199" stroke-width="5.00"/>
   <line x1="695.20" y1="549.20" x2="695.20" y2="657.20" stroke="#FFFFFF" stroke-width="3.00"/>
   <line x1="695.20" y1="549.20" x2="695.20" y2="657.20" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="10 6"/>
   <text x="701.20" y="87.12" font-size="8.50" fill="#1A1D21">FIELD CENTERLINE X = 324 (2-in white tape)</text>
@@ -235,9 +238,13 @@
   <text x="60.00" y="802.14" font-size="8.50" fill="#1A1D21">CRAG APRON  36 shelf &amp; peg faces / 20 socket faces / R20</text>
   <line x1="28.00" y1="811.49" x2="54.00" y2="811.49" stroke="#B57718" stroke-width="1.80" stroke-dasharray="6 4"/>
   <text x="60.00" y="814.21" font-size="8.50" fill="#1A1D21">OUTFITTER LANE  36 x 48, centered on the chute</text>
-  <line x1="28.00" y1="823.56" x2="54.00" y2="823.56" stroke="#6E7378" stroke-width="1.80" stroke-dasharray="10 6"/>
+  <line x1="28.00" y1="823.56" x2="54.00" y2="823.56" stroke="#8A9199" stroke-width="5.00"/>
+  <line x1="28.00" y1="823.56" x2="54.00" y2="823.56" stroke="#FFFFFF" stroke-width="3.00"/>
+  <line x1="28.00" y1="823.56" x2="54.00" y2="823.56" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="10 6"/>
   <text x="60.00" y="826.28" font-size="8.50" fill="#1A1D21">FIELD CENTERLINE  2-in white at X = 324 - G402 / G502 line call</text>
-  <line x1="28.00" y1="835.63" x2="54.00" y2="835.63" stroke="#6E7378" stroke-width="1.80" stroke-dasharray="7 4"/>
+  <line x1="28.00" y1="835.63" x2="54.00" y2="835.63" stroke="#8A9199" stroke-width="5.00"/>
+  <line x1="28.00" y1="835.63" x2="54.00" y2="835.63" stroke="#FFFFFF" stroke-width="3.00"/>
+  <line x1="28.00" y1="835.63" x2="54.00" y2="835.63" stroke="#6E7378" stroke-width="0.70" stroke-dasharray="7 4"/>
   <text x="60.00" y="838.35" font-size="8.50" fill="#1A1D21">CENTER CACHE band + nine white marks</text>
   <rect x="403.34" y="745.20" width="290.92" height="105.22" fill="#FFFFFF" stroke="#C8CCD1" stroke-width="0.90"/>
   <text x="411.34" y="760.23" font-size="9.50" fill="#1F4E79" font-weight="bold">PLAN SYMBOLS</text>

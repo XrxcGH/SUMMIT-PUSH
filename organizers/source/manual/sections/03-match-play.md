@@ -194,9 +194,11 @@ Every CAMP requires one SCORED SUPPLY of each type that its tier accepts. The CR
 
 **Out-of-bounds supplies:** FIELD STAFF return any SUPPLY that leaves the FIELD, at the next safe opportunity, to the nearest OUTFITTER chute: the chute of the ALLIANCE on that side of the FIELD, which may be an opponent's chute. A ROBOT may not deliberately eject a SUPPLY out of the FIELD (**G507**).
 
+**SUPPLIES on SCREE:** SCREE is part of the FIELD (Section 3.8). A SUPPLY that comes to rest on it stays in play, and FIELD STAFF do not move or restage it.
+
 ### 4.4.5 Cycle Distances
 
-The following approach distances are published for estimating points per cycle. All are for the Blue ALLIANCE, from ROBOT center to the approach position; Red distances are the same by symmetry. Each approach position lies on the outer edge of the BASE DEPOT channel, 16.0 in off the middle of its face.
+The following approach distances are published for estimating points per cycle. All are for the Blue ALLIANCE, from ROBOT center to the approach position; Red distances are the same by symmetry. Each approach position is a reference point on the outer edge of the BASE DEPOT channel, 16.0 in off the middle of its face; a ROBOT servicing the face stops with its BUMPERS at the lip, 16.75 in off the face, and its center about half its BUMPER length farther out.
 
 **Table 4-7: Cycle distances**
 
@@ -375,7 +377,7 @@ SUMMIT PUSH rewards ALLIANCES built from complementary ROBOTS. Four ALLIANCE ROL
 |---|---|---|
 | **CRATE FREIGHTER** | Shelf 1 and Shelf 2, BASE DEPOT | Volume toward SUPPLY LINE, and the crate slot of both CAMP I and CAMP II. Wide compliant intake and a 42-in lift. |
 | **O2 SURGEON** | Low, Mid, and Summit Sockets | The oxygen slot of every CAMP, including the High-tier Summit Socket. Reorientation wrist plus a 72-in reach. |
-| **RING ALPINIST** | Low, Mid, and High Pegs | The High Pegs, which no other role can supply, and therefore HIGH CAMP and the HIGH ROUTE's full capacity. Hook or spear end effector plus a 78-in reach. |
+| **RING ALPINIST** | Low, Mid, and High Pegs | The High Pegs, which no other role can supply, and therefore HIGH CAMP and the HIGH ROUTE's full capacity. Hook or spear end effector plus a 78-in reach that extends about 27 in beyond the FRAME PERIMETER (§3.3.3). |
 | **HYBRID** | Two tiers across two piece types, plus a strong climb | Flexibility in the draft, cover for a partner's failure, and usually the ALLIANCE's ASCENT contribution. |
 
 Placement values depend only on tier. In TELEOP, a CRATE FREIGHTER filling six shelf slots scores 33 placement points, an O2 SURGEON filling five sockets scores 32, and a RING ALPINIST filling six pegs scores 42. Within a tier, every position pays the same for every piece; the totals differ because each piece has a different number of positions on each tier. The CRAG has no crate position above 42 in, so a CACHE CRATE's best TELEOP placement is worth 7 points, while a ROPE COIL's is worth 10. The roles are therefore drafted as complements.

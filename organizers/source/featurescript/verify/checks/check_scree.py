@@ -20,7 +20,12 @@ Expected values come from the package documents only (never from src/20_ledger.f
                           (S5-S8, S6-S9) and 22.0 from S4 / S7 to the guardrail; flat ground kept clear:
                           X 48-90 across Y 90-234 in front of the HEADWALL, a 36 x 24 pad at each staging
                           mark, each OUTFITTER LANE mouth (X 48-90), and X >= 252 up to the CRAG APRON
-                          line at X = 264 (Red mirrored); outside every protected zone (CRAG APRONS,
+                          line at X = 264 (Red mirrored); non-linear: one clear straight 28-in path from
+                          the BASECAMP front, centerline Y ~175 at X = 48 (upper edge Y ~189), to the far
+                          (+Y) corner of the SHELF FACE approach at X = 264 (Y ~265-269), about 0.4 in to
+                          spare over the 14 in each side, and every other drivable straight 28-in path
+                          from an OUTFITTER LANE mouth or the BASECAMP front to the SHELF FACE or a
+                          SOCKET FACE approach crosses a patch; outside every protected zone (CRAG APRONS,
                           BASECAMP / HEADWALL ZONES, OUTFITTER LANES) and the CENTER CACHE; no AprilTag
                           occluded (every tag at 12 in or higher).  HDPE half-round rod, matte, color
                           token `scree` #5C5650.  BUMPER ZONE unchanged: a bumper bottom at 2.5 clears a
@@ -41,10 +46,27 @@ the built ridge and the reference must coincide (symmetric-difference volume ~0)
 coordinates are written for Blue; Red is checked with every probe rotated 180 deg about (324, 162).
 
 Construction reading (naming only): each ridge is one body named "<A> SCREE PATCH Sn ridge k".
+
+Reading of the non-linear paths (the package does not define the sampling): a path is the straight
+segment traced by a 28-in-wide ROBOT's centerline, clear when it stays 14.0 in from every measured
+30 x 30 patch square.  Starts: the BASECAMP front X = 48, Y 90-234, and each OUTFITTER LANE mouth at
+X = 48 with the ROBOT inside the 36-in lane (centerline Y 26-34 / 290-298).  Ends: the SHELF FACE
+approach, the APRON line X = 264 across the APRON's width (Y 196-284), and each SOCKET FACE approach,
+the APRON line Y = 196 / 284 in front of the face (X 300-348).  Every 0.5 in is sampled.  The check
+confirms the published corridor (centerline start Y 174-176.5, end Y 264-270, 0.4 +/- 0.1 in to spare),
+that no other path from the BASECAMP front reaches the SHELF FACE approach, that a centerline at the
+corridor's upper edge (Y 189) has no clear path, and that no path from an OUTFITTER LANE mouth is clear.  (The BASECAMP front also
+has a path, centerline Y ~106, to the SHELF FACE end of the -Y SOCKET FACE approach, X 300-301.5, with
+0.1 in to spare.  It is not drivable: a 28-in ROBOT centred on the Y = 196 line overlaps the DEPOT
+chamfer, whose edge is at Y 198.25, and with the ROBOT's centre held 14 in clear of that edge (Y 184)
+no path from the BASECAMP front to that face clears the patches.  The package therefore says "every
+other drivable" path, and that part is not checked for SOCKET FACE ends.)
 """
 import math
 import os
 import re
+
+import numpy as np
 
 import kernel_occ as K
 from OCP.BRepPrimAPI import BRepPrimAPI_MakeBox
@@ -79,6 +101,15 @@ PASSABLE = 28.0                 # a gap narrower than a 28-in robot is closed
 COLUMN_GAP = (65.4, 68.3)       # between the near and far columns
 GUARD_GAP = 22.0                # S4 / S7 to the guardrail
 HW_FRONT = (48.0, 90.0, 90.0, 234.0)
+# non-linear layout: straight 28-in robot paths (see the docstring for the reading)
+HW_X, APRON_X = 48.0, 264.0
+BASECAMP_Y = (90.0, 234.0)
+LANE_Y, LANE_PLAY = (30.0, 294.0), 4.0          # a 28-in robot centred within a 36-in lane
+SHELF_APPROACH = (196.0, 284.0)                 # X 264 across the APRON's width
+SOCK_APPROACH_X, SOCK_APPROACH_Y = (300.0, 348.0), (196.0, 284.0)
+PATH_HALF, PATH_STEP = 14.0, 0.5
+CORRIDOR_START, CORRIDOR_END, CORRIDOR_SPARE = (174.0, 176.5), (264.0, 270.0), 0.4
+EDGE_Y = 189.0                   # the corridor's upper edge
 LANE_MOUTHS = ((48.0, 12.0, 90.0, 48.0), (48.0, 276.0, 90.0, 312.0))
 APRON_STRIP = (252.0, 0.0, 264.0, FW)
 # protected zones and the CENTER CACHE, world coordinates (both halves)
@@ -176,6 +207,42 @@ def rect_gap(a, b):
     dx = max(0.0, a[0] - b[2], b[0] - a[2])
     dy = max(0.0, a[1] - b[3], b[1] - a[3])
     return math.hypot(dx, dy)
+
+
+def path_clearance(A, B, rects):
+    """Least plan distance from each straight segment A[i]-B[i] to the rectangles (x0, y0, x1, y1),
+    0 where the segment crosses one: Liang-Barsky crossing test, otherwise the least of the end
+    points to the rectangle and the rectangle corners to the segment."""
+    out = np.full(len(A), np.inf)
+    d = B - A
+    L2 = np.maximum((d ** 2).sum(1), 1e-12)
+    for x0, y0, x1, y1 in rects:
+        t0, t1 = np.zeros(len(A)), np.ones(len(A))
+        ok = np.ones(len(A), bool)
+        for p, q in ((-d[:, 0], A[:, 0] - x0), (d[:, 0], x1 - A[:, 0]), (-d[:, 1], A[:, 1] - y0), (d[:, 1], y1 - A[:, 1])):
+            zero = np.abs(p) < 1e-12
+            ok &= ~(zero & (q < 0))
+            t = np.where(zero, 0.0, q / np.where(zero, 1.0, p))
+            t0 = np.where(~zero & (p < 0), np.maximum(t0, t), t0)
+            t1 = np.where(~zero & (p > 0), np.minimum(t1, t), t1)
+        crossed = ok & (t0 <= t1)
+
+        def to_rect(P):
+            return np.hypot(np.maximum(np.maximum(x0 - P[:, 0], 0), P[:, 0] - x1),
+                            np.maximum(np.maximum(y0 - P[:, 1], 0), P[:, 1] - y1))
+        dist = np.minimum(to_rect(A), to_rect(B))
+        for cx, cy in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+            t = np.clip(((cx - A[:, 0]) * d[:, 0] + (cy - A[:, 1]) * d[:, 1]) / L2, 0, 1)
+            dist = np.minimum(dist, np.hypot(A[:, 0] + t * d[:, 0] - cx, A[:, 1] + t * d[:, 1] - cy))
+        out = np.minimum(out, np.where(crossed, 0.0, dist))
+    return out
+
+
+def sweep(starts, ends, rects):
+    """Every straight path from a start to an end: (clearance, start, end) arrays."""
+    S_, E_ = np.array(starts, float), np.array(ends, float)
+    A, B = np.repeat(S_, len(E_), 0), np.tile(E_, (len(S_), 1))
+    return path_clearance(A, B, rects), A, B
 
 
 def doc_hex(path, rx):
@@ -392,6 +459,30 @@ def run(f):
         add(L + "each OUTFITTER LANE mouth (X 48-90) flat", all(m < 1e-9 for m in mouths), "%s" % mouths)
         v = clear(*APRON_STRIP)
         add(L + "flat ground from X 252 to the CRAG APRON line (X 264)", v < 1e-9, "SCREE volume %.2e" % v)
+        # straight 28-in robot paths (clearance >= 14 to every measured patch square)
+        rects = list(sq.values())
+        front = [(HW_X, y) for y in np.arange(BASECAMP_Y[0], BASECAMP_Y[1] + 1e-9, PATH_STEP)]
+        mouths = [(HW_X, y) for c_ in LANE_Y for y in np.arange(c_ - LANE_PLAY, c_ + LANE_PLAY + 1e-9, PATH_STEP)]
+        shelf = [(APRON_X, y) for y in np.arange(SHELF_APPROACH[0], SHELF_APPROACH[1] + 1e-9, PATH_STEP)]
+        socks = [(x, y) for y in SOCK_APPROACH_Y for x in np.arange(SOCK_APPROACH_X[0], SOCK_APPROACH_X[1] + 1e-9, PATH_STEP)]
+        c, A, B = sweep(front, shelf, rects)
+        k = int(np.argmax(c))
+        good = c >= PATH_HALF
+        in_corr = bool(good.any()) and CORRIDOR_START[0] <= A[good][:, 1].min() and A[good][:, 1].max() <= CORRIDOR_START[1] \
+            and CORRIDOR_END[0] <= B[good][:, 1].min() and B[good][:, 1].max() <= CORRIDOR_END[1]
+        add(L + "non-linear: one clear straight 28-in path from the BASECAMP front to the SHELF FACE approach, centerline Y ~175 "
+            "at the front to its far (+Y) corner, about 0.4 in to spare",
+            in_corr and abs(c[k] - PATH_HALF - CORRIDOR_SPARE) < 0.1 and CORRIDOR_START[0] <= A[k][1] <= CORRIDOR_START[1],
+            "best clearance %.3f (%.3f to spare) from Y %.1f to Y %.1f; %d of %d sampled paths clear, starts Y %s, ends Y %s"
+            % (c[k], c[k] - PATH_HALF, A[k][1], B[k][1], int(good.sum()), len(c),
+               "%.1f-%.1f" % (A[good][:, 1].min(), A[good][:, 1].max()) if good.any() else "-",
+               "%.1f-%.1f" % (B[good][:, 1].min(), B[good][:, 1].max()) if good.any() else "-"))
+        c192 = sweep([(HW_X, EDGE_Y)], shelf + socks, rects)[0]
+        add(L + "no clear 28-in path with its centerline at Y 189 (the corridor's upper edge, not its centerline)",
+            c192.max() < PATH_HALF, "best clearance %.3f" % c192.max())
+        cm = sweep(mouths, shelf + socks, rects)[0]
+        add(L + "every straight 28-in path from an OUTFITTER LANE mouth to the SHELF FACE or a SOCKET FACE approach crosses a patch",
+            cm.max() < PATH_HALF, "best clearance %.3f over %d paths" % (cm.max(), len(cm)))
 
     # ---------- zones, tags, BUMPERS -------------------------------------------------------------
     allsol = blue + red

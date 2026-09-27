@@ -24,7 +24,7 @@ Expected values come from the package documents only (never from src/20_ledger.f
   FIELD-CAD-PACKAGE §3    FACE legs X 300-348 x Y 200-216 / 264-280, PEG FACE leg X 348-364 x Y 216-264) and
                           four corner squares 16 x 16, no corner arms; channel 16.0 from each face to the
                           lip inner face (CRITICAL); lip top 4.0 above the carpet = 3.75 above the floor
-                          (CRITICAL); lip 0.75 (ref) with an R0.25 top edge (CRITICAL); floor 0.25 thick,
+                          (CRITICAL); lip 0.75, +0 / -0.25, with an R0.25 top edge (CRITICAL); floor 0.25 thick,
                           top at Z = 0.25 (CRITICAL); 45 deg entry chamfer strip outside the lip, 1.0-in leg;
                           outer footprint 48 + 2 x 16.75 = 81.5 square (Blue X 283.25-364.75, Y 199.25-280.75),
                           83.5 over the chamfer (Blue X 282.25-365.75, Y 198.25-281.75); inside every CRAG
@@ -74,7 +74,7 @@ SOCK_YN, SOCK_YP = 216.0, 264.0  # Blue SOCKET FACE planes
 CH = 16.0                       # channel depth, every face (CRITICAL)
 LIP_Z = 4.0                     # lip top above carpet (CRITICAL)
 FLOOR_T = 0.25                  # floor thickness, top at Z = 0.25 (CRITICAL)
-LIP_T = 0.75                    # lip thickness (ref)
+LIP_T = 0.75                    # lip thickness, +0 / -0.25 (APRON tape clearance)
 LIP_R = 0.25                    # lip top-edge radius (CRITICAL)
 CHAMF = 1.0                     # entry chamfer leg, 45 deg
 TRAY_AREA = 80.0 ** 2 - 48.0 ** 2               # 4096

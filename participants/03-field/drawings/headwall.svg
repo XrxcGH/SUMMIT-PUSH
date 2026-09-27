@@ -254,8 +254,8 @@
   <text x="888.00" y="822.71" font-size="8.53" fill="#1A1D21">so supported within the preceding 5 s.</text>
   <text x="888.00" y="833.37" font-size="8.53" fill="#1A1D21">The nearest bumper face is X = 48, so the FRAME PERIMETER is at X = 51 (R402: 0.75 backing + 2.25 foam)</text>
   <text x="888.00" y="844.03" font-size="8.53" fill="#1A1D21">and an 18-in reach (R105) ends at X = 33.0.</text>
-  <text x="888.00" y="854.70" font-size="8.53" fill="#1A1D21">The 30-in allowance (G404 / R105) applies only while the BUMPERS are in the ALLIANCE's own CRAG APRON,</text>
-  <text x="888.00" y="865.36" font-size="8.53" fill="#1A1D21">never at a HEADWALL, so the 18-in column stands.</text>
+  <text x="888.00" y="854.70" font-size="8.53" fill="#1A1D21">The 30-in allowance (G404 / R105) applies only while the BUMPERS intersect the ALLIANCE's own CRAG APRON;</text>
+  <text x="888.00" y="865.36" font-size="8.53" fill="#1A1D21">no APRON reaches a HEADWALL, so the 18-in column stands.</text>
   <text x="888.00" y="881.15" font-size="9.10" fill="#1F4E79" font-weight="bold">Rung</text>
   <text x="970.00" y="881.15" font-size="9.10" fill="#1F4E79" font-weight="bold">Rung ctr X</text>
   <text x="1070.00" y="881.15" font-size="9.10" fill="#1F4E79" font-weight="bold">To centerline</text>

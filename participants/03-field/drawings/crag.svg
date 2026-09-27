@@ -2,7 +2,7 @@
   <rect width="1960" height="1340" fill="#ffffff"/>
   <text x="980" y="29.0" text-anchor="middle" font-size="21.00" font-weight="bold" fill="#1A1D21">SUMMIT PUSH — DRAWING 2 OF 6 - CRAG (x2 PER FIELD)</text>
   <text x="980" y="48.7" text-anchor="middle" font-size="12.31" fill="#6E7378">Blue CRAG shown - Red is the 180 deg rotation about field center - main views 3.2 px/in, details as noted</text>
-  <line x1="40.00" y1="470.00" x2="1560.00" y2="470.00" stroke="#1A1D21" stroke-width="2.00"/>
+  <line x1="40.00" y1="470.00" x2="1400.00" y2="470.00" stroke="#1A1D21" stroke-width="2.00"/>
   <text x="42.00" y="481.67" font-size="10.37" fill="#6E7378">carpet Z = 0</text>
   <text x="250.00" y="84.00" font-size="14.26" fill="#1F4E79" text-anchor="middle" font-weight="bold">VIEW A - SHELF FACE</text>
   <text x="250.00" y="97.74" font-size="10.37" fill="#6E7378" text-anchor="middle">3.2 px/in</text>
@@ -240,28 +240,28 @@
   <line x1="1692.00" y1="239.60" x2="1714.63" y2="239.60" stroke="#666666" stroke-width="4.00" stroke-dasharray="4 3" stroke-linecap="round"/>
   <line x1="1736.80" y1="306.80" x2="1759.43" y2="306.80" stroke="#666666" stroke-width="4.00" stroke-linecap="round"/>
   <line x1="1692.00" y1="284.40" x2="1714.63" y2="284.40" stroke="#666666" stroke-width="4.00" stroke-dasharray="4 3" stroke-linecap="round"/>
-  <line x1="1536.28" y1="412.40" x2="1578.92" y2="412.40" stroke="#C02020" stroke-width="1.10"/>
-  <path d="M 1583.20 412.40 L 1575.42 414.60 L 1575.42 410.20 Z" fill="#C02020" stroke="none"/>
-  <path d="M 1532.00 412.40 L 1539.78 410.20 L 1539.78 414.60 Z" fill="#C02020" stroke="none"/>
-  <line x1="1532.00" y1="395.40" x2="1532.00" y2="420.40" stroke="#C02020" stroke-width="0.91"/>
-  <line x1="1583.20" y1="395.40" x2="1583.20" y2="420.40" stroke="#C02020" stroke-width="0.91"/>
-  <rect x="1540.26" y="392.51" width="34.68" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
-  <text x="1557.60" y="404.58" font-size="12.19" fill="#C02020" text-anchor="middle">16.0</text>
-  <line x1="1587.48" y1="445.12" x2="1732.52" y2="445.12" stroke="#C02020" stroke-width="1.10"/>
-  <path d="M 1736.80 445.12 L 1729.02 447.32 L 1729.02 442.91 Z" fill="#C02020" stroke="none"/>
-  <path d="M 1583.20 445.12 L 1590.98 442.91 L 1590.98 447.32 Z" fill="#C02020" stroke="none"/>
-  <line x1="1583.20" y1="341.80" x2="1583.20" y2="453.12" stroke="#C02020" stroke-width="0.91"/>
-  <line x1="1736.80" y1="341.80" x2="1736.80" y2="453.12" stroke="#C02020" stroke-width="0.91"/>
-  <rect x="1642.66" y="427.43" width="34.68" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
-  <text x="1660.00" y="439.49" font-size="12.19" fill="#C02020" text-anchor="middle">48.0</text>
-  <line x1="1744.80" y1="163.88" x2="1744.80" y2="180.92" stroke="#C02020" stroke-width="1.10"/>
-  <path d="M 1744.80 185.20 L 1742.60 177.42 L 1747.00 177.42 Z" fill="#C02020" stroke="none"/>
-  <path d="M 1744.80 159.60 L 1747.00 167.38 L 1742.60 167.38 Z" fill="#C02020" stroke="none"/>
-  <line x1="1718.49" y1="159.60" x2="1746.80" y2="159.60" stroke="#C02020" stroke-width="0.91"/>
-  <line x1="1718.49" y1="185.20" x2="1746.80" y2="185.20" stroke="#C02020" stroke-width="0.91"/>
-  <line x1="1744.80" y1="159.60" x2="1744.80" y2="158.45" stroke="#C02020" stroke-width="1.10"/>
-  <rect x="1730.85" y="176.20" width="27.90" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1744.80 172.40)"/>
-  <text x="1744.80" y="188.27" font-size="12.19" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1744.80 172.40)">8.0</text>
+  <line x1="1536.28" y1="421.60" x2="1578.92" y2="421.60" stroke="#C02020" stroke-width="1.10"/>
+  <path d="M 1583.20 421.60 L 1575.42 423.80 L 1575.42 419.40 Z" fill="#C02020" stroke="none"/>
+  <path d="M 1532.00 421.60 L 1539.78 419.40 L 1539.78 423.80 Z" fill="#C02020" stroke="none"/>
+  <line x1="1532.00" y1="398.60" x2="1532.00" y2="429.60" stroke="#C02020" stroke-width="0.91"/>
+  <line x1="1583.20" y1="398.60" x2="1583.20" y2="429.60" stroke="#C02020" stroke-width="0.91"/>
+  <rect x="1540.26" y="401.71" width="34.68" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
+  <text x="1557.60" y="413.78" font-size="12.19" fill="#C02020" text-anchor="middle">16.0</text>
+  <line x1="1587.48" y1="454.32" x2="1732.52" y2="454.32" stroke="#C02020" stroke-width="1.10"/>
+  <path d="M 1736.80 454.32 L 1729.02 456.52 L 1729.02 452.11 Z" fill="#C02020" stroke="none"/>
+  <path d="M 1583.20 454.32 L 1590.98 452.11 L 1590.98 456.52 Z" fill="#C02020" stroke="none"/>
+  <line x1="1583.20" y1="341.80" x2="1583.20" y2="462.32" stroke="#C02020" stroke-width="0.91"/>
+  <line x1="1736.80" y1="341.80" x2="1736.80" y2="462.32" stroke="#C02020" stroke-width="0.91"/>
+  <rect x="1642.66" y="436.63" width="34.68" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80"/>
+  <text x="1660.00" y="448.69" font-size="12.19" fill="#C02020" text-anchor="middle">48.0</text>
+  <line x1="1807.60" y1="163.88" x2="1807.60" y2="180.92" stroke="#C02020" stroke-width="1.10"/>
+  <path d="M 1807.60 185.20 L 1805.40 177.42 L 1809.80 177.42 Z" fill="#C02020" stroke="none"/>
+  <path d="M 1807.60 159.60 L 1809.80 167.38 L 1805.40 167.38 Z" fill="#C02020" stroke="none"/>
+  <line x1="1718.49" y1="159.60" x2="1809.60" y2="159.60" stroke="#C02020" stroke-width="0.91"/>
+  <line x1="1718.49" y1="185.20" x2="1809.60" y2="185.20" stroke="#C02020" stroke-width="0.91"/>
+  <line x1="1807.60" y1="159.60" x2="1807.60" y2="158.45" stroke="#C02020" stroke-width="1.10"/>
+  <rect x="1793.65" y="176.20" width="27.90" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1807.60 172.40)"/>
+  <text x="1807.60" y="188.27" font-size="12.19" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1807.60 172.40)">8.0</text>
   <line x1="1840.80" y1="189.48" x2="1840.80" y2="334.52" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1840.80 338.80 L 1838.60 331.02 L 1843.00 331.02 Z" fill="#C02020" stroke="none"/>
   <path d="M 1840.80 185.20 L 1843.00 192.98 L 1838.60 192.98 Z" fill="#C02020" stroke="none"/>
@@ -415,7 +415,8 @@
   <text x="1010.00" y="1201.25" font-size="9.72" fill="#1A1D21">Reach from BUMPERS at the DEPOT lip (FRAME PERIMETER 19.75 off the face):</text>
   <text x="1010.00" y="1214.08" font-size="9.72" fill="#1A1D21">Low / Mid Peg tips 12.68 (roots 19.75); High Peg tip 26.68 (root 33.75),</text>
   <text x="1010.00" y="1226.92" font-size="9.72" fill="#1A1D21">the binding reach: 26.68 of the 30 allowed with BUMPERS in the CRAG APRON.</text>
-  <text x="1010.00" y="1239.75" font-size="9.72" fill="#1A1D21">The High Peg root is out of reach: release the COIL over the tip; it settles at the root.</text>
+  <text x="1010.00" y="1239.75" font-size="9.72" fill="#1A1D21">The High Peg root is out of reach: the COIL is released from rest over the</text>
+  <text x="1010.00" y="1252.58" font-size="9.72" fill="#1A1D21">tip (not LAUNCHING, G502), drops onto the peg and settles at the root.</text>
   <text x="1580.00" y="694.00" font-size="14.26" fill="#1F4E79" text-anchor="middle" font-weight="bold">D4 - SHELF AND DEPOT SECTION</text>
   <text x="1580.00" y="707.74" font-size="10.37" fill="#6E7378" text-anchor="middle">6.2 px/in</text>
   <text x="1580.00" y="720.70" font-size="10.37" fill="#6E7378" text-anchor="middle">normal to the SHELF FACE; the DEPOT is the same on all four faces</text>
@@ -461,11 +462,11 @@
   <line x1="1569.95" y1="1039.48" x2="1569.95" y2="1055.72" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1569.95 1060.00 L 1567.75 1052.22 L 1572.15 1052.22 Z" fill="#C02020" stroke="none"/>
   <path d="M 1569.95 1035.20 L 1572.15 1042.98 L 1567.75 1042.98 Z" fill="#C02020" stroke="none"/>
-  <line x1="1586.95" y1="1035.20" x2="1567.95" y2="1035.20" stroke="#C02020" stroke-width="0.91"/>
-  <line x1="1586.95" y1="1060.00" x2="1567.95" y2="1060.00" stroke="#C02020" stroke-width="0.91"/>
-  <line x1="1569.95" y1="1035.20" x2="1569.95" y2="1033.65" stroke="#C02020" stroke-width="1.10"/>
-  <rect x="1556.00" y="1027.71" width="27.90" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1569.95 1047.60)"/>
-  <text x="1569.95" y="1039.78" font-size="12.19" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1569.95 1047.60)">4.0</text>
+  <line x1="1586.95" y1="1035.20" x2="1561.95" y2="1035.20" stroke="#C02020" stroke-width="0.91"/>
+  <line x1="1586.95" y1="1060.00" x2="1561.95" y2="1060.00" stroke="#C02020" stroke-width="0.91"/>
+  <line x1="1569.95" y1="1035.20" x2="1569.95" y2="1004.48" stroke="#C02020" stroke-width="1.10"/>
+  <rect x="1556.00" y="998.55" width="27.90" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1569.95 1018.44)"/>
+  <text x="1569.95" y="1010.61" font-size="12.19" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1569.95 1018.44)">4.0</text>
   <line x1="1766.00" y1="915.48" x2="1766.00" y2="1055.72" stroke="#C02020" stroke-width="1.10"/>
   <path d="M 1766.00 1060.00 L 1763.80 1052.22 L 1768.20 1052.22 Z" fill="#C02020" stroke="none"/>
   <path d="M 1766.00 911.20 L 1768.20 918.98 L 1763.80 918.98 Z" fill="#C02020" stroke="none"/>
@@ -481,12 +482,12 @@
   <rect x="1788.66" y="931.40" width="34.68" height="16.08" fill="#ffffff" stroke="#C02020" stroke-width="0.80" transform="rotate(-90.00 1806.00 929.80)"/>
   <text x="1806.00" y="943.46" font-size="12.19" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1806.00 929.80)">42.0</text>
   <text x="1500.00" y="1144.72" font-size="11.67" fill="#1F4E79" font-weight="bold">D4 NOTES</text>
-  <text x="1500.00" y="1160.47" font-size="9.72" fill="#1A1D21">Lip 4.0 tall, top edge R0.25; lip thickness 0.75 (ref); tray</text>
-  <text x="1500.00" y="1173.30" font-size="9.72" fill="#1A1D21">floor 0.25; a 1.0 x 45 deg entry chamfer outside the lip (ref).</text>
-  <text x="1500.00" y="1186.13" font-size="9.72" fill="#1A1D21">The floor top is at Z = 0.25, so a crowned CRATE apexes at 13.25 -</text>
-  <text x="1500.00" y="1198.97" font-size="9.72" fill="#1A1D21">only 0.19 below the CRAG tag target at 13.44. See VISION-GUIDE 1.3.</text>
-  <text x="1500.00" y="1211.80" font-size="9.72" fill="#1A1D21">A CRATE stands proud of the lip and is SCORED so long as the tray</text>
-  <text x="1500.00" y="1224.63" font-size="9.72" fill="#1A1D21">floor alone supports it.</text>
+  <text x="1500.00" y="1160.47" font-size="9.72" fill="#1A1D21">Lip 4.0 tall, top edge R0.25; lip 0.75 thick, +0 / -0.25 (no plus</text>
+  <text x="1500.00" y="1173.30" font-size="9.72" fill="#1A1D21">tolerance: APRON tape clearance, FIELD-CAD-PACKAGE 3); tray floor</text>
+  <text x="1500.00" y="1186.13" font-size="9.72" fill="#1A1D21">0.25; a 1.0 x 45 deg entry chamfer outside the lip (ref).</text>
+  <text x="1500.00" y="1198.97" font-size="9.72" fill="#1A1D21">The floor top is at Z = 0.25, so a crowned CRATE apexes at 13.25 -</text>
+  <text x="1500.00" y="1211.80" font-size="9.72" fill="#1A1D21">only 0.19 below the CRAG tag target at 13.44. See VISION-GUIDE 1.3.</text>
+  <text x="1500.00" y="1224.63" font-size="9.72" fill="#1A1D21">A CRATE proud of the lip is SCORED while the tray floor alone holds it.</text>
   <text x="1500.00" y="1237.47" font-size="9.72" fill="#1A1D21">Robot standoff on every face: BUMPERS 16.75 from the CRAG face,</text>
   <text x="1500.00" y="1250.30" font-size="9.72" fill="#1A1D21">FRAME PERIMETER 19.75; a shelf slot center is 12.75 of extension.</text>
   <rect x="8.00" y="1263.30" width="1944.00" height="68.70" fill="#FFFFFF" stroke="#8A9199" stroke-width="1.00"/>

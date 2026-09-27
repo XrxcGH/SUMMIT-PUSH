@@ -53,7 +53,6 @@ SOCKET = "#9DB8D6"
 SOCKET_L = "#EAF1FC"
 DEPOT = "#7F7F7F"         # `depot`, MATERIALS-AND-COLORS.md §1.2 (REVISION-LOG M44)
 SCREE = "#5C5650"         # `scree`, the SCREE ridges (HDPE, matte)
-SCREE_TINT = "#DAD7D2"    # a SCREE PATCH footprint on the drawn carpet: `scree` at 18 %
 WALL = "#9AA4B2"
 WALL_D = "#4A5462"
 GHOST = "#2E8B57"

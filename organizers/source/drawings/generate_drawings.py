@@ -159,8 +159,9 @@ def _scree_patch(s, P, cx, cy, ang, sw=0.9):
     """One SCREE PATCH in plan. P maps field inches to sheet pixels."""
     hs = SCREE_S / 2.0
     corners = [P(cx - hs, cy - hs), P(cx + hs, cy - hs), P(cx + hs, cy + hs), P(cx - hs, cy + hs)]
+    # footprint outline only: the patch has no base plate, so the carpet shows between ridges
     s.path("M " + " L ".join("%.2f %.2f" % p for p in corners) + " Z",
-           fill=SCREE_TINT, stroke=SCREE, sw=sw)
+           fill="none", stroke=SCREE, sw=sw)
     for poly in scree_ridges(cx, cy, ang):
         s.path("M " + " L ".join("%.2f %.2f" % P(*p) for p in poly) + " Z",
                fill=SCREE, stroke="none", sw=0)
@@ -366,7 +367,8 @@ def sheet_field():
         s.line(fx(mx) - 7, fy(my) + 7, fx(mx) + 7, fy(my) - 7, stroke=MUTED, sw=1.4)
         s.circle(fx(mx), fy(my), 7.0, fill=c, stroke="#333333", sw=0.9)
     # the leader lands on the band edge between two marks, not on a mark
-    s.leader(fx(300), fy(150), fx(276), fy(150), "CENTER CACHE  X 300-348, Y 108-216",
+    # text end raised clear of the Blue S5 patch label below it
+    s.leader(fx(300), fy(150), fx(276), fy(155), "CENTER CACHE  X 300-348, Y 108-216",
              anchor="end")
 
     # dimensions
@@ -525,7 +527,8 @@ def _scree_panel(s, x0, top, bottom):
                  "ridge normal: 8.0 pitch (CRITICAL). Each ridge runs",
                  "straight across and is cut square at the patch edge."]
     notes_muted = ["HDPE half-round rod, matte, `scree` #5C5650.",
-                   "18 patches: nine per alliance."]
+                   "18 patches, nine in each half of the FIELD. Each half",
+                   "is also mirror-symmetric about Y = 162."]
     hdr = ("Patch", "Blue center", "Ridges", "Red twin")
     colx = [lx, lx + 40, lx + 112, lx + 160]
     for t in intro + key + notes_ink + notes_muted:
@@ -765,7 +768,7 @@ def sheet_crag():
     def z(v):
         return GY - K * v
 
-    s.line(40, GY, 1560, GY, stroke=INK, sw=2.0)
+    s.line(40, GY, 1400, GY, stroke=INK, sw=2.0)     # ends after View C, short of the plan View D
     s.text(42, GY + 4 + 0.74 * s.SUB, "carpet Z = 0", size=s.SUB, fill=MUTED)
 
     # ================= VIEW A - SHELF FACE =================
@@ -976,11 +979,13 @@ def sheet_crag():
                dx + K * SPIRE_S / 2 + K * PEG_EXP * 0.7071, dy + sgn * K * HPEG_LAT,
                stroke="#666666", sw=4, cap="round", dash="4 3")
     dep_b = dy + ho                              # outer face of the DEPOT lip
-    s.dim_h(dx - h - K * DEPOT_CH, dx - h, dep_b + 20, "16.0", ext_from=dep_b + 3,
+    dep_d = dep_b + K * DEPOT_CHAMFER + 26       # below the entry chamfer, clear of the ring
+    s.dim_h(dx - h - K * DEPOT_CH, dx - h, dep_d, "16.0", ext_from=dep_b + K * DEPOT_CHAMFER + 3,
             critical=True)
-    s.dim_h(dx - h, dx + h, dep_b + 20 + 1.32 * s.DIM + 18, "48.0", ext_from=dy + h + 3,
+    s.dim_h(dx - h, dx + h, dep_d + 1.32 * s.DIM + 18, "48.0", ext_from=dy + h + 3,
             critical=True)
-    s.dim_v(dy - h - K * SOCK_STANDOFF, dy - h, dx + K * SOCK_LAT + 40, "8.0",
+    # socket standoff: dimensioned outside the ring, so its value is not set on the tray
+    s.dim_v(dy - h - K * SOCK_STANDOFF, dy - h, dx + ho + K * DEPOT_CHAMFER + 14, "8.0",
             ext_from=dx + K * SOCK_LAT + rs + 3, critical=True, side="right")
     s.dim_v(dy - h, dy + h, dx + h + 104, "48.0", ext_from=dx + h + 3, critical=True,
             side="right")
@@ -1137,7 +1142,8 @@ def sheet_crag():
         "Reach from BUMPERS at the DEPOT lip (FRAME PERIMETER 19.75 off the face):",
         "Low / Mid Peg tips 12.68 (roots 19.75); High Peg tip 26.68 (root 33.75),",
         "the binding reach: 26.68 of the 30 allowed with BUMPERS in the CRAG APRON.",
-        "The High Peg root is out of reach: release the COIL over the tip; it settles at the root.",
+        "The High Peg root is out of reach: the COIL is released from rest over the",
+        "tip (not LAUNCHING, G502), drops onto the peg and settles at the root.",
     ], title="D3 NOTES", w=COLW + 30)
 
     # ---- D4 shelf + depot ----
@@ -1186,17 +1192,19 @@ def sheet_crag():
     s.dim_h(d4x - G * SHELF_DEPTH, d4x, zz4(SHELF2) - 24, "14.0", ext_from=zz4(SHELF2) - 6,
             critical=True)
     s.dim_h(d4x - G * DEPOT_CH, d4x, base + 40, "16.0", ext_from=base + 4, critical=True)
+    # the boxed value is taller than the 4-in span: set it above the upper extension line
     s.dim_v(zz4(DEPOT_LIP), base, lo - G * DEPOT_CHAMFER - 20, "4.0",
-            ext_from=lo - G * DEPOT_CHAMFER - 3, critical=True)
+            ext_from=lo - G * DEPOT_CHAMFER - 3, critical=True,
+            shift=G * DEPOT_LIP / 2 + (s.tw("4.0", s.DIM) + 0.9 * s.DIM) / 2 + 4)
     s.dim_v(zz4(SHELF1), base, d4x + 66, "24.0", ext_from=d4x + 4, critical=True, side="right")
     s.dim_v(zz4(SHELF2), base, d4x + 106, "42.0", ext_from=d4x + 4, critical=True, side="right")
     _notes(s, 1500, base + 40 + 1.32 * s.DIM + 30, [
-        "Lip 4.0 tall, top edge R0.25; lip thickness 0.75 (ref); tray",
-        "floor 0.25; a 1.0 x 45 deg entry chamfer outside the lip (ref).",
+        "Lip 4.0 tall, top edge R0.25; lip 0.75 thick, +0 / -0.25 (no plus",
+        "tolerance: APRON tape clearance, FIELD-CAD-PACKAGE 3); tray floor",
+        "0.25; a 1.0 x 45 deg entry chamfer outside the lip (ref).",
         "The floor top is at Z = 0.25, so a crowned CRATE apexes at 13.25 -",
         "only 0.19 below the CRAG tag target at 13.44. See VISION-GUIDE 1.3.",
-        "A CRATE stands proud of the lip and is SCORED so long as the tray",
-        "floor alone supports it.",
+        "A CRATE proud of the lip is SCORED while the tray floor alone holds it.",
         "Robot standoff on every face: BUMPERS 16.75 from the CRAG face,",
         "FRAME PERIMETER 19.75; a shelf slot center is 12.75 of extension.",
     ], title="D4 NOTES", w=s.w - 16 - 1500)
@@ -1450,8 +1458,8 @@ def sheet_headwall():
         "so supported within the preceding 5 s.",
         "The nearest bumper face is X = 48, so the FRAME PERIMETER is at X = 51 (R402: 0.75 backing + 2.25 foam)",
         "and an 18-in reach (R105) ends at X = 33.0.",
-        "The 30-in allowance (G404 / R105) applies only while the BUMPERS are in the ALLIANCE's own CRAG APRON,",
-        "never at a HEADWALL, so the 18-in column stands."], size=N, fill=INK, pitch=1.25 * N)
+        "The 30-in allowance (G404 / R105) applies only while the BUMPERS intersect the ALLIANCE's own CRAG APRON;",
+        "no APRON reaches a HEADWALL, so the 18-in column stands."], size=N, fill=INK, pitch=1.25 * N)
     hdr2 = ("Rung", "Rung ctr X", "To centerline", "To wrap the rung", "Within R105 (18 in)?")
     colx2 = [cx2 + 8, cx2 + 90, cx2 + 190, cx2 + 310, cx2 + 450]
     for cxx, cell in zip(colx2, hdr2):
@@ -1567,7 +1575,7 @@ def sheet_outfitter():
     s.dim_v(cy0, cy0 + C * CHUTE_H, cx0 + C * CHUTE_W + 34, "16.0 opening",
             ext_from=cx0 + C * CHUTE_W + 6, critical=True, side="right")
     s.dim_v(cy0 + (C * CHUTE_H - C * env) / 2, cy0 + (C * CHUTE_H + C * env) / 2, cx0 - 30,
-            "13.0 crowned envelope", ext_from=cx0 + (C * CHUTE_W - C * env) / 2 - 3, tick=2)
+            "13.0 crowned", ext_from=cx0 + (C * CHUTE_W - C * env) / 2 - 3, tick=2)
     yy = s.lines(cx0 - 40, cy0 + C * CHUTE_H + 34, ["Clearance 3.0 in on the crate's crowned envelope."],
                  size=s.pt(9.0), fill=INK)
     yy = s.lines(cx0 - 40, yy, ["A cube's minimum width in any orientation is its edge,",

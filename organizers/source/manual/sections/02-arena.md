@@ -1,12 +1,12 @@
 # 3 ARENA
 
-The SUMMIT PUSH ARENA includes all elements of the game infrastructure required to play a MATCH: the FIELD, two CRAGS, two HEADWALLS, four OUTFITTERS, 63 SUPPLIES, and the equipment for scorekeeping, field control, and MATCH lighting. This section is the authoritative physical description of the ARENA. Where an illustration in any other document disagrees with a dimension given here, this section governs.
+The SUMMIT PUSH ARENA includes all elements of the game infrastructure required to play a MATCH: the FIELD, two CRAGS, two HEADWALLS, four OUTFITTERS, 18 SCREE PATCHES, 63 SUPPLIES, and the equipment for scorekeeping, field control, and MATCH lighting. This section is the authoritative physical description of the ARENA. Where an illustration in any other document disagrees with a dimension given here, this section governs.
 
 > *Commentary:* The ARENA is illustrated throughout this manual with nominal dimensions. Fields are built by hand, so teams should expect variation of up to ±1 in and ±1° on non-critical dimensions and design accordingly. Dimensions flagged as toleranced (the O2 socket inside diameter, §3.3.2, and the CRAG tag center height, §3.7) are held to the stated tolerance on every official field. Every element is fully dimensioned for CAD reproduction in the FIELD CAD PACKAGE (`03-field/FIELD-CAD-PACKAGE.md`), and its appearance is specified in `03-field/MATERIALS-AND-COLORS.md`.
 
 ## 3.1 The FIELD
 
-The FIELD is a 54 ft × 27 ft (648 in × 324 in) carpeted area bounded by guardrails and alliance walls. The guardrail is a 20-in-tall barrier along the long sides of the FIELD. Each short end of the FIELD is closed by an alliance wall: a solid barrier containing three standard driver stations, one per team on the ALLIANCE. Each driver station provides a shelf, a clear polycarbonate window, the standard FMS connection point for the OPERATOR CONSOLE, and FIELD-provided **E-STOP** and **A-STOP** buttons. The E-STOP renders that team's ROBOT inoperable for the remainder of the MATCH. The A-STOP ends that ROBOT's AUTO immediately; the ROBOT may then be enabled normally at the start of TELEOP. Any DRIVE TEAM member may press either button at any time (see **G401**). Each alliance wall has two OUTFITTER chute openings near its corners (Section 3.5).
+The FIELD is a 54 ft × 27 ft (648 in × 324 in) carpeted area bounded by guardrails and alliance walls. The guardrail is a 20-in-tall barrier along the long sides of the FIELD. Each short end of the FIELD is closed by an alliance wall: a solid barrier containing three standard driver stations, one per team on the ALLIANCE. Each driver station provides a shelf, a clear polycarbonate window, the standard FMS connection point for the OPERATOR CONSOLE, and FIELD-provided **E-STOP** and **A-STOP** buttons. The E-STOP renders that team's ROBOT inoperable for the remainder of the MATCH. The A-STOP ends that ROBOT's AUTO immediately; the ROBOT may then be enabled normally at the start of TELEOP. Any DRIVE TEAM member may press either button at any time (see **G401**). Each alliance wall has two OUTFITTER chute openings near its corners (Section 3.5). In each half of the FIELD, nine SCREE PATCHES of low ridged terrain lie on the carpet around the alliance staging marks (Section 3.8).
 
 *Figure 3-1. FIELD layout in plan view, Blue alliance wall at left. Dimensioned drawing: Plate 1 of the field drawing set.*
 
@@ -49,17 +49,17 @@ All zone boundaries are marked with tape on the carpet. ALLIANCE-specific zones 
 | **CRAG APRON** | Blue | offset **36 in** outward from the SHELF FACE and the PEG FACE, **20 in** outward from each SOCKET FACE, corners swept as 20-in-radius arcs | band around the CRAG |
 | | Red | mirror | mirror |
 | **CLIMB LINE** | alliance color, dashed outside BASECAMP | the X = 48 (Blue) / X = 600 (Red) line carried across the full FIELD width, Y 0–324; over Y 90–234 it coincides with the BASECAMP boundary and needs no second line | the plane **G416** is called against |
-| **FIELD centerline** | neutral white | 2-in line at X = 324 running the full width, Y 0–324, interrupted where the two CRAG footprints cross it (the BASE DEPOT trays stop 8 in short of the line) | the line **G402** and **G502** are both called against |
-| **CENTER CACHE band** | neutral | X 300–348, Y 108–216 | 48 × 108 in |
+| **FIELD centerline** | neutral white | 2-in line at X = 324 running the full width, Y 0–324, interrupted where each CRAG and its BASE DEPOT cross it, between the inner edges of that CRAG's APRON tape: Blue Y 198–282, Red Y 42–126 | the line **G402** and **G502** are both called against |
+| **CENTER CACHE band** | neutral | X 300–348, Y 108–216; its ends coincide with the two SOCKET FACE planes, under the BASE DEPOTS, so no end lines are laid, and its two side lines stop at the inner edges of the APRON tape, like the centerline (Y 126–198) | 48 × 108 in |
 | **CENTER CACHE staging marks** | neutral | 9 white taped marks in a 3 × 3 grid, 24 in spacing, centered on (324, 162) | grid at X = 300/324/348 × Y = 138/162/186 |
 | **Alliance staging marks** | Blue | 3 taped marks at X = 144; Y = 108, 162, 216 | 12 ft from the Blue alliance wall |
 | | Red | X = 504; Y = 108, 162, 216 | mirror |
 
 BASECAMP is the taped area between each alliance wall and its HEADWALL. ROBOTS begin every MATCH in their BASECAMP (Section 3.2.1). The same taped area is also the HEADWALL ZONE: during the ENDGAME period and the climb assessment that follows it, opponent contact with a ROBOT in this zone is penalized (**G412**). BASECAMP describes its starting and parking role, and HEADWALL ZONE its ENDGAME protection role.
 
-OUTFITTER LANES are protected loading corridors: opponents may not enter them or contact ROBOTS in them (**G410**). The CRAG APRON is a line-call placement protection at each ALLIANCE's own CRAG: a ROBOT whose BUMPERS intersect its own ALLIANCE's APRON may not be contacted by an opponent (**G407**). The APRON does not restrict an opponent's movement through the area when no protected ROBOT is present.
+OUTFITTER LANES are protected loading corridors: opponents may not enter them or contact ROBOTS in them (**G410**). The CRAG APRON is a line-call placement protection at each ALLIANCE's own CRAG: a ROBOT whose BUMPERS intersect its own ALLIANCE's APRON may not be contacted by an opponent (**G407**), and may extend up to 30 in beyond its FRAME PERIMETER instead of 18 in, over that APRON (**G404**). The APRON does not restrict an opponent's movement through the area when no protected ROBOT is present.
 
-The APRON offset is 36 in on the SHELF FACE and the PEG FACE and 20 in on the two SOCKET FACES. At a SOCKET FACE, the shallower offset limits protection. A socket rim stands 8.0 in out from its face, so a ROBOT using the full 18-in extension has its FRAME PERIMETER 26 in out and its BUMPERS 23 in out: 3 in beyond the 20-in tape, and unprotected. To be protected at a SOCKET FACE, a ROBOT must engage the rim with 15 in of extension or less. At the SHELF FACE and PEG FACE, with their 36-in offset, every reachable position is protected.
+The APRON offset is 36 in on the SHELF FACE and the PEG FACE and 20 in on the two SOCKET FACES. At a SOCKET FACE, the shallower offset limits how far out a ROBOT can stand and stay protected. The BASE DEPOT lip holds a ROBOT's BUMPERS 16.75 in off every CRAG face, inside the APRON, and from there each socket rim, 8.0 in out from its face, is 11.75 in of extension away. A ROBOT that stands farther off stays protected, and keeps the 30-in extension of **G404**, only while its BUMPERS still intersect the 20-in tape: its FRAME PERIMETER is then no more than 23 in out, and the rim no more than 15 in of extension away. A ROBOT reaching the rim from farther out is outside the APRON, unprotected, and held to 18 in; at the full 18 in its BUMPERS are 23 in out, 3 in beyond the tape. At the SHELF FACE and PEG FACE, with their 36-in offset, every position from which a ROBOT can reach a scoring feature is protected.
 
 The SOCKET FACE offset is reduced for space. The corridor between the two CRAGS is 108 in wide (Y 108–216), and the staged CENTER CACHE occupies Y 131.5–192.5 of it, measured across the crowned 13.0-in crate envelope. Two 36-in APRONS would leave only 36 in of corridor and would cover the staged SUPPLIES. With 20-in APRONS on the SOCKET FACES, the two APRONS occupy Y 108–128 and Y 196–216, leaving a 68-in open corridor that contains the whole CENTER CACHE with 3.5 in of clearance at each end. That corridor, and every transit lane on the FIELD, remains fully open to defense.
 
@@ -73,7 +73,7 @@ Immediately before the MATCH, each ROBOT must be positioned entirely within its 
 
 ## 3.3 The CRAG
 
-Each ALLIANCE owns one CRAG: a rock-spire scoring structure straddling the FIELD centerline. The Blue CRAG is centered at (324, 240) and the Red CRAG at (324, 84). Each CRAG has a 48 × 48 in footprint and rises to a spire top 90 in above the carpet. The body of the CRAG presents four vertical scoring faces around the footprint; a central spire carries the highest scoring features and the SUMMIT BEACON.
+Each ALLIANCE owns one CRAG: a rock-spire scoring structure straddling the FIELD centerline. The Blue CRAG is centered at (324, 240) and the Red CRAG at (324, 84). Each CRAG has a 48 × 48 in footprint and rises to a spire top 90 in above the carpet; with the BASE DEPOT tray that rings its base (Section 3.3.4), it occupies an 81.5-in square over the lip (83.5 in over the entry chamfer). The body of the CRAG presents four vertical scoring faces around the footprint; a central spire carries the highest scoring features and the SUMMIT BEACON.
 
 Face names are assigned from the owning ALLIANCE's approach:
 
@@ -81,12 +81,12 @@ Face names are assigned from the owning ALLIANCE's approach:
 
 | Element | Blue CRAG | Red CRAG | Features |
 |---|---|---|---|
-| **SHELF FACE** | −X face (plane X = 300), faces the Blue alliance wall | +X face (plane X = 348), faces the Red alliance wall | Shelf 1, Shelf 2, the Summit Socket, the BASE DEPOT |
+| **SHELF FACE** | −X face (plane X = 300), faces the Blue alliance wall | +X face (plane X = 348), faces the Red alliance wall | Shelf 1, Shelf 2, the Summit Socket |
 | **SOCKET FACE** ×2 | ±Y faces (planes Y = 216 and Y = 264) | ±Y faces (planes Y = 60 and Y = 108) | one Low Socket and one Mid Socket per face |
 | **PEG FACE** | +X face (plane X = 348), faces the Red alliance wall | −X face (plane X = 300), faces the Blue alliance wall | Low and Mid Pegs |
 | **spire** | top of structure | top of structure | High Pegs, SUMMIT BEACON |
 
-Because each CRAG has scoring features on all four faces, no defender can block every approach at once.
+The BASE DEPOT runs along the base of all four faces. Because each CRAG has scoring features on all four faces, no defender can block every approach at once.
 
 *Figure 3-2. The Blue CRAG, seen from its SHELF FACE and −Y SOCKET FACE. Dimensioned drawing: Plate 2 of the field drawing set.*
 
@@ -111,7 +111,7 @@ Each of the two SOCKET FACES carries two open-topped cylindrical sockets, loaded
 
 Sockets accept O2 CELLS only. Each socket SCORES at most one SUPPLY; extra SUPPLIES resting in or on an occupied socket are not SCORED and satisfy no requirement. The tube is 7.0 in long along its axis with a closed bottom, so a seated 14.0-in O2 CELL stands 7.0 in proud of the rim along the axis, where it is visible from the driver stations and the referee positions.
 
-The two sockets on a face have different approach standoffs. The BASE DEPOT's corner arm runs 16.0 in along each SOCKET FACE from the SHELF FACE, and the Low Socket sits directly above it, so a ROBOT servicing the Low Socket parks against the arm and reaches 11.75 in. The Mid Socket, on the PEG FACE side, is clear of the arm and is 5.0 in of reach from BUMPERS on the face. Both are inside the **R105** limit.
+Both sockets on a SOCKET FACE stand over the BASE DEPOT's leg along that face (Section 3.3.4): each rim center is 8.0 in out, inside the 16.0-in channel, and 14.0 in lateral, inside the 48-in leg. A ROBOT servicing either socket therefore parks with its BUMPERS against the DEPOT lip, its FRAME PERIMETER 19.75 in off the face, and reaches 11.75 in to the rim, the same reach as the Summit Socket needs from the SHELF FACE. All five socket rims are well inside the **G404** extension limit.
 
 **Toleranced dimension:** socket inside diameter 6.50 in ± 0.125 in. This dimension is held to the stated tolerance on every official field and is carried as a toleranced callout in the FIELD CAD PACKAGE drawing set. It provides 0.75 in of nominal radial clearance per side (1.50 in on diameter) for the 5.0-in O2 CELL.
 
@@ -129,13 +129,17 @@ All pegs are 1.5 in OD, angled 45° upward from the face, with 10.0 in exposed a
 
 A ROPE COIL dropped over a peg settles plumb, in a plane parallel to the CRAG face, hanging from the top of its hole. The coil can tilt up to 57.8° away from perpendicular to the peg before the peg binds inside the ring, and a vertical hang requires 45°, so a SCORED ROPE COIL is held captive rather than balanced. With its inner face 1.25 in outboard of the CRAG face, its center rests about 1.6 in above the peg root (FIELD CAD PACKAGE §2.5).
 
+The BASE DEPOT's PEG FACE leg runs beneath the Low and Mid Pegs, so a ROBOT servicing the PEG FACE parks with its BUMPERS against the DEPOT lip and its FRAME PERIMETER 19.75 in off the face. A peg projects 7.07 in horizontally from its face (10.0 in at 45°), so a Low or Mid Peg tip is 12.68 in of extension away and its root 19.75 in. The High Pegs stand on the spire face, 14.0 in inboard of the PEG FACE, so a High Peg tip is 26.68 in away and its root 33.75 in. The tip is within the 30-in extension a ROBOT has while its BUMPERS are on its own CRAG APRON (**G404**), and it is the longest reach the CRAG requires. The root is beyond reach, so a ROPE COIL is placed on a High Peg by releasing it over the tip and letting it drop onto the peg, where it settles at the root as described above. Releasing a SUPPLY from rest is not LAUNCHING (**G502**).
+
 ### 3.3.4 BASE DEPOT
 
-The BASE DEPOT is a floor tray running along the base of the SHELF FACE and wrapping 16.0 in around both of that face's corners onto the SOCKET FACES. Its floor sits 0.25 in above the carpet, and its lip top is 4.0 in above the carpet. The channel is 16.0 in deep, measured from the CRAG face. In plan it is a continuous open-topped U: a 16 × 80 in outer run parallel to the SHELF FACE (the 16 × 48 in shelf-face leg plus a 16 × 16 in corner square at each end), with a 16 × 16 in corner arm running back along each SOCKET FACE.
+The BASE DEPOT is a floor tray that surrounds the CRAG on all four faces. Its floor sits 0.25 in above the carpet, and its lip top is 4.0 in above the carpet. The channel is 16.0 in deep, measured from each CRAG face to the inner face of the lip. The lip is 0.75 in thick with a 0.25-in radius on its top edge, and a 1.0-in 45° entry chamfer runs around its outside. In plan the tray is one continuous open-topped ring of four legs, each 16 × 48 in, one along each face (the SHELF FACE leg, the two SOCKET FACE legs, and the PEG FACE leg), joined by a 16 × 16 in corner square at each of the four corners.
 
-The shelves overhang 14.0 in of the channel and span only the 48-in width of the SHELF FACE. From above, the outer 2.0 in of the shelf-face leg is open, as are both outer corner squares and part of each corner arm. Each arm is overhung by its Low Socket tube, so only the corner squares are wide enough to drop a CACHE CRATE or a ROPE COIL straight in. The rest of the shelf-face leg is loaded by pushing SUPPLIES in over the lip; Shelf 1 and its gussets stay above Z = 19.0, clear of a crowned CACHE CRATE standing on the tray floor (top at Z = 13.25).
+At the outer faces of the lip the ring is an 81.5-in square centered on the CRAG (Blue X 283.25–364.75, Y 199.25–280.75; Red X 283.25–364.75, Y 43.25–124.75), and the chamfer brings it to 83.5 in. It lies inside the CRAG APRON on every face. On the SOCKET FACES, where the APRON is only 20 in deep, the chamfer's outer edge comes within 0.25 in of the APRON tape along the face and within 0.16 in at the corner arcs. The ring crosses the FIELD centerline, which is broken for it (Section 3.2).
 
-The DEPOT accepts any SUPPLY in any orientation, whether pushed, dropped, or placed. Because a SUPPLY resting on another is not SCORED (Section 4.4.1), capacity is a single-layer packing limit: roughly 8 CACHE CRATES, or about 12 SUPPLIES in a mixed load.
+The shelves overhang 14.0 in of the SHELF FACE leg and span only the 48-in width of the SHELF FACE. From above, the outer 2.0 in of the SHELF FACE leg is open, as are all four corner squares, the PEG FACE leg, which only the 1.5-in Low and Mid Pegs cross, and both SOCKET FACE legs except beneath their socket tubes. A SUPPLY cannot be dropped into the tray where a socket tube overhangs it. The rest of the SHELF FACE leg is loaded by pushing SUPPLIES in over the lip; Shelf 1 and its gussets stay above Z = 19.0, clear of a crowned CACHE CRATE standing on the tray floor (top at Z = 13.25).
+
+The DEPOT accepts any SUPPLY in any orientation, whether pushed, dropped, or placed. Because a SUPPLY resting on another is not SCORED (Section 4.4.1), capacity is a single-layer packing limit: the tray has 4096 in² of floor, room for about 18 CACHE CRATES one abreast, or about 27 SUPPLIES in a mixed load.
 
 A SUPPLY is SCORED in the BASE DEPOT when it is at rest, its only support is the tray floor, and it lies entirely within the vertical projection of the DEPOT channel. A SUPPLY supported by the lip, by the carpet outside the tray, or by another SUPPLY is not SCORED. A SUPPLY that stands taller than the 4-in lip is SCORED as long as the tray floor alone supports it. FIELD STAFF may level heaped SUPPLIES during MATCH stoppages; they do not otherwise adjust DEPOT contents during a MATCH, except to restore a SUPPLY under **G504**.
 
@@ -153,7 +157,9 @@ The LEDs are decorative confirmation only and are never the scoring authority. A
 
 ### 3.3.6 CRAG APRON
 
-The CRAG APRON (Section 3.2) is the taped boundary offset 36 in outward from the SHELF FACE and the PEG FACE and 20 in outward from each SOCKET FACE, with 20-in-radius arcs sweeping the corners. Each APRON is taped in its CRAG's ALLIANCE color. It protects ROBOTS of the owning ALLIANCE whose BUMPERS intersect it from opponent contact (**G407**). **G402**, **G403**, **G501**, and **G502** also refer to it.
+The CRAG APRON (Section 3.2) is the taped boundary offset 36 in outward from the SHELF FACE and the PEG FACE and 20 in outward from each SOCKET FACE, with 20-in-radius arcs sweeping the corners. Each APRON is taped in its CRAG's ALLIANCE color. It protects ROBOTS of the owning ALLIANCE whose BUMPERS intersect it from opponent contact (**G407**). **G402**, **G403**, **G404**, **G501**, and **G502** also refer to it.
+
+The APRON also sets the extension limit. A ROBOT may extend up to 30 in beyond its FRAME PERIMETER while any part of its BUMPERS intersects its own ALLIANCE's CRAG APRON, provided every part more than 18 in out stays over that APRON (inside its outer tape edge, which takes in the BASE DEPOT and the CRAG); everywhere else the limit is 18 in (**G404**, **R105**). The BASE DEPOT holds the FRAME PERIMETER of every ROBOT servicing the CRAG 19.75 in off the face, and the longest reach from there is 26.68 in, to a High Peg tip (Section 3.3.3). The larger allowance stops at the APRON tape because the HEADWALL climb depends on the 18-in limit: with 30 in, a ROBOT on the carpet could wrap the CAMP RUNG (18.02 in) and the SUMMIT RUNG (24.45 in) without hanging from a lower rung (**G416**). An opponent's APRON gives a ROBOT neither protection nor extra extension. The extra reach is for crossing the DEPOT, not for reaching out of the APRON into the corridor or the CENTER CACHE.
 
 ## 3.4 The HEADWALL
 
@@ -255,7 +261,7 @@ The ARENA carries 26 AprilTags from the 36h11 family for ROBOT pose estimation a
 
 **Panel construction.** Each tag image is 6.5 in square (the 36h11 data body), printed on an 8.125-in-square target that includes its white border, and mounted on a 9.0-in-square panel. Table 3-6 gives tag centers; "Z center" is the height of the tag center above the carpet.
 
-**Mounting heights.** Close-range tags are mounted low: the eight on each CRAG at a 17.5-in center height (held to ±0.15 in at field setup), and the three on each HEADWALL at 12 in. Both heights are in the frame of a single camera mounted 10–20 in above the carpet, which serves every precision approach on the FIELD. Each CRAG face carries a pair of tags centered ±14 in from the face centerline. The 17.5-in CRAG tag height is set against the tallest objects that can stand in front of a tag. A CACHE CRATE standing in the BASE DEPOT reaches 13.25 in (the tray floor's 0.25 plus 13.0 to its crowned apex) and tops out 0.19 in below the tag target, and the underside of Shelf 1 sits 1.25 in above the panel. One SUPPLY does reach into the target band: an O2 CELL standing on end in the DEPOT, its top at 14.25 in (the tray floor's 0.25 plus 14.0) against a 13.44-in target bottom. `04-vision/VISION-GUIDE.md` §1.3 covers that case and the camera height it implies.
+**Mounting heights.** Close-range tags are mounted low: the eight on each CRAG at a 17.5-in center height (held to ±0.15 in at field setup), and the three on each HEADWALL at 12 in. Both heights are in the frame of a single camera mounted 10–20 in above the carpet, which serves every precision approach on the FIELD. Each CRAG face carries a pair of tags centered ±14 in from the face centerline, with the BASE DEPOT tray beneath them on every face. The 17.5-in CRAG tag height is set against the tallest objects that can stand in front of a tag. A CACHE CRATE standing in the BASE DEPOT reaches 13.25 in (the tray floor's 0.25 plus 13.0 to its crowned apex) and tops out 0.19 in below the tag target, and the underside of Shelf 1 sits 1.25 in above the panel. One SUPPLY does reach into the target band: an O2 CELL standing on end in the DEPOT, its top at 14.25 in (the tray floor's 0.25 plus 14.0) against a 13.44-in target bottom. `04-vision/VISION-GUIDE.md` §1.3 covers that case and the camera height it implies.
 
 **Table 3-6: AprilTag positions**
 
@@ -293,3 +299,40 @@ Red tag positions are the Blue positions rotated 180° about the FIELD center. T
 > *Commentary:* Every scoring approach on the FIELD has a tag pair, or a single tag square-on to it, at close range. Shelf placements, socket insertions, peg hangs, chute pickups, and lane alignment for the ENDGAME climb can all be vision-assisted without full-field pose. Full-field pose estimation is required only for contested CENTER CACHE AUTO routines. Because every close-range tag sits between 12 and 17.5 in, one camera mounted 10–20 in above the carpet serves all of them. If it is the ROBOT's only camera, it belongs toward the upper end of that band: an O2 CELL standing on end in the DEPOT is the one SUPPLY that reaches into a tag's target band, and its domed cap clips a low camera's view of the tag's bottom edge (vision guide §1.3).
 
 A machine-readable layout in WPILib AprilTag field schema (meters, always-blue-origin NWU) is published at `04-vision/apriltag-field-layout.json`. Mounting details, calibration guidance, and simulation setup are in the vision guide (`04-vision/VISION-GUIDE.md`).
+
+## 3.8 SCREE
+
+SCREE is rough terrain laid on the carpet in the open floor around each ALLIANCE's staging marks. It is made up of 18 SCREE PATCHES, nine in each half of the FIELD, set out in a staggered, non-linear pattern. A ROBOT crossing that floor either drives over SCREE, which is slow and a tip risk for a tall ROBOT with a raised or extended MECHANISM, or slows down and weaves between the patches.
+
+*Figure 3-6. SCREE in the Blue half of the FIELD, seen from above the Blue alliance wall: the nine SCREE PATCHES around the alliance staging marks, with the two CRAGS and their BASE DEPOT rings beyond. Dimensioned drawing: Plate 1 of the field drawing set.*
+
+![SCREE in the Blue half of the FIELD](../figures/scree.png)
+
+- **Patch:** each SCREE PATCH is a 30.0 × 30.0 in square with its sides parallel to the FIELD axes, sitting directly on the carpet with no base plate.
+- **Ridges:** each patch carries four half-round ridges of 1.75-in radius, so each ridge is 1.75 in tall and 3.5 in wide at its base. The ridges run straight across the patch and are cut square at its edges. Their centerlines lie 4.0 in and 12.0 in either side of the patch center, measured square to the ridges: an 8.0-in pitch, with 4.5 in of flat carpet between adjacent ridges.
+- **Ridge direction:** "+45" ridges run parallel to the line X = Y, "−45" ridges parallel to the direction (1, −1), and "Y" ridges parallel to the Y axis, square to the main direction of travel down the FIELD. A Red patch has the same ridge direction as its Blue twin, because a 180° rotation preserves the direction of a line.
+- **Material:** matte HDPE half-round rod fastened to the carpet, in a dark warm grey distinct from the carpet and from both ALLIANCE colors (`03-field/MATERIALS-AND-COLORS.md`).
+
+**Table 3-7: SCREE PATCH centers and ridge directions**
+
+| Patch | Blue center (X, Y) | Red center (X, Y) | Ridges |
+|---|---|---|---|
+| S1 | (105, 88) | (543, 236) | +45 |
+| S2 | (105, 162) | (543, 162) | Y |
+| S3 | (105, 236) | (543, 88) | −45 |
+| S4 | (200, 37) | (448, 287) | +45 |
+| S5 | (200, 125) | (448, 199) | +45 |
+| S6 | (200, 199) | (448, 125) | −45 |
+| S7 | (200, 287) | (448, 37) | −45 |
+| S8 | (234, 108) | (414, 216) | +45 |
+| S9 | (234, 216) | (414, 108) | −45 |
+
+Each Red patch is its Blue twin rotated 180° about the FIELD center. Each half is also mirror-symmetric about Y = 162, so both OUTFITTERS of an ALLIANCE face the same SCREE. In the Blue half the patches stand in a near column at X 90–120 (S1–S3), a far column at X 185–215 (S4–S7), and an inner pair at X 219–249 (S8, S9). The alliance staging marks at X = 144 lie between the near and far columns. Every patch is dimensioned on Plate 1 of the field drawing set and in the FIELD CAD PACKAGE §1.4.
+
+**Gaps.** Neighboring patches leave gaps that a ROBOT can weave through: 44.0 in between S1 and S2, S2 and S3, and S5 and S6; 58.0 in between S4 and S5, and S6 and S7; 41.2 in corner to corner between S4 and S8, and S7 and S9; and 65.4–68.3 in between the near and far columns. Two kinds of gap are closed. S5 and S8, and S6 and S9, stand only 4.0 in apart and read as two L-shaped clusters, and S4 and S7 leave only 22.0 in to the guardrail.
+
+**Flat ground.** In the Blue half, no SCREE lies in the strip X 48–90 across Y 90–234 in front of the HEADWALL, which leaves 42 in of flat carpet for squaring up to climb; in a 36 × 24 in pad at each alliance staging mark; in the mouth of each OUTFITTER LANE (X 48–90); or in the strip X 252–264 up to the CRAG APRON line at X = 264. The Red half mirrors these at X 558–600 and X 384–396. SCREE lies outside every protected zone (the CRAG APRONS, the BASECAMP / HEADWALL ZONES, and the OUTFITTER LANES) and outside the CENTER CACHE, and it occludes no AprilTag, since every tag is mounted at 12 in or higher.
+
+SCREE is part of the FIELD. ROBOTS may drive over it, and **G202** applies to it as to every FIELD element. A SUPPLY that comes to rest on SCREE stays in play and is not restaged. SCREE does not change the BUMPER ZONE (**R403**).
+
+> *Commentary:* Crossing SCREE takes at least 2.0 in of clearance under the whole frame and wheels of about 6 in or larger. A conventional swerve drive, with 3–4-in wheels and about 1.25–1.5 in of frame clearance, high-centers on a ridge, and so does a stock kit chassis; low-clearance ROBOTS slow down and weave through the gaps instead. BUMPERS at the top of the **R403** range, with the bottom edge at 2.5 in, clear a ridge by 0.75 in on flat carpet and by about 0.5 in with a wheel riding a ridge; BUMPERS set lower in that range meet the ridges. The layout leaves few straight lines. Of the straight 28-in-wide paths from the OUTFITTER LANE mouths and the BASECAMP front to the SHELF FACE and SOCKET FACE approaches, only one narrow corridor that a ROBOT can drive misses every patch: in the Blue half, it leaves the BASECAMP front with its centerline at Y ≈ 175 (its upper edge at Y ≈ 189) and runs to the far (+Y) corner of the SHELF FACE approach, with about 0.4 in to spare. Every other cycle route weaves around SCREE or crosses it. A ROBOT rocks as each wheel climbs a ridge, so a tall ROBOT that crosses at speed with an elevator raised or an arm extended can tip; lowering the MECHANISM first, or going around, avoids the risk.

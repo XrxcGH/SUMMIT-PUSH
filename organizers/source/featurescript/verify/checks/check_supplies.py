@@ -30,9 +30,11 @@ Every expected value below comes from the package documents, never from src/:
           deg from perpendicular-to-peg (2.5 tan + 1.5 / cos <= 5.0); vertical hang 45 deg => 2.9
           deg margin; settles near-vertical wedged, centre ~1 in above the peg root, inner face
           ~1.25 outboard.
-    §3    BASE DEPOT: floor top Z 0.25; channel 16.0; leg / corner squares / arms (Blue leg
-          X 284-300 Y 216-264, squares Y 200-216 and 264-280, arms X 300-316); corner squares
-          open to the sky; arms overhung by the Low Socket (a crate cannot be dropped in).
+    §3    BASE DEPOT: a ring round all four faces, floor top Z 0.25; channel 16.0 off every face;
+          four legs (Blue SHELF FACE leg X 284-300, PEG FACE leg X 348-364, both Y 216-264;
+          SOCKET FACE legs X 300-348, Y 200-216 and 264-280) and four 16 x 16 corner squares,
+          all open to the sky; the side-socket tubes overhang the SOCKET FACE legs (a crate cannot
+          be dropped in under a tube).
     §6    CENTER CACHE 3x3 at X 300/324/348, Y 138/162/186; chart (a) Latin square; cells axis +X,
           coils flat, crates square; chart (b) Blue 108 crates / 162 cells / 216 coils, Red the
           180-deg rotation (X 504: 108 coils / 162 cells / 216 crates); chart (c) 7 of each type per
@@ -44,7 +46,7 @@ Every expected value below comes from the package documents, never from src/:
   MATERIALS-AND-COLORS §1.3 crate-violet #7B3FA0 (62 deg from alliance blue #1D63C8, 83 deg
           from alliance red #CC3333 in hue), cell-body #F2F2F0, cell-cap #2E8B57, cell-fillet
           #4D4D4D on the R1.0 blend band, coil-amber #D9A441; §2 materials (ripstop nylon over
-          PU foam / rigid core + EVA sleeve + molded caps / molded rubber-foam); zone tape
+          PU foam / rigid molded ABS shell and domed caps, no foam / molded rubber-foam); zone tape
           0.01 in thick.
   DESIGN-SPEC §2 dimensions, weights, colours, counts; staging 12 ft from the alliance wall.
   Manual §3.6 / §3.6.1 counts and staging; VISION-GUIDE §1.3 upright CELL: top Z 14.25, full
@@ -94,7 +96,7 @@ HEX = {"crate": "#7B3FA0", "cell-body": "#F2F2F0", "cell-cap": "#2E8B57", "cell-
        "coil": "#D9A441", "blue": "#1D63C8", "red": "#CC3333"}
 LB = {"crate": CRATE_LB, "cell": CELL_LB, "coil": COIL_LB}
 LABEL = {"crate": "CACHE CRATE", "cell": "O2 CELL", "coil": "ROPE COIL"}
-MAT_WORDS = {"crate": ("ripstop", "pu foam"), "cell": ("core", "eva"), "coil": ("rubber", "foam")}
+MAT_WORDS = {"crate": ("ripstop", "pu foam"), "cell": ("rigid", "abs"), "coil": ("rubber", "foam")}
 
 # §6 FIELD SETUP CHART
 CACHE_X, CACHE_Y = (300.0, 324.0, 348.0), (138.0, 162.0, 186.0)
@@ -123,7 +125,7 @@ SUMMIT_TUBE_CLR = (72.0 - (SOCK_LEN + SOCK_WALL) * math.cos(math.radians(15))
                    - (SOCK_ID / 2 + SOCK_WALL) * math.sin(math.radians(15)) - (42.0 + 13.0))
 PEG_OD, PEG_LEN = 1.5, 10.0
 TILT_BOUND, TILT_MARGIN = 47.9, 2.9              # §2.5
-DEPOT_FLOOR, DEPOT_CH, DEPOT_ARM = 0.25, 16.0, 16.0
+DEPOT_FLOOR, DEPOT_CH = 0.25, 16.0
 TAG_Z, TAG_TARGET = 17.5, 8.125
 TARGET_BOTTOM = TAG_Z - TAG_TARGET / 2           # 13.4375
 CELL_UPRIGHT_TOP, CELL_UPRIGHT_SHOULDER = 14.25, 12.47   # VISION-GUIDE §1.3
@@ -924,10 +926,14 @@ def sec_depot(f, C, add):
     for side in ("BLUE", "RED"):
         n = N_SHELF[side]
         floor = Probe(K._compound(f.solids(f.find("%s CRAG BASE DEPOT floor" % side))))
-        spots = {"leg -15.5": (HALF + DEPOT_CH / 2, -15.5), "leg 0": (HALF + DEPOT_CH / 2, 0.0),
-                 "leg +15.5": (HALF + DEPOT_CH / 2, 15.5),
-                 "square -Y": (HALF + DEPOT_CH / 2, -(HALF + DEPOT_CH / 2)), "square +Y": (HALF + DEPOT_CH / 2, HALF + DEPOT_CH / 2),
-                 "arm -Y": (HALF - DEPOT_ARM / 2, -(HALF + DEPOT_CH / 2)), "arm +Y": (HALF - DEPOT_ARM / 2, HALF + DEPOT_CH / 2)}
+        # (out along the SHELF FACE normal, lateral) from the CRAG centre
+        mid = HALF + DEPOT_CH / 2
+        spots = {"leg -15.5": (mid, -15.5), "leg 0": (mid, 0.0), "leg +15.5": (mid, 15.5),
+                 "square -Y": (mid, -mid), "square +Y": (mid, mid),
+                 "square PEG -Y": (-mid, -mid), "square PEG +Y": (-mid, mid),
+                 "PEG leg 0": (-mid, 0.0),
+                 "sock -Y Low": (14.0, -mid), "sock +Y Low": (14.0, mid),
+                 "sock -Y Mid": (-14.0, -mid), "sock +Y Mid": (-14.0, mid)}
         hits, apex, sky_sq, sky_arm, gus = [], [], [], [], []
         for nm, (out, lat) in spots.items():
             xy = CRAG_C[side] + out * n + lat * YW
@@ -941,17 +947,19 @@ def sec_depot(f, C, add):
             apex.append((nm, round(ftop, 5), round(cen[2] + rest_off, 5)))
             if nm.startswith("square"):
                 sky_sq.append((nm, C.hits_any(_moved(sh, np.zeros(3), np.eye(3), 60.0 * Z), bspline=True)))
-            if nm.startswith("arm"):
-                sky_arm.append((nm, sum(v for _, v in C.hits_any(_moved(sh, np.zeros(3), np.eye(3), 30.0 * Z), bspline=True))))
+            if nm.startswith("sock"):
+                # the crate lifted through the column above it (Z 10.25-63.25 in 10-in steps) meets the tube
+                sky_arm.append((nm, sum(v for lift in (10.0, 20.0, 30.0, 40.0, 50.0)
+                                        for _, v in C.hits_any(_moved(sh, np.zeros(3), np.eye(3), lift * Z), bspline=True))))
             if nm.startswith("leg"):
                 gus += C.hits_any(_moved(sh, np.zeros(3), np.eye(3), (SHELF1_GUSSET_FLOOR - DEPOT_FLOOR - CRATE_ENV - 0.01) * Z), bspline=True)
-        add("%s DEPOT: a crowned CRATE fits the leg, both corner squares and both arms (§3 piece-fit)" % side,
+        add("%s DEPOT: a crowned CRATE fits the SHELF FACE and PEG FACE legs, all four corner squares and the SOCKET FACE legs under both socket tubes (§3 piece-fit)" % side,
             not hits, "%s" % hits[:3])
         add("%s DEPOT: a CRATE on the tray floor (Z 0.25) apexes at Z 13.25, 0.19 below the tag target (§7)" % side,
             all(abs(a[1] - DEPOT_FLOOR) < 1e-6 and abs(a[2] - 13.25) < 1e-4 for a in apex)
             and abs(TARGET_BOTTOM - 13.25 - 0.19) < 0.005, "(spot, floor top, apex) %s" % apex)
-        add("%s DEPOT: corner squares open to the sky for a CRATE (§3)" % side, all(not h for _, h in sky_sq), "%s" % sky_sq)
-        add("%s DEPOT: a CRATE cannot be dropped into either arm from above (Low Socket overhang) (§3)" % side,
+        add("%s DEPOT: all four corner squares open to the sky for a CRATE (§3)" % side, all(not h for _, h in sky_sq), "%s" % sky_sq)
+        add("%s DEPOT: a CRATE cannot be dropped in from above under any side-socket tube (§3)" % side,
             all(v > 1e-3 for _, v in sky_arm), "%s" % sky_arm)
         add("%s DEPOT: leg CRATES clear everything above up to the Shelf 1 gusset floor (Z 19.0) (§2.2 / §3)" % side,
             not gus, "%s" % gus[:3])

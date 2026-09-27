@@ -51,10 +51,11 @@ PEG_EXP = 10.0
 PEG_ANG = 45.0
 LOW_PEG_Z, MID_PEG_Z, HIGH_PEG_Z = 30.0, 54.0, 78.0
 PEG_LAT, HPEG_LAT = 14.0, 7.0
-DEPOT_LIP = 4.0
-DEPOT_CH = 16.0
-DEPOT_WRAP = 16.0
+DEPOT_LIP = 4.0                       # BASE DEPOT: a ring of tray round all four CRAG faces
+DEPOT_CH = 16.0                       # channel, face to the inner face of the lip
 LIP_THK = 0.75
+DEPOT_CHAMFER = 1.0                   # 45 deg entry chamfer strip outside the lip
+DEPOT_OUT = CRAG_S / 2 + DEPOT_CH + LIP_THK    # 40.75: half the 81.5 square over the lip
 TIER_Z = (30.0, 54.0, 78.0)
 HW_X = 48.0                            # plane P carpet line (Blue)
 HW_LEAN = 15.0
@@ -82,6 +83,17 @@ TAG_HW_X = 39.0
 CRATE_S, CRATE_CROWN = 12.0, 0.5
 CELL_D, CELL_L, CELL_DOME = 5.0, 14.0, 1.5
 COIL_OD, COIL_TUBE, COIL_ID = 10.0, 2.5, 5.0
+SCREE_S = 30.0                        # SCREE PATCH footprint, sides on the field axes
+SCREE_R = 1.75                        # half-round ridge: 1.75 tall, 3.5 wide at the base
+SCREE_OFF = (-12.0, -4.0, 4.0, 12.0)  # ridge centerlines from the patch center: 8.0 pitch
+# Blue patches: label, center X, center Y, ridge direction. "+45" runs along X = Y, "-45"
+# along (1, -1), "Y" along the Y axis. Red twins are the 180 deg rotation, ridges alike.
+SCREE_PATCHES = (("S1", 105.0, 88.0, "+45"), ("S2", 105.0, 162.0, "Y"),
+                 ("S3", 105.0, 236.0, "-45"), ("S4", 200.0, 37.0, "+45"),
+                 ("S5", 200.0, 125.0, "+45"), ("S6", 200.0, 199.0, "-45"),
+                 ("S7", 200.0, 287.0, "-45"), ("S8", 234.0, 108.0, "+45"),
+                 ("S9", 234.0, 216.0, "-45"))
+SCREE_ANG = {"+45": 45.0, "-45": -45.0, "Y": 90.0}
 
 T15 = math.tan(math.radians(15.0))
 NOTES = [
@@ -101,6 +113,68 @@ def truss_face_x(z):
     return HW_X - TRUSS_CLR / math.cos(math.radians(15.0)) - z * T15
 
 
+def scree_ridges(cx, cy, ang):
+    """The four ridge footprints of a SCREE PATCH (field inches): 3.5-wide strips on the
+    ridge normal offsets, cut square at the 30 x 30 boundary."""
+    a = math.radians(SCREE_ANG[ang])
+    ux, uy = math.cos(a), math.sin(a)           # along the ridges
+    nx, ny = math.sin(a), -math.cos(a)          # ridge normal
+    hs, L = SCREE_S / 2.0, SCREE_S
+    out = []
+    for d in SCREE_OFF:
+        pts = []
+        for su, sn in ((-L, d - SCREE_R), (L, d - SCREE_R), (L, d + SCREE_R), (-L, d + SCREE_R)):
+            pts.append((cx + su * ux + sn * nx, cy + su * uy + sn * ny))
+        out.append(clip_to_box(pts, cx - hs, cy - hs, cx + hs, cy + hs))
+    return out
+
+
+def clip_to_box(poly, x0, y0, x1, y1):
+    """Sutherland-Hodgman: the part of a convex polygon inside the box x0-x1, y0-y1."""
+    def edge(poly, keep, meet):
+        out = []
+        for i, b in enumerate(poly):
+            a = poly[i - 1]
+            if keep(b):
+                if not keep(a):
+                    out.append(meet(a, b))
+                out.append(b)
+            elif keep(a):
+                out.append(meet(a, b))
+        return out
+
+    def at_x(xc):
+        return lambda a, b: (xc, a[1] + (b[1] - a[1]) * (xc - a[0]) / (b[0] - a[0]))
+
+    def at_y(yc):
+        return lambda a, b: (a[0] + (b[0] - a[0]) * (yc - a[1]) / (b[1] - a[1]), yc)
+    poly = edge(poly, lambda p: p[0] >= x0, at_x(x0))
+    poly = edge(poly, lambda p: p[0] <= x1, at_x(x1))
+    poly = edge(poly, lambda p: p[1] >= y0, at_y(y0))
+    poly = edge(poly, lambda p: p[1] <= y1, at_y(y1))
+    return poly
+
+
+def _scree_patch(s, P, cx, cy, ang, sw=0.9):
+    """One SCREE PATCH in plan. P maps field inches to sheet pixels."""
+    hs = SCREE_S / 2.0
+    corners = [P(cx - hs, cy - hs), P(cx + hs, cy - hs), P(cx + hs, cy + hs), P(cx - hs, cy + hs)]
+    # footprint outline only: the patch has no base plate, so the carpet shows between ridges
+    s.path("M " + " L ".join("%.2f %.2f" % p for p in corners) + " Z",
+           fill="none", stroke=SCREE, sw=sw)
+    for poly in scree_ridges(cx, cy, ang):
+        s.path("M " + " L ".join("%.2f %.2f" % P(*p) for p in poly) + " Z",
+               fill=SCREE, stroke="none", sw=0)
+
+
+def _ring_path(P, cx, cy, ho, hi):
+    """Square ring about (cx, cy): outer half-size ho, inner half-size hi (evenodd)."""
+    def sq(h):
+        pts = [P(cx - h, cy - h), P(cx + h, cy - h), P(cx + h, cy + h), P(cx - h, cy + h)]
+        return "M " + " L ".join("%.2f %.2f" % p for p in pts) + " Z"
+    return sq(ho) + " " + sq(hi)
+
+
 def _crag_plan(s, fx, fy, SC, cx, cy, d, col, cold, name, label_below=False):
     """Draw one CRAG in plan; d = +1 if its SHELF FACE is the +X face."""
     half = CRAG_S / 2.0
@@ -111,13 +185,21 @@ def _crag_plan(s, fx, fy, SC, cx, cy, d, col, cold, name, label_below=False):
         s.rect(min(fx(x0), fx(x1)), min(fy(y0), fy(y1)),
                abs(fx(x1) - fx(x0)), abs(fy(y1) - fy(y0)), **kw)
 
-    # BASE DEPOT: the outer leg with its two corner squares, then the two corner arms
-    R(shelf_plane, shelf_plane + d * DEPOT_CH,
-      cy - half - DEPOT_WRAP, cy + half + DEPOT_WRAP,
-      fill=DEPOT, stroke=CRAG_EDGE, sw=1.1, op=0.95)
-    for sg in (-1, 1):
-        R(shelf_plane, shelf_plane - d * DEPOT_WRAP, cy + sg * half,
-          cy + sg * (half + DEPOT_WRAP), fill=DEPOT, stroke=CRAG_EDGE, sw=1.1, op=0.95)
+    # BASE DEPOT: a ring round all four faces, 81.5 square over the lip, with the 1.0 entry
+    # chamfer strip outside it (83.5). Thin lines on the face planes mark the four legs and
+    # the four 16 x 16 corner squares.
+    def P(x, y):
+        return fx(x), fy(y)
+    s.path(_ring_path(P, cx, cy, DEPOT_OUT + DEPOT_CHAMFER, DEPOT_OUT), fill=DEPOT,
+           stroke="none", sw=0, op=0.45, rule="evenodd")
+    s.path(_ring_path(P, cx, cy, DEPOT_OUT, half), fill=DEPOT, stroke=CRAG_EDGE, sw=1.1,
+           op=0.95, rule="evenodd")
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            s.line(fx(cx + sx * half), fy(cy + sy * half), fx(cx + sx * DEPOT_OUT),
+                   fy(cy + sy * half), stroke=CRAG_EDGE, sw=0.7)
+            s.line(fx(cx + sx * half), fy(cy + sy * half), fx(cx + sx * half),
+                   fy(cy + sy * DEPOT_OUT), stroke=CRAG_EDGE, sw=0.7)
     # CRAG body and spire
     R(cx - half, cx + half, cy - half, cy + half, fill=col, stroke=cold, sw=2.2, op=0.70)
     R(cx - SPIRE_S / 2, cx + SPIRE_S / 2, cy - SPIRE_S / 2, cy + SPIRE_S / 2,
@@ -155,7 +237,7 @@ def _crag_plan(s, fx, fy, SC, cx, cy, d, col, cold, name, label_below=False):
 
 
 def sheet_field():
-    s = Sheet(1460, 950, "DRAWING 1 OF 6 - FIELD TOP VIEW (PLAN)", 1, 6,
+    s = Sheet(1580, 950, "DRAWING 1 OF 6 - FIELD TOP VIEW (PLAN)", 1, 6,
               "Field 648 x 324 in (54 ft x 27 ft) - scale 1.8 px/in - Blue alliance at left")
     SC = 1.8
     OX, OY = 112, 74
@@ -178,20 +260,35 @@ def sheet_field():
            weight="bold", anchor="middle", rot=-90)
     s.text(fx(FL) + 22, fy(FW / 2), "RED ALLIANCE WALL", size=10, fill=RED_D,
            weight="bold", anchor="middle", rot=90)
-    # FIELD centerline: 2-in white tape, broken where the two CRAG footprints cross
-    # it (the DEPOT trays stop 8 in short). G402 and G502 are line calls against it.
+    # SCREE: 18 patches on the open carpet, drawn first so every later mark stays on top
+    def P(x, y):
+        return fx(x), fy(y)
+    for mir in (False, True):
+        for _nm, px_, py_, ang in SCREE_PATCHES:
+            _scree_patch(s, P, FL - px_ if mir else px_, FW - py_ if mir else py_, ang)
+
+    # FIELD centerline: 2-in white tape, broken where each CRAG and its BASE DEPOT ring
+    # cross it, between the inner edges of the SOCKET FACE APRON tape (Blue Y 198-282,
+    # Red Y 42-126), so no stub of line is left beside the DEPOT's entry chamfer. G402 and
+    # G502 are line calls against it.
     # White tape on the pale carpet tint is drawn cased: a RULE_S edge under the white
     # stroke, or it disappears into the carpet (and into white paper when printed).
-    for _y0, _y1 in ((324.0, 264.0), (216.0, 108.0), (60.0, 0.0)):
+    brk = CRAG_S / 2 + APRON_YF - 2.0
+    for _y0, _y1 in ((FW, CRAG_B[1] + brk), (CRAG_B[1] - brk, CRAG_R[1] + brk),
+                     (CRAG_R[1] - brk, 0.0)):
         s.line(fx(FL / 2), fy(_y0), fx(FL / 2), fy(_y1), stroke=RULE_S, sw=5.0)
         s.line(fx(FL / 2), fy(_y0), fx(FL / 2), fy(_y1), stroke="#FFFFFF", sw=3.0)
         s.line(fx(FL / 2), fy(_y0), fx(FL / 2), fy(_y1), stroke=MUTED, sw=0.7, dash="10 6")
     s.text(fx(FL / 2) + 6, fy(FW) + 7 + 0.72 * N, "FIELD CENTERLINE X = 324 (2-in white tape)",
            size=N, fill=INK)
 
-    # CENTER CACHE band first, so the CRAG sockets that overhang it stay crisp
-    s.rect(fx(300), fy(216), SC * 48, SC * 108, fill="#FFFFFF", stroke=MUTED,
-           sw=1.3, dash="7 4", op=0.5)
+    # CENTER CACHE band first, so the CRAG sockets that overhang it stay crisp. Its end lines
+    # would lie under the DEPOT rings, so only the two side lines are taped, broken like the
+    # centerline.
+    s.rect(fx(300), fy(216), SC * 48, SC * 108, fill="#FFFFFF", stroke="none", sw=0, op=0.5)
+    for _x in (300.0, 348.0):
+        s.line(fx(_x), fy(CRAG_B[1] - brk), fx(_x), fy(CRAG_R[1] + brk), stroke=MUTED,
+               sw=1.3, dash="7 4")
     for mir in (False, True):
         def X(v):
             return FL - v if mir else v
@@ -218,9 +315,13 @@ def sheet_field():
                fill=TRUSS, stroke=TRUSS_D, sw=1.6, op=0.85)
         for yb in (138.0, 186.0):
             s.line(fx(X(htop)), fy(Y(yb)), fx(X(HW_X)), fy(Y(yb)), stroke=TRUSS_D, sw=1.2)
-        # HEADWALL name: in open carpet beside the truss top, with a leader to it
-        s.leader(fx(X(44)), fy(Y(229)), fx(X(54)), fy(Y(243)), "%s HEADWALL" % nm,
-                 anchor="start" if not mir else "end", fill=TRUSS_D, weight="bold")
+        # HEADWALL name: in open carpet beside the truss top, with a leader to it; set on
+        # two lines so it stays clear of the nearest SCREE PATCH (S3 / its Red twin)
+        anc = "start" if not mir else "end"
+        s.leader(fx(X(44)), fy(Y(229)), fx(X(54)), fy(Y(243)), "HEADWALL",
+                 anchor=anc, fill=TRUSS_D, weight="bold")
+        s.text(fx(X(54)) + (3 if not mir else -3), fy(Y(243)) + 0.34 * L - 1.2 * L, nm,
+               size=L, fill=TRUSS_D, weight="bold", anchor=anc)
         for i, ly in enumerate(LANE_Y):
             s.text(fx(X(36.75)), fy(Y(ly)) + 0.36 * L, "L%d" % (i + 1), size=L, fill="#FFFFFF",
                    weight="bold", anchor="middle")
@@ -242,8 +343,17 @@ def sheet_field():
             s.line(fx(sx_) - 9, fy(Y(ty_)) - 9, fx(sx_) + 9, fy(Y(ty_)) + 9, stroke=cold, sw=1.6)
             s.line(fx(sx_) - 9, fy(Y(ty_)) + 9, fx(sx_) + 9, fy(Y(ty_)) - 9, stroke=cold, sw=1.6)
             s.text(fx(sx_), fy(Y(ty_)) - 14, t, size=N, fill=cold, anchor="middle")
-        s.text(fx(sx_), fy(Y(258)), "%s STAGING MARKS  X = %d" % (nm, sx_), size=L,
+        # centered between S3 and S7 (Red: their twins)
+        s.text(fx(sx_), fy(Y(261.3)) + 0.36 * L, "%s STAGING MARKS  X = %d" % (nm, sx_), size=L,
                fill=cold, weight="bold", anchor="middle")
+        # SCREE PATCH labels, each on the side of its patch that faces Y = 162 (S2: +Y)
+        for pn, px_, py_, _ang in SCREE_PATCHES:
+            up = py_ <= FW / 2                    # label on the +Y side of the Blue patch
+            if mir:
+                up = not up
+            ex, ey = X(px_), Y(py_)
+            edge = fy(ey + SCREE_S / 2) - 3.0 if up else fy(ey - SCREE_S / 2) + 3.0 + 0.72 * L
+            s.text(fx(ex), edge, pn, size=L, fill=SCREE, weight="bold", anchor="middle")
 
         ccx, ccy = (CRAG_R if mir else CRAG_B)
         _crag_plan(s, fx, fy, SC, ccx, ccy, 1 if mir else -1, col, cold,
@@ -257,7 +367,8 @@ def sheet_field():
         s.line(fx(mx) - 7, fy(my) + 7, fx(mx) + 7, fy(my) - 7, stroke=MUTED, sw=1.4)
         s.circle(fx(mx), fy(my), 7.0, fill=c, stroke="#333333", sw=0.9)
     # the leader lands on the band edge between two marks, not on a mark
-    s.leader(fx(300), fy(150), fx(276), fy(150), "CENTER CACHE  X 300-348, Y 108-216",
+    # text end raised clear of the Blue S5 patch label below it
+    s.leader(fx(300), fy(150), fx(276), fy(155), "CENTER CACHE  X 300-348, Y 108-216",
              anchor="end")
 
     # dimensions
@@ -267,10 +378,14 @@ def sheet_field():
     s.dim_v(fy(234), fy(90), fx(66), "144.0", ext_from=fx(58), critical=True, side="right")
     s.dim_h(fx(264), fx(384), fy(304), "120.0 apron span (36 + 48 + 36)",
             ext_from=fy(264) - 4, halo=True)
-    s.dim_v(fy(264), fy(216), fx(410), "48.0", ext_from=fx(388), side="right", critical=True)
-    s.dim_v(fy(216), fy(196), fx(438), "20.0", ext_from=fx(388), side="right", critical=True)
-    s.dim_v(fy(128), fy(108), fx(438), "20.0", ext_from=fx(388), side="right", critical=True)
-    s.dim_v(fy(196), fy(128), fx(466), "68.0 open corridor", ext_from=fx(442), side="right")
+    # one chain in the 15-in lane between the APRON line (X 384) and the Red S8 / S9 twins
+    # (X 399); each value takes the side of the line that is clear of both
+    dcx = fx(394)
+    s.dim_v(fy(264), fy(216), dcx, "48.0", ext_from=fx(386), side="right", critical=True,
+            tick=5, shift=10)
+    s.dim_v(fy(216), fy(196), dcx, "20.0", ext_from=fx(386), side="left", critical=True, tick=5)
+    s.dim_v(fy(196), fy(128), dcx, "68.0 open corridor", ext_from=fx(386), side="right", tick=5)
+    s.dim_v(fy(128), fy(108), dcx, "20.0", ext_from=fx(386), side="left", critical=True, tick=5)
 
     # origin marker at the corner; the axis compass sits on open carpet beside it
     s.circle(fx(0), fy(0), 5, fill="none", stroke=INK, sw=1.6)
@@ -296,14 +411,17 @@ def sheet_field():
             ("CRAG APRON  36 shelf & peg faces / 20 socket faces / R20", BLUE, "8 5"),
             ("OUTFITTER LANE  36 x 48, centered on the chute", "#B57718", "6 4"),
             ("FIELD CENTERLINE  2-in white at X = 324 - G402 / G502 line call", MUTED, "10 6"),
-            ("CENTER CACHE band + nine white marks", MUTED, "7 4")]
+            ("CENTER CACHE band side lines + nine white marks", MUTED, "7 4")]
     symbols = ["socket (LOW, MID; SUMMIT on the shelf face)", "Low / Mid Peg",
-               "High Peg (on the spire)", "BASE DEPOT tray", "staging mark (white, alliance border)",
-               "HEADWALL truss, lanes L1-L3"]
+               "High Peg (on the spire)", "BASE DEPOT tray, a ring round the CRAG",
+               "staging mark (white, alliance border)", "HEADWALL truss, lanes L1-L3",
+               "SCREE PATCH, ridges as laid (SCREE panel)"]
     cache_notes = ["Each type appears once per row and once per column.",
                    "Aggregate haul distance is identical for both alliances (725.0 in each)."]
     plan_ink = ["All tape 2.0 in wide; the line edge sits on the stated coordinate.",
-                "Alliance-colored tape for alliance zones; white for neutral marks."]
+                "Alliance-colored tape for alliance zones; white for neutral marks.",
+                "The centerline and the CENTER CACHE side lines break at the inner",
+                "edge of the APRON tape: Blue Y 198-282, Red Y 42-126."]
     plan_muted = ["CRAG plan tint is a drafting convention; the CRAG itself is tan",
                   "(see 03-field/MATERIALS-AND-COLORS.md).",
                   "Model the Blue half once, then rotate-pattern 180 deg about (324, 162)."]
@@ -319,7 +437,8 @@ def sheet_field():
     xs = [20]
     for wv in widths[:-1]:
         xs.append(xs[-1] + wv + gapx)
-    ph = y0 + 0.6 * H + 7 * pitch - top          # tallest panel: heading + 6 rows
+    nrow = max(len(tape), len(symbols), 4 + len(cache_notes), len(plan_ink) + len(plan_muted))
+    ph = y0 + 0.6 * H + (nrow + 1) * pitch - top  # tallest panel: heading + nrow rows
     assert top + ph <= s.tb_top - 6, "field notes panels run into the title block"
 
     def panel(i, heading):
@@ -356,8 +475,11 @@ def sheet_field():
         elif i == 4:
             s.line(sym - 5, yy - 5, sym + 5, yy + 5, stroke=BLUE_D, sw=1.6)
             s.line(sym - 5, yy + 5, sym + 5, yy - 5, stroke=BLUE_D, sw=1.6)
-        else:
+        elif i == 5:
             s.rect(sym - 7, yy - 5, 13, 10, fill=TRUSS, stroke=TRUSS_D, sw=1.2, op=0.85)
+        else:                                             # a +45 patch at 0.4 px/in
+            _scree_patch(s, lambda x, y, _x=sym - 0.5, _y=yy: (_x + 0.4 * x, _y - 0.4 * y),
+                         0.0, 0.0, "+45", sw=0.8)
         s.text(sym + 14, row(i), t, size=N, fill=INK)
 
     # CENTER CACHE table: its coloured dots are the legend for the marks on the plan
@@ -380,8 +502,93 @@ def sheet_field():
     yy = s.lines(nx0, row(0), plan_ink, size=N, fill=INK, pitch=pitch)
     s.lines(nx0, yy, plan_muted, size=N, fill=MUTED, pitch=pitch)
 
+    _scree_panel(s, fx(FL) + 40, fy(FW) - 5, top - 10)
+
     s.titleblock(NOTES)
     return s
+
+
+def _scree_panel(s, x0, top, bottom):
+    """SCREE notes panel: the patch table, a ridge section and the construction notes, in
+    the column right of the field plan. Sized to its content."""
+    N, H = s.NOTE, s.HEAD
+    pitch = 1.42 * N
+    w = s.w - 20 - x0
+    lx = x0 + 8
+    intro = ["Centers are CRITICAL. Each Red twin is the Blue",
+             "patch rotated 180 deg about (324, 162), ridges alike."]
+    key = ["+45: ridges along X = Y.   -45: along (1, -1).",
+           "Y: along the Y axis, across the +X travel."]
+    notes_ink = ["Patch 30.0 x 30.0 (CRITICAL), sides on the field",
+                 "axes, laid directly on the carpet (no base plate).",
+                 "Four half-round ridges, R1.75: 1.75 tall (CRITICAL)",
+                 "and 3.5 wide at the base. Centerlines +/-4.0 and",
+                 "+/-12.0 from the patch center, measured along the",
+                 "ridge normal: 8.0 pitch (CRITICAL). Each ridge runs",
+                 "straight across and is cut square at the patch edge."]
+    notes_muted = ["HDPE half-round rod, matte, `scree` #5C5650.",
+                   "18 patches, nine in each half of the FIELD. Each half",
+                   "is also mirror-symmetric about Y = 162."]
+    hdr = ("Patch", "Blue center", "Ridges", "Red twin")
+    colx = [lx, lx + 40, lx + 112, lx + 160]
+    for t in intro + key + notes_ink + notes_muted:
+        assert s.tw(t, N) <= w - 16, "SCREE panel line too long: %r" % t[:30]
+    assert colx[3] + s.tw("(543, 236)", N) <= x0 + w - 8, "SCREE table does not fit"
+
+    # heights first, so the panel box is drawn under its content
+    y = top + 8 + 0.74 * H                        # heading baseline
+    yi = y + 0.6 * H + pitch                      # intro
+    yh = yi + len(intro) * pitch + 0.3 * N        # table header
+    yk = yh + 10 * pitch + 0.5 * N                # ridge key
+    yv = yk + len(key) * pitch + 0.9 * s.VIEW     # section view name
+    E = 6.0                                       # section scale, px/in
+    ysec = yv + 0.2 * s.VIEW + 1.05 * s.SUB + 1.25 * s.SUB * 2 + 64   # carpet line
+    yn = ysec + 24 + 1.32 * s.DIM + 8 + 0.74 * N  # notes, below the 30.0 dimension
+    ybot = yn + (len(notes_ink) + len(notes_muted) - 1) * pitch + 0.6 * N + 8
+    assert ybot <= bottom, "SCREE panel runs into the notes row"
+    s.rect(x0, top, w, ybot - top, fill="#FFFFFF", stroke=RULE, sw=0.9)
+    s.text(lx, y, "SCREE - 18 PATCHES", size=H, fill=ACCENT, weight="bold")
+    s.lines(lx, yi, intro, size=N, fill=INK, pitch=pitch)
+    for cxx, cell in zip(colx, hdr):
+        s.text(cxx, yh, cell, size=N, fill=ACCENT, weight="bold")
+    s.line(x0 + 6, yh + 0.45 * N, x0 + w - 6, yh + 0.45 * N, stroke=RULE, sw=0.8)
+    for i, (pn, px_, py_, ang) in enumerate(SCREE_PATCHES):
+        cells = (pn, "(%d, %d)" % (px_, py_), ang, "(%d, %d)" % (FL - px_, FW - py_))
+        for cxx, cell in zip(colx, cells):
+            s.text(cxx, yh + (i + 1) * pitch, cell, size=N, fill=INK)
+    s.lines(lx, yk, key, size=N, fill=MUTED, pitch=pitch)
+
+    # ---- ridge section across S2 (ridges along Y), normal to the ridges ----
+    scx = lx + 28 + E * SCREE_S / 2               # patch center; room at the left for 1.75
+    assert scx + E * SCREE_S / 2 + 10 <= x0 + w - 8, "ridge section does not fit its panel"
+    s.view_label(x0 + w / 2.0, yv, "RIDGE SECTION", "6.0 px/in", "across S2, normal to its ridges")
+    rr = E * SCREE_R
+    xl, xr = scx - E * SCREE_S / 2, scx + E * SCREE_S / 2
+    xh = xl - 8                                   # ridge-height dimension line
+    s.line(xh - 2, ysec, x0 + w - 8, ysec, stroke=INK, sw=1.4)
+    for xe in (xl, xr):                           # the patch edges
+        s.line(xe, ysec, xe, ysec - 5, stroke=INK, sw=1.0)
+    for d in SCREE_OFF:
+        xc = scx + E * d
+        s.path("M %.2f %.2f A %.2f %.2f 0 0 1 %.2f %.2f Z" % (xc - rr, ysec, rr, rr, xc + rr, ysec),
+               fill=SCREE, stroke="#3E3A36", sw=0.8)
+    # patch centerline, carried up past the chain as its first extension line
+    yd = ysec - rr - 16                           # chain dimension line
+    s.line(scx, ysec + 6, scx, yd - 8, stroke=MUTED, sw=0.9, dash="12 4 3 4")
+    for d in (4.0, 12.0):
+        s._ext(scx + E * d, ysec - rr - 3, scx + E * d, yd - 5)
+    s.dim_h(scx, scx + E * 4.0, yd, "4.0", critical=True)
+    s.dim_h(scx + E * 4.0, scx + E * 12.0, yd, "8.0", critical=True)
+    # ridge height, at the left, off the outer ridge's crest; the span is short, so the
+    # arrowheads sit outside it and the value beside it
+    s._ext(scx + E * SCREE_OFF[0] - 3, ysec - rr, xh - 6, ysec - rr)
+    s._dimline(xh, ysec - rr, xh, ysec)
+    s._dimlabel(xh, ysec - rr / 2.0, -90, "1.75", critical=True, size=s.DIM)
+    s.leader(scx + E * SCREE_OFF[0] + rr * 0.7071, ysec - rr * 0.7071, scx - 60, yd - 30,
+             "half-round, R1.75")
+    s.dim_h(xl, xr, ysec + 24, "30.0", ext_from=ysec + 3, critical=True)
+    yy = s.lines(lx, yn, notes_ink, size=N, fill=INK, pitch=pitch)
+    s.lines(lx, yy, notes_muted, size=N, fill=MUTED, pitch=pitch)
 
 
 # =====================================================================
@@ -467,8 +674,9 @@ def sheet_tags():
             ("3-5 / 16-18", "HEADWALL lane center", "12.0", "X = 39.0 / 609.0 (plumb)", "+X / -X"),
             ("6-13 / 19-26", "CRAG face pairs, +/-14.0 from the face centerline", "17.5",
              "the face plane", "outward")]
-    foot = ["CRAG tags sit at 17.5 in so a crowned CACHE CRATE standing in the BASE DEPOT (apex Z = 13.25)",
-            "clears the 8.125-in target (Z 13.44-21.56) by 0.19 in.",
+    foot = ["CRAG tags sit at 17.5 in. The BASE DEPOT runs below every CRAG face: a crowned CACHE CRATE",
+            "in it (apex Z = 13.25) clears the 8.125-in target (Z 13.44-21.56) by 0.19 in, and an upright",
+            "O2 CELL (top Z = 14.25) covers the bottom 0.81 in of the target.",
             "HEADWALL panels are plumb at X = 39.0 - at least 4.42 in behind plane P over the whole panel,",
             "so nothing enters the climbing volume."]
     cw = [max(s.tw(r[j], N, False) for r in rows) + 26 for j in range(5)]
@@ -560,7 +768,7 @@ def sheet_crag():
     def z(v):
         return GY - K * v
 
-    s.line(40, GY, 1560, GY, stroke=INK, sw=2.0)
+    s.line(40, GY, 1400, GY, stroke=INK, sw=2.0)     # ends after View C, short of the plan View D
     s.text(42, GY + 4 + 0.74 * s.SUB, "carpet Z = 0", size=s.SUB, fill=MUTED)
 
     # ================= VIEW A - SHELF FACE =================
@@ -590,7 +798,8 @@ def sheet_crag():
     for tz in TIER_Z:
         w = sw_ + 5 if tz >= LANTERN_LO else hw + 5
         s.line(ax - w, z(tz), ax + w, z(tz), stroke="#E8443A", sw=1.6, dash="4 3")
-    s.rect(ax - hw - K * DEPOT_WRAP, z(DEPOT_LIP), 2 * (hw + K * DEPOT_WRAP), K * DEPOT_LIP,
+    # BASE DEPOT lip: the ring runs round all four faces, 81.5 across over the lip
+    s.rect(ax - K * DEPOT_OUT, z(DEPOT_LIP), 2 * K * DEPOT_OUT, K * DEPOT_LIP,
            fill=DEPOT, stroke=CRAG_EDGE, sw=1.2)
     for c in (-SOCK_LAT, SOCK_LAT):
         s.rect(ax + K * c - K * TAG_PANEL / 2, z(TAG_Z_CRAG + TAG_PANEL / 2),
@@ -615,7 +824,7 @@ def sheet_crag():
         "Slot centers -15.5 / 0 / +15.5 from the face centerline.",
         "Summit Socket rim Z = 72.0, on the CRAG centerline, 8.0 out from THIS face.",
         "Tags 6 / 7 (Blue): ctr Z = 17.5, +/-14.0 from the face centerline.",
-        "BASE DEPOT lip 4.0 runs this face and wraps 16.0 onto both socket faces.",
+        "BASE DEPOT lip 4.0 rings all four faces, 16.75 out from each (81.5 square).",
         "(Dashed red lines: LED tier rings at 30 / 54 / 78, see VIEW C.)",
     ], title="VIEW A NOTES", w=COLW + 40)
 
@@ -649,6 +858,9 @@ def sheet_crag():
         x0 = bx + K * lat
         s.line(x0, z(zz), x0 + K * PEG_EXP * 0.7071, z(zz + PEG_EXP * 0.7071),
                stroke=RUNG, sw=K * PEG_OD, cap="round")
+    # BASE DEPOT: the SOCKET FACE leg in front, both corner squares at its ends
+    s.rect(bx - K * DEPOT_OUT, z(DEPOT_LIP), 2 * K * DEPOT_OUT, K * DEPOT_LIP,
+           fill=DEPOT, stroke=CRAG_EDGE, sw=1.2)
     lx = bx + 186
     ladder = ((SHELF1, "24.0  Shelf 1"), (LOW_SOCK_Z, "30.0  Low Socket / Low Peg"),
               (SHELF2, "42.0  Shelf 2"), (MID_SOCK_Z, "54.0  Mid Socket / Mid Peg"),
@@ -669,6 +881,7 @@ def sheet_crag():
         "socket sits directly above one tag of the face pair.",
         "The Summit Socket, shown edge-on at the left, is on the SHELF FACE.",
         "Red ladder: heights above the carpet, Z = 0.",
+        "BASE DEPOT: the SOCKET FACE leg below; both socket tubes overhang it.",
     ], title="VIEW B NOTES", w=COLW)
 
     # ================= VIEW C - PEG FACE =================
@@ -693,6 +906,9 @@ def sheet_crag():
                K * TAG_PANEL, K * TAG_PANEL, fill="#F5F5F5", stroke="#666666", sw=0.9)
         s.rect(cx + K * c - K * TAG_BODY / 2, z(TAG_Z_CRAG + TAG_BODY / 2),
                K * TAG_BODY, K * TAG_BODY, fill="#111111", stroke="none", sw=0)
+    # BASE DEPOT: the PEG FACE leg in front, both corner squares at its ends
+    s.rect(cx - K * DEPOT_OUT, z(DEPOT_LIP), 2 * K * DEPOT_OUT, K * DEPOT_LIP,
+           fill=DEPOT, stroke=CRAG_EDGE, sw=1.2)
     s.leader(cx + K * SOCK_LAT + K * TAG_PANEL / 2, z(TAG_Z_CRAG), cx + hw + 26, z(TAG_Z_CRAG) + 8,
              "tags 12 / 13")
     s.dim_h(cx, cx + K * PEG_LAT, z(LOW_PEG_Z) - 22, "14.0", ext_from=z(LOW_PEG_Z) - 6,
@@ -707,18 +923,36 @@ def sheet_crag():
         "All pegs OD 1.5, 45 deg up from the face, 10.0 exposed, tip R0.75.",
         "Tags 12 / 13 (Blue): ctr Z = 17.5, +/-14.0.",
         "Tier rings latch on CAMP establishment; the lantern is the SUMMIT BEACON.",
+        "BASE DEPOT: the PEG FACE leg below; the Low and Mid Pegs overhang it.",
     ], title="VIEW C NOTES", w=COLW + 30)
 
     # ================= VIEW D - TOP (plan) =================
-    dx, dy = 1660.0, 250.0
+    dx, dy = 1660.0, 262.0
     s.view_label(dx, VY, "VIEW D - TOP (PLAN)", "3.2 px/in",
                  "shelf face LEFT, peg face RIGHT")
     h = K * CRAG_S / 2
-    s.rect(dx - h - K * DEPOT_CH, dy - h - K * DEPOT_WRAP, K * DEPOT_CH,
-           K * (CRAG_S + 2 * DEPOT_WRAP), fill=DEPOT, stroke=CRAG_EDGE, sw=1.3)
-    for sgn in (-1, 1):
-        s.rect(dx - h, dy + (sgn * h if sgn > 0 else -h - K * DEPOT_WRAP),
-               K * DEPOT_WRAP, K * DEPOT_WRAP, fill=DEPOT, stroke=CRAG_EDGE, sw=1.3)
+    ho = K * DEPOT_OUT                           # outer face of the DEPOT lip
+
+    def PD(x, y):                                # CRAG-local inches to sheet px
+        return dx + K * x, dy + K * y
+    # BASE DEPOT ring: entry chamfer strip, then the tray over the lip, then thin lines on
+    # the face planes marking the four legs and the four 16 x 16 corner squares
+    s.path(_ring_path(PD, 0.0, 0.0, DEPOT_OUT + DEPOT_CHAMFER, DEPOT_OUT), fill=DEPOT,
+           stroke="none", sw=0, op=0.45, rule="evenodd")
+    s.path(_ring_path(PD, 0.0, 0.0, DEPOT_OUT, CRAG_S / 2), fill=DEPOT, stroke=CRAG_EDGE,
+           sw=1.3, rule="evenodd")
+    s.path("M %.2f %.2f L %.2f %.2f L %.2f %.2f L %.2f %.2f Z" % (
+        dx - K * (DEPOT_OUT - LIP_THK), dy - K * (DEPOT_OUT - LIP_THK),
+        dx + K * (DEPOT_OUT - LIP_THK), dy - K * (DEPOT_OUT - LIP_THK),
+        dx + K * (DEPOT_OUT - LIP_THK), dy + K * (DEPOT_OUT - LIP_THK),
+        dx - K * (DEPOT_OUT - LIP_THK), dy + K * (DEPOT_OUT - LIP_THK)),
+        stroke=CRAG_EDGE, sw=0.8)                # inner face of the lip
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            s.line(dx + sx * h, dy + sy * h, dx + sx * (ho - K * LIP_THK), dy + sy * h,
+                   stroke=CRAG_EDGE, sw=0.8)
+            s.line(dx + sx * h, dy + sy * h, dx + sx * h, dy + sy * (ho - K * LIP_THK),
+                   stroke=CRAG_EDGE, sw=0.8)
     # shelves above: dark dashes, readable over the grey DEPOT
     s.rect(dx - h - K * SHELF_DEPTH, dy - h, K * SHELF_DEPTH, K * CRAG_S,
            fill="none", stroke=INK, sw=1.3, dash="6 3")
@@ -734,30 +968,37 @@ def sheet_crag():
             s.text(pxx, pyy + (rs + 4 + 0.72 * L if sgn > 0 else -rs - 4), nm, size=L,
                    fill=INK, anchor="middle", halo=True)
     s.circle(dx - h - K * SOCK_STANDOFF, dy, rs, fill=SOCKET_L, stroke=BLUE_D, sw=1.8)
-    s.leader(dx - h - K * SOCK_STANDOFF - rs, dy, dx - h - K * DEPOT_CH - 26, dy - 30,
+    s.leader(dx - h - K * SOCK_STANDOFF - rs, dy, dx - ho - 26, dy - 30,
              "SUMMIT socket", anchor="end")
+    s.leader(dx - h - K * DEPOT_CH / 2, dy + h + K * DEPOT_CH / 2, dx - ho - 26, dy + ho + 18,
+             "16 x 16 corner square", anchor="end")
     for sgn in (-1, 1):
         s.line(dx + h, dy + sgn * K * PEG_LAT, dx + h + K * PEG_EXP * 0.7071,
                dy + sgn * K * PEG_LAT, stroke="#666666", sw=4, cap="round")
         s.line(dx + K * SPIRE_S / 2, dy + sgn * K * HPEG_LAT,
                dx + K * SPIRE_S / 2 + K * PEG_EXP * 0.7071, dy + sgn * K * HPEG_LAT,
                stroke="#666666", sw=4, cap="round", dash="4 3")
-    dep_b = dy + h + K * DEPOT_WRAP              # outer edge of the DEPOT leg
-    s.dim_h(dx - h - K * DEPOT_CH, dx - h, dep_b + 20, "16.0", ext_from=dep_b + 3,
+    dep_b = dy + ho                              # outer face of the DEPOT lip
+    dep_d = dep_b + K * DEPOT_CHAMFER + 26       # below the entry chamfer, clear of the ring
+    s.dim_h(dx - h - K * DEPOT_CH, dx - h, dep_d, "16.0", ext_from=dep_b + K * DEPOT_CHAMFER + 3,
             critical=True)
-    s.dim_h(dx - h, dx + h, dep_b + 20 + 1.32 * s.DIM + 18, "48.0", ext_from=dy + h + 3,
+    s.dim_h(dx - h, dx + h, dep_d + 1.32 * s.DIM + 18, "48.0", ext_from=dy + h + 3,
             critical=True)
-    s.dim_v(dy - h - K * SOCK_STANDOFF, dy - h, dx + K * SOCK_LAT + 40, "8.0",
+    # socket standoff: dimensioned outside the ring, so its value is not set on the tray
+    s.dim_v(dy - h - K * SOCK_STANDOFF, dy - h, dx + ho + K * DEPOT_CHAMFER + 14, "8.0",
             ext_from=dx + K * SOCK_LAT + rs + 3, critical=True, side="right")
     s.dim_v(dy - h, dy + h, dx + h + 104, "48.0", ext_from=dx + h + 3, critical=True,
             side="right")
+    s.dim_v(dy - ho, dy + ho, dx + h + 104 + 36, "81.5 over the lip (ref)", ext_from=dx + ho + 3,
+            side="right")
     _notes(s, 1500, NY, [
-        "BASE DEPOT: channel 16.0 from the shelf face, wrapping 16.0 onto",
-        "each socket face. Lip 4.0 tall, top edge R0.25 (Detail D4).",
-        "Shelves overhang 14.0 and span only the 48-in face, so the outer 2.0",
-        "of the shelf-face leg and both 16 x 16 corner SQUARES are open from above.",
-        "The two corner ARMS are overhung by their Low Socket tubes: push, do not drop.",
-        "Dashed rectangle = shelves above.",
+        "BASE DEPOT: a ring round all four faces. Channel 16.0 out from every",
+        "face; lip 4.0 tall, top edge R0.25 (D4); 81.5 square over the lip.",
+        "Four legs, one per face, and four 16 x 16 corner SQUARES; no corner arms.",
+        "Shelves overhang 14.0 and span only the 48-in face, so the outer 2.0 of",
+        "the SHELF FACE leg and all four corner squares are open from above.",
+        "Every side-socket tube overhangs its leg: push a SUPPLY in, do not drop it.",
+        "The Low and Mid Pegs overhang the PEG FACE leg. Dashed = shelves above.",
     ], title="VIEW D NOTES", w=s.w - 16 - 1500)
 
     # ===================== ROW 2 DETAILS =====================
@@ -812,6 +1053,8 @@ def sheet_crag():
         "4.39 above the rim's uphill lip - the SCORED call is a glance.",
         "The attachment lives in the wedge under the tube and may not break",
         "the rim plane (geometry otherwise free, ref).",
+        "Reach: BUMPERS against the DEPOT lip put the FRAME PERIMETER 19.75",
+        "from the face, so a Low or Mid Socket rim is 11.75 of extension.",
     ], title="D1 NOTES", w=COLW)
 
     # ---- D2 summit socket ----
@@ -855,7 +1098,7 @@ def sheet_crag():
         "alliance's driver stations.",
         "THERE IS NO SPIRE RECESS - the spire is a clean 20 x 20 prism.",
         "Reach: a ROBOT at the DEPOT lip has its FRAME PERIMETER 19.75 from",
-        "the face, so the rim is 11.75 of extension - inside the 18 in limit.",
+        "the face, so the rim is 11.75 of extension - inside even the 18-in limit.",
     ], title="D2 NOTES", w=COLW + 40)
 
     # ---- D3 peg + coil ----
@@ -896,13 +1139,18 @@ def sheet_crag():
         "With its inner face 1.25 in outboard of the CRAG face, its center",
         "rests about 1.6 in (1.58) above the peg root.",
         "POSE B (as dropped, grey): perpendicular to the peg; it settles to A.",
+        "Reach from BUMPERS at the DEPOT lip (FRAME PERIMETER 19.75 off the face):",
+        "Low / Mid Peg tips 12.68 (roots 19.75); High Peg tip 26.68 (root 33.75),",
+        "the binding reach: 26.68 of the 30 allowed with BUMPERS in the CRAG APRON.",
+        "The High Peg root is out of reach: the COIL is released from rest over the",
+        "tip (not LAUNCHING, G502), drops onto the peg and settles at the root.",
     ], title="D3 NOTES", w=COLW + 30)
 
     # ---- D4 shelf + depot ----
     d4x, d4y = 1700.0, 730.0 + R2
     G = 6.2
     s.view_label(d4x - 120, VY2, "D4 - SHELF AND DEPOT SECTION", "6.2 px/in",
-                 "section normal to the SHELF FACE")
+                 "normal to the SHELF FACE; the DEPOT is the same on all four faces")
     base = d4y + 300
 
     def zz4(v):
@@ -929,6 +1177,10 @@ def sheet_crag():
             fill=GHOST_T, anchor="middle", pitch=1.2 * L)
     s.rect(d4x - G * (DEPOT_CH + LIP_THK), zz4(DEPOT_LIP), G * LIP_THK, G * DEPOT_LIP,
            fill=DEPOT, stroke=CRAG_EDGE, sw=1.3)
+    lo = d4x - G * (DEPOT_CH + LIP_THK)          # outer face of the lip; entry chamfer outside
+    s.path("M %.2f %.2f L %.2f %.2f L %.2f %.2f Z" % (lo, base, lo - G * DEPOT_CHAMFER, base,
+                                                      lo, zz4(DEPOT_CHAMFER)),
+           fill=DEPOT, stroke=CRAG_EDGE, sw=1.0)
     s.rect(d4x - G * DEPOT_CH, zz4(0.25), G * DEPOT_CH, G * 0.25, fill=DEPOT,
            stroke=CRAG_EDGE, sw=1.0)
     s.rect(d4x - G * (DEPOT_CH - 1), zz4(0.25 + 13.0), G * CRATE_S, G * 13.0,
@@ -940,18 +1192,20 @@ def sheet_crag():
     s.dim_h(d4x - G * SHELF_DEPTH, d4x, zz4(SHELF2) - 24, "14.0", ext_from=zz4(SHELF2) - 6,
             critical=True)
     s.dim_h(d4x - G * DEPOT_CH, d4x, base + 40, "16.0", ext_from=base + 4, critical=True)
-    s.dim_v(zz4(DEPOT_LIP), base, d4x - G * (DEPOT_CH + LIP_THK) - 24, "4.0",
-            ext_from=d4x - G * (DEPOT_CH + LIP_THK) - 4, critical=True)
+    # the boxed value is taller than the 4-in span: set it above the upper extension line
+    s.dim_v(zz4(DEPOT_LIP), base, lo - G * DEPOT_CHAMFER - 20, "4.0",
+            ext_from=lo - G * DEPOT_CHAMFER - 3, critical=True,
+            shift=G * DEPOT_LIP / 2 + (s.tw("4.0", s.DIM) + 0.9 * s.DIM) / 2 + 4)
     s.dim_v(zz4(SHELF1), base, d4x + 66, "24.0", ext_from=d4x + 4, critical=True, side="right")
     s.dim_v(zz4(SHELF2), base, d4x + 106, "42.0", ext_from=d4x + 4, critical=True, side="right")
     _notes(s, 1500, base + 40 + 1.32 * s.DIM + 30, [
-        "Lip 4.0 tall, top edge R0.25; lip thickness 0.75 (ref);",
-        "tray floor 0.25 with a 45 deg entry chamfer (ref).",
+        "Lip 4.0 tall, top edge R0.25; lip 0.75 thick, +0 / -0.25 (no plus",
+        "tolerance: APRON tape clearance, FIELD-CAD-PACKAGE 3); tray floor",
+        "0.25; a 1.0 x 45 deg entry chamfer outside the lip (ref).",
         "The floor top is at Z = 0.25, so a crowned CRATE apexes at 13.25 -",
         "only 0.19 below the CRAG tag target at 13.44. See VISION-GUIDE 1.3.",
-        "A CRATE stands proud of the lip and is SCORED so long as the tray",
-        "floor alone supports it.",
-        "Robot standoff: bumper face 16.75 from the CRAG face,",
+        "A CRATE proud of the lip is SCORED while the tray floor alone holds it.",
+        "Robot standoff on every face: BUMPERS 16.75 from the CRAG face,",
         "FRAME PERIMETER 19.75; a shelf slot center is 12.75 of extension.",
     ], title="D4 NOTES", w=s.w - 16 - 1500)
 
@@ -1162,7 +1416,7 @@ def sheet_headwall():
     foot = xrow + pitch + 0.3 * N
     # CLIMB REACH rows, computed first so both panels share one height
     cl0 = y0 + 0.5 * H + pitch
-    hy = cl0 + 5 * 1.25 * N + 0.6 * N
+    hy = cl0 + 7 * 1.25 * N + 0.6 * N                  # below the 7-line G416 block
     cl3 = hy + 4 * pitch + 0.3 * N
     park = cl3 + 3 * 1.25 * N + 0.1 * N
     ph = max(foot + 1.25 * N, park) + 0.8 * N - top
@@ -1203,7 +1457,9 @@ def sheet_headwall():
         "unless the ROBOT is then supported solely by rungs, or is still touching a rung it took hold of while",
         "so supported within the preceding 5 s.",
         "The nearest bumper face is X = 48, so the FRAME PERIMETER is at X = 51 (R402: 0.75 backing + 2.25 foam)",
-        "and an 18-in reach (R105) ends at X = 33.0."], size=N, fill=INK, pitch=1.25 * N)
+        "and an 18-in reach (R105) ends at X = 33.0.",
+        "The 30-in allowance (G404 / R105) applies only while the BUMPERS intersect the ALLIANCE's own CRAG APRON;",
+        "no APRON reaches a HEADWALL, so the 18-in column stands."], size=N, fill=INK, pitch=1.25 * N)
     hdr2 = ("Rung", "Rung ctr X", "To centerline", "To wrap the rung", "Within R105 (18 in)?")
     colx2 = [cx2 + 8, cx2 + 90, cx2 + 190, cx2 + 310, cx2 + 450]
     for cxx, cell in zip(colx2, hdr2):
@@ -1319,7 +1575,7 @@ def sheet_outfitter():
     s.dim_v(cy0, cy0 + C * CHUTE_H, cx0 + C * CHUTE_W + 34, "16.0 opening",
             ext_from=cx0 + C * CHUTE_W + 6, critical=True, side="right")
     s.dim_v(cy0 + (C * CHUTE_H - C * env) / 2, cy0 + (C * CHUTE_H + C * env) / 2, cx0 - 30,
-            "13.0 crowned envelope", ext_from=cx0 + (C * CHUTE_W - C * env) / 2 - 3, tick=2)
+            "13.0 crowned", ext_from=cx0 + (C * CHUTE_W - C * env) / 2 - 3, tick=2)
     yy = s.lines(cx0 - 40, cy0 + C * CHUTE_H + 34, ["Clearance 3.0 in on the crate's crowned envelope."],
                  size=s.pt(9.0), fill=INK)
     yy = s.lines(cx0 - 40, yy, ["A cube's minimum width in any orientation is its edge,",

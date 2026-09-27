@@ -25,7 +25,9 @@ When modeling by hand:
 
 - Use the package's coordinate frame, always-blue-origin NWU: origin at the right corner of the Blue alliance wall, +X toward Red. The AprilTag JSON uses the same frame, so vision simulation runs against the model without changes.
 - Hold the O2 socket ID of 6.50 ± 0.125 in, the tightest tolerance on the field. Most other robot-critical dimensions are whole or half inches, and the angles are 15°, 30° and 45°, so the field models quickly.
-- Model the Blue half once, then pattern it 180° about field center for Red. Do not model the Red CRAG or HEADWALL separately.
+- Model the BASE DEPOT as the closed ring it is: four legs and four corner squares around the whole CRAG. Its lip sets how far every placement on the CRAG must reach.
+- Model SCREE as part of the FIELD: each SCREE PATCH is a 30 × 30 in square of four straight half-round ridges (radius 1.75 in, so 1.75 in tall, on an 8.0-in pitch) sitting directly on the carpet. Take the nine Blue patch centers and ridge directions (+45, −45 or Y) from the SCREE PATCH table in `03-field/FIELD-CAD-PACKAGE.md` §1.4, and cut each ridge square at its patch boundary.
+- Model the Blue half once, then pattern it 180° about field center for Red. Do not model the Red CRAG, HEADWALL or SCREE PATCHES separately.
 - Check the finished model: run interference and clearance checks against the toleranced dimensions, and drive WPILib or PhotonVision simulation with `04-vision/apriltag-field-layout.json` to confirm that the tag poses match the model.
 
 ## Questions and Team Updates

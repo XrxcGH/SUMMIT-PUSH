@@ -119,7 +119,7 @@ ROPED UP is a count of SUPPLIES; their point values do not matter.
 
 ### 4.3.5 AUTO Distances
 
-The following distances are published for planning AUTO routines. All are straight-line distances from ROBOT center to the target approach position, for the Blue ALLIANCE; Red distances are the same by symmetry.
+The following distances are published for planning AUTO routines. All are straight-line distances from ROBOT center to the target approach position, for the Blue ALLIANCE; Red distances are the same by symmetry. SCREE (Section 3.8) lies across the routes from BASECAMP and from the staging marks, so those distances understate the distance a ROBOT actually drives.
 
 **Table 4-5: AUTO distances**
 
@@ -194,9 +194,11 @@ Every CAMP requires one SCORED SUPPLY of each type that its tier accepts. The CR
 
 **Out-of-bounds supplies:** FIELD STAFF return any SUPPLY that leaves the FIELD, at the next safe opportunity, to the nearest OUTFITTER chute: the chute of the ALLIANCE on that side of the FIELD, which may be an opponent's chute. A ROBOT may not deliberately eject a SUPPLY out of the FIELD (**G507**).
 
+**SUPPLIES on SCREE:** SCREE is part of the FIELD (Section 3.8). A SUPPLY that comes to rest on it stays in play, and FIELD STAFF do not move or restage it.
+
 ### 4.4.5 Cycle Distances
 
-The following approach distances are published for estimating points per cycle. All are for the Blue ALLIANCE, from ROBOT center to the approach position; Red distances are the same by symmetry.
+The following approach distances are published for estimating points per cycle. All are for the Blue ALLIANCE, from ROBOT center to the approach position; Red distances are the same by symmetry. Each approach position is a reference point on the outer edge of the BASE DEPOT channel, 16.0 in off the middle of its face; a ROBOT servicing the face stops with its BUMPERS at the lip, 16.75 in off the face, and its center about half its BUMPER length farther out.
 
 **Table 4-7: Cycle distances**
 
@@ -204,12 +206,14 @@ The following approach distances are published for estimating points per cycle. 
 |---|---|
 | OUTFITTER (24, 294) → SHELF FACE approach (284, 240) | 266 in |
 | OUTFITTER (24, 294) → +Y SOCKET FACE approach (324, 280) | 300 in |
-| OUTFITTER (24, 294) → PEG FACE approach (368, 240) | 348 in |
+| OUTFITTER (24, 294) → PEG FACE approach (364, 240) | 344 in |
 | CENTER CACHE (324, 162) → SHELF FACE approach | 88 in |
 | CENTER CACHE (324, 162) → +Y SOCKET FACE approach | 118 in |
 | Alliance staging mark (144, 216) → SHELF FACE approach | 142 in |
 
-The CRAG has 17 scoring positions in total (6 shelf slots, 5 sockets, 6 pegs) plus a BASE DEPOT that holds roughly 12 SUPPLIES. Once an ALLIANCE has filled its CRAG, further SUPPLIES can score only in the DEPOT, and the SUPPLY LINE RP thresholds assume that strong ALLIANCES will use it.
+These are straight-line distances, and they understate real cycles: SCREE (Section 3.8) lies across most of the routes from the OUTFITTERS and the staging marks, so a ROBOT either detours around the patches or slows down to cross them.
+
+The CRAG has 17 scoring positions in total (6 shelf slots, 5 sockets, 6 pegs) plus a BASE DEPOT that holds about 27 SUPPLIES. Once an ALLIANCE has filled its CRAG, further SUPPLIES can score only in the DEPOT, and the SUPPLY LINE RP thresholds assume that strong ALLIANCES will use it.
 
 ## 4.5 ENDGAME (final 0:30)
 
@@ -279,7 +283,7 @@ All point values in SUMMIT PUSH:
 | Penalty | MINOR FOUL | — | — | +3 to opponent | +3 to opponent |
 | Penalty | MAJOR FOUL | — | — | +8 to opponent | +8 to opponent |
 
-A CRAG filled to capacity in TELEOP is worth 107 placement points (28 low + 49 mid + 30 high); a full BASE DEPOT adds about 24.
+A CRAG filled to capacity in TELEOP is worth 107 placement points (28 low + 49 mid + 30 high); a full BASE DEPOT adds about 54.
 
 ## 4.7 RANKING POINTS
 
@@ -373,7 +377,7 @@ SUMMIT PUSH rewards ALLIANCES built from complementary ROBOTS. Four ALLIANCE ROL
 |---|---|---|
 | **CRATE FREIGHTER** | Shelf 1 and Shelf 2, BASE DEPOT | Volume toward SUPPLY LINE, and the crate slot of both CAMP I and CAMP II. Wide compliant intake and a 42-in lift. |
 | **O2 SURGEON** | Low, Mid, and Summit Sockets | The oxygen slot of every CAMP, including the High-tier Summit Socket. Reorientation wrist plus a 72-in reach. |
-| **RING ALPINIST** | Low, Mid, and High Pegs | The High Pegs, which no other role can supply, and therefore HIGH CAMP and the HIGH ROUTE's full capacity. Hook or spear end effector plus a 78-in reach. |
+| **RING ALPINIST** | Low, Mid, and High Pegs | The High Pegs, which no other role can supply, and therefore HIGH CAMP and the HIGH ROUTE's full capacity. Hook or spear end effector plus a 78-in reach that extends about 27 in beyond the FRAME PERIMETER (§3.3.3). |
 | **HYBRID** | Two tiers across two piece types, plus a strong climb | Flexibility in the draft, cover for a partner's failure, and usually the ALLIANCE's ASCENT contribution. |
 
 Placement values depend only on tier. In TELEOP, a CRATE FREIGHTER filling six shelf slots scores 33 placement points, an O2 SURGEON filling five sockets scores 32, and a RING ALPINIST filling six pegs scores 42. Within a tier, every position pays the same for every piece; the totals differ because each piece has a different number of positions on each tier. The CRAG has no crate position above 42 in, so a CACHE CRATE's best TELEOP placement is worth 7 points, while a ROPE COIL's is worth 10. The roles are therefore drafted as complements.

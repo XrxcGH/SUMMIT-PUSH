@@ -35,7 +35,7 @@ This document defines the complete AprilTag layout for the SUMMIT PUSH field (**
 
 ### 1.3 CRAG tag height and occlusion
 
-The CRAG tag height is set by occlusion. A 9.0-in panel centered at 17.5 in spans Z 13.00–22.00, and its 8.125-in target spans Z 13.44–21.56.
+The CRAG tag height is set by occlusion. A 9.0-in panel centered at 17.5 in spans Z 13.00–22.00, and its 8.125-in target spans Z 13.44–21.56. The BASE DEPOT tray runs beneath the tag panels on all four faces of each CRAG, so every DEPOT row in the table below applies to all eight tags on a CRAG.
 
 | Potential obstruction | Extent | Result |
 |---|---|---|
@@ -47,7 +47,9 @@ The CRAG tag height is set by occlusion. A 9.0-in panel centered at 17.5 in span
 | Low Socket tube, lowest point | Z = 22.19, the tube spanning 1.56–10.89 in outboard of the face | 0.63 in above the target; clear from a camera 10–20 in high (item 3 below covers a higher camera) |
 | ROPE COIL on a Low Peg | spans Z ≈ 26–36 | above the panel; clear |
 
-At a 12-in center height, the SHELF FACE pair and the alliance-wall-side tag on each SOCKET FACE would be blocked by any CACHE CRATE standing in the BASE DEPOT, which is a routine game state. HEADWALL lane tags stay at 12 in because that band is clear of every rung and keeps the whole panel at least 4.4 in behind the climbing plane.
+SCREE (FIELD-CAD-PACKAGE §1.4) occludes no tag. Its ridges stand 1.75 in tall, and the lowest tag panel edge on the FIELD is at Z = 7.50 (the HEADWALL lane panels), so every sight line from a camera above the ridges passes over them.
+
+At a 12-in center height, every CRAG tag would be blocked by any CACHE CRATE standing in the BASE DEPOT beneath it, which is a routine game state. HEADWALL lane tags stay at 12 in because that band is clear of every rung and keeps the whole panel at least 4.4 in behind the climbing plane.
 
 > **CACHE CRATE margin: 0.19 in, held by a ±0.15-in height tolerance.** The as-built BASE
 > DEPOT tray floor sits 0.25 in above the carpet, so a crowned CRATE standing in the DEPOT
@@ -63,7 +65,7 @@ At a 12-in center height, the SHELF FACE pair and the alliance-wall-side tag on 
 > 17.75 would restore 0.44 in of margin, but it cuts the white surround outside the target
 > from 0.4375 to 0.1875 in per side and changes a CRITICAL vision dimension and the tag layout.
 
-**The upright-CELL case and the camera-height rule.** An O2 CELL is 14.0 in long, so a CELL stood on its end on the BASE DEPOT tray floor reaches Z = 14.25, 0.81 in above the bottom edge of a CRAG tag target. It is the only SUPPLY in the game that can. This affects four of each CRAG's eight tags (the two on the SHELF FACE and the alliance-wall-side tag on each SOCKET FACE), because those are the three faces the DEPOT tray runs along. The other four (both PEG FACE tags and the peg-face-side SOCKET FACE tag on each side) have no tray in front of them at any height.
+**The upright-CELL case and the camera-height rule.** An O2 CELL is 14.0 in long, so a CELL stood on its end on the BASE DEPOT tray floor reaches Z = 14.25, 0.81 in above the bottom edge of a CRAG tag target. It is the only SUPPLY in the game that can. This affects all eight of each CRAG's tags, because the DEPOT tray runs beneath the tag panels on all four faces.
 
 Whether the bottom edge is hidden depends on where the camera is. The obstruction is not a point. An O2 CELL's caps are **1.5-in domes** on a 5.0-in body, blended by a **1.0-in fillet** at each junction, so a CELL standing against the face presents a convex surface rising from Z = 12.47 where it touches the face to its apex of Z = 14.25 at 2.5 in out. (The fillet lowers the shoulder from the 12.75 a bare dome would give, which makes the ranges below slightly more generous than an unfilleted part would allow.) The sight line from the camera to the target's bottom edge descends as it approaches the tag, and it grazes that surface **on the flank nearer the face** rather than at the apex. A rule written against the apex alone therefore understates the required camera height, by as much as 5 in at long range. The clearances below are solved against the whole dome:
 
@@ -82,10 +84,10 @@ For a quick check in the field, `h ≥ 13.44 + 0.81·D/2.5` is the apex-only for
 
 Four consequences follow, none of which changes the low-camera architecture of Section 5:
 
-1. **Final approach is unaffected for a camera near the top of the recommended band.** At 20 in, the whole target is visible within 15 in, which covers close-range alignment only. The as-built tray floor stands every SUPPLY 0.25 in higher than the carpet, which costs about a third of every range in this table. Below about 16 in, a single camera sees the bottom edge clipped from almost any useful range whenever a CELL is stood on end in front of that face, so a design committed to one low camera should place it at **18 in or higher** and treat anything beyond about 10 in of range as localization only.
+1. **At the DEPOT lip, the final approach can lose the bottom edge of one tag.** The BASE DEPOT runs along every CRAG face, so BUMPERS stop at its lip, 16.75 in off the face, and a camera on the ROBOT is never nearer to a CRAG tag than that. Seeing the whole target past a CELL standing on end against the face beneath the tag needs a camera about 20.5 in high at 16.75 in of range (a camera over the BUMPER face), or 21.8 in at 19.75 in (a camera at the FRAME PERIMETER), just above the recommended band. Below that height, whether the target is clipped depends on where the CELL stands: at 16.75 in of range, a camera at 18 in is clear once the CELL stands 0.9 in off the face, and a camera at 16 in only once it stands 3.0 in off. The as-built tray floor stands every SUPPLY 0.25 in higher than the carpet, which costs about a third of every range in this table. A design committed to one low camera should therefore place it at **18 in or higher** and rely on the face's tag pair (item 3) rather than on either tag alone.
 2. **Long range is already handled.** Section 5.2 treats long-range CRAG detections as localization input only, never as final-approach truth. That guidance exists for midfield traffic, and it covers this case as well.
 3. **Never rely on a single CRAG tag.** Every face carries a pair, and MultiTag (§6.4) over both, or over one CRAG face plus a HEADWALL or OUTFITTER tag, degrades gracefully when one tag is partly hidden. The optional second camera at 24–36 in (§5.2) clears the upright CELL out to 25–53 in on its own, but from that height the Low Socket tube can hide part of the tag beneath it (tags 8, 10, 21 and 23), and most of it from close range. Use it alongside the primary camera, not instead of it, on those tags.
-4. **Simulate it.** Add a 5 × 14 in occluder standing at the DEPOT in front of one SHELF FACE tag (§6.8) and confirm that the pose solution survives on the remaining tags.
+4. **Simulate it.** Add a 5 × 14 in occluder standing in the DEPOT against the face in front of one CRAG tag, on any face (§6.8), and confirm that the pose solution survives on the remaining tags.
 
 A tag height that cleared an upright CELL outright would need its target bottom above 14.25 in (a center above 18.3 in), but a 9.0-in panel that high has its top edge above 22.8 in: above the Low Socket tube's lowest point at 22.19 in and within 0.5 in of the Shelf 1 underside at 23.25 in. At 17.5 in the panel clears both of those with margin, and it clears every SUPPLY except an O2 CELL balanced on its end.
 
@@ -200,15 +202,16 @@ The JSON is generated from the inch table in §3, and the two **match exactly**.
 
 The eight tags on each CRAG are mounted at a **17.5-in center height** and the HEADWALL lane tags at **12 in**. Both heights are low, for three reasons:
 
-1. **Clear of scoring geometry in every game state.** Nothing at those heights conflicts with shelves (24/42 in), socket rims (30/54/72 in), pegs (30/54/78 in), the DEPOT lip (4 in), or a crowned CACHE CRATE standing in the DEPOT (apex 13.25 in, clearing the target by 0.19 in). No SUPPLY in a scoring position occludes a tag, with one exception anywhere on the FIELD: an O2 CELL stood on its end in the BASE DEPOT, which §1.3 budgets and prices in camera height.
+1. **Clear of scoring geometry in every game state.** Nothing at those heights conflicts with shelves (24/42 in), socket rims (30/54/72 in), pegs (30/54/78 in), the DEPOT lip (4 in), SCREE ridges (1.75 in), or a crowned CACHE CRATE standing in the DEPOT (apex 13.25 in, clearing the target by 0.19 in). No SUPPLY in a scoring position occludes a tag, with one exception anywhere on the FIELD: an O2 CELL stood on its end in the BASE DEPOT, which §1.3 budgets and prices in camera height.
 2. **Visible at point-blank range.** The final 12 in of an approach is where alignment matters most. A low tag stays inside a low camera's vertical field of view all the way to bumper contact; a high tag leaves the top of the frame just when it is needed.
 3. **Minimal skew at close range.** A camera at roughly tag height views the tag face-on, which is the best case for corner extraction and single-tag pose stability.
 
 ### 5.2 Recommendations
 
-- **Primary alignment camera:** mounted **10–20 in above the carpet**, facing forward through or beside the scoring mechanism, pitch within ±10° of level. This frames the CRAG tags (17.5 in) and the HEADWALL lane tags (12 in) from 10 ft down to bumper contact. If it is the ROBOT's only camera, put it at **18 in or higher** within that band; below about 16 in it cannot see over an O2 CELL stood on end in the DEPOT (§1.3).
+- **Primary alignment camera:** mounted **10–20 in above the carpet**, facing forward through or beside the scoring mechanism, pitch within ±10° of level. This frames the CRAG tags (17.5 in) and the HEADWALL lane tags (12 in) from 10 ft down to bumper contact. If it is the ROBOT's only camera, put it at **18 in or higher** within that band: the lower it is, the more positions of an O2 CELL stood on end in the DEPOT hide the bottom edge of a CRAG tag from the lip (§1.3).
 - **Localization camera (optional second camera):** mounted higher (24–36 in) with a wide field of view, angled slightly down or level, for mid-field pose estimation off the OUTFITTER tags (52 in). Two cameras feeding one pose estimator is a common architecture on high-performing robots.
 - **Occlusion budget:** midfield traffic in the corridor regularly blocks CRAG tags at long range. Autos should acquire the destination face's tag pair by roughly 6 ft out, and should treat long-range detections as localization input only, never as final-approach truth.
+- **SCREE:** a ROBOT crossing a SCREE PATCH pitches and rolls on its 1.75-in ridges, and a pose estimator that assumes the ROBOT sits flat on the carpet turns that tilt into position error. Discard or down-weight vision measurements taken while the gyro shows the ROBOT tilted.
 - Global-shutter cameras at ≥50 fps with exposure locked low are recommended; otherwise the white FORECAST LEDs, the alliance-color tier rings, and the SUMMIT BEACON drive auto-exposure into smear.
 
 > *Commentary:* A common failure at offseason events is a single high-mounted camera that sees everything at range and nothing at the moment of scoring. The SUMMIT PUSH tag layout is designed for a low front camera, so a single-camera design should mount its camera low.
@@ -301,6 +304,8 @@ For each CRAG face, express the goal pose as a fixed `Transform3d` from a tag (o
 
 Offsets below are given **from the tag-pair midpoint** of the face, the point on the face centerline at Z = 17.5 (for example, the Blue SHELF FACE midpoint is (300, 240, 17.5)). **"Lateral"** is along the face, positive toward the higher-numbered tag of the pair. **"Out"** is along the face's outward normal, positive away from the CRAG center; in a WPILib tag frame this is the +X component of the `tagToTarget` `Transform3d`. **"Up"** is ΔZ. In the HEADWALL table below, the offsets are to each rung's **centerline** (rung center Z = top − 0.75 for the 1.5-in OD rung), matching the derived rung positions in FIELD-CAD-PACKAGE §4.1, rather than to the rung top given in the row label.
 
+Every CRAG face has the BASE DEPOT in front of it, so no goal pose can bring the ROBOT's BUMPERS nearer to a face plane than the DEPOT lip's outer face, **16.75 in** out. Every feature in the tables below is reached across the tray: with the FRAME PERIMETER 19.75 in off the face, a Shelf slot center is 12.75 in of horizontal extension away, a socket rim 11.75 in, a Low or Mid Peg tip 12.68 in and a High Peg tip 26.68 in (FIELD-CAD-PACKAGE §3). BUMPERS at the lip of the ALLIANCE's own CRAG are inside its CRAG APRON, where Game Manual rule **G404** allows up to 30 in of extension rather than 18 in.
+
 **SHELF FACE** (tags 6/7 Blue; 19/20 Red; CACHE CRATES, flat placement):
 
 | Feature | Lateral (in) | Out (in) | Up (in) | Notes |
@@ -378,7 +383,7 @@ The layout JSON works unmodified in desktop simulation:
 
 - **WPILib sim:** load the same `AprilTagFieldLayout` in simulation and publish robot and vision poses to a `Field2d` widget. AdvantageScope can render the tag poses and both estimates in 3D by loading the JSON as a custom AprilTag layout asset alongside a custom field model.
 - **PhotonVision sim (`photonlib` `VisionSystemSim`):** call `visionSim.addAprilTags(fieldLayout)` with the loaded layout and add a `PhotonCameraSim` with the real camera's calibration and the robot-to-camera transform. The entire auto-align stack, including the low-camera framing of the 17.5-in CRAG tags and all three FORECAST branches, can then be developed and regression-tested on the desktop.
-- **Occlusion case to simulate:** place a 5 × 14 in cylinder upright on the DEPOT tray floor (Z = 0.25) immediately in front of one SHELF FACE tag. It represents an O2 CELL stood on end in the BASE DEPOT, the one SUPPLY that reaches into a CRAG tag's target band (§1.3). Confirm that the pose estimator falls back to the face's other tag, or to MultiTag across faces, rather than emitting a bad single-tag pose.
+- **Occlusion case to simulate:** place a 5 × 14 in cylinder upright on the DEPOT tray floor (Z = 0.25), against the face immediately in front of one CRAG tag, and repeat it on a SOCKET FACE and on the PEG FACE: the tray runs beneath the tags on all four faces. It represents an O2 CELL stood on end in the BASE DEPOT, the one SUPPLY that reaches into a CRAG tag's target band (§1.3). Confirm that the pose estimator falls back to the face's other tag, or to MultiTag across faces, rather than emitting a bad single-tag pose.
 - Because there is **one canonical layout** (no per-venue field variants), simulation and the competition field share this single file, and it must match the field CAD model exactly. Version it in the robot repository.
 
 ---
@@ -396,6 +401,7 @@ The layout JSON works unmodified in desktop simulation:
 | Blue IDs | 1–2 OUTFITTER, 3–5 HEADWALL, 6–13 CRAG |
 | Red IDs | 14–15 OUTFITTER, 16–18 HEADWALL, 19–26 CRAG (= Blue rotated 180°, ID + 13) |
 | Socket standoff (in every socket transform) | **8.0 in** along the face normal |
+| BASE DEPOT lip | on every CRAG face, **16.75 in** out from the face plane: the nearest a ROBOT's BUMPERS come |
 | Shelf slot lateral centers | −15.5 / 0 / +15.5 in |
 | Coordinate frame | Always-blue-origin NWU, meters in JSON, field 16.4592 × 8.2296 m |
 | FORECAST game data | `"W"` / `"I"` / `"G"` via `getGameSpecificMessage()` |

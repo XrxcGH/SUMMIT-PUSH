@@ -158,30 +158,31 @@ function buildTape(context is Context, id is Id, marks)
     const W = worldFrame();
     const w = TAPE_W;
     const aprons = concatenateArrays([buildAllianceTape(context, id + "blue", false), buildAllianceTape(context, id + "red", true)]);
-    // FIELD centerline, broken at the two CRAG footprints
-    const segs = [[0, CRAG_RED[1] - CRAG_S / 2], [CRAG_RED[1] + CRAG_S / 2, CRAG_BLUE[1] - CRAG_S / 2], [CRAG_BLUE[1] + CRAG_S / 2, FIELD_W]];
+    // FIELD centerline, broken where each CRAG and its BASE DEPOT cross it: between the inner
+    // edges of the APRON tape on the two SOCKET FACE runs (Blue Y 198-282, Red Y 42-126), so that
+    // no stub of line is left between the APRON tape and the DEPOT's entry chamfer
+    const brk = CRAG_S / 2 + 20 - w;
+    const segs = [[0, CRAG_RED[1] - brk], [CRAG_RED[1] + brk, CRAG_BLUE[1] - brk], [CRAG_BLUE[1] + brk, FIELD_W]];
     var cl = [];
     for (var i = 0; i < size(segs); i += 1)
     {
         tapeBox(context, id + nm("center", i), W, FIELD_CX - w / 2, segs[i][0], FIELD_CX + w / 2, segs[i][1]);
         cl = append(cl, id + nm("center", i));
     }
-    // CENTER CACHE band outline: X 300-348, Y 108-216
+    // CENTER CACHE band outline: X 300-348, Y 108-216.  Its end lines, on the two SOCKET FACE
+    // planes, lie wholly under the BASE DEPOT rings, so only the two side lines are laid.
     const bx0 = CACHE_X[0];
     const bx1 = CACHE_X[2];
     const by0 = CRAG_RED[1] + CRAG_S / 2;
     const by1 = CRAG_BLUE[1] - CRAG_S / 2;
     tapeBox(context, id + "bandL", W, bx0, by0, bx0 + w, by1);
     tapeBox(context, id + "bandR", W, bx1 - w, by0, bx1, by1);
-    tapeBox(context, id + "bandB", W, bx0 + w, by0, bx1 - w, by0 + w);
-    tapeBox(context, id + "bandT", W, bx0 + w, by1 - w, bx1 - w, by1);
-    const band = [id + "bandL", id + "bandR", id + "bandB", id + "bandT"];
-    // overlap pass: the band stops at the BASE DEPOT trays; everything yields to the APRONS
-    const dh = CRAG_S / 2 + 20;         // out to the SOCKET FACE APRON line, so no sliver survives
-    const dx0 = CRAG_S / 2 - DEPOT_WRAP - DEPOT_LIP_T - DEPOT_CHAMFER;
-    const dx1 = CRAG_S / 2 + DEPOT_CH + DEPOT_LIP_T + DEPOT_CHAMFER;
-    mkBox(context, id + "depotB", cragFrame(false), [dx0, -dh, -1], [dx1, dh, 1]);
-    mkBox(context, id + "depotR", cragFrame(true), [dx0, -dh, -1], [dx1, dh, 1]);
+    const band = [id + "bandL", id + "bandR"];
+    // overlap pass: the band stops at the BASE DEPOT rings, broken like the centerline at the
+    // inner edge of the APRON tape; everything yields to the APRONS
+    const dx = CRAG_S / 2 + DEPOT_CH + DEPOT_LIP_T + DEPOT_CHAMFER;     // the DEPOT's plan half-size
+    mkBox(context, id + "depotB", cragFrame(false), [-dx, -brk, -1], [dx, brk, 1]);
+    mkBox(context, id + "depotR", cragFrame(true), [-dx, -brk, -1], [dx, brk, 1]);
     bSubtract(context, id + "bandDepot", band, [id + "depotB", id + "depotR"], false);
     bSubtract(context, id + "bandOver", band, concatenateArrays([cl, marks, aprons]), true);
     bSubtract(context, id + "centerOver", cl, concatenateArrays([marks, aprons]), true);

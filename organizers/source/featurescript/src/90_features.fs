@@ -74,6 +74,7 @@ function spOptions(definition is map) returns map
             "walls" : definition.walls,
             "crags" : definition.crags,
             "headwalls" : definition.headwalls,
+            "scree" : definition.scree,
             "tape" : definition.tape,
             "tags" : definition.tags,
             "decals" : definition.tags && definition.decals,
@@ -126,6 +127,8 @@ export const summitPushField = defineFeature(function(context is Context, id is 
             definition.crags is boolean;
             annotation { "Name" : "HEADWALLS", "Default" : true }
             definition.headwalls is boolean;
+            annotation { "Name" : "SCREE", "Default" : true }
+            definition.scree is boolean;
             annotation { "Name" : "Tape", "Default" : true }
             definition.tape is boolean;
             annotation { "Name" : "AprilTag panels", "Default" : true }
@@ -179,6 +182,7 @@ export const summitPushField = defineFeature(function(context is Context, id is 
             "walls" : true,
             "crags" : true,
             "headwalls" : true,
+            "scree" : true,
             "tape" : true,
             "tags" : true,
             "decals" : true,

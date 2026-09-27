@@ -667,14 +667,27 @@ const KICK_H = 2;
 const KICK_T = 0.125;
 const TAG_Z_CRAG = 17.5;
 
-// ---- BASE DEPOT (§3) ---------------------------------------------------------------------
+// ---- BASE DEPOT (§3): a ring round all four CRAG faces, a 16 x 16 square at each corner ----
 const DEPOT_CH = 16;
-const DEPOT_WRAP = 16;
 const DEPOT_LIP_Z = 4;
 const DEPOT_LIP_T = 0.75;
 const DEPOT_LIP_R = 0.25;
 const DEPOT_FLOOR_T = 0.25;
 const DEPOT_CHAMFER = 1;
+
+// ---- SCREE (§1.4) -------------------------------------------------------------------------
+// 18 SCREE PATCHES of half-round HDPE ridges on the carpet.  Each patch is a 30 x 30 square,
+// sides parallel to the field axes, with four ridges cut square at its boundary.
+const SCREE_S = 30;             // patch footprint (CRITICAL)
+const SCREE_R = 1.75;           // ridge radius = ridge height, 3.5 wide at the base (CRITICAL)
+const SCREE_PITCH = 8;          // ridge pitch (CRITICAL)
+const SCREE_OFF = [-12, -4, 4, 12];     // ridge centerlines from the patch center, along the ridge normal
+// Blue patches: [label, center X, center Y, ridge direction in degrees from +X].  45 = "+45"
+// (parallel to X = Y), -45 = "-45" (parallel to (1, -1)), 90 = "Y".  Red is the 180-degree
+// rotation; a rotation keeps each ridge direction.
+const SCREE_PATCHES = [["S1", 105, 88, 45], ["S2", 105, 162, 90], ["S3", 105, 236, -45],
+        ["S4", 200, 37, 45], ["S5", 200, 125, 45], ["S6", 200, 199, -45], ["S7", 200, 287, -45],
+        ["S8", 234, 108, 45], ["S9", 234, 216, -45]];
 
 // ---- HEADWALL (§4) -----------------------------------------------------------------------
 const HW_X = 48;
@@ -744,6 +757,7 @@ const PAL = {
         "wall" : [154, 164, 178],               // #9AA4B2
         "glazing" : [220, 232, 250],            // #DCE8FA at 25 %
         "carpet" : [110, 106, 99],              // #6E6A63
+        "scree" : [92, 86, 80],                 // #5C5650
         "crate-violet" : [123, 63, 160],        // #7B3FA0
         "cell-body" : [242, 242, 240],          // #F2F2F0
         "cell-cap" : [46, 139, 87],             // #2E8B57
@@ -772,6 +786,7 @@ const MAT = {
         "tape" : { "name" : "Gaffer tape", "density" : 830 },
         "tag" : { "name" : "Printed vinyl on rigid PVC backer", "density" : 1400 },
         "abs" : { "name" : "ABS, molded", "density" : 1050 },
+        "hdpe" : { "name" : "HDPE, matte", "density" : 955 },
         "al-tube-2x1" : { "name" : "Aluminum 2 x 1 x 0.125 tube (effective solid)", "density" : 928.1 },
         "steel-tube-2x2" : { "name" : "Steel 2 x 2 x 0.120 tube (effective solid)", "density" : 1771 },
         "steel-frame" : { "name" : "Steel 2 x 1.25 x 0.083 tube (effective solid)", "density" : 1608 }
@@ -1521,39 +1536,37 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     buildDepot(context, id + "depot", F, cn);
 }
 
-// BASE DEPOT: U-shaped tray around the SHELF FACE and both shelf-face corners.
+// BASE DEPOT: a square ring of tray round all four CRAG faces.  Each face has a 16 x 48 leg
+// and each corner a 16 x 16 square, so the channel runs 16.0 out from every face (81.5 square
+// over the lip, 83.5 over the entry chamfer).
 function buildDepot(context is Context, id is Id, F, cn)
 {
     const h = CRAG_S / 2;
-    const x0 = h - DEPOT_WRAP;          // arm ends (x = 8)
-    const x1 = h + DEPOT_CH;            // outer leg face of the channel (x = 40)
-    const y1 = h + DEPOT_CH;            // outer corner (y = 40)
+    const a = h + DEPOT_CH;             // outer edge of the channel (40)
     const t = DEPOT_LIP_T;
+    const b = a + t;                    // outer face of the lip (40.75)
     // floor: the channel footprint, top at Z = 0.25
-    prismXY(context, id + "floor", F, [[x0, h], [h, h], [h, -h], [x0, -h], [x0, -y1], [x1, -y1], [x1, y1], [x0, y1]], 0, DEPOT_FLOOR_T);
+    prismXYHoles(context, id + "floor", F, rectPts(-a, -a, a, a), [rectPts(-h, -h, h, h)], 0, DEPOT_FLOOR_T);
     paint(context, [id + "floor"], msg([cn, " BASE DEPOT floor"]), "depot", 1, "plywood");
-    // lip: 0.75-in wall around the outer boundary, top at Z = 4.0
-    prismXY(context, id + "lip", F, [[x0 - t, h], [x0 - t, y1 + t], [x1 + t, y1 + t], [x1 + t, -y1 - t], [x0 - t, -y1 - t],
-                [x0 - t, -h], [x0, -h], [x0, -y1], [x1, -y1], [x1, y1], [x0, y1], [x0, h]], 0, DEPOT_LIP_Z);
+    // lip: 0.75-in wall round the outer boundary, top at Z = 4.0, R0.25 on both top edges
+    prismXYHoles(context, id + "lip", F, rectPts(-b, -b, b, b), [rectPts(-a, -a, a, a)], 0, DEPOT_LIP_Z);
     const zt = DEPOT_LIP_Z;
-    filletAt(context, id + "lipRound", [id + "lip"], F, [
-                [x0 - t, (h + y1 + t) / 2, zt], [(x0 + x1) / 2, y1 + t, zt], [x1 + t, 0, zt], [(x0 + x1) / 2, -y1 - t, zt], [x0 - t, -(h + y1 + t) / 2, zt],
-                [x0, (h + y1) / 2, zt], [(x0 + x1) / 2, y1, zt], [x1, 0, zt], [(x0 + x1) / 2, -y1, zt], [x0, -(h + y1) / 2, zt]], DEPOT_LIP_R);
+    filletAt(context, id + "lipRound", [id + "lip"], F, [[b, 0, zt], [-b, 0, zt], [0, b, zt], [0, -b, zt],
+                [a, 0, zt], [-a, 0, zt], [0, a, zt], [0, -a, zt]], DEPOT_LIP_R);
     paint(context, [id + "lip"], msg([cn, " BASE DEPOT lip"]), "depot", 1, "plywood");
-    // 45-degree entry chamfer strip outside the lip, 1.0-in leg
+    // 45-degree entry chamfer strip outside the lip, 1.0-in leg, hip-mitred at the four corners
     const c = DEPOT_CHAMFER;
-    const xo = x0 - t;
-    const yo = y1 + t;
-    const xf = x1 + t;
-    prismXY(context, id + "chamfer", F, [[xo - c, h], [xo - c, yo + c], [xf + c, yo + c], [xf + c, -yo - c], [xo - c, -yo - c],
-                [xo - c, -h], [xo, -h], [xo, -yo], [xf, -yo], [xf, yo], [xo, yo], [xo, h]], 0, c);
+    const e = b + c;
+    prismXYHoles(context, id + "chamfer", F, rectPts(-e, -e, e, e), [rectPts(-b, -b, b, b)], 0, c);
     const m = 0.5;
-    prismXZ(context, id + "wedgeX", F, [[xf - m, c + m], [xf + c + m, -m], [xf + c + 2 * m, -m], [xf + c + 2 * m, c + m]], -yo - c - 1, yo + c + 1);
-    prismYZ(context, id + "wedgeYp", F, [[yo - m, c + m], [yo + c + m, -m], [yo + c + 2 * m, -m], [yo + c + 2 * m, c + m]], xo - c - 1, xf + c + 1);
-    prismYZ(context, id + "wedgeYn", F, [[-yo + m, c + m], [-yo - c - m, -m], [-yo - c - 2 * m, -m], [-yo - c - 2 * m, c + m]], xo - c - 1, xf + c + 1);
-    prismXZ(context, id + "wedgeAp", F, [[xo + m, c + m], [xo - c - m, -m], [xo - c - 2 * m, -m], [xo - c - 2 * m, c + m]], h - 4, yo + c + 1);
-    prismXZ(context, id + "wedgeAn", F, [[xo + m, c + m], [xo - c - m, -m], [xo - c - 2 * m, -m], [xo - c - 2 * m, c + m]], -yo - c - 1, -h + 4);
-    bSubtract(context, id + "chamferCut", [id + "chamfer"], [id + "wedgeX", id + "wedgeYp", id + "wedgeYn", id + "wedgeAp", id + "wedgeAn"], false);
+    const L = e + 1;
+    const wedge = [[b - m, c + m], [e + m, -m], [e + 2 * m, -m], [e + 2 * m, c + m]];
+    const wedgeN = [[-b + m, c + m], [-e - m, -m], [-e - 2 * m, -m], [-e - 2 * m, c + m]];
+    prismXZ(context, id + "wedgeXp", F, wedge, -L, L);
+    prismXZ(context, id + "wedgeXn", F, wedgeN, -L, L);
+    prismYZ(context, id + "wedgeYp", F, wedge, -L, L);
+    prismYZ(context, id + "wedgeYn", F, wedgeN, -L, L);
+    bSubtract(context, id + "chamferCut", [id + "chamfer"], [id + "wedgeXp", id + "wedgeXn", id + "wedgeYp", id + "wedgeYn"], false);
     paint(context, [id + "chamfer"], msg([cn, " BASE DEPOT entry chamfer"]), "depot", 1, "plywood");
 }
 
@@ -1868,30 +1881,31 @@ function buildTape(context is Context, id is Id, marks)
     const W = worldFrame();
     const w = TAPE_W;
     const aprons = concatenateArrays([buildAllianceTape(context, id + "blue", false), buildAllianceTape(context, id + "red", true)]);
-    // FIELD centerline, broken at the two CRAG footprints
-    const segs = [[0, CRAG_RED[1] - CRAG_S / 2], [CRAG_RED[1] + CRAG_S / 2, CRAG_BLUE[1] - CRAG_S / 2], [CRAG_BLUE[1] + CRAG_S / 2, FIELD_W]];
+    // FIELD centerline, broken where each CRAG and its BASE DEPOT cross it: between the inner
+    // edges of the APRON tape on the two SOCKET FACE runs (Blue Y 198-282, Red Y 42-126), so that
+    // no stub of line is left between the APRON tape and the DEPOT's entry chamfer
+    const brk = CRAG_S / 2 + 20 - w;
+    const segs = [[0, CRAG_RED[1] - brk], [CRAG_RED[1] + brk, CRAG_BLUE[1] - brk], [CRAG_BLUE[1] + brk, FIELD_W]];
     var cl = [];
     for (var i = 0; i < size(segs); i += 1)
     {
         tapeBox(context, id + nm("center", i), W, FIELD_CX - w / 2, segs[i][0], FIELD_CX + w / 2, segs[i][1]);
         cl = append(cl, id + nm("center", i));
     }
-    // CENTER CACHE band outline: X 300-348, Y 108-216
+    // CENTER CACHE band outline: X 300-348, Y 108-216.  Its end lines, on the two SOCKET FACE
+    // planes, lie wholly under the BASE DEPOT rings, so only the two side lines are laid.
     const bx0 = CACHE_X[0];
     const bx1 = CACHE_X[2];
     const by0 = CRAG_RED[1] + CRAG_S / 2;
     const by1 = CRAG_BLUE[1] - CRAG_S / 2;
     tapeBox(context, id + "bandL", W, bx0, by0, bx0 + w, by1);
     tapeBox(context, id + "bandR", W, bx1 - w, by0, bx1, by1);
-    tapeBox(context, id + "bandB", W, bx0 + w, by0, bx1 - w, by0 + w);
-    tapeBox(context, id + "bandT", W, bx0 + w, by1 - w, bx1 - w, by1);
-    const band = [id + "bandL", id + "bandR", id + "bandB", id + "bandT"];
-    // overlap pass: the band stops at the BASE DEPOT trays; everything yields to the APRONS
-    const dh = CRAG_S / 2 + 20;         // out to the SOCKET FACE APRON line, so no sliver survives
-    const dx0 = CRAG_S / 2 - DEPOT_WRAP - DEPOT_LIP_T - DEPOT_CHAMFER;
-    const dx1 = CRAG_S / 2 + DEPOT_CH + DEPOT_LIP_T + DEPOT_CHAMFER;
-    mkBox(context, id + "depotB", cragFrame(false), [dx0, -dh, -1], [dx1, dh, 1]);
-    mkBox(context, id + "depotR", cragFrame(true), [dx0, -dh, -1], [dx1, dh, 1]);
+    const band = [id + "bandL", id + "bandR"];
+    // overlap pass: the band stops at the BASE DEPOT rings, broken like the centerline at the
+    // inner edge of the APRON tape; everything yields to the APRONS
+    const dx = CRAG_S / 2 + DEPOT_CH + DEPOT_LIP_T + DEPOT_CHAMFER;     // the DEPOT's plan half-size
+    mkBox(context, id + "depotB", cragFrame(false), [-dx, -brk, -1], [dx, brk, 1]);
+    mkBox(context, id + "depotR", cragFrame(true), [-dx, -brk, -1], [dx, brk, 1]);
     bSubtract(context, id + "bandDepot", band, [id + "depotB", id + "depotR"], false);
     bSubtract(context, id + "bandOver", band, concatenateArrays([cl, marks, aprons]), true);
     bSubtract(context, id + "centerOver", cl, concatenateArrays([marks, aprons]), true);
@@ -2250,6 +2264,62 @@ function buildSupplies(context is Context, id is Id, opts)
     }
 }
 
+// ---------------------------------------------------------------- src/46_scree.fs
+
+// =====================================================================================
+// SCREE (x18) — FIELD-CAD-PACKAGE §1.4.  Part-code dialect.
+//
+// Nine SCREE PATCHES per alliance on the open carpet round the staging marks.  A patch is a
+// 30 x 30 square, sides parallel to the field axes, standing directly on the carpet: four
+// half-round ridges (radius 1.75, so 1.75 tall and 3.5 wide at the base) on an 8.0 pitch,
+// centerlines 4.0 and 12.0 either side of the patch center, each cut square at the patch
+// boundary.  Blue is built from the ledger table; Red is the same table in the alliance frame.
+// =====================================================================================
+
+// Local frame of patch p: origin at its center on the carpet, x along the ridge normal, y along
+// the ridges (p[3] degrees from +X), z up.
+function screeFrame(isRed, p)
+{
+    return frameIn(allianceFrame(isRed), [p[1], p[2], 0], [sind(p[3]), -cosd(p[3]), 0], [0, 0, 1]);
+}
+
+function buildScree(context is Context, id is Id, isRed)
+{
+    const AF = allianceFrame(isRed);
+    const A = allianceName(isRed);
+    const r = SCREE_R;
+    const hs = SCREE_S / 2;
+    // each ridge is drawn one patch width either side of the center, which crosses the patch at any
+    // offset and direction (the half-diagonal is 21.2), and then cut square at the patch boundary by
+    // a frame that reaches 1.5 patch widths out, past every ridge end (at most 30.9 off at 45 degrees)
+    const span = SCREE_S;
+    const far = 1.5 * SCREE_S;
+    for (var i = 0; i < size(SCREE_PATCHES); i += 1)
+    {
+        const p = SCREE_PATCHES[i];
+        const pid = id + nm("S", i + 1);
+        const PF = screeFrame(isRed, p);
+        var ridges = [];
+        for (var j = 0; j < size(SCREE_OFF); j += 1)
+        {
+            const d = SCREE_OFF[j];
+            const rid = pid + nm("ridge", j + 1);
+            // half-round section in the (x, z) plane of the patch frame, flat side on the carpet
+            mkPrismProfile(context, rid, PF, plXZ(0), [[["L", [d - r, 0], [d + r, 0]], ["A", [d + r, 0], [d, r], [d - r, 0]]]], -span, span);
+            ridges = append(ridges, rid);
+        }
+        // the carpet round the patch, as a tool: what it removes is the ridge beyond the boundary
+        const cid = pid + "clip";
+        prismXYHoles(context, cid, AF, rectPts(p[1] - far, p[2] - far, p[1] + far, p[2] + far),
+                [rectPts(p[1] - hs, p[2] - hs, p[1] + hs, p[2] + hs)], -1, r + 1);
+        bSubtract(context, pid + "cut", ridges, [cid], false);
+        for (var j = 0; j < size(ridges); j += 1)
+        {
+            paint(context, [ridges[j]], msg([A, " SCREE PATCH ", p[0], " ridge ", j + 1]), "scree", 1, "hdpe");
+        }
+    }
+}
+
 // ---------------------------------------------------------------- src/48_main.fs
 
 // =====================================================================================
@@ -2283,6 +2353,11 @@ function buildField(context is Context, id is Id, opts)
     {
         buildHeadwall(context, id + "hwBlue", false);
         buildHeadwall(context, id + "hwRed", true);
+    }
+    if (opts["scree"])
+    {
+        buildScree(context, id + "screeBlue", false);
+        buildScree(context, id + "screeRed", true);
     }
     var marks = [];
     if (opts["staged"])
@@ -2325,6 +2400,10 @@ function groupField(context is Context, id is Id, opts)
     if (opts["headwalls"])
     {
         groups = concatenateArrays([groups, [[id + "hwBlue", "BLUE HEADWALL"], [id + "hwRed", "RED HEADWALL"]]]);
+    }
+    if (opts["scree"])
+    {
+        groups = concatenateArrays([groups, [[id + "screeBlue", "BLUE SCREE"], [id + "screeRed", "RED SCREE"]]]);
     }
     if (opts["tape"])
     {
@@ -2530,12 +2609,65 @@ function selfCheck(context is Context, id is Id, opts)
                 ch = ckBox(ch, msg([A, " tier ring 54"]), measureBox(context, [cid + "ring54"], F), [-h, -h, RING_Z[1] - RING_W / 2, h, h, RING_Z[1] + RING_W / 2], 0.001);
                 ch = ckBox(ch, msg([A, " tier ring 78"]), measureBox(context, [cid + "ring78"], F), [-SPIRE_S / 2, -SPIRE_S / 2, RING78_TOP - RING_W, SPIRE_S / 2, SPIRE_S / 2, RING78_TOP], 0.001);
             }
+            // BASE DEPOT ring: 16.0 channel off every face, 16 x 16 square at every corner
             const d = cid + "depot";
-            const lipOut = h + DEPOT_CH + DEPOT_LIP_T;
-            ch = ckBox(ch, msg([A, " BASE DEPOT floor"]), measureBox(context, [d + "floor"], F), [h - DEPOT_WRAP, -h - DEPOT_CH, 0, h + DEPOT_CH, h + DEPOT_CH, DEPOT_FLOOR_T], 0.001);
-            ch = ckBox(ch, msg([A, " BASE DEPOT lip"]), measureBox(context, [d + "lip"], F), [h - DEPOT_WRAP - DEPOT_LIP_T, -lipOut, 0, lipOut, lipOut, DEPOT_LIP_Z], 0.001);
-            ch = ck(ch, msg([A, " BASE DEPOT channel depth (face to lip)"]), measureDistToPoint(context, [d + "lip"], F, [h, 0, 2]), DEPOT_CH, 0.001);
-            ch = ck(ch, msg([A, " BASE DEPOT corner square / arm (16 from the corner, all three ways)"]), measureDistToPoint(context, [d + "lip"], F, [h, h, 2]), DEPOT_WRAP, 0.001);
+            const a = h + DEPOT_CH;
+            const lipOut = a + DEPOT_LIP_T;
+            ch = ckBox(ch, msg([A, " BASE DEPOT floor"]), measureBox(context, [d + "floor"], F), [-a, -a, 0, a, a, DEPOT_FLOOR_T], 0.001);
+            ch = ck(ch, msg([A, " BASE DEPOT floor area (80 x 80 less the 48 x 48 CRAG footprint)"]), measureVolume(context, [d + "floor"]) / DEPOT_FLOOR_T,
+                    4 * (a * a - h * h), 0.01);
+            ch = ckBox(ch, msg([A, " BASE DEPOT lip"]), measureBox(context, [d + "lip"], F), [-lipOut, -lipOut, 0, lipOut, lipOut, DEPOT_LIP_Z], 0.001);
+            const faces = [["SHELF FACE", [h, 0, 2]], ["PEG FACE", [-h, 0, 2]], ["SOCKET FACE y1", [0, h, 2]], ["SOCKET FACE y-1", [0, -h, 2]]];
+            for (var q in faces)
+            {
+                ch = ck(ch, msg([A, " BASE DEPOT channel depth at the ", q[0], " (face to lip)"]), measureDistToPoint(context, [d + "lip"], F, q[1]), DEPOT_CH, 0.001);
+            }
+            for (var sx in [-1, 1])
+            {
+                for (var sy in [-1, 1])
+                {
+                    ch = ck(ch, msg([A, " BASE DEPOT corner square x", sx, " y", sy, " (16 from the CRAG corner both ways)"]),
+                            measureDistToPoint(context, [d + "lip"], F, [sx * h, sy * h, 2]), DEPOT_CH, 0.001);
+                }
+            }
+        }
+    }
+    if (opts["scree"])
+    {
+        for (var isRed in [false, true])
+        {
+            const AF = allianceFrame(isRed);
+            const hs = SCREE_S / 2;
+            for (var i = 0; i < size(SCREE_PATCHES); i += 1)
+            {
+                const p = SCREE_PATCHES[i];
+                const pid = id + nm("scree", sideTag(isRed)) + nm("S", i + 1);
+                const lab = msg([allianceName(isRed), " SCREE PATCH ", p[0]]);
+                var rids = [];
+                for (var j = 0; j < size(SCREE_OFF); j += 1)
+                {
+                    rids = append(rids, pid + nm("ridge", j + 1));
+                }
+                // footprint: the 30 x 30 square, axis-aligned, centered on the table point
+                const b = measureBox(context, rids, frameIn(AF, [p[1], p[2], 0], [1, 0, 0], [0, 0, 1]));
+                ch = ck(ch, msg([lab, " inside its 30 x 30 footprint (margin >= 0)"]), min(min(min(b[0] + hs, hs - b[3]), min(b[1] + hs, hs - b[4])), 0), 0, 0.001);
+                ch = ck(ch, msg([lab, " ridges cut at the patch boundary"]), max(max(-b[0], b[3]), max(-b[1], b[4])), hs, 0.001);
+                // ridges: half-round R1.75 on the carpet, centerlines at the table offsets, 8.0 pitch
+                const PF = screeFrame(isRed, p);
+                var prev = undefined;
+                for (var j = 0; j < size(SCREE_OFF); j += 1)
+                {
+                    const rb = measureBox(context, [rids[j]], PF);
+                    const d = SCREE_OFF[j];
+                    ch = ckBox(ch, msg([lab, " ridge ", j + 1]), rb, [d - SCREE_R, undefined, 0, d + SCREE_R, undefined, SCREE_R], 0.001);
+                    const c = (rb[0] + rb[3]) / 2;
+                    if (prev != undefined)
+                    {
+                        ch = ck(ch, msg([lab, " ridge pitch ", j, "-", j + 1]), c - prev, SCREE_PITCH, 0.001);
+                    }
+                    prev = c;
+                }
+            }
         }
     }
     if (opts["headwalls"])
@@ -2750,6 +2882,7 @@ function spOptions(definition is map) returns map
             "walls" : definition.walls,
             "crags" : definition.crags,
             "headwalls" : definition.headwalls,
+            "scree" : definition.scree,
             "tape" : definition.tape,
             "tags" : definition.tags,
             "decals" : definition.tags && definition.decals,
@@ -2802,6 +2935,8 @@ export const summitPushField = defineFeature(function(context is Context, id is 
             definition.crags is boolean;
             annotation { "Name" : "HEADWALLS", "Default" : true }
             definition.headwalls is boolean;
+            annotation { "Name" : "SCREE", "Default" : true }
+            definition.scree is boolean;
             annotation { "Name" : "Tape", "Default" : true }
             definition.tape is boolean;
             annotation { "Name" : "AprilTag panels", "Default" : true }
@@ -2855,6 +2990,7 @@ export const summitPushField = defineFeature(function(context is Context, id is 
             "walls" : true,
             "crags" : true,
             "headwalls" : true,
+            "scree" : true,
             "tape" : true,
             "tags" : true,
             "decals" : true,

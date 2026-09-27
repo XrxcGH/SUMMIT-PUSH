@@ -508,7 +508,7 @@ def run(f):
                 bad.append((t, v))
         ck("%s Shelf 1 gussets stay above Z 22.0 over the SHELF FACE tag panels (§2.2)" % side, not bad, "violations %s" % bad)
 
-    # virtual SUPPLIES in the BASE DEPOT in front of the tray-side tags
+    # virtual SUPPLIES in the BASE DEPOT in front of every CRAG tag
     crates = f.find("re:^CACHE CRATE")
     crate = max(crates, key=lambda r: f.bbox([r])[5] - f.bbox([r])[2])
     cb = f.bbox([crate])
@@ -533,7 +533,8 @@ def run(f):
 
     ck("model CACHE CRATE crowned envelope 13.0 tall (§9.1; sets the DEPOT margin)", abs(crate_h - 13.0) < 0.01,
        "tallest model crate %.4f (%s)" % (crate_h, crate["name"]))
-    tray_tags = (6, 7, 8, 10, 19, 20, 21, 23)       # SHELF FACE pair + alliance-wall-side SOCKET FACE tags
+    # the BASE DEPOT ring runs beneath the tag panels on all four faces of both CRAGS (§3, §7)
+    tray_tags = tuple(range(6, 14)) + tuple(range(19, 27))
     for tid in tray_tags:
         side = "RED" if is_red(tid) else "BLUE"
         T = frames[tid]
@@ -541,15 +542,8 @@ def run(f):
         target = box_solid(T, (1e-4, -tb, -tb), (CLEAR_DEPTH, tb, tb))
         tray = f.find("%s CRAG BASE DEPOT floor" % side) + f.find("%s CRAG BASE DEPOT lip" % side)
         tower = f.find("%s CRAG tower" % side)
-        # crate: square to the axes, crowned face against the CRAG face (lateral fit inside the arm for socket tags)
-        lat = 0.0
-        if tid in (8, 10, 21, 23):
-            # the corner arm runs 16 along the SOCKET FACE from the SHELF FACE plane and the tag
-            # sits 10 from that plane: shift the 13-in crate 2 in toward the shelf face so it
-            # lies inside the arm (it still covers the whole 8.125 target width)
-            shelf_n = np.array([1.0, 0, 0]) if is_red(tid) else np.array([-1.0, 0, 0])
-            lat = 2.0 * float(np.sign(np.dot(T.y, shelf_n)))
-        cr = place(crate["solids"][0], cb, T, (6.5 + 1e-3, lat, zf + crate_h / 2 - Z_CRAG))
+        # crate: square to the axes, crowned face against the CRAG face, centred on the tag
+        cr = place(crate["solids"][0], cb, T, (6.5 + 1e-3, 0.0, zf + crate_h / 2 - Z_CRAG))
         top = zf + crate_h
         v = common_vol(cr, f.solids([rec_of(target)]))
         vs = common_vol(cr, f.solids(tray + tower))

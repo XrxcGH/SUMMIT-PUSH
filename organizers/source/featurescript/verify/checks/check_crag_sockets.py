@@ -12,12 +12,14 @@ Every expected value below is taken from the package documents, never from src/:
                      §2.3 every row (rims 30/54, lateral +/-14 with Low on the shelf-face side,
                           8.0 standoff normal to the face, 30 deg outward tilt, ID 6.50 +/- 0.125,
                           7.0 tube with closed bottom, wall 0.09) and both clearance paragraphs
-                          (4.50 / 1.56 / Z 22.19 / 7.0 protrusion / 6.06 / 1.67 / 4.39; robot
-                          standoff 16.75 / 19.75 / 11.75 / 5.0) and the attachment rule
+                          (4.50 / 1.56 / Z 22.19 / 7.0 protrusion / 6.06 / 1.67 / 4.39) and the
+                          attachment rule
                      §2.6/§8 tier rings 1.0 wide, centred on 30 and 54, band 77-78 for the 78 ring
-                     §3   BASE DEPOT corner arm (16 x 16 along each SOCKET FACE), lip 0.75,
-                          open-to-sky figures (X 306.7-313.3 x Y 265.6-274.9, clear columns
-                          6.66 / 2.66 / 5.11 / 1.56), crowned CRATE in the tray to Z 13.25 (§7)
+                     §3   BASE DEPOT ring: a 48 x 16 SOCKET FACE leg along each SOCKET FACE
+                          (channel 16.0, lip 0.75), with all four side-socket tubes overhanging
+                          it; robot standoff at the lip 16.75 / FRAME PERIMETER 19.75, so the Low
+                          and Mid Socket rims are both 11.75 of extension; crowned CRATE in the
+                          tray to Z 13.25 (§7)
                      §7   tag table (8/9 +Y, 10/11 -Y Blue; Red = Blue + 13), panel 9.0, target
                           8.125, centre Z 17.5, occlusion budget
                      §9.2 O2 CELL 5.0 dia x 14.0, 1.5-in domes
@@ -93,11 +95,13 @@ RGB_SOCKET = (0x9D, 0xB8, 0xD6)                              # MATERIALS §1.2 `
 RGB_ACCENT = (0x4A, 0x3B, 0x22)                              # MATERIALS §1.2 `crag-accent`
 AL_DENSITY = (2650.0, 2850.0)                                # aluminium, kg/m^3
 CELL_D, CELL_L, CELL_DOME = 5.0, 14.0, 1.5                   # §9.2
-ARM, LIP_T = 16.0, 0.75                                      # §3
+DEPOT_CH, LIP_T = 16.0, 0.75                                 # §3 channel, lip
 FRAME_BEHIND_BUMPER, REACH_LIMIT = 3.0, 18.0                 # §2.3 robot standoff paragraph
-LOW_REACH, MID_REACH = 11.75, 5.0                            # §2.3
+SOCK_REACH = 11.75                                           # §3 reach table: Low and Mid Socket rims
 CRATE_TOP_IN_TRAY = 13.25                                    # §7
-ARM_CLEAR_COLUMNS = sorted([INBOARD_EDGE, 2.66, 5.11, 6.66])  # §3 open-to-sky (prints 1.56 for the first)
+# clear columns beside a tube in its SOCKET FACE leg (from the §2.3 numbers): to the near CRAG corner
+# 24 - 14 - 3.34, inside the lip 16.0 - 10.89, at the face the tube's 1.56 inboard edge
+LEG_CLEAR_COLUMNS = sorted([INBOARD_EDGE, DEPOT_CH - OUTBOARD_EDGE, HALF - LAT - RO])
 
 # §7 / VISION-GUIDE §3: tag under each socket (Low above the alliance-wall-side tag)
 TAGS = {("BLUE", +1): {"Low": 8, "Mid": 9}, ("BLUE", -1): {"Low": 10, "Mid": 11},
@@ -487,37 +491,26 @@ def run(f):
                 add(L + ": the model's own O2 CELL SUPPLY seats in the bore without interference",
                     gv < 1e-6, "common %.2e in^3 (cell length %.3f)" % (gv, ext[0]))
 
-        # ---- the depot corner arm below (§2.3 robot standoff, §3 open-to-sky) --------------
+        # ---- the BASE DEPOT's SOCKET FACE leg below (§3 ring, reach table) -------------------
         cx = CRAG_C[S.side][0]
-        shelf_plane = cx + SHELF_X[S.side] * HALF
-        arm_x = sorted([shelf_plane, shelf_plane - SHELF_X[S.side] * ARM])
-        arm_y = sorted([S.face_y, S.face_y + S.ny * ARM])
-        in_arm = arm_x[0] <= wb[0] and wb[3] <= arm_x[1] and arm_y[0] <= wb[1] and wb[4] <= arm_y[1]
-        if S.kind == "Low":
-            add(L + ": plan silhouette lies over the DEPOT corner arm (§2.3 'directly above it')", in_arm,
-                "tube X %.3f-%.3f Y %.3f-%.3f, arm X %s Y %s" % (wb[0], wb[3], wb[1], wb[4], arm_x, arm_y))
-            cols = sorted([wb[0] - arm_x[0], arm_x[1] - wb[3], wb[1] - arm_y[0], arm_y[1] - wb[4]])
-            add(L + ": clear sky columns in the arm = %.2f / 2.66 / 5.11 / 6.66 (§3)" % INBOARD_EDGE,
-                max(abs(a - b) for a, b in zip(cols, ARM_CLEAR_COLUMNS)) < 0.01,
-                "measured %s (§3 prints 1.56 for the column at the face, the tube's inboard edge)" % _fmt(cols))
-            lb = f.bbox(depot_lip[S.side])
-            lip_out = (lb[4] - S.face_y) if S.ny > 0 else (S.face_y - lb[1])
-            near(L + ": DEPOT lip outer face along the SOCKET FACE = 16.75", lip_out, ARM + LIP_T, 1e-3)
-            reach = lip_out + FRAME_BEHIND_BUMPER - (rim_c[1] - face_meas) * S.ny
-            add(L + ": reach from the FRAME PERIMETER at the lip = 11.75, inside 18",
-                abs(reach - LOW_REACH) < 0.01 and reach <= REACH_LIMIT, "%.4f" % reach)
-            add(L + ": lowest point clears a crowned CRATE in the arm (Z 13.25)", wb[2] > CRATE_TOP_IN_TRAY,
-                "%.3f above" % (wb[2] - CRATE_TOP_IN_TRAY))
-        else:
-            lb = f.bbox(depot_lip[S.side])
-            add(L + ": clear of the DEPOT arm in plan (§2.3 'clear of the arm')",
-                wb[0] > lb[3] or wb[3] < lb[0], "tube X %.3f-%.3f, depot lip X %.3f-%.3f" % (wb[0], wb[3], lb[0], lb[3]))
-            # bumpers can come to the face at the Mid station: nothing within 3.0 in of the face below Z 12
-            y0, y1 = sorted([S.face_y + S.ny * 0.01, S.face_y + S.ny * FRAME_BEHIND_BUMPER])
-            box = BRepPrimAPI_MakeBox(gp_Pnt(S.lat_x - 6, y0, 0.01), gp_Pnt(S.lat_x + 6, y1, 12.0)).Shape()
-            hits = _hits_any(f, box)
-            add(L + ": BUMPER zone at the face in front of the Mid station is clear (reach 5.0 in)",
-                not hits and abs((STANDOFF - FRAME_BEHIND_BUMPER) - MID_REACH) < 1e-9, str(hits))
+        leg_x = [cx - HALF, cx + HALF]                       # the leg runs the face's full 48 in
+        leg_y = sorted([S.face_y, S.face_y + S.ny * DEPOT_CH])
+        in_leg = leg_x[0] <= wb[0] and wb[3] <= leg_x[1] and leg_y[0] <= wb[1] and wb[4] <= leg_y[1]
+        add(L + ": plan silhouette lies over the BASE DEPOT's SOCKET FACE leg (§3: all four side-socket tubes overhang the tray)",
+            in_leg, "tube X %.3f-%.3f Y %.3f-%.3f, leg X %s Y %s" % (wb[0], wb[3], wb[1], wb[4], leg_x, leg_y))
+        end_gap = min(wb[0] - leg_x[0], leg_x[1] - wb[3])
+        cols = sorted([end_gap, leg_y[1] - wb[4], wb[1] - leg_y[0]])
+        add(L + ": clear columns beside it in the leg = %.2f at the face / %.2f inside the lip / %.2f to the near CRAG corner"
+            % (LEG_CLEAR_COLUMNS[0], LEG_CLEAR_COLUMNS[1], LEG_CLEAR_COLUMNS[2]),
+            max(abs(a - b) for a, b in zip(cols, LEG_CLEAR_COLUMNS)) < 0.01, "measured %s" % _fmt(cols))
+        lb = f.bbox(depot_lip[S.side])
+        lip_out = (lb[4] - S.face_y) if S.ny > 0 else (S.face_y - lb[1])
+        near(L + ": DEPOT lip outer face along the SOCKET FACE = 16.75", lip_out, DEPOT_CH + LIP_T, 1e-3)
+        reach = lip_out + FRAME_BEHIND_BUMPER - (rim_c[1] - face_meas) * S.ny
+        add(L + ": reach from the FRAME PERIMETER at the lip = 11.75, inside 18 (§3 reach table)",
+            abs(reach - SOCK_REACH) < 0.01 and reach <= REACH_LIMIT, "%.4f" % reach)
+        add(L + ": lowest point clears a crowned CRATE in the leg (Z 13.25)", wb[2] > CRATE_TOP_IN_TRAY,
+            "%.3f above" % (wb[2] - CRATE_TOP_IN_TRAY))
 
         per_socket[L] = dict(S=S, tube=tube, F=F, wb=wb, rim=rim_c, fd=fd, tag=tag, tb=tb)
 
@@ -656,11 +649,11 @@ def _occlusion(f, per_socket, recs):
             for hc in primary + second:
                 for D in DS:
                     for lo in lats:
-                        # robot keep-out (§2.3 robot standoff): where the DEPOT corner arm or corner
-                        # square lies in front of the face, BUMPERS stop at the lip (16.75 in);
-                        # elsewhere the FRAME PERIMETER is >= 3.0 in off the face
+                        # robot keep-out (§3 robot standoff): the DEPOT ring lies in front of the
+                        # whole face and its two corner squares, where BUMPERS stop at the lip
+                        # (16.75 in); beyond the ring the FRAME PERIMETER is >= 3.0 in off the face
                         inside = (xc + lo - shelf_plane) * (-SHELF_X[key[0]])
-                        if -(ARM + LIP_T) <= inside <= ARM + LIP_T and D < ARM + LIP_T:
+                        if -(DEPOT_CH + LIP_T) <= inside <= 2 * HALF + DEPOT_CH + LIP_T and D < DEPOT_CH + LIP_T:
                             continue
                         n_cam[(S.tag, hc)] = n_cam.get((S.tag, hc), 0) + 1
                         cam = np.array([xc + lo, S.face_y + S.ny * D, hc])

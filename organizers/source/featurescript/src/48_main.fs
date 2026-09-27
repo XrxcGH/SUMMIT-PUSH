@@ -30,6 +30,11 @@ function buildField(context is Context, id is Id, opts)
         buildHeadwall(context, id + "hwBlue", false);
         buildHeadwall(context, id + "hwRed", true);
     }
+    if (opts["scree"])
+    {
+        buildScree(context, id + "screeBlue", false);
+        buildScree(context, id + "screeRed", true);
+    }
     var marks = [];
     if (opts["staged"])
     {
@@ -71,6 +76,10 @@ function groupField(context is Context, id is Id, opts)
     if (opts["headwalls"])
     {
         groups = concatenateArrays([groups, [[id + "hwBlue", "BLUE HEADWALL"], [id + "hwRed", "RED HEADWALL"]]]);
+    }
+    if (opts["scree"])
+    {
+        groups = concatenateArrays([groups, [[id + "screeBlue", "BLUE SCREE"], [id + "screeRed", "RED SCREE"]]]);
     }
     if (opts["tape"])
     {
@@ -276,12 +285,65 @@ function selfCheck(context is Context, id is Id, opts)
                 ch = ckBox(ch, msg([A, " tier ring 54"]), measureBox(context, [cid + "ring54"], F), [-h, -h, RING_Z[1] - RING_W / 2, h, h, RING_Z[1] + RING_W / 2], 0.001);
                 ch = ckBox(ch, msg([A, " tier ring 78"]), measureBox(context, [cid + "ring78"], F), [-SPIRE_S / 2, -SPIRE_S / 2, RING78_TOP - RING_W, SPIRE_S / 2, SPIRE_S / 2, RING78_TOP], 0.001);
             }
+            // BASE DEPOT ring: 16.0 channel off every face, 16 x 16 square at every corner
             const d = cid + "depot";
-            const lipOut = h + DEPOT_CH + DEPOT_LIP_T;
-            ch = ckBox(ch, msg([A, " BASE DEPOT floor"]), measureBox(context, [d + "floor"], F), [h - DEPOT_WRAP, -h - DEPOT_CH, 0, h + DEPOT_CH, h + DEPOT_CH, DEPOT_FLOOR_T], 0.001);
-            ch = ckBox(ch, msg([A, " BASE DEPOT lip"]), measureBox(context, [d + "lip"], F), [h - DEPOT_WRAP - DEPOT_LIP_T, -lipOut, 0, lipOut, lipOut, DEPOT_LIP_Z], 0.001);
-            ch = ck(ch, msg([A, " BASE DEPOT channel depth (face to lip)"]), measureDistToPoint(context, [d + "lip"], F, [h, 0, 2]), DEPOT_CH, 0.001);
-            ch = ck(ch, msg([A, " BASE DEPOT corner square / arm (16 from the corner, all three ways)"]), measureDistToPoint(context, [d + "lip"], F, [h, h, 2]), DEPOT_WRAP, 0.001);
+            const a = h + DEPOT_CH;
+            const lipOut = a + DEPOT_LIP_T;
+            ch = ckBox(ch, msg([A, " BASE DEPOT floor"]), measureBox(context, [d + "floor"], F), [-a, -a, 0, a, a, DEPOT_FLOOR_T], 0.001);
+            ch = ck(ch, msg([A, " BASE DEPOT floor area (80 x 80 less the 48 x 48 CRAG footprint)"]), measureVolume(context, [d + "floor"]) / DEPOT_FLOOR_T,
+                    4 * (a * a - h * h), 0.01);
+            ch = ckBox(ch, msg([A, " BASE DEPOT lip"]), measureBox(context, [d + "lip"], F), [-lipOut, -lipOut, 0, lipOut, lipOut, DEPOT_LIP_Z], 0.001);
+            const faces = [["SHELF FACE", [h, 0, 2]], ["PEG FACE", [-h, 0, 2]], ["SOCKET FACE y1", [0, h, 2]], ["SOCKET FACE y-1", [0, -h, 2]]];
+            for (var q in faces)
+            {
+                ch = ck(ch, msg([A, " BASE DEPOT channel depth at the ", q[0], " (face to lip)"]), measureDistToPoint(context, [d + "lip"], F, q[1]), DEPOT_CH, 0.001);
+            }
+            for (var sx in [-1, 1])
+            {
+                for (var sy in [-1, 1])
+                {
+                    ch = ck(ch, msg([A, " BASE DEPOT corner square x", sx, " y", sy, " (16 from the CRAG corner both ways)"]),
+                            measureDistToPoint(context, [d + "lip"], F, [sx * h, sy * h, 2]), DEPOT_CH, 0.001);
+                }
+            }
+        }
+    }
+    if (opts["scree"])
+    {
+        for (var isRed in [false, true])
+        {
+            const AF = allianceFrame(isRed);
+            const hs = SCREE_S / 2;
+            for (var i = 0; i < size(SCREE_PATCHES); i += 1)
+            {
+                const p = SCREE_PATCHES[i];
+                const pid = id + nm("scree", sideTag(isRed)) + nm("S", i + 1);
+                const lab = msg([allianceName(isRed), " SCREE PATCH ", p[0]]);
+                var rids = [];
+                for (var j = 0; j < size(SCREE_OFF); j += 1)
+                {
+                    rids = append(rids, pid + nm("ridge", j + 1));
+                }
+                // footprint: the 30 x 30 square, axis-aligned, centered on the table point
+                const b = measureBox(context, rids, frameIn(AF, [p[1], p[2], 0], [1, 0, 0], [0, 0, 1]));
+                ch = ck(ch, msg([lab, " inside its 30 x 30 footprint (margin >= 0)"]), min(min(min(b[0] + hs, hs - b[3]), min(b[1] + hs, hs - b[4])), 0), 0, 0.001);
+                ch = ck(ch, msg([lab, " ridges cut at the patch boundary"]), max(max(-b[0], b[3]), max(-b[1], b[4])), hs, 0.001);
+                // ridges: half-round R1.75 on the carpet, centerlines at the table offsets, 8.0 pitch
+                const PF = screeFrame(isRed, p);
+                var prev = undefined;
+                for (var j = 0; j < size(SCREE_OFF); j += 1)
+                {
+                    const rb = measureBox(context, [rids[j]], PF);
+                    const d = SCREE_OFF[j];
+                    ch = ckBox(ch, msg([lab, " ridge ", j + 1]), rb, [d - SCREE_R, undefined, 0, d + SCREE_R, undefined, SCREE_R], 0.001);
+                    const c = (rb[0] + rb[3]) / 2;
+                    if (prev != undefined)
+                    {
+                        ch = ck(ch, msg([lab, " ridge pitch ", j, "-", j + 1]), c - prev, SCREE_PITCH, 0.001);
+                    }
+                    prev = c;
+                }
+            }
         }
     }
     if (opts["headwalls"])

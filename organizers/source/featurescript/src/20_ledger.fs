@@ -110,14 +110,27 @@ const KICK_H = 2;
 const KICK_T = 0.125;
 const TAG_Z_CRAG = 17.5;
 
-// ---- BASE DEPOT (§3) ---------------------------------------------------------------------
+// ---- BASE DEPOT (§3): a ring round all four CRAG faces, a 16 x 16 square at each corner ----
 const DEPOT_CH = 16;
-const DEPOT_WRAP = 16;
 const DEPOT_LIP_Z = 4;
 const DEPOT_LIP_T = 0.75;
 const DEPOT_LIP_R = 0.25;
 const DEPOT_FLOOR_T = 0.25;
 const DEPOT_CHAMFER = 1;
+
+// ---- SCREE (§1.4) -------------------------------------------------------------------------
+// 18 SCREE PATCHES of half-round HDPE ridges on the carpet.  Each patch is a 30 x 30 square,
+// sides parallel to the field axes, with four ridges cut square at its boundary.
+const SCREE_S = 30;             // patch footprint (CRITICAL)
+const SCREE_R = 1.75;           // ridge radius = ridge height, 3.5 wide at the base (CRITICAL)
+const SCREE_PITCH = 8;          // ridge pitch (CRITICAL)
+const SCREE_OFF = [-12, -4, 4, 12];     // ridge centerlines from the patch center, along the ridge normal
+// Blue patches: [label, center X, center Y, ridge direction in degrees from +X].  45 = "+45"
+// (parallel to X = Y), -45 = "-45" (parallel to (1, -1)), 90 = "Y".  Red is the 180-degree
+// rotation; a rotation keeps each ridge direction.
+const SCREE_PATCHES = [["S1", 105, 88, 45], ["S2", 105, 162, 90], ["S3", 105, 236, -45],
+        ["S4", 200, 37, 45], ["S5", 200, 125, 45], ["S6", 200, 199, -45], ["S7", 200, 287, -45],
+        ["S8", 234, 108, 45], ["S9", 234, 216, -45]];
 
 // ---- HEADWALL (§4) -----------------------------------------------------------------------
 const HW_X = 48;
@@ -187,6 +200,7 @@ const PAL = {
         "wall" : [154, 164, 178],               // #9AA4B2
         "glazing" : [220, 232, 250],            // #DCE8FA at 25 %
         "carpet" : [110, 106, 99],              // #6E6A63
+        "scree" : [92, 86, 80],                 // #5C5650
         "crate-violet" : [123, 63, 160],        // #7B3FA0
         "cell-body" : [242, 242, 240],          // #F2F2F0
         "cell-cap" : [46, 139, 87],             // #2E8B57
@@ -215,6 +229,7 @@ const MAT = {
         "tape" : { "name" : "Gaffer tape", "density" : 830 },
         "tag" : { "name" : "Printed vinyl on rigid PVC backer", "density" : 1400 },
         "abs" : { "name" : "ABS, molded", "density" : 1050 },
+        "hdpe" : { "name" : "HDPE, matte", "density" : 955 },
         "al-tube-2x1" : { "name" : "Aluminum 2 x 1 x 0.125 tube (effective solid)", "density" : 928.1 },
         "steel-tube-2x2" : { "name" : "Steel 2 x 2 x 0.120 tube (effective solid)", "density" : 1771 },
         "steel-frame" : { "name" : "Steel 2 x 1.25 x 0.083 tube (effective solid)", "density" : 1608 }

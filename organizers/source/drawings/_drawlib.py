@@ -52,6 +52,8 @@ SHELF = "#8A6D3B"
 SOCKET = "#9DB8D6"
 SOCKET_L = "#EAF1FC"
 DEPOT = "#7F7F7F"         # `depot`, MATERIALS-AND-COLORS.md §1.2 (REVISION-LOG M44)
+SCREE = "#5C5650"         # `scree`, the SCREE ridges (HDPE, matte)
+SCREE_TINT = "#DAD7D2"    # a SCREE PATCH footprint on the drawn carpet: `scree` at 18 %
 WALL = "#9AA4B2"
 WALL_D = "#4A5462"
 GHOST = "#2E8B57"
@@ -180,8 +182,11 @@ class Sheet(object):
             a += ' transform="rotate(%.3f %.2f %.2f)"' % (rot, cx, cy)
         return self.add("<ellipse %s/>" % a)
 
-    def path(self, d, fill="none", stroke=INK, sw=1.0, dash=None, op=None):
+    def path(self, d, fill="none", stroke=INK, sw=1.0, dash=None, op=None, rule=None):
+        """rule="evenodd" fills a path whose later sub-paths are holes (a ring)."""
         a = 'd="%s" fill="%s" stroke="%s" stroke-width="%.2f"' % (d, fill, stroke, sw)
+        if rule:
+            a += ' fill-rule="%s"' % rule
         if dash:
             a += ' stroke-dasharray="%s"' % dash
         if op is not None:

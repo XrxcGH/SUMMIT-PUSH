@@ -6,6 +6,11 @@ Expected values come only from the documents:
   FIELD-CAD-PACKAGE.md  §0 (frame, 180-degree symmetry, angle rule), §1.1 (placements),
                         §1.2 (taping plan table + apron corridor check), §3 (DEPOT extents),
                         §6 (CENTER CACHE grid, staging marks, extent check), §10 row 13 / 16
+  DESIGN-SPEC.md §3     BASE DEPOT: a ring round all four CRAG faces, 83.5 in square over its entry
+                        chamfer (Blue X 282.25-365.75, Y 198.25-281.75); "The FIELD centerline tape is
+                        broken where each CRAG and its tray cross it, between the inner edges of that
+                        CRAG's APRON tape (Blue Y 198-282, Red Y 42-126); the CENTER CACHE band's side
+                        lines stop at the same tape edges." 
   02-manual 02-arena.md §3.2 (zones and markings table; "a zone extends to the outer edge of
                         its tape"), §3.1.1 (Red = Blue rotated 180 deg about (324, 162))
   DESIGN-SPEC.md        §1.1 (APRON 36 / 20 / R20, corridor Y 128-196), §3 (placements)
@@ -67,7 +72,10 @@ CACHE_Y = (138.0, 162.0, 186.0)             # §6 grid Y = 138/162/186
 MARK = 12.0                                 # §1.2 12-in "X" marks
 STAGE_X = {"BLUE": 144.0, "RED": 504.0}     # §1.1 / §1.2 / §6
 STAGE_Y = (108.0, 162.0, 216.0)
-DEPOT_STOP = 8.0                            # §1.2 "the BASE DEPOT trays stop 8 in short of the line"
+# DESIGN-SPEC §3: the centerline and the band's side lines break between the inner edges of the APRON
+# tape on the SOCKET FACE runs (20-in offset, tape laid inside it): CRAG centre +/- (24 + 20 - 2)
+CL_BREAK = {s: (CRAG_C[s][1] - (CRAG_S / 2 + AP_SOCK - TW), CRAG_C[s][1] + (CRAG_S / 2 + AP_SOCK - TW)) for s in SIDES}
+DEPOT_ENV = 24.0 + 16.0 + 0.75 + 1.0       # DESIGN-SPEC §3: the tray's plan half-size to the chamfer toe (83.5 / 2)
 
 ZMID = TT / 2.0
 EPS = 0.05                                  # probe offset from a stated edge (in)
@@ -497,6 +505,7 @@ def run(f):
 
     # ---------------- FIELD centerline --------------------------------------------------
     cl = groups["CENTERLINE"]
+    brk = [CL_BREAK[s] for s in SIDES]
     if cl:
         Pcl = Plan(cl)
         cross = Plan(aps + groups["CACHE MARK"])
@@ -504,13 +513,13 @@ def run(f):
         add("centerline: 2-in line centred on X = 324 (X 323-325), running Y 0-324",
             approx(got[0], CX - TW / 2, 1e-6) and approx(got[3], CX + TW / 2, 1e-6) and approx(got[1], 0, 1e-6) and approx(got[4], FIELD_W, 1e-6),
             "bbox %s" % fmt_box(got))
-        foot = [(CRAG_C[s][1] - CRAG_S / 2, CRAG_C[s][1] + CRAG_S / 2) for s in SIDES]
-        in_foot = [round(y, 2) for (a, b) in foot for y in frange(a + EPS, b - EPS, 0.5) if all_plan.has(CX, y)]
-        add("centerline: broken where the two CRAG footprints cross it (Y 60-108, 216-264 untaped)", not in_foot,
-            "tape at Y %s" % in_foot[:5] if in_foot else "ok")
+        in_brk = [round(y, 2) for (a, b) in brk for y in frange(a + EPS, b - EPS, 0.5) if all_plan.has(CX, y)]
+        add("centerline: broken across each CRAG and its BASE DEPOT, between the inner edges of the APRON tape "
+            "(Blue Y %g-%g, Red Y %g-%g untaped)" % (CL_BREAK["BLUE"] + CL_BREAK["RED"]), not in_brk,
+            "tape at Y %s" % in_brk[:5] if in_brk else "ok")
         bare, own, tot = [], 0, 0
         for y in frange(0.05, FIELD_W - 0.05, 0.25):
-            if any(a - 1e-9 <= y <= b + 1e-9 for a, b in foot):
+            if any(a - 1e-9 <= y <= b + 1e-9 for a, b in brk):
                 continue
             for x in (CX - TW / 2 + EPS, CX, CX + TW / 2 - EPS):
                 tot += 1
@@ -518,23 +527,32 @@ def run(f):
                     own += 1
                 elif not cross.has(x, y):
                     bare.append((round(x, 2), round(y, 2)))
-        add("centerline: continuous from Y 0 to 324 outside the footprints (only APRON / cache marks cross it)", not bare,
+        add("centerline: continuous from Y 0 to 324 outside the breaks (only APRON / cache marks cross it)", not bare,
             "untaped at %s" % bare[:6] if bare else "%.1f%% own tape, rest APRON/mark crossings" % (100.0 * own / max(tot, 1)))
         add("centerline: the white line itself carries >= 85% of its length (crossings are short)", own >= 0.85 * tot,
             "%.1f%%" % (100.0 * own / max(tot, 1)))
-        ends = [(y, Pcl.has(CX, y)) for y in (foot[1][0] - EPS, foot[1][1] + EPS, foot[0][0] - EPS, foot[0][1] + EPS, 0.05, FIELD_W - 0.05)]
-        add("centerline: segments run right up to both CRAG footprints and both guardrails", all(v for _, v in ends),
-            "%s" % [(round(y, 2), v) for y, v in ends])
+        # the line runs up to the APRON tape at each break (the APRON tape carries it to the break edge) and
+        # to both guardrails
+        ends = []
+        for a, b in brk:
+            ends += [("line", a - TW - EPS, Pcl.has(CX, a - TW - EPS)), ("APRON", a - EPS, cross.has(CX, a - EPS)),
+                     ("APRON", b + EPS, cross.has(CX, b + EPS)), ("line", b + TW + EPS, Pcl.has(CX, b + TW + EPS))]
+        ends += [("line", 0.05, Pcl.has(CX, 0.05)), ("line", FIELD_W - 0.05, Pcl.has(CX, FIELD_W - 0.05))]
+        add("centerline: segments run up to the APRON tape at both breaks (no gap before the break edge) and to both guardrails",
+            all(v for _, _, v in ends), "%s" % [(k, round(y, 2), v) for k, y, v in ends])
         for s in SIDES:
-            fl = safe_find(f, s + " CRAG BASE DEPOT floor")
             dep = safe_find(f, "re:^%s CRAG BASE DEPOT" % s)
-            if fl:
-                b = f.bbox(fl)
-                gap = CX - b[3] if s == "BLUE" else b[0] - CX
-                add("centerline: %s BASE DEPOT tray stops 8 in short of X = 324" % s, approx(gap, DEPOT_STOP, 1e-4), "%.4f in" % gap)
             if dep:
+                b = f.bbox(dep)
+                a0, a1 = CL_BREAK[s]
+                cy = CRAG_C[s][1]
+                add("centerline: %s BASE DEPOT (83.5 square to its chamfer toe) crosses X = 324 inside the break, "
+                    "0.25 in from each break edge (no stub of line beside the tray)" % s,
+                    b[0] < CX < b[3] and approx(b[1], cy - DEPOT_ENV, 1e-4) and approx(b[4], cy + DEPOT_ENV, 1e-4)
+                    and a0 < b[1] and b[4] < a1,
+                    "tray Y %.4f-%.4f in the break Y %g-%g (%.4f / %.4f to the edges)" % (b[1], b[4], a0, a1, b[1] - a0, a1 - b[4]))
                 d = f.dist(dep, cl)
-                add("centerline: %s BASE DEPOT (lip, chamfer) does not reach the centerline tape" % s, d > 1e-6, "gap %.3f in" % d)
+                add("centerline: %s BASE DEPOT (floor, lip, chamfer) does not reach the centerline tape" % s, d > 1e-6, "gap %.3f in" % d)
 
     # ---------------- CENTER CACHE band -------------------------------------------------
     band = groups["BAND"]
@@ -545,14 +563,19 @@ def run(f):
         crossers = Plan(groups["CENTERLINE"] + groups["CACHE MARK"] + aps)
         got = f.bbox(band)
         bx0, by0, bx1, by1 = BAND
-        add("band: outline bbox X 300-348, Y 108-216 (48 x 108)",
-            all(approx(a, b, 1e-6) for a, b in zip(got, [bx0, by0, 0, bx1, by1, TT])), "bbox %s" % fmt_box(got))
+        lo, hi = CL_BREAK["RED"][1], CL_BREAK["BLUE"][0]
+        add("band: side lines on X 300-302 and 346-348, broken like the centerline: they run between the two "
+            "APRONS (tape Y %g-%g) and the APRON tape carries them to the break edges Y %g / %g" % (lo + TW, hi - TW, lo, hi),
+            all(approx(a, b, 1e-6) for a, b in zip(got, [bx0, lo + TW, 0, bx1, hi - TW, TT])), "bbox %s" % fmt_box(got))
         tb = safe_find(f, "BLUE CRAG tower")
         tr = safe_find(f, "RED CRAG tower")
-        if tb and tr:
-            add("band: end edges coincide with the two built CRAG SOCKET FACE planes",
-                approx(got[4], f.bbox(tb)[1], 1e-6) and approx(got[1], f.bbox(tr)[4], 1e-6),
-                "band Y %.3f-%.3f; Blue -Y face %.3f, Red +Y face %.3f" % (got[1], got[4], f.bbox(tb)[1], f.bbox(tr)[4]))
+        if tb and tr and depots:
+            ends = [(x, y) for x in frange(bx0 + 0.1, bx1 - 0.1, 2.0) for y in (by0 + TW / 2, by1 - TW / 2)]
+            unc = [(round(x, 1), y) for x, y in ends if not Pdep.has(x, y, 0.1)]
+            add("band: its end lines (Y 108-110 and 214-216, on the built SOCKET FACE planes) lie wholly under the BASE DEPOT rings, so none is laid",
+                approx(by1, f.bbox(tb)[1], 1e-6) and approx(by0, f.bbox(tr)[4], 1e-6) and not unc
+                and not any(Pband.has(x, y) for x, y in ends),
+                "Blue -Y face %.3f, Red +Y face %.3f; end-line probes not over a tray %s" % (f.bbox(tb)[1], f.bbox(tr)[4], unc[:4] or "none"))
         edges = [("X=300", lambda t, d: (bx0 + d, t), (by0, by1)), ("X=348", lambda t, d: (bx1 - d, t), (by0, by1)),
                  ("Y=108", lambda t, d: (t, by0 + d), (bx0, bx1)), ("Y=216", lambda t, d: (t, by1 - d), (bx0, bx1))]
         bare, outside, inner, under = [], [], [], []
@@ -562,28 +585,26 @@ def run(f):
                     x, y = fn(t, d)
                     if Pband.has(x, y) or crossers.has(x, y):
                         continue
-                    if Pdep.has(x, y, 0.1):
+                    if Pdep.has(x, y, 0.1) or any(p <= y <= q for p, q in brk):
                         under.append((nm_, round(t, 2)))
                         continue
-                    q = K.BRepBuilderAPI_MakeVertex(K._gp((x, y, ZMID))).Vertex()
-                    dd = min(K.BRepExtrema_DistShapeShape(q, s).Value() for _, s, _ in Pdep.items) if Pdep.items else 1e9
-                    if dd <= 0.3:
-                        under.append((nm_, round(t, 2)))
-                    else:
-                        bare.append((nm_, round(x, 2), round(y, 2)))
+                    bare.append((nm_, round(x, 2), round(y, 2)))
                 x, y = fn(t, -EPS)
                 if Pband.has(x, y):
                     outside.append((nm_, round(t, 2)))
                 x, y = fn(t, TW + EPS)
                 if a + TW + EPS < t < b - TW - EPS and Pband.has(x, y):
                     inner.append((nm_, round(t, 2)))
-        add("band: 2-in outline present everywhere except under crossing tape and the BASE DEPOT trays", not bare,
-            "untaped outline at %s" % bare[:6] if bare else "ok (%d probes interrupted at the trays)" % len(under))
-        add("band: interrupted where the BASE DEPOT trays cross it", len(under) > 0 and f.common_volume(band, depots) <= VOL_TOL,
-            "%d outline probes at the trays; band/tray overlap %.2e in^3" % (len(under), f.common_volume(band, depots)))
-        if depots:
-            dd = f.dist(band, depots)
-            add("band: stops right at the trays (touches the tray footprint)", dd <= 0.01, "gap %.4f in" % dd)
+        add("band: 2-in outline present everywhere except under crossing tape and across the two breaks at the BASE DEPOTS", not bare,
+            "untaped outline at %s" % bare[:6] if bare else "ok (%d probes in the breaks)" % len(under))
+        add("band: interrupted where the BASE DEPOT rings cross it", len(under) > 0 and f.common_volume(band, depots) <= VOL_TOL,
+            "%d outline probes in the breaks; band/tray overlap %.2e in^3" % (len(under), f.common_volume(band, depots)))
+        if aps:
+            da = f.dist(band, aps)
+            in_brk = [(round(x, 2), round(y, 2)) for (p, q) in brk for x in (bx0 + TW / 2, bx1 - TW / 2)
+                      for y in frange(p + EPS, q - EPS, 0.5) if Pband.has(x, y)]
+            add("band: side lines stop at the APRON tape on both CRAGS (touching it), with no band tape inside either break",
+                da <= 1e-6 and not in_brk, "band-APRON gap %.4f in; band tape in a break at %s" % (da, in_brk[:4] or "none"))
         add("band: tape edges on the stated coordinates (nothing outside the band)", not outside, "%s" % outside[:5] if outside else "ok")
         add("band: lines exactly 2 in wide (an outline, not a filled area)", not inner and not Pband.has(312, 150) and not Pband.has(336, 174),
             "%s" % inner[:5] if inner else "ok")

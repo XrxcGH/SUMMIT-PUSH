@@ -1,8 +1,9 @@
 # SUMMIT PUSH — Onshape FeatureScript field generator
 
 `SummitPushField.fs` is a single Onshape Feature Studio that builds the SUMMIT PUSH field: every
-field element, tape line, AprilTag panel and SUPPLY, in the package's always-blue-origin NWU
-frame, with the names, colors, materials and densities of `03-field/MATERIALS-AND-COLORS.md`.
+field element (including the BASE DEPOT rings and the 18 SCREE PATCHES), tape line, AprilTag panel
+and SUPPLY, in the package's always-blue-origin NWU frame, with the names, colors, materials and
+densities of `03-field/MATERIALS-AND-COLORS.md`.
 Its dimensions come from the master dimension ledger in `03-field/FIELD-CAD-PACKAGE.md` §10;
 after building, the feature measures the geometry and compares it with those values.
 
@@ -32,9 +33,10 @@ No Onshape API calls are needed: pasting code into a Feature Studio is ordinary 
 |---|---|---|
 | Carpet, guardrails and FIELD LEDs | on | carpet (top at Z 0); both 20-in guardrails, a 2 × 1 tube frame with polycarbonate bays; the FIELD LED band in each top rail, split at X 324 into two alliance segments of three blocks, each block followed by a dark gap |
 | Alliance walls, driver stations, OUTFITTERS | on | both 78-in walls (solid to Z 39, glazed to 78) on a welded steel frame; three driver-station shelves, each with an E-STOP and an A-STOP; four OUTFITTER chutes, each with a throat liner through the wall, a ramp, cheeks, funnel wings and a leg |
-| CRAGS and BASE DEPOTS | on | both CRAGS: tower, spire, SUMMIT BEACON lantern, kick-guard, Shelf 1 and Shelf 2 with slot fences and gussets, four side sockets with brackets, the Summit Socket on its mast, six pegs (the High Pegs on root bosses), eight flush tag pockets; each CRAG's U-shaped BASE DEPOT (floor, lip, entry chamfer) |
+| CRAGS and BASE DEPOTS | on | both CRAGS: tower, spire, SUMMIT BEACON lantern, kick-guard, Shelf 1 and Shelf 2 with slot fences and gussets, four side sockets with brackets, the Summit Socket on its mast, six pegs (the High Pegs on root bosses), eight flush tag pockets; each CRAG's BASE DEPOT, a closed ring around all four faces (floor, lip with R0.25 top edges, entry chamfer mitred at the corners) |
 | HEADWALLS | on | both HEADWALLS: three welded lane frames (uprights, rails, rung carriers), nine rungs with end brackets, the lower crossbeam with its standoffs, three tag wedges |
-| Tape | on | BASECAMP, CLIMB LINE (dashed outside BASECAMP), OUTFITTER LANES, CRAG APRONS, FIELD centerline, CENTER CACHE band |
+| SCREE | on | the 18 SCREE PATCHES, nine per alliance: in each, four half-round HDPE ridges (R1.75, so 1.75 in tall) at ±4.0 and ±12.0 in from the patch center, cut square at the 30 × 30 in patch boundary, in the ridge direction of the patch table |
+| Tape | on | BASECAMP, CLIMB LINE (dashed outside BASECAMP), OUTFITTER LANES, CRAG APRONS, FIELD centerline (broken at each CRAG between the inner edges of its APRON tape), CENTER CACHE band side lines |
 | AprilTag panels / 36h11 decals | on / on | 26 panels at their published poses; the decal option paints each panel's 36h11 pattern onto its face, split into cells |
 | Staging: CENTER CACHE and staging marks with their SUPPLIES | on | the 9 CENTER CACHE marks and 6 alliance staging marks, with 9 CENTER CACHE pieces (Latin square) and 12 pieces on the alliance marks |
 | OUTFITTER stock | on | 7 of each type per alliance behind the walls (42 pieces) |
@@ -71,6 +73,7 @@ regeneration.
 | tape | Gaffer tape | 830 | all tape (2 in × 0.01 in) |
 | tag | Printed vinyl on rigid PVC backer | 1400 | AprilTag panels |
 | abs | ABS, molded | 1050 | E-STOP and A-STOP buttons |
+| hdpe | HDPE, matte | 955 | SCREE ridges |
 | carpet | Event carpet, low pile | 220 | carpet (0.25 in thick, below Z 0) |
 | al-tube-2x1 | Aluminum 2 x 1 x 0.125 tube (effective solid) | 928.1 | guardrail rails and posts |
 | steel-tube-2x2 | Steel 2 x 2 x 0.120 tube (effective solid) | 1771 | HEADWALL lane frames and lower crossbeam, Summit Socket mast |
@@ -82,4 +85,5 @@ regeneration.
 | O2 CELL | 248.7 in³ | 166.9 kg/m³ | 1.500 lb |
 | ROPE COIL | 115.7 in³ | 239.3 kg/m³ | 1.000 lb |
 
-The modeled field weighs about 3,960 lb, of which the 63 SUPPLIES are 94.5 lb.
+The modeled field weighs about 4,330 lb, of which the 63 SUPPLIES are 94.5 lb and the 18 SCREE
+PATCHES about 320 lb.

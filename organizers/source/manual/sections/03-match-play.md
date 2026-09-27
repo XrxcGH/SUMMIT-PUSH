@@ -119,7 +119,7 @@ ROPED UP is a count of SUPPLIES; their point values do not matter.
 
 ### 4.3.5 AUTO Distances
 
-The following distances are published for planning AUTO routines. All are straight-line distances from ROBOT center to the target approach position, for the Blue ALLIANCE; Red distances are the same by symmetry.
+The following distances are published for planning AUTO routines. All are straight-line distances from ROBOT center to the target approach position, for the Blue ALLIANCE; Red distances are the same by symmetry. SCREE (Section 3.8) lies across the routes from BASECAMP and from the staging marks, so those distances understate the distance a ROBOT actually drives.
 
 **Table 4-5: AUTO distances**
 
@@ -196,7 +196,7 @@ Every CAMP requires one SCORED SUPPLY of each type that its tier accepts. The CR
 
 ### 4.4.5 Cycle Distances
 
-The following approach distances are published for estimating points per cycle. All are for the Blue ALLIANCE, from ROBOT center to the approach position; Red distances are the same by symmetry.
+The following approach distances are published for estimating points per cycle. All are for the Blue ALLIANCE, from ROBOT center to the approach position; Red distances are the same by symmetry. Each approach position lies on the outer edge of the BASE DEPOT channel, 16.0 in off the middle of its face.
 
 **Table 4-7: Cycle distances**
 
@@ -204,12 +204,14 @@ The following approach distances are published for estimating points per cycle. 
 |---|---|
 | OUTFITTER (24, 294) → SHELF FACE approach (284, 240) | 266 in |
 | OUTFITTER (24, 294) → +Y SOCKET FACE approach (324, 280) | 300 in |
-| OUTFITTER (24, 294) → PEG FACE approach (368, 240) | 348 in |
+| OUTFITTER (24, 294) → PEG FACE approach (364, 240) | 344 in |
 | CENTER CACHE (324, 162) → SHELF FACE approach | 88 in |
 | CENTER CACHE (324, 162) → +Y SOCKET FACE approach | 118 in |
 | Alliance staging mark (144, 216) → SHELF FACE approach | 142 in |
 
-The CRAG has 17 scoring positions in total (6 shelf slots, 5 sockets, 6 pegs) plus a BASE DEPOT that holds roughly 12 SUPPLIES. Once an ALLIANCE has filled its CRAG, further SUPPLIES can score only in the DEPOT, and the SUPPLY LINE RP thresholds assume that strong ALLIANCES will use it.
+These are straight-line distances, and they understate real cycles: SCREE (Section 3.8) lies across most of the routes from the OUTFITTERS and the staging marks, so a ROBOT either detours around the patches or slows down to cross them.
+
+The CRAG has 17 scoring positions in total (6 shelf slots, 5 sockets, 6 pegs) plus a BASE DEPOT that holds about 27 SUPPLIES. Once an ALLIANCE has filled its CRAG, further SUPPLIES can score only in the DEPOT, and the SUPPLY LINE RP thresholds assume that strong ALLIANCES will use it.
 
 ## 4.5 ENDGAME (final 0:30)
 
@@ -279,7 +281,7 @@ All point values in SUMMIT PUSH:
 | Penalty | MINOR FOUL | — | — | +3 to opponent | +3 to opponent |
 | Penalty | MAJOR FOUL | — | — | +8 to opponent | +8 to opponent |
 
-A CRAG filled to capacity in TELEOP is worth 107 placement points (28 low + 49 mid + 30 high); a full BASE DEPOT adds about 24.
+A CRAG filled to capacity in TELEOP is worth 107 placement points (28 low + 49 mid + 30 high); a full BASE DEPOT adds about 54.
 
 ## 4.7 RANKING POINTS
 

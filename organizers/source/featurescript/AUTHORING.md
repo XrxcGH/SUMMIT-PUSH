@@ -11,7 +11,7 @@ editing anything under `src/`.
 | `src/10_kernel.fs` | the **only** code that calls the Onshape standard library's geometry, query and property functions | FeatureScript |
 | `src/20_ledger.fs` | every dimension, the palette, the materials | part-code dialect |
 | `src/30_util.fs` | shared helpers (planes, boxes, frames, painting) | part-code dialect |
-| `src/40_field.fs` … `src/46_scree.fs` | the field elements | part-code dialect |
+| `src/40_field.fs` … `src/45_pieces.fs` | the field elements | part-code dialect |
 | `src/48_main.fs` | `buildField`, `groupField` and the dimension self-check | part-code dialect |
 | `src/90_features.fs` | the features that appear in Onshape's menu | FeatureScript |
 | `build.py` | assembles and checks `SummitPushField.fs` | Python |

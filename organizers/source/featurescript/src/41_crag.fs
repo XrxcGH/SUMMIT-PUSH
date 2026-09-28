@@ -267,36 +267,38 @@ function buildCrag(context is Context, id is Id, isRed, opts)
     buildDepot(context, id + "depot", F, cn);
 }
 
-// BASE DEPOT: a square ring of tray round all four CRAG faces.  Each face has a 16 x 48 leg
-// and each corner a 16 x 16 square, so the channel runs 16.0 out from every face (81.5 square
-// over the lip, 83.5 over the entry chamfer).
+// BASE DEPOT: U-shaped tray around the SHELF FACE and both shelf-face corners.
 function buildDepot(context is Context, id is Id, F, cn)
 {
     const h = CRAG_S / 2;
-    const a = h + DEPOT_CH;             // outer edge of the channel (40)
+    const x0 = h - DEPOT_WRAP;          // arm ends (x = 8)
+    const x1 = h + DEPOT_CH;            // outer leg face of the channel (x = 40)
+    const y1 = h + DEPOT_CH;            // outer corner (y = 40)
     const t = DEPOT_LIP_T;
-    const b = a + t;                    // outer face of the lip (40.75)
     // floor: the channel footprint, top at Z = 0.25
-    prismXYHoles(context, id + "floor", F, rectPts(-a, -a, a, a), [rectPts(-h, -h, h, h)], 0, DEPOT_FLOOR_T);
+    prismXY(context, id + "floor", F, [[x0, h], [h, h], [h, -h], [x0, -h], [x0, -y1], [x1, -y1], [x1, y1], [x0, y1]], 0, DEPOT_FLOOR_T);
     paint(context, [id + "floor"], msg([cn, " BASE DEPOT floor"]), "depot", 1, "plywood");
-    // lip: 0.75-in wall round the outer boundary, top at Z = 4.0, R0.25 on both top edges
-    prismXYHoles(context, id + "lip", F, rectPts(-b, -b, b, b), [rectPts(-a, -a, a, a)], 0, DEPOT_LIP_Z);
+    // lip: 0.75-in wall around the outer boundary, top at Z = 4.0
+    prismXY(context, id + "lip", F, [[x0 - t, h], [x0 - t, y1 + t], [x1 + t, y1 + t], [x1 + t, -y1 - t], [x0 - t, -y1 - t],
+                [x0 - t, -h], [x0, -h], [x0, -y1], [x1, -y1], [x1, y1], [x0, y1], [x0, h]], 0, DEPOT_LIP_Z);
     const zt = DEPOT_LIP_Z;
-    filletAt(context, id + "lipRound", [id + "lip"], F, [[b, 0, zt], [-b, 0, zt], [0, b, zt], [0, -b, zt],
-                [a, 0, zt], [-a, 0, zt], [0, a, zt], [0, -a, zt]], DEPOT_LIP_R);
+    filletAt(context, id + "lipRound", [id + "lip"], F, [
+                [x0 - t, (h + y1 + t) / 2, zt], [(x0 + x1) / 2, y1 + t, zt], [x1 + t, 0, zt], [(x0 + x1) / 2, -y1 - t, zt], [x0 - t, -(h + y1 + t) / 2, zt],
+                [x0, (h + y1) / 2, zt], [(x0 + x1) / 2, y1, zt], [x1, 0, zt], [(x0 + x1) / 2, -y1, zt], [x0, -(h + y1) / 2, zt]], DEPOT_LIP_R);
     paint(context, [id + "lip"], msg([cn, " BASE DEPOT lip"]), "depot", 1, "plywood");
-    // 45-degree entry chamfer strip outside the lip, 1.0-in leg, hip-mitred at the four corners
+    // 45-degree entry chamfer strip outside the lip, 1.0-in leg
     const c = DEPOT_CHAMFER;
-    const e = b + c;
-    prismXYHoles(context, id + "chamfer", F, rectPts(-e, -e, e, e), [rectPts(-b, -b, b, b)], 0, c);
+    const xo = x0 - t;
+    const yo = y1 + t;
+    const xf = x1 + t;
+    prismXY(context, id + "chamfer", F, [[xo - c, h], [xo - c, yo + c], [xf + c, yo + c], [xf + c, -yo - c], [xo - c, -yo - c],
+                [xo - c, -h], [xo, -h], [xo, -yo], [xf, -yo], [xf, yo], [xo, yo], [xo, h]], 0, c);
     const m = 0.5;
-    const L = e + 1;
-    const wedge = [[b - m, c + m], [e + m, -m], [e + 2 * m, -m], [e + 2 * m, c + m]];
-    const wedgeN = [[-b + m, c + m], [-e - m, -m], [-e - 2 * m, -m], [-e - 2 * m, c + m]];
-    prismXZ(context, id + "wedgeXp", F, wedge, -L, L);
-    prismXZ(context, id + "wedgeXn", F, wedgeN, -L, L);
-    prismYZ(context, id + "wedgeYp", F, wedge, -L, L);
-    prismYZ(context, id + "wedgeYn", F, wedgeN, -L, L);
-    bSubtract(context, id + "chamferCut", [id + "chamfer"], [id + "wedgeXp", id + "wedgeXn", id + "wedgeYp", id + "wedgeYn"], false);
+    prismXZ(context, id + "wedgeX", F, [[xf - m, c + m], [xf + c + m, -m], [xf + c + 2 * m, -m], [xf + c + 2 * m, c + m]], -yo - c - 1, yo + c + 1);
+    prismYZ(context, id + "wedgeYp", F, [[yo - m, c + m], [yo + c + m, -m], [yo + c + 2 * m, -m], [yo + c + 2 * m, c + m]], xo - c - 1, xf + c + 1);
+    prismYZ(context, id + "wedgeYn", F, [[-yo + m, c + m], [-yo - c - m, -m], [-yo - c - 2 * m, -m], [-yo - c - 2 * m, c + m]], xo - c - 1, xf + c + 1);
+    prismXZ(context, id + "wedgeAp", F, [[xo + m, c + m], [xo - c - m, -m], [xo - c - 2 * m, -m], [xo - c - 2 * m, c + m]], h - 4, yo + c + 1);
+    prismXZ(context, id + "wedgeAn", F, [[xo + m, c + m], [xo - c - m, -m], [xo - c - 2 * m, -m], [xo - c - 2 * m, c + m]], -yo - c - 1, -h + 4);
+    bSubtract(context, id + "chamferCut", [id + "chamfer"], [id + "wedgeX", id + "wedgeYp", id + "wedgeYn", id + "wedgeAp", id + "wedgeAn"], false);
     paint(context, [id + "chamfer"], msg([cn, " BASE DEPOT entry chamfer"]), "depot", 1, "plywood");
 }

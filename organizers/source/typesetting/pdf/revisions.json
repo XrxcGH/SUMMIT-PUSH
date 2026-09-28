@@ -10,11 +10,5 @@
     "date": "2026-09-25",
     "sections": "1.1, 3.6, G203, R303, 7.4, 8.5, Figures 2-1 and 3-1 to 3-5, Appendix A",
     "summary": "CACHE CRATE and ROPE COIL compression tolerances; O2 CELL rigid (no foam); G203 example and handling note; judging made optional in the design-challenge text; figures re-rendered and drawing sheets 1, 2 and 5 corrected. No dimension, scoring value or rule number changed."
-  },
-  {
-    "id": "TU-02",
-    "date": "2026-09-26",
-    "sections": "2.2, 2.4, 3, 3.1 to 3.3, 3.3.2 to 3.3.4, 3.3.6, 3.7, 3.8 (new), 4.3.5, 4.4.4, 4.4.5, 4.6, 4.10, G202, G404, G416, G502, R105, R106, 7.2, 7.4, 9, Figures 2-1 and 3-1 to 3-6, Appendix A",
-    "summary": "SCREE added (18 ridged patches around the staging marks, new Section 3.8); the BASE DEPOT becomes a ring around all four CRAG faces (4096 in², about 27 SUPPLIES); G404 and R105 allow 30 in of extension while the BUMPERS are on the ROBOT's own CRAG APRON, 18 in elsewhere; centerline broken for the ring; figures and drawing sheets 1 to 4 and 6 updated. DEPOT values, SUPPLY LINE thresholds and rule numbers unchanged."
   }
 ]

@@ -101,7 +101,8 @@
   <path d="M 1150.00 199.00 L 1151.69 204.95 L 1148.31 204.95 Z" fill="#C02020" stroke="none"/>
   <line x1="1228.00" y1="199.00" x2="1148.00" y2="199.00" stroke="#C02020" stroke-width="0.70"/>
   <line x1="1228.00" y1="277.00" x2="1148.00" y2="277.00" stroke="#C02020" stroke-width="0.70"/>
-  <text x="1150.00" y="233.88" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1150.00 238.00)">13.0 crowned</text>
+  <line x1="1150.00" y1="199.00" x2="1150.00" y2="183.72" stroke="#C02020" stroke-width="1.10"/>
+  <text x="1150.00" y="232.19" font-size="10.50" fill="#C02020" text-anchor="middle" transform="rotate(-90.00 1150.00 238.00)">13.0 crowned envelope</text>
   <text x="1140.00" y="320.00" font-size="8.93" fill="#1A1D21">Clearance 3.0 in on the crate's crowned envelope.</text>
   <text x="1140.00" y="331.79" font-size="8.50" fill="#6E7378">A cube's minimum width in any orientation is its edge,</text>
   <text x="1140.00" y="343.01" font-size="8.50" fill="#6E7378">so tilting does not help - the opening must exceed 13.0 in.</text>

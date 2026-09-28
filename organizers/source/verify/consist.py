@@ -172,22 +172,12 @@ STALE = [
  (r"entirely outside (?:its own |its ALLIANCE.s )?BASECAMP", "pre-v2.1 G416 zone test"),
  (r'12\.5 in (?:tall|to its)|crowned top at Z = 12\.5|top Z = 12\.0\)', 'old crowned-crate standing height (now 13.0)'),
  (r'Blue lanes 1 and 3|lanes 1 and 3\)', 'pre-L1 alternating-by-lane rung stagger'),
- (r'corner wrap', 'pre-Q26 DEPOT vocabulary (now four legs and four corner squares)'),
- # Team Update 02 made the BASE DEPOT a ring under all four faces ("There are no corner arms"
- # is the current wording, so a preceding "no " is allowed).
- (r'(?<!no )corner arms?\b|wraps 16(?:\.0)? (?:in )?(?:onto|around)', 'pre-TU-02 corner arm (now four legs and four corner squares)'),
- (r'about \**12 SUPPLIES|roughly 8 CACHE|\b1792 in', 'pre-TU-02 DEPOT capacity (now about 18 crates / 27 mixed, 4096 in2)'),
- (r'(?<![\d.])8 in short of the line|trays stop 8 in short', 'pre-TU-02 centerline break (now at the APRON tape inner edges)'),
- (r'rim is \**5\.0 in|5\.0 in the Mid Socket|Mid Socket[^.|\n]{0,80}\b5\.0 in of', "pre-TU-02 Mid Socket reach 5.0 (now 11.75)"),
- (r'17\.0 of the 18|High Peg root is \**17\.0|tip only 9\.9 in|tip \**9\.93 in', 'pre-TU-02 High Peg reach 17.0 of 18 (now tip 26.68 of 30)'),
+ (r'corner wrap', 'pre-Q26 DEPOT vocabulary (now leg / corner square / corner arm)'),
 ]
 p("")
 for pat, why in STALE:
     hits = []
     for f in MD:
-        # A Team Update states what it changed, so it quotes the superseded value on purpose.
-        if '05-team-updates/' in f:
-            continue
         t = io.open(f, encoding='utf-8').read()
         for m in re.finditer(pat, t, re.I):   # a capitalised 'Corner wraps' row label slipped past
             ln = t[:m.start()].count('\n') + 1

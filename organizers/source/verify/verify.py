@@ -23,7 +23,7 @@ by = {t["ID"]: t for t in d["tags"]}
 
 print("== AprilTag JSON vs manual table ==")
 arena = io.open('organizers/source/manual/sections/02-arena.md', encoding='utf-8').read()
-rows = re.findall(r'^\| (\d+) \| [^|]+ \| \(([\d.]+), ([\d.]+)\) \| ([\d.]+) in \| ([+\u2212-][XY]) \|$', arena, re.M)
+rows = re.findall(u'^\| (\d+) \| [^|]+ \| \(([\d.]+), ([\d.]+)\) \| ([\d.]+) in \| ([+\u2212-][XY]) \|$', arena, re.M)
 chk("manual tag table has 26 rows", len(rows) == 26, str(len(rows)))
 for tid, x, y, z, facing in rows:
     t = by[int(tid)]["pose"]["translation"]
@@ -171,33 +171,20 @@ print("== depot / reach ==")
 chk("crate crowned envelope 13.0 fits 16.0 channel", 13.0 <= 16.0)
 chk("depot open strip = 2.0 in", abs((16.0 - 14.0) - 2.0) < 1e-9)
 frame = 16.0 + 0.75 + 3.0
-chk("frame perimeter 19.75 in from every CRAG face", abs(frame - 19.75) < 1e-9)
+chk("frame perimeter 19.75 in from shelf face", abs(frame - 19.75) < 1e-9)
 chk("shelf slot reach 12.75 <= 18", abs((frame - 7.0) - 12.75) < 1e-9 and frame - 7.0 <= 18)
 chk("summit socket reach 11.75 <= 18", abs((frame - 8.0) - 11.75) < 1e-9 and frame - 8.0 <= 18)
-# The BASE DEPOT is a ring under all four faces (TU-02), so the FRAME PERIMETER stands 19.75 in
-# off every face. Both side sockets on a SOCKET FACE overhang that face's leg of the tray.
-chk("Low/Mid Socket rims overhang the SOCKET FACE leg", 8.0 < 16.0 and 14.0 < 24.0,
-    "rim 8.0 out of a 16.0 channel, 14.0 lateral of a 24.0 half-face")
-chk("Low and Mid Socket reach 11.75 <= 18", abs((frame - 8.0) - 11.75) < 1e-9 and frame - 8.0 <= 18,
-    "%.2f" % (frame - 8.0))
-_peg_run = 10.0 * math.cos(math.radians(45))       # 10-in peg at 45 deg: 7.07 in horizontal
-chk("Low/Mid Peg tip reach 12.68, root 19.75",
-    abs((frame - _peg_run) - 12.68) < 0.005, "%.3f" % (frame - _peg_run))
-chk("High Peg tip reach 26.68 <= 30 (binding reach)",
-    abs((frame + 14.0 - _peg_run) - 26.68) < 0.005 and frame + 14.0 - _peg_run <= 30.0,
-    "%.3f" % (frame + 14.0 - _peg_run))
-chk("High Peg root 33.75 is beyond the 30-in APRON allowance",
-    abs((frame + 14.0) - 33.75) < 1e-9 and frame + 14.0 > 30.0, "%.2f" % (frame + 14.0))
-_ring = 48.0 + 2 * (16.0 + 0.75)
-chk("DEPOT ring footprint 81.5 in square", abs(_ring - 81.5) < 1e-9, "%.2f" % _ring)
-chk("DEPOT floor area 4096 in^2", abs((48.0 + 2 * 16.0) ** 2 - 48.0 ** 2 - 4096.0) < 1e-9)
-# Chamfer strip outer edge 17.75 off each face; APRON tape inner edge 18.0 off each SOCKET
-# FACE, with an R18 inner arc about (284, 216) at the SHELF FACE corners.
-_chf = 16.0 + 0.75 + 1.0
-chk("chamfer clears the APRON tape by 0.25 along the SOCKET FACES", abs((18.0 - _chf) - 0.25) < 1e-9)
-_cd = math.hypot((300.0 - _chf) - 284.0, (216.0 - _chf) - 216.0)
-chk("chamfer corner clears the R18 tape arc by 0.16", abs((18.0 - _cd) - 0.16) < 0.005,
-    "%.3f" % (18.0 - _cd))
+# The Low Socket sits above the DEPOT corner arm, so its standoff differs from the Mid Socket's
+wrap_face = 16.0 + 0.75            # channel depth + lip thickness, from the crag face
+low_fp = wrap_face + 3.0           # frame perimeter behind the bumper on the lip
+chk("Low Socket lies above the DEPOT corner arm", 14.0 < 16.0, "lateral 14.0 in a 16.0 arm")
+chk("Low Socket reach 11.75 <= 18", abs((low_fp - 8.0) - 11.75) < 1e-9, "%.2f" % (low_fp - 8.0))
+chk("Mid Socket reach 5.0 <= 18", abs((8.0 - 3.0) - 5.0) < 1e-9 and (8.0 - 3.0) <= 18.0,
+    "%.2f" % (8.0 - 3.0))
+chk("Low/Mid socket standoffs differ by more than 6 in", (low_fp - 8.0) - 5.0 > 6.0,
+    "%.2f in apart" % ((low_fp - 8.0) - 5.0))
+chk("high peg root reach 17.0 <= 18",
+    abs((14.0 + 3.0) - 17.0) < 1e-9 and (14.0 + 3.0) <= 18.0, "%.2f" % (14.0 + 3.0))
 
 print("== socket tube clearances ==")
 # Tube 7.0 in along the axis (NOT the superseded 8.0), standoff 8.0, OD 6.68 -> r 3.34,

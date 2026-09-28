@@ -34,11 +34,10 @@ The field is built virtually. Materials are named so that a CAD appearance can b
 | `rung` | `#9AA0A6` | HEADWALL rungs, pegs |
 | `shelf` | `#8A6D3B` | Shelf slabs and slot fences |
 | `socket` | `#9DB8D6` | Socket tubes |
-| `depot` | `#7F7F7F` | BASE DEPOT lip, tray floor and entry chamfer (the ring around each CRAG) |
+| `depot` | `#7F7F7F` | BASE DEPOT lip and tray |
 | `wall` | `#9AA4B2` | Alliance walls, guardrail frame |
 | `glazing` | `#DCE8FA` at 25% opacity | Polycarbonate guardrail and alliance-wall glazing |
 | `carpet` | `#6E6A63` | Field carpet |
-| `scree` | `#5C5650` | SCREE ridges: a dark warm grey, distinct from the carpet and from both alliance colors |
 
 ### 1.3 Game pieces
 
@@ -61,7 +60,6 @@ Every ARENA element appears in this table once, grouped by assembly. "CAD §" po
 | Element | CAD § | Material (modeled as) | Color | Finish | Thickness / section |
 |---|---|---|---|---|---|
 | Field carpet | §0 | Low-pile event carpet | `carpet` | matte, fine directional nap | — |
-| SCREE ridge | §1.4 | HDPE half-round rod, fastened to the carpet | `scree` | matte | R1.75 half-round: 3.5 in wide × 1.75 in tall |
 | Guardrail frame | §1.3 | Aluminum extrusion | `wall` | satin anodized | 2 × 1 in tube |
 | Guardrail glazing | §1.3 | Polycarbonate | `glazing` | clear, slight surface sheen | 0.25 in |
 | FIELD LED band | §1.3 | Frosted acrylic lens over an LED strip | state-dependent | frosted, self-illuminated | 1.0 in wide |
@@ -84,9 +82,9 @@ Every ARENA element appears in this table once, grouped by assembly. "CAD §" po
 | Peg | §2.5 | Steel round bar, fully rounded tip | `rung` | satin, no knurl | ⌀1.5 in |
 | High Peg root boss | §2.5 | Steel plate let into the spire | `crag-accent` | satin | 0.25 in, spanning Z 74–80 behind an opaque-backed lantern edge |
 | LED tier ring | §2.6, §8 | Frosted acrylic channel over an LED strip | alliance color when lit, dark when unlit | frosted, self-illuminated | 1.0 in wide |
-| BASE DEPOT lip | §3 | Painted plywood, a closed square ring around the CRAG | `depot` | matte, R0.25 top edge | 0.75 in |
+| BASE DEPOT lip | §3 | Painted plywood | `depot` | matte, R0.25 top edge | 0.75 in |
 | BASE DEPOT floor | §3 | Painted plywood, laid on the carpet (top at Z = 0.25) | `depot` | matte, low friction | 0.25 in |
-| DEPOT entry chamfer | §3 | Painted plywood strip, mitred at the four corners | `depot` | matte | 45°, 1.0 in |
+| DEPOT entry chamfer | §3 | Painted plywood strip | `depot` | matte | 45°, 1.0 in |
 | HEADWALL chord / upright | §4.1 | Steel square tube | `truss` | satin powder | 2 × 2 in |
 | HEADWALL rung | §4.1 | Steel round bar | `rung` | satin, no knurl | ⌀1.5 in |
 | HEADWALL rung bracket | §4.2 | Steel plate | `truss-dark` | satin | 0.25 in |
@@ -117,11 +115,10 @@ Every ARENA element appears in this table once, grouped by assembly. "CAD §" po
 A field render is complete when it correctly shows:
 
 - [ ] Carpet, guardrails, and both alliance walls, with driver stations
-- [ ] Both CRAGS with all 17 scoring positions modeled and the BASE DEPOT ring around all four faces of each
-- [ ] All 18 SCREE PATCHES, each with its four ridges in the direction the `FIELD-CAD-PACKAGE.md` §1.4 table gives
+- [ ] Both CRAGS with all 17 scoring positions modeled and the BASE DEPOT trays
 - [ ] Both HEADWALLS with all nine rungs each, correctly staggered, and the lane tag panels
 - [ ] All four OUTFITTER chutes with tag panels
-- [ ] All tape: BASECAMP, both CLIMB LINES carried to the full field width, OUTFITTER LANES, both APRONS at the correct 36/20 offsets, the FIELD centerline broken at each CRAG, the CENTER CACHE band side lines and marks, alliance staging marks
+- [ ] All tape: BASECAMP, both CLIMB LINES carried to the full field width, OUTFITTER LANES, both APRONS at the correct 36/20 offsets, the FIELD centerline, the CENTER CACHE band and marks, alliance staging marks
 - [ ] All 26 AprilTag panels at their published poses
 - [ ] All 63 SUPPLIES in their staged positions, in the Latin-square CENTER CACHE arrangement
 - [ ] Tier rings and beacons modeled in both lit and unlit states

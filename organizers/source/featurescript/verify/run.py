@@ -38,7 +38,7 @@ import numpy as np  # noqa: E402
 import fs2py  # noqa: E402
 import kernel_occ as K  # noqa: E402
 
-DEFAULT_OPTS = {"perimeter": True, "walls": True, "crags": True, "headwalls": True, "scree": True, "tape": True,
+DEFAULT_OPTS = {"perimeter": True, "walls": True, "crags": True, "headwalls": True, "tape": True,
                 "tags": True, "decals": True, "staged": True, "stock": True, "lit": False,
                 "fieldLed": "DARK", "pairs": "SIDE", "cosmetics": True, "forecast": "WHITEOUT",
                 "routeBlue": "LOW", "routeRed": "LOW"}
@@ -244,7 +244,7 @@ def main():
     opts = dict(DEFAULT_OPTS)
     if a.only:
         on = set(a.only.split(","))
-        for k in ("perimeter", "walls", "crags", "headwalls", "scree", "tape", "tags", "staged", "stock"):
+        for k in ("perimeter", "walls", "crags", "headwalls", "tape", "tags", "staged", "stock"):
             opts[k] = k in on
         opts["decals"] = opts["tags"]
     opts["lit"] = a.lit

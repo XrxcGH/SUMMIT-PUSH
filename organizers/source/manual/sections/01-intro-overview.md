@@ -93,7 +93,7 @@ When the MATCH starts, the FORECAST (WHITEOUT, ICEFALL, or GALE) names the SUPPL
 
 SUMMIT PUSH is played by two ALLIANCES of three teams each on a 54 ft × 27 ft carpeted FIELD. Each MATCH is 2 minutes 30 seconds long: a 15-second AUTONOMOUS period (AUTO), in which ROBOTS operate only on pre-programmed instructions, followed immediately by a 2-minute-15-second TELEOPERATED period (TELEOP), in which DRIVE TEAMS take control. The final 30 seconds of TELEOP is the ENDGAME period, during which HEADWALL protection is active.
 
-**The FIELD.** Each ALLIANCE has one CRAG near midfield: a 48 in × 48 in structure rising to a spire top 90 in above the carpet. The CRAG is the ALLIANCE's only placement structure for SUPPLIES. Between the two CRAGS is the neutral CENTER CACHE, nine SUPPLIES staged across the centerline and contested by both ALLIANCES. Each ALLIANCE's end of the FIELD holds its BASECAMP zone (where ROBOTS start), its HEADWALL (a 144-in-wide climbing truss leaned 15° from vertical and split into three independent lanes), and two OUTFITTER chutes in the wall corners, through which HUMAN PLAYERS feed additional SUPPLIES onto the FIELD. The open floor around each ALLIANCE's staging marks is broken up by SCREE, patches of low ridged terrain that ROBOTS either drive over or weave between.
+**The FIELD.** Each ALLIANCE has one CRAG near midfield: a 48 in × 48 in structure rising to a spire top 90 in above the carpet. The CRAG is the ALLIANCE's only placement structure for SUPPLIES. Between the two CRAGS is the neutral CENTER CACHE, nine SUPPLIES staged across the centerline and contested by both ALLIANCES. Each ALLIANCE's end of the FIELD holds its BASECAMP zone (where ROBOTS start), its HEADWALL (a 144-in-wide climbing truss leaned 15° from vertical and split into three independent lanes), and two OUTFITTER chutes in the wall corners, through which HUMAN PLAYERS feed additional SUPPLIES onto the FIELD.
 
 **The SUPPLIES.** There are three GAME PIECES, each a different shape and size:
 
@@ -105,7 +105,7 @@ SUMMIT PUSH is played by two ALLIANCES of three teams each on a 54 ft × 27 ft c
 | **O2 CELL** | Cylinder | 5.0 in dia × 14.0 in | Sockets (30 / 54 / 72 in) and BASE DEPOT |
 | **ROPE COIL** | Torus | 10.0 in OD | 45° pegs (30 / 54 / 78 in) and BASE DEPOT |
 
-A ROBOT may possess at most 2 SUPPLIES at a time. Each CRAG is also ringed at floor level by a BASE DEPOT tray that accepts any SUPPLY in any orientation.
+A ROBOT may possess at most 2 SUPPLIES at a time. Each CRAG also has a floor-level BASE DEPOT tray that accepts any SUPPLY in any orientation.
 
 **Placement values.** Every Low-tier scoring position is worth the same, every Mid-tier position is worth the same, and every High-tier position is worth the same, regardless of which SUPPLY it takes. Value rises with height.
 
@@ -142,7 +142,7 @@ A ROBOT may possess at most 2 SUPPLIES at a time. Each CRAG is also ringed at fl
 | **Low** | Shelf 1 (3 slots), Low Sockets (×2), Low Pegs (×2) | 24 / 30 / 30 in | **7** | **4** |
 | **Mid** | Shelf 2 (3 slots), Mid Sockets (×2), Mid Pegs (×2) | 42 / 54 / 54 in | **10** | **7** |
 | **High** | Summit Socket (×1), High Pegs (×2) | 72 / 78 in | **13** | **10** |
-| **BASE DEPOT** | any SUPPLY, any orientation (~27) | floor (4 in lip) | **4** | **2** |
+| **BASE DEPOT** | any SUPPLY, any orientation (~12) | floor (4 in lip) | **4** | **2** |
 
 **Table 2-4: Bonus and ENDGAME points**
 

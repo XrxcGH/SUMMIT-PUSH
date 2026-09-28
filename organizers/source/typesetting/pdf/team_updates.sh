@@ -12,8 +12,7 @@ root="$(cd "$here/../../../.." && pwd)"
 
 [ -d "$here/node_modules/playwright-core" ] || npm ci --prefix "$here" --no-audit --no-fund
 cd "$here"
-# Python on Windows ends each printed path with CR LF; strip the CR or basename keeps it
-python3 team_update.py | tr -d '\r' | while read -r page; do
+for page in $(python3 team_update.py); do
   name="$(basename "$page" .html)"
   node print_html.mjs "$root/$page" "$root/participants/05-team-updates/$name.pdf"
 done
